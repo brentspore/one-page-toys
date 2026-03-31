@@ -71,46 +71,51 @@
               <div id="statusMsg" class="muted" aria-live="polite" style="font-weight: 800; font-size: 13px;"></div>
             </div>
 
-            <div style="padding: 14px; border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,0.6);">
-              <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; align-items: start;">
-                <div style="grid-column: span 12;">
-                  <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
+            <div style="padding: 20px 18px 18px; border: 1px solid var(--border); border-radius: 20px; background: rgba(255,255,255,0.8); text-align: center;">
+              <div style="margin-bottom: 16px;">
+                <div class="muted" style="font-weight: 800; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">
+                  Total cost so far
+                </div>
+                <div
+                  id="totalCostText"
+                  style="font-size: clamp(40px, 10vw, 72px); font-weight: 900; letter-spacing: -0.05em; line-height: 1.02;"
+                >
+                  $0.00
+                </div>
+              </div>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; align-items: baseline;">
+                <div>
+                  <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
                     Elapsed
                   </div>
-                  <div id="elapsedText" style="font-size: clamp(28px, 5.5vw, 44px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05;">
+                  <div
+                    id="elapsedText"
+                    style="font-size: clamp(20px, 4vw, 28px); font-weight: 800; letter-spacing: 0.02em; line-height: 1.1;"
+                  >
                     00:00:00
                   </div>
                 </div>
 
-                <div style="grid-column: span 12;">
-                  <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
-                    Total cost so far
-                  </div>
-                  <div id="totalCostText" style="font-size: clamp(28px, 5.5vw, 44px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05;">
-                    $0.00
-                  </div>
-                </div>
-
-                <div style="grid-column: span 12;">
-                  <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px;">
-                    <div style="grid-column: span 6;">
-                      <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
-                        Cost per second
-                      </div>
-                      <div id="ratePerSecondText" style="font-weight: 900; font-size: 18px;">$0.00</div>
+                <div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;">
+                  <div>
+                    <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                      / second
                     </div>
-                    <div style="grid-column: span 6;">
-                      <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
-                        Cost per minute
-                      </div>
-                      <div id="ratePerMinuteText" style="font-weight: 900; font-size: 18px;">$0.00</div>
-                    </div>
+                    <div id="ratePerSecondText" style="font-weight: 800; font-size: 18px;">$0.00</div>
                   </div>
-                  <p class="muted" style="margin: 10px 0 0; font-size: 13px;">
-                    Rate is computed from your inputs. Total cost rises as time passes.
-                  </p>
+                  <div>
+                    <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                      / minute
+                    </div>
+                    <div id="ratePerMinuteText" style="font-weight: 800; font-size: 18px;">$0.00</div>
+                  </div>
                 </div>
               </div>
+
+              <p class="muted" style="margin: 14px 0 0; font-size: 12px;">
+                The meter starts when you press Start and pauses whenever you need a breather.
+              </p>
             </div>
           </div>
         </div>
