@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Meeting Cost Timer</title>
-    <meta name="description" content="Enter $/hour and people; watch the cost rise live." />
+    <title>How much does this meeting cost?</title>
+    <meta name="description" content="See a live dollar counter for how much this meeting costs as time passes." />
     <link rel="stylesheet" href="../../assets/styles.css" />
   </head>
   <body>
@@ -16,8 +16,10 @@
 
     <main class="container">
       <section class="tool">
-        <h1>Meeting Cost Timer</h1>
-        <p class="lead">Enter an average cost per hour and number of people, then watch the total cost grow.</p>
+        <h1 style="text-align: center;">How much does this meeting cost?</h1>
+        <p class="lead" style="text-align: center; max-width: 40rem; margin-left: auto; margin-right: auto;">
+          A big, honest dollar counter for your time together. Set your rate and headcount, then let it run.
+        </p>
         <div class="panel" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
           <!-- HERO COST DISPLAY + INLINE SETTINGS -->
           <div style="padding: 22px 18px 20px; border: 1px solid var(--border); border-radius: 22px; background: rgba(255,255,255,0.9);">
@@ -28,7 +30,7 @@
                 </div>
                 <div
                   id="totalCostText"
-                  style="font-size: clamp(72px, 18vw, 140px); font-weight: 900; letter-spacing: -0.08em; line-height: 0.98;"
+                  style="font-size: clamp(90px, 22vw, 180px); font-weight: 900; letter-spacing: -0.1em; line-height: 0.9;"
                 >
                   $0.00
                 </div>
@@ -129,6 +131,7 @@
     <script>
       const hourlyRateEl = document.getElementById("hourlyRateInline");
       const peopleCountEl = document.getElementById("peopleCountInline");
+      const meetingTitleEl = document.getElementById("meetingTitle");
       const startBtn = document.getElementById("startBtn");
       const pauseBtn = document.getElementById("pauseBtn");
       const resetBtn = document.getElementById("resetBtn");
@@ -143,6 +146,44 @@
       let elapsedMs = 0;
       let startPerfMs = 0; // performance.now() at start/resume
       let intervalId = null;
+
+      const STORAGE_KEY = "meeting-cost-timer:v1";
+
+      function loadPersisted() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data && typeof data === "object") {
+            if (typeof data.title === "string" && data.title.trim()) {
+              meetingTitleEl.textContent = data.title;
+            }
+            if (typeof data.hourlyRate === "number" && Number.isFinite(data.hourlyRate)) {
+              hourlyRateEl.textContent = String(data.hourlyRate);
+            }
+            if (typeof data.people === "number" && Number.isFinite(data.people) && data.people > 0) {
+              peopleCountEl.textContent = String(Math.floor(data.people));
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      function persist() {
+        try {
+          const { hourlyRate, people } = getInputs();
+          const title = (meetingTitleEl.textContent || meetingTitleEl.innerText || "").trim();
+          const payload = {
+            title,
+            hourlyRate,
+            people,
+          };
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch {
+          // ignore
+        }
+      }
 
       function clampNumber(n) {
         const x = Number(String(n).replace(/[^0-9.+-]/g, ""));
@@ -249,14 +290,24 @@
             statusMsgEl.textContent = elapsedMs > 0 ? "Paused (inputs updated)" : "Ready";
             updateUI();
           }
+          persist();
         });
         el.addEventListener("blur", () => {
           // Normalize text on blur to keep things tidy.
           const val = clampNumber(el.textContent || el.innerText || "");
           el.textContent = String(val || (el === peopleCountEl ? 1 : 0));
           if (!running) updateUI();
+          persist();
         });
       });
+
+      // Persist title edits as you type.
+      meetingTitleEl.addEventListener("input", () => {
+        persist();
+      });
+
+      // Load any saved settings before first render.
+      loadPersisted();
 
       // Initial render.
       updateUI();
