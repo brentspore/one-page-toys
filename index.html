@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>One Page Toys</title>
+    <meta name="description" content="A clean gallery of one-page tools and playful experiments." />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="index.html">One Page Toys</a>
+        <div class="hero__actions" aria-label="Gallery actions">
+          <button id="randomToolBtn" class="btn btn--primary" type="button">Surprise me</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <h1>One-page tools and playful experiments</h1>
+        <p>
+          Useful utilities and weird little ideas—each built to stay focused, simple, and easy to explore.
+        </p>
+      </section>
+
+      <section class="tools">
+        <div class="tools__header">
+          <h2>Tools</h2>
+          <div id="toolsMeta" class="muted" aria-live="polite"></div>
+        </div>
+        <div id="toolsGrid" class="grid" aria-live="polite"></div>
+        <div id="toolsError" class="error" role="alert" hidden></div>
+      </section>
+
+      <footer class="footer">
+        <p class="muted">
+          Add more toys by editing <code>tools-registry.json</code> and creating a folder under <code>tools/</code>.
+        </p>
+      </footer>
+    </main>
+
+    <script src="assets/main.js" defer></script>
+  </body>
+</html>

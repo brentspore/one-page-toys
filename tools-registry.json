@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "random-palette-explorer",
+    "name": "Random Palette Explorer",
+    "shortDescription": "Explore color palettes by clicking the vibe you like until one set remains.",
+    "tags": ["visual", "experiment"],
+    "status": "beta",
+    "path": "tools/random-palette-explorer/index.html"
+  },
+  {
+    "slug": "meeting-cost-timer",
+    "name": "Meeting Cost Timer",
+    "shortDescription": "Enter $/hour and people; watch the cost rise live as time progresses.",
+    "tags": ["utility", "productivity"],
+    "status": "beta",
+    "path": "tools/meeting-cost-timer/index.html"
+  },
+  {
+    "slug": "image-converter",
+    "name": "Quick Image Converter",
+    "shortDescription": "Drag-and-drop an image and convert it instantly to another format.",
+    "tags": ["utility", "media"],
+    "status": "experimental",
+    "path": "tools/image-converter/index.html"
+  },
+  {
+    "slug": "weird-generative-canvas",
+    "name": "Weird Generative Canvas",
+    "shortDescription": "A random algorithm with a random color scheme that animates on your screen.",
+    "tags": ["visual", "experiment"],
+    "status": "experimental",
+    "path": "tools/weird-generative-canvas/index.html"
+  }
+]
