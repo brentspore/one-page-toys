@@ -16,9 +16,9 @@
 
     <main class="container">
       <section class="tool">
-        <h1 style="text-align: center;">How much does this meeting cost?</h1>
+        <h1 style="text-align: center;">How much is this meeting bleeding?</h1>
         <p class="lead" style="text-align: center; max-width: 40rem; margin-left: auto; margin-right: auto;">
-          A big, honest dollar counter for your time together. Set your rate and headcount, then let it run.
+          A giant money meter for your calendar circus. Pick a rate, count the humans, and watch the dollars sprint away.
         </p>
         <div class="panel" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
           <!-- HERO COST DISPLAY + INLINE SETTINGS -->
@@ -44,9 +44,6 @@
                   style="display: inline-block; min-width: 120px; font-size: clamp(18px, 3.2vw, 28px); font-weight: 800; letter-spacing: -0.03em; border-radius: 12px; padding: 4px 8px; outline: none; border: 1px solid transparent; background: transparent; text-align: right;"
                 >
                   Untitled meeting
-                </div>
-                <div class="muted" style="font-size: 12px; margin-top: 4px;">
-                  click to rename
                 </div>
 
                 <div style="margin-top: 10px; font-size: 13px;">
@@ -111,8 +108,7 @@
             <!-- CONTROLS BELOW HERO -->
             <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px;">
               <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center;">
-                <button id="startBtn" class="btn btn--primary" type="button">Start</button>
-                <button id="pauseBtn" class="btn" type="button" disabled>Pause</button>
+                <button id="toggleBtn" class="btn btn--primary" type="button">Start</button>
                 <button id="resetBtn" class="btn" type="button">Reset</button>
               </div>
               <div id="statusMsg" class="muted" aria-live="polite" style="font-weight: 800; font-size: 13px; margin-top: 8px; text-align: center;"></div>
@@ -132,8 +128,7 @@
       const hourlyRateEl = document.getElementById("hourlyRateInline");
       const peopleCountEl = document.getElementById("peopleCountInline");
       const meetingTitleEl = document.getElementById("meetingTitle");
-      const startBtn = document.getElementById("startBtn");
-      const pauseBtn = document.getElementById("pauseBtn");
+      const toggleBtn = document.getElementById("toggleBtn");
       const resetBtn = document.getElementById("resetBtn");
       const statusMsgEl = document.getElementById("statusMsg");
 
@@ -230,13 +225,18 @@
 
       function setRunning(nextRunning) {
         running = nextRunning;
-        startBtn.disabled = running;
-        pauseBtn.disabled = !running;
-
-        if (!running) {
-          statusMsgEl.textContent = elapsedMs > 0 ? "Paused" : "Ready";
-        } else {
+        if (running) {
+          toggleBtn.textContent = "Stop";
+          toggleBtn.style.backgroundColor = "#dc2626";
+          toggleBtn.style.borderColor = "#dc2626";
+          toggleBtn.style.color = "#fff";
           statusMsgEl.textContent = "Running…";
+        } else {
+          toggleBtn.textContent = "Start";
+          toggleBtn.style.backgroundColor = "";
+          toggleBtn.style.borderColor = "";
+          toggleBtn.style.color = "";
+          statusMsgEl.textContent = elapsedMs > 0 ? "Stopped" : "Ready";
         }
       }
 
@@ -261,15 +261,6 @@
         }, 100);
       }
 
-      function pauseTimer() {
-        if (!running) return;
-        elapsedMs = performance.now() - startPerfMs;
-        setRunning(false);
-        if (intervalId) clearInterval(intervalId);
-        intervalId = null;
-        updateUI();
-      }
-
       function resetTimer() {
         setRunning(false);
         elapsedMs = 0;
@@ -279,8 +270,18 @@
         updateUI();
       }
 
-      startBtn.addEventListener("click", startTimer);
-      pauseBtn.addEventListener("click", pauseTimer);
+      toggleBtn.addEventListener("click", () => {
+        if (running) {
+          // behave like pause/stop
+          elapsedMs = performance.now() - startPerfMs;
+          setRunning(false);
+          if (intervalId) clearInterval(intervalId);
+          intervalId = null;
+          updateUI();
+        } else {
+          startTimer();
+        }
+      });
       resetBtn.addEventListener("click", resetTimer);
 
       // Recompute rates live as inline values change (even while paused).
