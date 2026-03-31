@@ -19,13 +19,99 @@
         <h1>Meeting Cost Timer</h1>
         <p class="lead">Enter an average cost per hour and number of people, then watch the total cost grow.</p>
         <div class="panel">
-          <p class="muted" style="margin: 0 0 12px;">
-            MVP placeholder: next step is implementing the live timer + “cost per millisecond” UI.
-          </p>
-          <div class="tags" style="margin-top: 10px;">
-            <span class="tag">timer</span>
-            <span class="tag">pause/reset</span>
-            <span class="tag">big cost display</span>
+          <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+            <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px;">
+              <div style="grid-column: span 12;">
+                <label for="meetingTitle" class="muted" style="font-weight: 800; font-size: 13px; display: block; margin-bottom: 8px;">
+                  Meeting title (optional)
+                </label>
+                <input
+                  id="meetingTitle"
+                  type="text"
+                  placeholder="e.g., Weekly Sync"
+                  style="width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 15px;"
+                />
+              </div>
+
+              <div style="grid-column: span 6;">
+                <label for="hourlyRate" class="muted" style="font-weight: 800; font-size: 13px; display: block; margin-bottom: 8px;">
+                  Avg $ per hour (per person)
+                </label>
+                <input
+                  id="hourlyRate"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  value="100"
+                  style="width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 15px;"
+                />
+              </div>
+
+              <div style="grid-column: span 6;">
+                <label for="peopleCount" class="muted" style="font-weight: 800; font-size: 13px; display: block; margin-bottom: 8px;">
+                  People
+                </label>
+                <input
+                  id="peopleCount"
+                  type="number"
+                  min="1"
+                  step="1"
+                  inputmode="numeric"
+                  value="6"
+                  style="width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 15px;"
+                />
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <button id="startBtn" class="btn btn--primary" type="button">Start</button>
+              <button id="pauseBtn" class="btn" type="button" disabled>Pause</button>
+              <button id="resetBtn" class="btn" type="button">Reset</button>
+              <div id="statusMsg" class="muted" aria-live="polite" style="font-weight: 800; font-size: 13px;"></div>
+            </div>
+
+            <div style="padding: 14px; border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,0.6);">
+              <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; align-items: start;">
+                <div style="grid-column: span 12;">
+                  <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
+                    Elapsed
+                  </div>
+                  <div id="elapsedText" style="font-size: clamp(28px, 5.5vw, 44px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05;">
+                    00:00:00
+                  </div>
+                </div>
+
+                <div style="grid-column: span 12;">
+                  <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
+                    Total cost so far
+                  </div>
+                  <div id="totalCostText" style="font-size: clamp(28px, 5.5vw, 44px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05;">
+                    $0.00
+                  </div>
+                </div>
+
+                <div style="grid-column: span 12;">
+                  <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px;">
+                    <div style="grid-column: span 6;">
+                      <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
+                        Cost per second
+                      </div>
+                      <div id="ratePerSecondText" style="font-weight: 900; font-size: 18px;">$0.00</div>
+                    </div>
+                    <div style="grid-column: span 6;">
+                      <div class="muted" style="font-weight: 800; font-size: 13px; margin-bottom: 6px;">
+                        Cost per minute
+                      </div>
+                      <div id="ratePerMinuteText" style="font-weight: 900; font-size: 18px;">$0.00</div>
+                    </div>
+                  </div>
+                  <p class="muted" style="margin: 10px 0 0; font-size: 13px;">
+                    Rate is computed from your inputs. Total cost rises as time passes.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -36,5 +122,136 @@
         </p>
       </footer>
     </main>
+
+    <script>
+      const hourlyRateEl = document.getElementById("hourlyRate");
+      const peopleCountEl = document.getElementById("peopleCount");
+      const startBtn = document.getElementById("startBtn");
+      const pauseBtn = document.getElementById("pauseBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const statusMsgEl = document.getElementById("statusMsg");
+
+      const elapsedTextEl = document.getElementById("elapsedText");
+      const totalCostTextEl = document.getElementById("totalCostText");
+      const ratePerSecondTextEl = document.getElementById("ratePerSecondText");
+      const ratePerMinuteTextEl = document.getElementById("ratePerMinuteText");
+
+      let running = false;
+      let elapsedMs = 0;
+      let startPerfMs = 0; // performance.now() at start/resume
+      let intervalId = null;
+
+      function clampNumber(n) {
+        const x = Number(n);
+        return Number.isFinite(x) ? x : 0;
+      }
+
+      function getInputs() {
+        const hourlyRate = clampNumber(hourlyRateEl.value);
+        const people = Math.max(0, Math.floor(clampNumber(peopleCountEl.value)));
+        return { hourlyRate, people };
+      }
+
+      function formatMoney(amount) {
+        const v = Number(amount);
+        if (!Number.isFinite(v)) return "$0.00";
+        return "$" + v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function formatElapsed(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const hh = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+        const mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+        const ss = String(totalSeconds % 60).padStart(2, "0");
+        return `${hh}:${mm}:${ss}`;
+      }
+
+      function computeCostRate() {
+        const { hourlyRate, people } = getInputs();
+        // Interpret $/hour as per-person cost. Total hourly cost = hourlyRate * people.
+        const totalPerSecond = (hourlyRate * people) / 3600;
+        const totalPerMinute = totalPerSecond * 60;
+        const totalPerMs = totalPerSecond / 1000;
+        return { totalPerSecond, totalPerMinute, totalPerMs };
+      }
+
+      function updateUI() {
+        const { totalPerSecond, totalPerMinute, totalPerMs } = computeCostRate();
+
+        elapsedTextEl.textContent = formatElapsed(elapsedMs);
+        totalCostTextEl.textContent = formatMoney(totalPerMs * elapsedMs);
+        ratePerSecondTextEl.textContent = formatMoney(totalPerSecond);
+        ratePerMinuteTextEl.textContent = formatMoney(totalPerMinute);
+      }
+
+      function setRunning(nextRunning) {
+        running = nextRunning;
+        startBtn.disabled = running;
+        pauseBtn.disabled = !running;
+
+        if (!running) {
+          statusMsgEl.textContent = elapsedMs > 0 ? "Paused" : "Ready";
+        } else {
+          statusMsgEl.textContent = "Running…";
+        }
+      }
+
+      function startTimer() {
+        const { hourlyRate, people } = getInputs();
+        if (hourlyRate < 0) {
+          statusMsgEl.textContent = "Hourly rate must be >= 0";
+          return;
+        }
+        if (people <= 0) {
+          statusMsgEl.textContent = "People must be at least 1";
+          return;
+        }
+
+        setRunning(true);
+        startPerfMs = performance.now() - elapsedMs;
+
+        if (intervalId) clearInterval(intervalId);
+        intervalId = setInterval(() => {
+          elapsedMs = performance.now() - startPerfMs;
+          updateUI();
+        }, 100);
+      }
+
+      function pauseTimer() {
+        if (!running) return;
+        elapsedMs = performance.now() - startPerfMs;
+        setRunning(false);
+        if (intervalId) clearInterval(intervalId);
+        intervalId = null;
+        updateUI();
+      }
+
+      function resetTimer() {
+        setRunning(false);
+        elapsedMs = 0;
+        if (intervalId) clearInterval(intervalId);
+        intervalId = null;
+        statusMsgEl.textContent = "Reset";
+        updateUI();
+      }
+
+      startBtn.addEventListener("click", startTimer);
+      pauseBtn.addEventListener("click", pauseTimer);
+      resetBtn.addEventListener("click", resetTimer);
+
+      // Recompute rates live as inputs change (even while paused).
+      [hourlyRateEl, peopleCountEl].forEach((el) => {
+        el.addEventListener("input", () => {
+          if (!running) {
+            statusMsgEl.textContent = elapsedMs > 0 ? "Paused (inputs updated)" : "Ready";
+            updateUI();
+          }
+        });
+      });
+
+      // Initial render.
+      updateUI();
+      setRunning(false);
+    </script>
   </body>
 </html>
