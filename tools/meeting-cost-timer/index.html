@@ -19,9 +19,10 @@
         <h1>Meeting Cost Timer</h1>
         <p class="lead">Enter an average cost per hour and number of people, then watch the total cost grow.</p>
         <div class="panel" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
-          <!-- HERO COST DISPLAY -->
-          <div style="padding: 22px 18px 20px; border: 1px solid var(--border); border-radius: 22px; background: rgba(255,255,255,0.9); text-align: center;">
-              <div style="margin-bottom: 16px;">
+          <!-- HERO COST DISPLAY + INLINE SETTINGS -->
+          <div style="padding: 22px 18px 20px; border: 1px solid var(--border); border-radius: 22px; background: rgba(255,255,255,0.9);">
+            <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 12px; align-items: start;">
+              <div style="text-align: left;">
                 <div class="muted" style="font-weight: 800; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">
                   Total cost so far
                 </div>
@@ -33,92 +34,86 @@
                 </div>
               </div>
 
-              <div style="display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; align-items: baseline;">
-                <div>
-                  <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
-                    Elapsed
-                  </div>
+              <div style="text-align: right;">
+                <div
+                  id="meetingTitle"
+                  contenteditable="true"
+                  spellcheck="false"
+                  style="display: inline-block; min-width: 120px; font-size: clamp(18px, 3.2vw, 28px); font-weight: 800; letter-spacing: -0.03em; border-radius: 12px; padding: 4px 8px; outline: none; border: 1px solid transparent; background: transparent; text-align: right;"
+                >
+                  Untitled meeting
+                </div>
+                <div class="muted" style="font-size: 12px; margin-top: 4px;">
+                  click to rename
+                </div>
+
+                <div style="margin-top: 10px; font-size: 13px;">
+                  <div class="muted" style="font-weight: 700; margin-bottom: 2px;">Avg $ / hour per person</div>
                   <div
-                    id="elapsedText"
-                    style="font-size: clamp(20px, 4vw, 30px); font-weight: 800; letter-spacing: 0.02em; line-height: 1.1;"
+                    id="hourlyRateInline"
+                    contenteditable="true"
+                    spellcheck="false"
+                    style="display: inline-block; min-width: 40px; padding: 2px 4px; border-radius: 999px; border: 1px solid transparent; background: transparent; font-weight: 700; outline: none;"
                   >
-                    00:00:00
+                    100
                   </div>
                 </div>
 
-                <div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;">
-                  <div>
-                    <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
-                      / second
-                    </div>
-                    <div id="ratePerSecondText" style="font-weight: 800; font-size: 18px;">$0.00</div>
-                  </div>
-                  <div>
-                    <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
-                      / minute
-                    </div>
-                    <div id="ratePerMinuteText" style="font-weight: 800; font-size: 18px;">$0.00</div>
+                <div style="margin-top: 6px; font-size: 13px;">
+                  <div class="muted" style="font-weight: 700; margin-bottom: 2px;">People</div>
+                  <div
+                    id="peopleCountInline"
+                    contenteditable="true"
+                    spellcheck="false"
+                    style="display: inline-block; min-width: 24px; padding: 2px 4px; border-radius: 999px; border: 1px solid transparent; background: transparent; font-weight: 700; outline: none;"
+                  >
+                    6
                   </div>
                 </div>
               </div>
+            </div>
 
-              <p class="muted" style="margin: 14px 0 0; font-size: 12px;">
+            <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; align-items: baseline;">
+              <div>
+                <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                  Elapsed
+                </div>
+                <div
+                  id="elapsedText"
+                  style="font-size: clamp(20px, 4vw, 30px); font-weight: 800; letter-spacing: 0.02em; line-height: 1.1;"
+                >
+                  00:00:00
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;">
+                <div>
+                  <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                    / second
+                  </div>
+                  <div id="ratePerSecondText" style="font-weight: 800; font-size: 18px;">$0.00</div>
+                </div>
+                <div>
+                  <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                    / minute
+                  </div>
+                  <div id="ratePerMinuteText" style="font-weight: 800; font-size: 18px;">$0.00</div>
+                </div>
+              </div>
+
+              <p class="muted" style="margin: 14px 0 0; font-size: 12px; text-align: center;">
                 The meter starts when you press Start and pauses whenever you need a breather.
               </p>
             </div>
 
-            <!-- SETTINGS BELOW HERO -->
-            <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px;">
-              <div style="grid-column: span 12;">
-                <label for="meetingTitle" class="muted" style="font-weight: 800; font-size: 13px; display: block; margin-bottom: 8px;">
-                  Meeting title (optional)
-                </label>
-                <input
-                  id="meetingTitle"
-                  type="text"
-                  placeholder="e.g., Weekly Sync"
-                  style="width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 15px;"
-                />
+            <!-- CONTROLS BELOW HERO -->
+            <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px;">
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center;">
+                <button id="startBtn" class="btn btn--primary" type="button">Start</button>
+                <button id="pauseBtn" class="btn" type="button" disabled>Pause</button>
+                <button id="resetBtn" class="btn" type="button">Reset</button>
               </div>
-
-              <div style="grid-column: span 6;">
-                <label for="hourlyRate" class="muted" style="font-weight: 800; font-size: 13px; display: block; margin-bottom: 8px;">
-                  Avg $ per hour (per person)
-                </label>
-                <input
-                  id="hourlyRate"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  inputmode="decimal"
-                  value="100"
-                  style="width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 15px;"
-                />
-              </div>
-
-              <div style="grid-column: span 6;">
-                <label for="peopleCount" class="muted" style="font-weight: 800; font-size: 13px; display: block; margin-bottom: 8px;">
-                  People
-                </label>
-                <input
-                  id="peopleCount"
-                  type="number"
-                  min="1"
-                  step="1"
-                  inputmode="numeric"
-                  value="6"
-                  style="width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 15px;"
-                />
-              </div>
-
-              <div style="grid-column: span 12;">
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-start;">
-                  <button id="startBtn" class="btn btn--primary" type="button">Start</button>
-                  <button id="pauseBtn" class="btn" type="button" disabled>Pause</button>
-                  <button id="resetBtn" class="btn" type="button">Reset</button>
-                  <div id="statusMsg" class="muted" aria-live="polite" style="font-weight: 800; font-size: 13px;"></div>
-                </div>
-              </div>
+              <div id="statusMsg" class="muted" aria-live="polite" style="font-weight: 800; font-size: 13px; margin-top: 8px; text-align: center;"></div>
             </div>
           </div>
         </div>
@@ -132,8 +127,8 @@
     </main>
 
     <script>
-      const hourlyRateEl = document.getElementById("hourlyRate");
-      const peopleCountEl = document.getElementById("peopleCount");
+      const hourlyRateEl = document.getElementById("hourlyRateInline");
+      const peopleCountEl = document.getElementById("peopleCountInline");
       const startBtn = document.getElementById("startBtn");
       const pauseBtn = document.getElementById("pauseBtn");
       const resetBtn = document.getElementById("resetBtn");
@@ -150,13 +145,13 @@
       let intervalId = null;
 
       function clampNumber(n) {
-        const x = Number(n);
+        const x = Number(String(n).replace(/[^0-9.+-]/g, ""));
         return Number.isFinite(x) ? x : 0;
       }
 
       function getInputs() {
-        const hourlyRate = clampNumber(hourlyRateEl.value);
-        const people = Math.max(0, Math.floor(clampNumber(peopleCountEl.value)));
+        const hourlyRate = clampNumber(hourlyRateEl.textContent || hourlyRateEl.innerText || "");
+        const people = Math.max(0, Math.floor(clampNumber(peopleCountEl.textContent || peopleCountEl.innerText || "")));
         return { hourlyRate, people };
       }
 
@@ -247,13 +242,19 @@
       pauseBtn.addEventListener("click", pauseTimer);
       resetBtn.addEventListener("click", resetTimer);
 
-      // Recompute rates live as inputs change (even while paused).
+      // Recompute rates live as inline values change (even while paused).
       [hourlyRateEl, peopleCountEl].forEach((el) => {
         el.addEventListener("input", () => {
           if (!running) {
             statusMsgEl.textContent = elapsedMs > 0 ? "Paused (inputs updated)" : "Ready";
             updateUI();
           }
+        });
+        el.addEventListener("blur", () => {
+          // Normalize text on blur to keep things tidy.
+          const val = clampNumber(el.textContent || el.innerText || "");
+          el.textContent = String(val || (el === peopleCountEl ? 1 : 0));
+          if (!running) updateUI();
         });
       });
 
