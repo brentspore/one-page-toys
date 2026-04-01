@@ -4,8 +4,126 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Random Palette Explorer</title>
-    <meta name="description" content="Explore color palettes by clicking the vibe you like." />
+    <meta name="description" content="Pick vibes and palettes until one set of colors wins." />
     <link rel="stylesheet" href="../../assets/styles.css" />
+    <style>
+      .rpe-title {
+        text-align: center;
+        margin-bottom: 0.35rem;
+      }
+      .rpe-lead {
+        text-align: center;
+        max-width: 34rem;
+        margin: 0 auto 1.25rem;
+      }
+      .rpe-status {
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+      .rpe-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+      .rpe-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+      .rpe-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(37, 99, 235, 0.35);
+      }
+      .rpe-swatches {
+        display: flex;
+        height: 4.5rem;
+      }
+      .rpe-swatch {
+        flex: 1;
+        min-width: 0;
+      }
+      .rpe-card-body {
+        padding: 0.85rem 1rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        flex: 1;
+      }
+      .rpe-card-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .rpe-vibes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+      }
+      .rpe-vibe {
+        font-size: 0.8rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .rpe-vibe:hover {
+        border-color: rgba(37, 99, 235, 0.45);
+      }
+      .rpe-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+      .rpe-winner {
+        text-align: center;
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+      .rpe-winner-swatches {
+        display: flex;
+        height: 5rem;
+        max-width: 28rem;
+        margin: 0 auto 1rem;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .rpe-hex-list {
+        font-family: ui-monospace, monospace;
+        font-size: 0.9rem;
+        text-align: left;
+        max-width: 14rem;
+        margin: 0 auto 1rem;
+        line-height: 1.6;
+      }
+      .rpe-error {
+        text-align: center;
+        color: #b91c1c;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      .rpe-hidden {
+        display: none !important;
+      }
+    </style>
   </head>
   <body>
     <header class="topbar">
@@ -16,20 +134,36 @@
 
     <main class="container">
       <section class="tool">
-        <h1>Random Palette Explorer</h1>
-        <p class="lead">Choose palettes by clicking the vibe you like until one set of colors remains.</p>
-        <div class="panel">
-          <p class="muted" style="margin: 0 0 12px;">
-            MVP placeholder: next step is hooking up the palette “vibe narrowing” flow with cached palette data.
-          </p>
-          <p style="margin: 0;">
-            When you’re ready, we’ll add:
-          </p>
-          <div class="tags" style="margin-top: 10px;">
-            <span class="tag">vibe buttons</span>
-            <span class="tag">lock palette</span>
-            <span class="tag">copy hex codes</span>
+        <h1 class="rpe-title">Random Palette Explorer</h1>
+        <p class="lead rpe-lead muted">
+          Cached palette vibes (ColourLovers-style). Tap a palette you like, or nudge the pool with a vibe—until one set wins.
+        </p>
+
+        <div id="rpeError" class="rpe-error rpe-hidden" role="alert"></div>
+        <div id="rpeStatus" class="rpe-status muted" aria-live="polite"></div>
+
+        <div id="rpePlay" class="panel">
+          <div id="rpeCardGrid" class="rpe-grid"></div>
+
+          <div class="muted" style="text-align: center; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem;">
+            Nudge by vibe
           </div>
+          <div class="rpe-vibes" id="rpeVibes"></div>
+
+          <div class="rpe-actions">
+            <button type="button" class="btn" id="rpeShuffle">Shuffle three</button>
+            <button type="button" class="btn" id="rpeStartOver">Start over</button>
+          </div>
+        </div>
+
+        <div id="rpeWinner" class="rpe-winner rpe-hidden">
+          <p class="muted" style="margin: 0 0 0.5rem; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;">Winner</p>
+          <h2 id="rpeWinnerTitle" style="margin: 0 0 1rem; font-size: 1.35rem;"></h2>
+          <div id="rpeWinnerSwatches" class="rpe-winner-swatches"></div>
+          <pre id="rpeWinnerHex" class="rpe-hex-list"></pre>
+          <button type="button" class="btn btn--primary" id="rpeCopy">Copy hex list</button>
+          <button type="button" class="btn" id="rpePlayAgain" style="margin-left: 0.5rem;">Play again</button>
+          <p id="rpeCopyNote" class="muted" style="margin: 0.75rem 0 0; font-size: 0.85rem;"></p>
         </div>
       </section>
 
@@ -39,5 +173,332 @@
         </p>
       </footer>
     </main>
+
+    <script>
+      (function () {
+        const STORAGE_URL = "palettes.json";
+
+        const vibeLabels = [
+          { id: "softer", label: "Softer" },
+          { id: "bolder", label: "Bolder" },
+          { id: "warmer", label: "Warmer" },
+          { id: "cooler", label: "Cooler" },
+          { id: "muted", label: "More muted" },
+          { id: "punchy", label: "More punchy" },
+        ];
+
+        /** @type {{ title: string, colors: string[] }[]} */
+        let allPalettes = [];
+        /** @type {{ title: string, colors: string[] }[]} */
+        let pool = [];
+        /** @type {{ title: string, colors: string[] }[]} */
+        let showing = [];
+
+        const elError = document.getElementById("rpeError");
+        const elStatus = document.getElementById("rpeStatus");
+        const elPlay = document.getElementById("rpePlay");
+        const elCardGrid = document.getElementById("rpeCardGrid");
+        const elVibes = document.getElementById("rpeVibes");
+        const elWinner = document.getElementById("rpeWinner");
+        const elWinnerTitle = document.getElementById("rpeWinnerTitle");
+        const elWinnerSwatches = document.getElementById("rpeWinnerSwatches");
+        const elWinnerHex = document.getElementById("rpeWinnerHex");
+        const elCopyNote = document.getElementById("rpeCopyNote");
+
+        function hexToRgb(hex) {
+          const h = hex.replace("#", "").trim();
+          const v = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+          const n = parseInt(v, 16);
+          return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+        }
+
+        function rgbToHsl(r, g, b) {
+          r /= 255;
+          g /= 255;
+          b /= 255;
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          let h = 0;
+          let s = 0;
+          const l = (max + min) / 2;
+          const d = max - min;
+          if (d !== 0) {
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r:
+                h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+                break;
+              case g:
+                h = ((b - r) / d + 2) / 6;
+                break;
+              default:
+                h = ((r - g) / d + 4) / 6;
+                break;
+            }
+          }
+          return [h * 360, s, l];
+        }
+
+        function paletteAvgHsl(p) {
+          let h = 0;
+          let s = 0;
+          let l = 0;
+          const n = p.colors.length;
+          for (const c of p.colors) {
+            const [r, g, b] = hexToRgb(c);
+            const [hh, ss, ll] = rgbToHsl(r, g, b);
+            h += hh;
+            s += ss;
+            l += ll;
+          }
+          return { h: h / n, s: s / n, l: l / n };
+        }
+
+        function paletteAvgRgb(p) {
+          let r = 0;
+          let g = 0;
+          let b = 0;
+          const n = p.colors.length;
+          for (const c of p.colors) {
+            const [rr, gg, bb] = hexToRgb(c);
+            r += rr;
+            g += gg;
+            b += bb;
+          }
+          return { r: r / n, g: g / n, b: b / n };
+        }
+
+        function rgbDistance(a, b) {
+          const dr = a.r - b.r;
+          const dg = a.g - b.g;
+          const db = a.b - b.b;
+          return Math.sqrt(dr * dr + dg * dg + db * db);
+        }
+
+        function shuffle(arr) {
+          const a = arr.slice();
+          for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        }
+
+        function pickThree() {
+          if (pool.length === 0) {
+            showing = [];
+            return showing;
+          }
+          if (pool.length <= 3) {
+            showing = shuffle(pool);
+            return showing;
+          }
+          showing = shuffle(pool).slice(0, 3);
+          return showing;
+        }
+
+        function renderCards() {
+          elCardGrid.innerHTML = "";
+          const row = pickThree();
+
+          for (let i = 0; i < row.length; i++) {
+            const p = row[i];
+            const card = document.createElement("div");
+            card.className = "rpe-card";
+
+            const sw = document.createElement("div");
+            sw.className = "rpe-swatches";
+            for (const col of p.colors) {
+              const d = document.createElement("div");
+              d.className = "rpe-swatch";
+              d.style.background = col;
+              sw.appendChild(d);
+            }
+
+            const body = document.createElement("div");
+            body.className = "rpe-card-body";
+            const h3 = document.createElement("h3");
+            h3.className = "rpe-card-title";
+            h3.textContent = p.title;
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn btn--primary";
+            btn.textContent = "Prefer this palette";
+            btn.addEventListener("click", function () {
+              preferPalette(p);
+            });
+
+            body.appendChild(h3);
+            body.appendChild(btn);
+            card.appendChild(sw);
+            card.appendChild(body);
+            elCardGrid.appendChild(card);
+          }
+        }
+
+        function median(nums) {
+          const s = nums.slice().sort((a, b) => a - b);
+          const m = Math.floor(s.length / 2);
+          return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+        }
+
+        function applyVibe(id) {
+          if (pool.length <= 1) return;
+          const metrics = pool.map((p) => ({ p, m: paletteAvgHsl(p) }));
+          const sats = metrics.map((x) => x.m.s);
+          const lights = metrics.map((x) => x.m.l);
+          const medS = median(sats);
+          const medL = median(lights);
+
+          let next = pool.slice();
+
+          if (id === "softer") {
+            next = pool.filter((p) => paletteAvgHsl(p).s < medS * 1.02);
+          } else if (id === "bolder") {
+            next = pool.filter((p) => paletteAvgHsl(p).s > medS * 0.98);
+          } else if (id === "warmer") {
+            next = pool.filter((p) => {
+              const h = paletteAvgHsl(p).h;
+              return h <= 95 || h >= 310;
+            });
+          } else if (id === "cooler") {
+            next = pool.filter((p) => {
+              const h = paletteAvgHsl(p).h;
+              return h >= 150 && h <= 270;
+            });
+          } else if (id === "muted") {
+            next = pool.filter((p) => {
+              const m = paletteAvgHsl(p);
+              return m.s < 0.38 && m.l > 0.25 && m.l < 0.85;
+            });
+          } else if (id === "punchy") {
+            next = pool.filter((p) => {
+              const m = paletteAvgHsl(p);
+              return m.s > 0.35;
+            });
+          }
+
+          if (next.length === 0) {
+            elError.textContent = "That vibe wiped the pool—try Start over or a different nudge.";
+            elError.classList.remove("rpe-hidden");
+            return;
+          }
+          elError.classList.add("rpe-hidden");
+          pool = next;
+          finishOrRender();
+        }
+
+        function preferPalette(chosen) {
+          if (pool.length <= 1) return;
+          const target = paletteAvgRgb(chosen);
+          const scored = pool.map((p) => ({
+            p,
+            d: rgbDistance(target, paletteAvgRgb(p)),
+          }));
+          scored.sort((a, b) => a.d - b.d);
+          const keep = Math.max(3, Math.ceil(pool.length * 0.35));
+          pool = scored.slice(0, keep).map((x) => x.p);
+          elError.classList.add("rpe-hidden");
+          finishOrRender();
+        }
+
+        function finishOrRender() {
+          elStatus.textContent = pool.length + " palette" + (pool.length === 1 ? "" : "s") + " left in the pool";
+
+          if (pool.length === 1) {
+            showWinner(pool[0]);
+            return;
+          }
+          renderCards();
+        }
+
+        function showWinner(p) {
+          elPlay.classList.add("rpe-hidden");
+          elWinner.classList.remove("rpe-hidden");
+          elWinnerTitle.textContent = p.title;
+          elWinnerSwatches.innerHTML = "";
+          for (const c of p.colors) {
+            const d = document.createElement("div");
+            d.style.flex = "1";
+            d.style.background = c;
+            elWinnerSwatches.appendChild(d);
+          }
+          elWinnerHex.textContent = p.colors.join("\n");
+          elCopyNote.textContent = "";
+          elStatus.textContent = "One palette wins.";
+        }
+
+        function resetAll() {
+          elWinner.classList.add("rpe-hidden");
+          elPlay.classList.remove("rpe-hidden");
+          elError.classList.add("rpe-hidden");
+          pool = shuffle(allPalettes);
+          elStatus.textContent = pool.length + " palettes in the pool";
+          renderCards();
+        }
+
+        function initVibes() {
+          elVibes.innerHTML = "";
+          for (const v of vibeLabels) {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "rpe-vibe";
+            b.textContent = v.label;
+            b.addEventListener("click", function () {
+              applyVibe(v.id);
+            });
+            elVibes.appendChild(b);
+          }
+        }
+
+        document.getElementById("rpeShuffle").addEventListener("click", function () {
+          if (pool.length <= 1) return;
+          elError.classList.add("rpe-hidden");
+          renderCards();
+        });
+
+        document.getElementById("rpeStartOver").addEventListener("click", resetAll);
+
+        document.getElementById("rpePlayAgain").addEventListener("click", resetAll);
+
+        document.getElementById("rpeCopy").addEventListener("click", function () {
+          const text = elWinnerHex.textContent || "";
+          if (!text) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              function () {
+                elCopyNote.textContent = "Copied to clipboard.";
+              },
+              function () {
+                elCopyNote.textContent = "Could not copy—select the hex list manually.";
+              }
+            );
+          } else {
+            elCopyNote.textContent = "Clipboard API not available.";
+          }
+        });
+
+        fetch(STORAGE_URL, { cache: "no-store" })
+          .then(function (r) {
+            if (!r.ok) throw new Error("Could not load palettes.json");
+            return r.json();
+          })
+          .then(function (data) {
+            if (!Array.isArray(data) || !data.length) throw new Error("Invalid palettes");
+            allPalettes = data.filter(function (p) {
+              return p && Array.isArray(p.colors) && p.colors.length && p.title;
+            });
+            if (!allPalettes.length) throw new Error("No palettes");
+            initVibes();
+            resetAll();
+          })
+          .catch(function (e) {
+            elError.textContent = (e && e.message) || "Failed to load palettes.";
+            elError.classList.remove("rpe-hidden");
+            elPlay.classList.add("rpe-hidden");
+          });
+      })();
+    </script>
   </body>
 </html>
