@@ -34,7 +34,7 @@
           <div class="rpe-vibes" id="rpeVibes"></div>
 
           <div class="rpe-actions">
-            <button type="button" class="btn" id="rpeShuffle">Shuffle three</button>
+            <button type="button" class="btn" id="rpeShuffle">Shuffle four</button>
             <button type="button" class="btn" id="rpeStartOver">Start over</button>
           </div>
         </div>
@@ -86,6 +86,8 @@
       (function () {
         const STORAGE_URL = "palettes.json";
         const DETAIL_STORAGE_KEY = "one-page-toys:rpe-selected-palette";
+        /** How many palette cards are shown at once for each shuffle / vibe step. */
+        const PALETTES_PER_ROUND = 4;
 
         const vibeLabels = [
           { id: "softer", label: "Softer" },
@@ -188,22 +190,22 @@
           return a;
         }
 
-        function pickThree() {
+        function pickRound() {
           if (pool.length === 0) {
             showing = [];
             return showing;
           }
-          if (pool.length <= 3) {
+          if (pool.length <= PALETTES_PER_ROUND) {
             showing = shuffle(pool);
             return showing;
           }
-          showing = shuffle(pool).slice(0, 3);
+          showing = shuffle(pool).slice(0, PALETTES_PER_ROUND);
           return showing;
         }
 
         function renderCards() {
           elCardGrid.innerHTML = "";
-          const row = pickThree();
+          const row = pickRound();
 
           for (let i = 0; i < row.length; i++) {
             const p = row[i];
