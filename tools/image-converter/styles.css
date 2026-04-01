@@ -2,3 +2,178 @@
  * Quick Image Converter — tool-specific styles.
  * Loads after ../../assets/styles.css so rules here override or extend globals.
  */
+
+.icv-title {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.icv-lead {
+  text-align: center;
+  max-width: 34rem;
+  margin: 0 auto 1.25rem;
+}
+
+.icv-hidden {
+  display: none !important;
+}
+
+.icv-error {
+  text-align: center;
+  color: #b91c1c;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  margin-bottom: 1rem;
+}
+
+.icv-panel {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.icv-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.icv-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  min-height: 9rem;
+  padding: 1.5rem 1.25rem;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.icv-dropzone:hover {
+  border-color: rgba(37, 99, 235, 0.45);
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.icv-dropzone--active {
+  border-color: var(--accent);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.icv-dropzone-main {
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.icv-dropzone-sub {
+  font-size: 0.9rem;
+}
+
+.icv-preview-wrap {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.icv-preview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.icv-file-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.icv-file-meta {
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+.icv-preview-row {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: repeating-conic-gradient(#f1f5f9 0% 25%, #e2e8f0 0% 50%) 50% / 14px 14px;
+  margin-bottom: 1rem;
+}
+
+.icv-thumb {
+  display: block;
+  width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  vertical-align: middle;
+  background: transparent;
+}
+
+.icv-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.icv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 8rem;
+}
+
+.icv-field-grow {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.icv-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.icv-select {
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.icv-range {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.icv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.icv-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+}
