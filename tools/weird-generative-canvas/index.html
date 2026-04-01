@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Weird Generative Canvas</title>
-    <meta name="description" content="Random algorithm and animated something with a random color scheme." />
+    <meta name="description" content="Random generative art: flow fields, pulses, and drifting curves in your browser." />
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -15,19 +15,31 @@
       </div>
     </header>
 
-    <main class="container">
+    <main class="container wgc-main">
       <section class="tool">
-        <h1>Weird Generative Canvas</h1>
-        <p class="lead">A random algorithm with a random color scheme that animates on your screen.</p>
-        <div class="panel">
-          <p class="muted" style="margin: 0 0 12px;">
-            MVP placeholder: next step is creating the canvas animation + a “Shuffle/New” button.
-          </p>
-          <div class="tags" style="margin-top: 10px;">
-            <span class="tag">canvas</span>
-            <span class="tag">shuffle</span>
-            <span class="tag">animated</span>
+        <h1 class="wgc-title">Weird Generative Canvas</h1>
+        <p class="lead wgc-lead muted">
+          A different algorithm and palette every shuffle—pause anytime or crank the speed.
+        </p>
+
+        <div class="wgc-toolbar panel">
+          <div class="wgc-toolbar-row">
+            <button type="button" class="btn btn--primary" id="wgcNew">New pattern</button>
+            <button type="button" class="btn" id="wgcPause">Pause</button>
+            <div class="wgc-field">
+              <label for="wgcSpeed" class="wgc-label">Speed</label>
+              <select id="wgcSpeed" class="wgc-select">
+                <option value="0.5">Chill</option>
+                <option value="1" selected>Normal</option>
+                <option value="2">Hyper</option>
+              </select>
+            </div>
           </div>
+          <p id="wgcModeLine" class="wgc-mode muted" aria-live="polite"></p>
+        </div>
+
+        <div class="wgc-canvas-wrap panel">
+          <canvas id="wgcCanvas" class="wgc-canvas" width="800" height="500"></canvas>
         </div>
       </section>
 
@@ -37,5 +49,299 @@
         </p>
       </footer>
     </main>
+
+    <script>
+      (function () {
+        var canvas = document.getElementById("wgcCanvas");
+        var ctx = canvas.getContext("2d");
+        var elNew = document.getElementById("wgcNew");
+        var elPause = document.getElementById("wgcPause");
+        var elSpeed = document.getElementById("wgcSpeed");
+        var elMode = document.getElementById("wgcModeLine");
+
+        var MODE_NAMES = ["Flow field", "Pulse lattice", "Drift weave"];
+
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var running = true;
+        var rafId = 0;
+        var t = 0;
+        var seed = Math.random() * 10000;
+        var mode = 0;
+        /** @type {string[]} */
+        var palette = [];
+        var fadeRgb = "255,255,255";
+
+        var agents = [];
+        var weaveCurves = [];
+        var pulseStep = 48;
+
+        function rand(min, max) {
+          return min + Math.random() * (max - min);
+        }
+
+        function clamp(v, lo, hi) {
+          return Math.max(lo, Math.min(hi, v));
+        }
+
+        function hashNoise(x, y, s) {
+          return Math.sin(x * 12.9898 + y * 78.233 + s) * 43758.5453;
+        }
+
+        function smoothNoise(x, y, s) {
+          var n = hashNoise(x, y, s);
+          return n - Math.floor(n);
+        }
+
+        function makePalette() {
+          var base = rand(0, 360);
+          var count = 5 + Math.floor(Math.random() * 4);
+          var out = [];
+          for (var i = 0; i < count; i++) {
+            var h = (base + i * (360 / count) + rand(-28, 28)) % 360;
+            if (h < 0) h += 360;
+            var sat = 50 + Math.random() * 45;
+            var light = 35 + Math.random() * 40;
+            out.push("hsl(" + h.toFixed(1) + "," + sat.toFixed(0) + "%," + light.toFixed(0) + "%)");
+          }
+          return out;
+        }
+
+        function resize() {
+          var wrap = canvas.parentElement;
+          if (!wrap) return;
+          var rect = wrap.getBoundingClientRect();
+          var cssW = Math.max(320, Math.floor(rect.width - 4));
+          var cssH = Math.max(320, Math.min(640, Math.floor(cssW * 0.58)));
+          canvas.style.width = cssW + "px";
+          canvas.style.height = cssH + "px";
+          canvas.width = Math.floor(cssW * dpr);
+          canvas.height = Math.floor(cssH * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function cssSize() {
+          return { w: canvas.width / dpr, h: canvas.height / dpr };
+        }
+
+        function initAgents() {
+          var s = cssSize();
+          var n = mode === 0 ? 2200 + Math.floor(Math.random() * 1800) : 0;
+          agents = [];
+          for (var i = 0; i < n; i++) {
+            agents.push({
+              x: Math.random() * s.w,
+              y: Math.random() * s.h,
+            });
+          }
+        }
+
+        function initWeave() {
+          var s = cssSize();
+          var count = 18 + Math.floor(Math.random() * 14);
+          weaveCurves = [];
+          for (var i = 0; i < count; i++) {
+            var cx = Math.random() * s.w;
+            var cy = Math.random() * s.h;
+            weaveCurves.push({
+              ax: cx + rand(-80, 80),
+              ay: cy + rand(-80, 80),
+              bx: cx + rand(-120, 120),
+              by: cy + rand(-120, 120),
+              cx: cx + rand(-100, 100),
+              cy: cy + rand(-100, 100),
+              dx: cx + rand(-80, 80),
+              dy: cy + rand(-80, 80),
+              vx: rand(-0.4, 0.4),
+              vy: rand(-0.4, 0.4),
+              w: 0.6 + Math.random() * 1.8,
+              col: palette[i % palette.length],
+            });
+          }
+        }
+
+        function clearCanvas(soft) {
+          var s = cssSize();
+          if (soft) {
+            ctx.fillStyle = "rgba(" + fadeRgb + ",0.12)";
+            ctx.fillRect(0, 0, s.w, s.h);
+          } else {
+            ctx.fillStyle = "rgb(" + fadeRgb + ")";
+            ctx.fillRect(0, 0, s.w, s.h);
+          }
+        }
+
+        function randomize() {
+          seed = Math.random() * 100000;
+          mode = Math.floor(Math.random() * 3);
+          palette = makePalette();
+          t = 0;
+          pulseStep = 36 + Math.floor(Math.random() * 36);
+
+          var dark = Math.random() > 0.42;
+          fadeRgb = dark ? "15,23,42" : "255,255,255";
+          document.querySelector(".wgc-canvas-wrap").classList.toggle("wgc-canvas-wrap--dark", dark);
+
+          initAgents();
+          if (mode === 2) initWeave();
+
+          elMode.textContent =
+            MODE_NAMES[mode] +
+            " · " +
+            palette.length +
+            " colors · tap New pattern anytime";
+
+          clearCanvas(false);
+        }
+
+        function drawFlow(spd) {
+          var s = cssSize();
+          ctx.fillStyle = "rgba(" + fadeRgb + ",0.085)";
+          ctx.fillRect(0, 0, s.w, s.h);
+
+          var f1 = 0.0025 + (seed % 1000) * 1e-6;
+          var f2 = 0.0035 + (seed % 700) * 1e-6;
+          var tt = t * 0.00035 * spd;
+          var step = 1.2 * spd;
+
+          for (var i = 0; i < agents.length; i++) {
+            var a = agents[i];
+            var ang =
+              Math.sin(a.x * f1 + tt + seed * 0.01) * Math.PI * 1.25 +
+              Math.cos(a.y * f2 - tt * 0.7 + seed * 0.02) * Math.PI * 1.25;
+            var ox = a.x;
+            var oy = a.y;
+            a.x += Math.cos(ang) * step;
+            a.y += Math.sin(ang) * step;
+            ctx.strokeStyle = palette[i % palette.length];
+            ctx.globalAlpha = 0.22 + smoothNoise(a.x * 0.02, a.y * 0.02, seed) * 0.2;
+            ctx.lineWidth = 0.65;
+            ctx.beginPath();
+            ctx.moveTo(ox, oy);
+            ctx.lineTo(a.x, a.y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+
+            if (a.x < -5 || a.x > s.w + 5 || a.y < -5 || a.y > s.h + 5) {
+              a.x = Math.random() * s.w;
+              a.y = Math.random() * s.h;
+            }
+          }
+        }
+
+        function drawPulse(spd) {
+          var s = cssSize();
+          ctx.fillStyle = "rgba(" + fadeRgb + ",0.25)";
+          ctx.fillRect(0, 0, s.w, s.h);
+
+          var cols = Math.ceil(s.w / pulseStep) + 2;
+          var rows = Math.ceil(s.h / pulseStep) + 2;
+          var tt = t * 0.002 * spd;
+
+          for (var j = 0; j < rows; j++) {
+            for (var i = 0; i < cols; i++) {
+              var px = i * pulseStep + (j % 2) * (pulseStep * 0.5);
+              var py = j * pulseStep * 0.86;
+              var jitter = smoothNoise(i * 0.3, j * 0.3, seed) * 14 - 7;
+              var dx0 = px - s.w * 0.5;
+              var dy0 = py - s.h * 0.5;
+              var dist = Math.sqrt(dx0 * dx0 + dy0 * dy0) * 0.008;
+              var r = 6 + Math.sin(tt + dist * 3 + i * 0.4 + j * 0.35) * (10 + (seed % 8));
+              ctx.beginPath();
+              ctx.arc(px + jitter, py + jitter, Math.max(2, r), 0, Math.PI * 2);
+              ctx.fillStyle = palette[(i + j * 3) % palette.length];
+              ctx.globalAlpha = 0.35 + Math.sin(tt * 2 + i - j) * 0.2;
+              ctx.fill();
+              ctx.globalAlpha = 1;
+            }
+          }
+        }
+
+        function drawWeave(spd) {
+          var s = cssSize();
+          ctx.fillStyle = "rgba(" + fadeRgb + ",0.18)";
+          ctx.fillRect(0, 0, s.w, s.h);
+
+          var tt = t * 0.0008 * spd;
+          for (var i = 0; i < weaveCurves.length; i++) {
+            var c = weaveCurves[i];
+            c.ax += c.vx * spd + Math.sin(tt + i) * 0.15;
+            c.ay += c.vy * spd + Math.cos(tt + i * 0.7) * 0.15;
+            c.bx += Math.cos(tt * 1.1 + seed + i) * 0.2 * spd;
+            c.by += Math.sin(tt * 1.1 + i) * 0.2 * spd;
+            c.cx += Math.sin(tt * 0.9 + i * 2) * 0.12 * spd;
+            c.cy += Math.cos(tt * 0.9 + i) * 0.12 * spd;
+            c.dx += c.vx * 0.5 * spd;
+            c.dy += c.vy * 0.5 * spd;
+
+            c.ax = clamp(c.ax, 0, s.w);
+            c.ay = clamp(c.ay, 0, s.h);
+            c.bx = clamp(c.bx, 0, s.w);
+            c.by = clamp(c.by, 0, s.h);
+            c.cx = clamp(c.cx, 0, s.w);
+            c.cy = clamp(c.cy, 0, s.h);
+            c.dx = clamp(c.dx, 0, s.w);
+            c.dy = clamp(c.dy, 0, s.h);
+
+            ctx.strokeStyle = c.col;
+            ctx.globalAlpha = 0.45;
+            ctx.lineWidth = c.w;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(c.ax, c.ay);
+            ctx.quadraticCurveTo(c.bx, c.by, c.cx, c.cy);
+            ctx.lineTo(c.dx, c.dy);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+
+        function tick() {
+          if (!running) return;
+          var spd = parseFloat(elSpeed.value);
+          if (!isFinite(spd) || spd <= 0) spd = 1;
+
+          if (mode === 0) drawFlow(spd);
+          else if (mode === 1) drawPulse(spd);
+          else drawWeave(spd);
+
+          t += 16.67 * spd;
+          rafId = requestAnimationFrame(tick);
+        }
+
+        function startLoop() {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(tick);
+        }
+
+        function onPauseToggle() {
+          running = !running;
+          elPause.textContent = running ? "Pause" : "Resume";
+          if (running) startLoop();
+          else if (rafId) cancelAnimationFrame(rafId);
+        }
+
+        elNew.addEventListener("click", function () {
+          randomize();
+          if (!running) {
+            running = true;
+            elPause.textContent = "Pause";
+            startLoop();
+          }
+        });
+
+        elPause.addEventListener("click", onPauseToggle);
+
+        window.addEventListener("resize", function () {
+          resize();
+          initAgents();
+          if (mode === 2) initWeave();
+          clearCanvas(false);
+        });
+
+        resize();
+        randomize();
+        startLoop();
+      })();
+    </script>
   </body>
 </html>
