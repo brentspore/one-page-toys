@@ -23,6 +23,9 @@ body{
   background: var(--bg);
   color: var(--text);
   line-height: 1.45;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 a{
@@ -62,6 +65,7 @@ code{
   max-width: 1100px;
   margin: 0 auto;
   padding: 26px 20px 52px;
+  flex: 1 0 auto;
 }
 
 .hero{
@@ -226,10 +230,91 @@ code{
   border-radius: var(--radius-sm);
 }
 
-.footer{
-  margin-top: 34px;
-  padding-top: 18px;
+/* Global site footer (gallery + tool pages) — editorial / directory style */
+.site-footer{
+  flex-shrink: 0;
+  margin-top: auto;
   border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, var(--surface) 48%);
+  padding: 36px 20px 40px;
+}
+
+.site-footer__inner{
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.site-footer__top{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.site-footer__intro{
+  max-width: 42ch;
+}
+
+.site-footer__name{
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.site-footer__tagline{
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.site-footer__nav{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.site-footer__nav a{
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: rgba(100, 116, 139, 0.45);
+  text-underline-offset: 3px;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+}
+
+.site-footer__nav a:hover{
+  color: var(--accent);
+  text-decoration-color: rgba(37, 99, 235, 0.45);
+}
+
+.site-footer__bottom{
+  padding-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px 24px;
+}
+
+.site-footer__hint{
+  margin: 0;
+  font-size: 13px;
+  max-width: 52ch;
+  line-height: 1.5;
+}
+
+.site-footer__copyright{
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.02em;
 }
 
 .tool h1{
