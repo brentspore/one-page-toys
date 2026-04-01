@@ -1,0 +1,9 @@
+/*
+ * Meeting Cost Timer — tool-specific styles.
+ * Loads after ../../assets/styles.css so rules here override or extend globals.
+ * Example: tweak tokens just for this page:
+ *
+ * :root {
+ *   --accent: #0f766e;
+ * }
+ */
