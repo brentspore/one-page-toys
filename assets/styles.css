@@ -311,10 +311,56 @@ code{
   line-height: 1.5;
 }
 
+.site-footer__bottom-right{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+a.site-footer__madeby{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  outline-offset: 3px;
+  transition: opacity 120ms ease;
+}
+
+a.site-footer__madeby:hover{
+  opacity: 0.88;
+}
+
+a.site-footer__madeby:focus-visible{
+  outline: 2px solid var(--accent);
+}
+
+.site-footer__madeby-label{
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.site-footer__synergy-logo{
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
 .site-footer__copyright{
   margin: 0;
   font-size: 12px;
   letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px){
+  .site-footer__bottom-right{
+    align-items: flex-start;
+  }
 }
 
 .tool h1{
