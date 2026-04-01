@@ -19,7 +19,7 @@
       <section class="tool">
         <h1 class="rpe-title">Random Palette Explorer</h1>
         <p class="lead rpe-lead muted">
-          Cached palette vibes (ColourLovers-style). Tap a palette you like, or nudge the pool with a vibe—until one set wins.
+          Cached palette vibes (ColourLovers-style). <strong>View palette details</strong> opens the full breakdown. Use vibe tags to narrow the pool—or keep exploring until one palette is left.
         </p>
 
         <div id="rpeError" class="rpe-error rpe-hidden" role="alert"></div>
@@ -193,9 +193,9 @@
             const btn = document.createElement("button");
             btn.type = "button";
             btn.className = "btn btn--primary";
-            btn.textContent = "Prefer this palette";
+            btn.textContent = "View palette details";
             btn.addEventListener("click", function () {
-              preferPalette(p);
+              openPaletteDetail(p);
             });
 
             body.appendChild(h3);
@@ -258,31 +258,17 @@
           finishOrRender();
         }
 
-        function preferPalette(chosen) {
-          if (pool.length <= 1) return;
-          const target = paletteAvgRgb(chosen);
-          const scored = pool.map((p) => ({
-            p,
-            d: rgbDistance(target, paletteAvgRgb(p)),
-          }));
-          scored.sort((a, b) => a.d - b.d);
-          const keep = Math.max(3, Math.ceil(pool.length * 0.35));
-          pool = scored.slice(0, keep).map((x) => x.p);
-          elError.classList.add("rpe-hidden");
-          finishOrRender();
-        }
-
         function finishOrRender() {
           elStatus.textContent = pool.length + " palette" + (pool.length === 1 ? "" : "s") + " left in the pool";
 
           if (pool.length === 1) {
-            goToPaletteDetail(pool[0]);
+            openPaletteDetail(pool[0]);
             return;
           }
           renderCards();
         }
 
-        function goToPaletteDetail(p) {
+        function openPaletteDetail(p) {
           try {
             sessionStorage.setItem(
               DETAIL_STORAGE_KEY,
@@ -297,7 +283,7 @@
             elError.classList.remove("rpe-hidden");
             return;
           }
-          window.location.href = "detail.html";
+          window.location.assign("detail.html");
         }
 
         function resetAll() {
