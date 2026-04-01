@@ -321,7 +321,7 @@ code{
 a.site-footer__madeby{
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
   text-decoration: none;
   color: inherit;
   border-radius: 8px;
@@ -338,15 +338,15 @@ a.site-footer__madeby:focus-visible{
 }
 
 .site-footer__madeby-label{
-  font-size: 11px;
+  font-size: 7px;
   font-weight: 750;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
 .site-footer__synergy-logo{
-  height: 26px;
+  height: 13px;
   width: auto;
   display: block;
 }
