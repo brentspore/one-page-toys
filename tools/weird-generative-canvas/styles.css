@@ -3,7 +3,7 @@
  * Loads after ../../assets/styles.css so rules here override or extend globals.
  */
 
-.wgc-main .container {
+main.wgc-main.container {
   max-width: 960px;
 }
 
