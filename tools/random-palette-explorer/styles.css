@@ -99,34 +99,6 @@
   margin-bottom: 1rem;
 }
 
-.rpe-winner {
-  text-align: center;
-  padding: 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-}
-
-.rpe-winner-swatches {
-  display: flex;
-  height: 5rem;
-  max-width: 28rem;
-  margin: 0 auto 1rem;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-
-.rpe-hex-list {
-  font-family: ui-monospace, monospace;
-  font-size: 0.9rem;
-  text-align: left;
-  max-width: 14rem;
-  margin: 0 auto 1rem;
-  line-height: 1.6;
-}
-
 .rpe-error {
   text-align: center;
   color: #b91c1c;
@@ -136,4 +108,125 @@
 
 .rpe-hidden {
   display: none !important;
+}
+
+/* ----- Palette detail page (detail.html) ----- */
+
+.rpd-back {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+}
+
+.rpd-back a {
+  font-weight: 700;
+}
+
+.rpd-empty {
+  text-align: center;
+  padding: 2rem 1.25rem;
+}
+
+.rpd-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+  letter-spacing: -0.03em;
+}
+
+.rpd-meta {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+}
+
+.rpd-hero-swatches {
+  display: flex;
+  height: min(6rem, 18vw);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.rpd-hero-cell {
+  flex: 1;
+  min-width: 0;
+}
+
+.rpd-table-panel {
+  margin-bottom: 1rem;
+}
+
+.rpd-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.rpd-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rpd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.rpd-table th,
+.rpd-table td {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.rpd-table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.rpd-td-swatch {
+  width: 3rem;
+}
+
+.rpd-mini-swatch {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.rpd-table code {
+  font-size: 0.84rem;
+  word-break: break-all;
+}
+
+.rpd-code-hsl {
+  white-space: nowrap;
+}
+
+.rpd-export-panel {
+  margin-top: 0.25rem;
+}
+
+.rpd-export-lead {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+}
+
+.rpd-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rpd-export-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
 }

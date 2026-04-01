@@ -38,16 +38,6 @@
             <button type="button" class="btn" id="rpeStartOver">Start over</button>
           </div>
         </div>
-
-        <div id="rpeWinner" class="rpe-winner rpe-hidden">
-          <p class="muted" style="margin: 0 0 0.5rem; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;">Winner</p>
-          <h2 id="rpeWinnerTitle" style="margin: 0 0 1rem; font-size: 1.35rem;"></h2>
-          <div id="rpeWinnerSwatches" class="rpe-winner-swatches"></div>
-          <pre id="rpeWinnerHex" class="rpe-hex-list"></pre>
-          <button type="button" class="btn btn--primary" id="rpeCopy">Copy hex list</button>
-          <button type="button" class="btn" id="rpePlayAgain" style="margin-left: 0.5rem;">Play again</button>
-          <p id="rpeCopyNote" class="muted" style="margin: 0.75rem 0 0; font-size: 0.85rem;"></p>
-        </div>
       </section>
 
       <footer class="footer">
@@ -60,6 +50,7 @@
     <script>
       (function () {
         const STORAGE_URL = "palettes.json";
+        const DETAIL_STORAGE_KEY = "one-page-toys:rpe-selected-palette";
 
         const vibeLabels = [
           { id: "softer", label: "Softer" },
@@ -82,11 +73,6 @@
         const elPlay = document.getElementById("rpePlay");
         const elCardGrid = document.getElementById("rpeCardGrid");
         const elVibes = document.getElementById("rpeVibes");
-        const elWinner = document.getElementById("rpeWinner");
-        const elWinnerTitle = document.getElementById("rpeWinnerTitle");
-        const elWinnerSwatches = document.getElementById("rpeWinnerSwatches");
-        const elWinnerHex = document.getElementById("rpeWinnerHex");
-        const elCopyNote = document.getElementById("rpeCopyNote");
 
         function hexToRgb(hex) {
           const h = hex.replace("#", "").trim();
@@ -290,30 +276,31 @@
           elStatus.textContent = pool.length + " palette" + (pool.length === 1 ? "" : "s") + " left in the pool";
 
           if (pool.length === 1) {
-            showWinner(pool[0]);
+            goToPaletteDetail(pool[0]);
             return;
           }
           renderCards();
         }
 
-        function showWinner(p) {
-          elPlay.classList.add("rpe-hidden");
-          elWinner.classList.remove("rpe-hidden");
-          elWinnerTitle.textContent = p.title;
-          elWinnerSwatches.innerHTML = "";
-          for (const c of p.colors) {
-            const d = document.createElement("div");
-            d.style.flex = "1";
-            d.style.background = c;
-            elWinnerSwatches.appendChild(d);
+        function goToPaletteDetail(p) {
+          try {
+            sessionStorage.setItem(
+              DETAIL_STORAGE_KEY,
+              JSON.stringify({
+                title: p.title,
+                colors: p.colors,
+                savedAt: new Date().toISOString(),
+              })
+            );
+          } catch (e) {
+            elError.textContent = "Could not open detail page—storage blocked? Allow cookies for this site.";
+            elError.classList.remove("rpe-hidden");
+            return;
           }
-          elWinnerHex.textContent = p.colors.join("\n");
-          elCopyNote.textContent = "";
-          elStatus.textContent = "One palette wins.";
+          window.location.href = "detail.html";
         }
 
         function resetAll() {
-          elWinner.classList.add("rpe-hidden");
           elPlay.classList.remove("rpe-hidden");
           elError.classList.add("rpe-hidden");
           pool = shuffle(allPalettes);
@@ -342,25 +329,6 @@
         });
 
         document.getElementById("rpeStartOver").addEventListener("click", resetAll);
-
-        document.getElementById("rpePlayAgain").addEventListener("click", resetAll);
-
-        document.getElementById("rpeCopy").addEventListener("click", function () {
-          const text = elWinnerHex.textContent || "";
-          if (!text) return;
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(
-              function () {
-                elCopyNote.textContent = "Copied to clipboard.";
-              },
-              function () {
-                elCopyNote.textContent = "Could not copy—select the hex list manually.";
-              }
-            );
-          } else {
-            elCopyNote.textContent = "Clipboard API not available.";
-          }
-        });
 
         fetch(STORAGE_URL, { cache: "no-store" })
           .then(function (r) {

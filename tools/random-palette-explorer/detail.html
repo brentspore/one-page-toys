@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Palette detail</title>
+    <meta name="description" content="Inspect, copy, and export your selected palette." />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <p class="rpd-back muted">
+          <a href="index.html">← Random Palette Explorer</a>
+        </p>
+
+        <div id="rpdEmpty" class="rpd-empty panel rpe-hidden">
+          <h1 class="rpd-title">No palette loaded</h1>
+          <p class="muted">Pick a winning palette in the explorer first, or your session may have expired.</p>
+          <p><a class="btn btn--primary" href="index.html">Go to explorer</a></p>
+        </div>
+
+        <div id="rpdContent" class="rpe-hidden">
+          <h1 id="rpdPaletteTitle" class="rpd-title"></h1>
+          <p id="rpdMeta" class="rpd-meta muted"></p>
+
+          <div id="rpdHeroSwatches" class="rpd-hero-swatches"></div>
+
+          <div class="panel rpd-table-panel">
+            <h2 class="rpd-section-title">Colors</h2>
+            <div class="rpd-table-wrap">
+              <table class="rpd-table" id="rpdTable">
+                <thead>
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Hex</th>
+                    <th scope="col">RGB</th>
+                    <th scope="col">HSL</th>
+                    <th scope="col">Copy</th>
+                  </tr>
+                </thead>
+                <tbody id="rpdTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel rpd-export-panel">
+            <h2 class="rpd-section-title">Copy & export</h2>
+            <p class="muted rpd-export-lead">Grab values for design tools or drop them into code.</p>
+            <div class="rpd-export-actions">
+              <button type="button" class="btn btn--primary" id="rpdCopyHex">Copy all hex</button>
+              <button type="button" class="btn" id="rpdCopyCsv">Copy CSV</button>
+              <button type="button" class="btn" id="rpdDownloadJson">Download JSON</button>
+              <button type="button" class="btn" id="rpdDownloadCss">Download CSS variables</button>
+            </div>
+            <p id="rpdExportNote" class="muted rpd-export-note" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p class="muted">
+          <a href="../../index.html">Back to gallery</a>
+        </p>
+      </footer>
+    </main>
+
+    <script>
+      (function () {
+        var DETAIL_STORAGE_KEY = "one-page-toys:rpe-selected-palette";
+
+        var elEmpty = document.getElementById("rpdEmpty");
+        var elContent = document.getElementById("rpdContent");
+        var elTitle = document.getElementById("rpdPaletteTitle");
+        var elMeta = document.getElementById("rpdMeta");
+        var elHero = document.getElementById("rpdHeroSwatches");
+        var elBody = document.getElementById("rpdTableBody");
+        var elNote = document.getElementById("rpdExportNote");
+
+        /** @type {{ title: string, colors: string[], savedAt?: string } | null} */
+        var palette = null;
+
+        function hexToRgb(hex) {
+          var h = hex.replace("#", "").trim();
+          var v = h.length === 3 ? h.split("").map(function (c) { return c + c; }).join("") : h;
+          var n = parseInt(v, 16);
+          return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+        }
+
+        function rgbToHsl(r, g, b) {
+          r /= 255;
+          g /= 255;
+          b /= 255;
+          var max = Math.max(r, g, b);
+          var min = Math.min(r, g, b);
+          var h = 0;
+          var s = 0;
+          var l = (max + min) / 2;
+          var d = max - min;
+          if (d !== 0) {
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r:
+                h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+                break;
+              case g:
+                h = ((b - r) / d + 2) / 6;
+                break;
+              default:
+                h = ((r - g) / d + 4) / 6;
+                break;
+            }
+          }
+          return [h * 360, s * 100, l * 100];
+        }
+
+        function formatHex(hex) {
+          var h = hex.replace("#", "").trim();
+          if (h.length === 3) {
+            h = h.split("").map(function (c) { return c + c; }).join("");
+          }
+          return "#" + h.toLowerCase();
+        }
+
+        function normalizedPalette(raw) {
+          if (!raw || typeof raw !== "object") return null;
+          var title = typeof raw.title === "string" ? raw.title.trim() : "";
+          if (!title) title = "Untitled palette";
+          var colors = Array.isArray(raw.colors) ? raw.colors.map(formatHex).filter(Boolean) : [];
+          if (!colors.length) return null;
+          return {
+            title: title,
+            colors: colors,
+            savedAt: typeof raw.savedAt === "string" ? raw.savedAt : "",
+          };
+        }
+
+        function loadPalette() {
+          try {
+            var raw = sessionStorage.getItem(DETAIL_STORAGE_KEY);
+            if (!raw) return null;
+            return normalizedPalette(JSON.parse(raw));
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function setNote(msg) {
+          elNote.textContent = msg || "";
+        }
+
+        function copyText(text, okMsg) {
+          if (!text) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              function () {
+                setNote(okMsg || "Copied.");
+              },
+              function () {
+                setNote("Copy failed—select text manually.");
+              }
+            );
+          } else {
+            setNote("Clipboard not available in this browser.");
+          }
+        }
+
+        function downloadFile(filename, content, mime) {
+          var blob = new Blob([content], { type: mime || "text/plain;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          a.rel = "noopener";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        }
+
+        function safeFilename(name) {
+          var s = name.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
+          return s || "palette";
+        }
+
+        function buildCsv() {
+          var lines = ["index,hex,r,g,b,h_deg,s_pct,l_pct"];
+          for (var i = 0; i < palette.colors.length; i++) {
+            var hex = palette.colors[i];
+            var rgb = hexToRgb(hex);
+            var hsl = rgbToHsl(rgb[0], rgb[1], rgb[2]);
+            lines.push(
+              [i + 1, hex, rgb[0], rgb[1], rgb[2], Math.round(hsl[0] * 10) / 10, Math.round(hsl[1] * 10) / 10, Math.round(hsl[2] * 10) / 10].join(",")
+            );
+          }
+          return lines.join("\n");
+        }
+
+        function buildCssVars() {
+          var lines = ["/* " + palette.title + " — generated by One Page Toys */", ":root {"];
+          for (var i = 0; i < palette.colors.length; i++) {
+            lines.push("  --palette-" + (i + 1) + ": " + palette.colors[i] + ";");
+          }
+          lines.push("}");
+          return lines.join("\n");
+        }
+
+        function render() {
+          elTitle.textContent = palette.title;
+          if (palette.savedAt) {
+            try {
+              var d = new Date(palette.savedAt);
+              elMeta.textContent =
+                palette.colors.length + " colors · picked " + d.toLocaleString();
+            } catch (e) {
+              elMeta.textContent = palette.colors.length + " colors";
+            }
+          } else {
+            elMeta.textContent = palette.colors.length + " colors";
+          }
+
+          elHero.innerHTML = "";
+          for (var hi = 0; hi < palette.colors.length; hi++) {
+            var cell = document.createElement("div");
+            cell.className = "rpd-hero-cell";
+            cell.style.background = palette.colors[hi];
+            cell.title = palette.colors[hi];
+            elHero.appendChild(cell);
+          }
+
+          elBody.innerHTML = "";
+          for (var j = 0; j < palette.colors.length; j++) {
+            var c = palette.colors[j];
+            var rgb = hexToRgb(c);
+            var hsl = rgbToHsl(rgb[0], rgb[1], rgb[2]);
+            var rgbStr = "rgb(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + ")";
+            var hslStr =
+              "hsl(" +
+              Math.round(hsl[0]) +
+              ", " +
+              Math.round(hsl[1]) +
+              "%, " +
+              Math.round(hsl[2]) +
+              "%)";
+
+            var tr = document.createElement("tr");
+
+            var tdSw = document.createElement("td");
+            tdSw.className = "rpd-td-swatch";
+            var sw = document.createElement("div");
+            sw.className = "rpd-mini-swatch";
+            sw.style.background = c;
+            tdSw.appendChild(sw);
+
+            var tdHex = document.createElement("td");
+            var codeHex = document.createElement("code");
+            codeHex.textContent = c;
+            tdHex.appendChild(codeHex);
+
+            var tdRgb = document.createElement("td");
+            var codeRgb = document.createElement("code");
+            codeRgb.textContent = rgbStr;
+            tdRgb.appendChild(codeRgb);
+
+            var tdHsl = document.createElement("td");
+            var codeHsl = document.createElement("code");
+            codeHsl.className = "rpd-code-hsl";
+            codeHsl.textContent = hslStr;
+            tdHsl.appendChild(codeHsl);
+
+            var tdBtn = document.createElement("td");
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn";
+            btn.style.fontSize = "0.78rem";
+            btn.style.padding = "6px 10px";
+            btn.textContent = "Copy row";
+            (function (rowText) {
+              btn.addEventListener("click", function () {
+                copyText(rowText, "Row copied.");
+              });
+            })(c + "\t" + rgbStr + "\t" + hslStr);
+
+            tdBtn.appendChild(btn);
+
+            tr.appendChild(tdSw);
+            tr.appendChild(tdHex);
+            tr.appendChild(tdRgb);
+            tr.appendChild(tdHsl);
+            tr.appendChild(tdBtn);
+            elBody.appendChild(tr);
+          }
+        }
+
+        palette = loadPalette();
+        if (!palette) {
+          elEmpty.classList.remove("rpe-hidden");
+          elContent.classList.add("rpe-hidden");
+        } else {
+          elEmpty.classList.add("rpe-hidden");
+          elContent.classList.remove("rpe-hidden");
+          document.title = palette.title + " — palette detail";
+          render();
+
+          document.getElementById("rpdCopyHex").addEventListener("click", function () {
+            copyText(palette.colors.join("\n"), "All hex values copied.");
+          });
+
+          document.getElementById("rpdCopyCsv").addEventListener("click", function () {
+            copyText(buildCsv(), "CSV copied.");
+          });
+
+          document.getElementById("rpdDownloadJson").addEventListener("click", function () {
+            var payload = JSON.stringify(
+              { title: palette.title, colors: palette.colors, exportedAt: new Date().toISOString() },
+              null,
+              2
+            );
+            downloadFile(safeFilename(palette.title) + ".json", payload, "application/json");
+            setNote("JSON downloaded.");
+          });
+
+          document.getElementById("rpdDownloadCss").addEventListener("click", function () {
+            downloadFile(safeFilename(palette.title) + "-variables.css", buildCssVars(), "text/css;charset=utf-8");
+            setNote("CSS file downloaded.");
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
