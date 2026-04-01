@@ -43,7 +43,7 @@
                     <th scope="col">Hex</th>
                     <th scope="col">RGB</th>
                     <th scope="col">HSL</th>
-                    <th scope="col">Copy</th>
+                    <th scope="col">Clipboard</th>
                   </tr>
                 </thead>
                 <tbody id="rpdTableBody"></tbody>
@@ -281,10 +281,17 @@
             btn.className = "btn";
             btn.style.fontSize = "0.78rem";
             btn.style.padding = "6px 10px";
-            btn.textContent = "Copy row";
+            btn.textContent = "Copy this color";
+            btn.setAttribute(
+              "title",
+              "Copies hex, RGB, and HSL for this swatch (tab-separated—paste into a spreadsheet)"
+            );
             (function (rowText) {
               btn.addEventListener("click", function () {
-                copyText(rowText, "Row copied.");
+                copyText(
+                  rowText,
+                  "Copied hex, RGB, and HSL for this swatch."
+                );
               });
             })(c + "\t" + rgbStr + "\t" + hslStr);
 
