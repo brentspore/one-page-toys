@@ -18,7 +18,7 @@
     <title>Mesh gradient studio — hero-style CSS backgrounds</title>
     <meta
       name="description"
-      content="Layer soft radial gradients like a Stripe-style hero. Tune colors, layers, and seed—or randomize—then copy CSS and HTML for your own site."
+      content="Layer soft radial gradients like a Stripe-style hero. Presets, fine-grained controls, seedable randomness, film grain, and copy-ready CSS."
     />
     <link rel="canonical" href="https://onepagetoys.com/tools/mesh-gradient-studio/index.html" />
     <meta name="robots" content="index, follow" />
@@ -28,7 +28,7 @@
     <meta property="og:title" content="Mesh gradient studio — hero-style CSS backgrounds" />
     <meta
       property="og:description"
-      content="Layer soft radial gradients like a Stripe-style hero. Tune colors, layers, and seed—or randomize—then copy CSS and HTML for your own site."
+      content="Layer soft radial gradients like a Stripe-style hero. Presets, fine-grained controls, seedable randomness, film grain, and copy-ready CSS."
     />
     <meta property="og:url" content="https://onepagetoys.com/tools/mesh-gradient-studio/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
@@ -40,7 +40,7 @@
     <meta name="twitter:title" content="Mesh gradient studio — hero-style CSS backgrounds" />
     <meta
       name="twitter:description"
-      content="Layer soft radial gradients like a Stripe-style hero. Tune colors, layers, and seed—or randomize—then copy CSS and HTML for your own site."
+      content="Layer soft radial gradients like a Stripe-style hero. Presets, fine-grained controls, seedable randomness, film grain, and copy-ready CSS."
     />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <script type="application/ld+json">
@@ -69,11 +69,11 @@
     </header>
 
     <main class="container">
-      <section class="tool">
+      <section class="tool mgs-tool">
         <h1>Mesh gradient studio</h1>
         <p class="lead">
-          Stack soft, oversized radial gradients—similar in spirit to polished product hero backgrounds. Adjust colors and complexity, lock a seed for
-          reproducible layouts, or hit randomize. Copy the CSS (and a tiny HTML snippet) into your own project.
+          Stack soft, oversized radial gradients—similar in spirit to polished product hero backgrounds. Start from a preset, dial in shape and color, lock a
+          seed, then copy CSS (and HTML) that matches what you see—including optional grain and motion.
         </p>
         <p class="tool-ext-link muted">
           Pair with palettes &amp; contrast:
@@ -83,77 +83,223 @@
         </p>
 
         <div class="panel mgs-layout">
-          <div class="mgs-controls">
-            <div class="mgs-field">
-              <label for="mgsBase">Base fill</label>
-              <div class="mgs-row">
-                <input type="color" id="mgsBase" value="#f6f9fc" aria-label="Base background color" />
-                <input type="text" id="mgsBaseHex" value="#f6f9fc" maxlength="7" spellcheck="false" aria-label="Base color hex" />
+          <div class="mgs-controls-wrap">
+            <div class="mgs-controls">
+              <section class="mgs-section" aria-labelledby="mgsPresetsTitle">
+                <h2 class="mgs-section__title" id="mgsPresetsTitle">Presets</h2>
+                <div class="mgs-preset-row" role="group" aria-label="Color presets">
+                  <button type="button" class="mgs-preset" data-preset="stripe" aria-pressed="true">Stripe</button>
+                  <button type="button" class="mgs-preset" data-preset="sunset" aria-pressed="false">Sunset</button>
+                  <button type="button" class="mgs-preset" data-preset="ocean" aria-pressed="false">Ocean</button>
+                  <button type="button" class="mgs-preset" data-preset="forest" aria-pressed="false">Forest</button>
+                  <button type="button" class="mgs-preset" data-preset="noir" aria-pressed="false">Noir</button>
+                  <button type="button" class="mgs-preset" data-preset="dawn" aria-pressed="false">Dawn</button>
+                </div>
+              </section>
+
+              <section class="mgs-section" aria-labelledby="mgsColorsTitle">
+                <h2 class="mgs-section__title" id="mgsColorsTitle">Colors</h2>
+                <div class="mgs-field">
+                  <span class="mgs-label" id="mgsBaseLabel">Base fill</span>
+                  <div class="mgs-row">
+                    <input type="color" id="mgsBase" value="#f6f9fc" aria-labelledby="mgsBaseLabel" />
+                    <input type="text" class="mgs-hex mgs-class-input" id="mgsBaseHex" value="#f6f9fc" maxlength="7" spellcheck="false" aria-label="Base hex" />
+                  </div>
+                </div>
+                <div class="mgs-row mgs-row--swatches" role="group" aria-label="Blob gradient colors">
+                  <div class="mgs-swatch">
+                    <span class="mgs-swatch__label">Blob 1</span>
+                    <div class="mgs-swatch__row">
+                      <input type="color" id="mgsC1" value="#635bff" aria-label="Blob color 1" />
+                      <input type="text" class="mgs-hex" id="mgsHex1" value="#635bff" maxlength="7" spellcheck="false" aria-label="Blob 1 hex" />
+                    </div>
+                  </div>
+                  <div class="mgs-swatch">
+                    <span class="mgs-swatch__label">Blob 2</span>
+                    <div class="mgs-swatch__row">
+                      <input type="color" id="mgsC2" value="#00d4ff" aria-label="Blob color 2" />
+                      <input type="text" class="mgs-hex" id="mgsHex2" value="#00d4ff" maxlength="7" spellcheck="false" aria-label="Blob 2 hex" />
+                    </div>
+                  </div>
+                  <div class="mgs-swatch">
+                    <span class="mgs-swatch__label">Blob 3</span>
+                    <div class="mgs-swatch__row">
+                      <input type="color" id="mgsC3" value="#ff6b9d" aria-label="Blob color 3" />
+                      <input type="text" class="mgs-hex" id="mgsHex3" value="#ff6b9d" maxlength="7" spellcheck="false" aria-label="Blob 3 hex" />
+                    </div>
+                  </div>
+                  <div class="mgs-swatch">
+                    <span class="mgs-swatch__label">Blob 4</span>
+                    <div class="mgs-swatch__row">
+                      <input type="color" id="mgsC4" value="#a78bfa" aria-label="Blob color 4" />
+                      <input type="text" class="mgs-hex" id="mgsHex4" value="#a78bfa" maxlength="7" spellcheck="false" aria-label="Blob 4 hex" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mgs-field" style="margin-top: 0.75rem">
+                  <label for="mgsSat">Color saturation <output id="mgsSatOut">100%</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsSat" min="50" max="145" value="100" />
+                  </div>
+                  <span class="muted">Scales blob chroma before blending (base fill unchanged).</span>
+                </div>
+              </section>
+
+              <section class="mgs-section" aria-labelledby="mgsShapeTitle">
+                <h2 class="mgs-section__title" id="mgsShapeTitle">Shape &amp; layers</h2>
+                <div class="mgs-field">
+                  <label for="mgsLayers">Layers <output id="mgsLayersOut">6</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsLayers" min="3" max="12" value="6" />
+                  </div>
+                </div>
+                <div class="mgs-field">
+                  <label for="mgsSizeMin">Blob width (min %) <output id="mgsSizeMinOut">55</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsSizeMin" min="28" max="78" value="55" />
+                  </div>
+                </div>
+                <div class="mgs-field">
+                  <label for="mgsSizeMax">Blob width (max %) <output id="mgsSizeMaxOut">97</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsSizeMax" min="55" max="135" value="97" />
+                  </div>
+                </div>
+                <div class="mgs-field">
+                  <label for="mgsFade">Soft edge <output id="mgsFadeOut">68%</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsFade" min="48" max="90" value="68" />
+                  </div>
+                  <span class="muted">Where each radial fades to transparent.</span>
+                </div>
+                <div class="mgs-field">
+                  <label for="mgsBiasX">Horizontal bias <output id="mgsBiasXOut">0</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsBiasX" min="-35" max="35" value="0" />
+                  </div>
+                </div>
+                <div class="mgs-field">
+                  <label for="mgsBiasY">Vertical bias <output id="mgsBiasYOut">0</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsBiasY" min="-35" max="35" value="0" />
+                  </div>
+                  <span class="muted">Shifts blob centers (positive = right / down).</span>
+                </div>
+              </section>
+
+              <section class="mgs-section" aria-labelledby="mgsLookTitle">
+                <h2 class="mgs-section__title" id="mgsLookTitle">Strength</h2>
+                <div class="mgs-field">
+                  <label for="mgsOpacity">Blob strength <output id="mgsOpacityOut">0.35</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsOpacity" min="8" max="58" value="35" />
+                  </div>
+                  <span class="muted">Max opacity per layer.</span>
+                </div>
+              </section>
+
+              <details class="mgs-advanced">
+                <summary>Motion, grain &amp; export</summary>
+                <div class="mgs-field" style="margin-top: 0.35rem">
+                  <label for="mgsHueAmt">Hue motion range <output id="mgsHueAmtOut">14°</output></label>
+                  <div class="mgs-slider-row">
+                    <input type="range" id="mgsHueAmt" min="6" max="28" value="14" />
+                  </div>
+                </div>
+                <div class="mgs-check-grid" style="margin-top: 0.65rem">
+                  <label class="mgs-check">
+                    <input type="checkbox" id="mgsAnimPreview" />
+                    Animate preview (hue drift)
+                  </label>
+                  <label class="mgs-check">
+                    <input type="checkbox" id="mgsAnimExport" />
+                    Include motion in exported CSS
+                  </label>
+                  <label class="mgs-check">
+                    <input type="checkbox" id="mgsGrainPreview" />
+                    Film grain in preview
+                  </label>
+                  <label class="mgs-check">
+                    <input type="checkbox" id="mgsGrainExport" />
+                    Film grain in exported CSS
+                  </label>
+                  <label class="mgs-check">
+                    <input type="checkbox" id="mgsMinify" />
+                    Minify copied CSS
+                  </label>
+                </div>
+                <div class="mgs-field" style="margin-top: 0.85rem">
+                  <label for="mgsClass">CSS class name</label>
+                  <input type="text" class="mgs-class-input mgs-select" id="mgsClass" value="mesh-hero-bg" spellcheck="false" autocomplete="off" />
+                </div>
+                <div class="mgs-field">
+                  <label for="mgsMinH">Exported min-height</label>
+                  <select class="mgs-select" id="mgsMinH">
+                    <option value="100vh" selected>100vh (full viewport)</option>
+                    <option value="85vh">85vh</option>
+                    <option value="70vh">70vh</option>
+                    <option value="min(720px, 90vh)">min(720px, 90vh)</option>
+                    <option value="560px">560px</option>
+                    <option value="420px">420px</option>
+                    <option value="320px">320px</option>
+                  </select>
+                </div>
+              </details>
+
+              <section class="mgs-section" aria-labelledby="mgsSeedTitle">
+                <h2 class="mgs-section__title" id="mgsSeedTitle">Randomness</h2>
+                <div class="mgs-field">
+                  <label for="mgsSeed">Seed</label>
+                  <div class="mgs-seed-row">
+                    <input type="text" id="mgsSeed" placeholder="Empty = new layout on each change" spellcheck="false" autocomplete="off" />
+                    <button type="button" class="mgs-btn-small" id="mgsNewSeed">New seed</button>
+                    <button type="button" class="mgs-btn-small" id="mgsCopySeed">Copy seed</button>
+                  </div>
+                  <span class="muted">Same seed + same settings = identical mesh. Leave empty to explore freely.</span>
+                </div>
+              </section>
+
+              <div class="mgs-actions mgs-actions--primary">
+                <button type="button" class="btn" id="mgsRandom">Randomize all</button>
+                <button type="button" class="btn btn--secondary" id="mgsRegen">Regenerate</button>
+                <button type="button" class="btn btn--secondary" id="mgsDefaults">Reset defaults</button>
               </div>
-            </div>
-            <div class="mgs-field">
-              <span id="mgsBlobLabel">Blob colors</span>
-              <div class="mgs-row" role="group" aria-labelledby="mgsBlobLabel">
-                <input type="color" id="mgsC1" value="#635bff" aria-label="Blob color 1" />
-                <input type="color" id="mgsC2" value="#00d4ff" aria-label="Blob color 2" />
-                <input type="color" id="mgsC3" value="#ff6b9d" aria-label="Blob color 3" />
-              </div>
-            </div>
-            <div class="mgs-field">
-              <label for="mgsLayers">Layers <output id="mgsLayersOut">6</output></label>
-              <div class="mgs-slider-row">
-                <input type="range" id="mgsLayers" min="3" max="10" value="6" />
-              </div>
-            </div>
-            <div class="mgs-field">
-              <label for="mgsOpacity">Blob strength <output id="mgsOpacityOut">0.35</output></label>
-              <div class="mgs-slider-row">
-                <input type="range" id="mgsOpacity" min="10" max="55" value="35" />
-              </div>
-              <span class="muted">Max opacity per layer (lower = subtler).</span>
-            </div>
-            <div class="mgs-field">
-              <label for="mgsFade">Soft edge <output id="mgsFadeOut">68%</output></label>
-              <div class="mgs-slider-row">
-                <input type="range" id="mgsFade" min="50" max="88" value="68" />
-              </div>
-              <span class="muted">Where each radial fades to transparent.</span>
-            </div>
-            <div class="mgs-field">
-              <label for="mgsSeed">Seed <span class="muted">(optional)</span></label>
-              <input type="text" id="mgsSeed" placeholder="Leave empty for non-deterministic" spellcheck="false" autocomplete="off" />
-              <span class="muted">Same seed + settings reproduces the same mesh.</span>
-            </div>
-            <label class="mgs-check">
-              <input type="checkbox" id="mgsAnim" />
-              Preview subtle hue motion
-            </label>
-            <label class="mgs-check">
-              <input type="checkbox" id="mgsMinify" />
-              Minify copied CSS
-            </label>
-            <div class="mgs-actions">
-              <button type="button" class="btn" id="mgsRandom">Randomize</button>
-              <button type="button" class="btn btn--secondary" id="mgsRegen">Regenerate</button>
             </div>
           </div>
 
-          <div>
+          <div class="mgs-main">
+            <div class="mgs-preview-toolbar">
+              <span class="mgs-preview-toolbar__label" id="mgsAspectLabel">Preview ratio</span>
+              <div class="mgs-aspect-group" role="group" aria-labelledby="mgsAspectLabel">
+                <button type="button" class="mgs-aspect" data-aspect="hero" aria-pressed="false">21∶9</button>
+                <button type="button" class="mgs-aspect" data-aspect="wide" aria-pressed="true">16∶9</button>
+                <button type="button" class="mgs-aspect" data-aspect="box" aria-pressed="false">1∶1</button>
+                <button type="button" class="mgs-aspect" data-aspect="tall" aria-pressed="false">4∶5</button>
+                <button type="button" class="mgs-aspect" data-aspect="free" aria-pressed="false">Tall</button>
+              </div>
+            </div>
+
             <div class="mgs-preview-wrap">
-              <div id="mgsPreview" class="mgs-preview" aria-hidden="true">
+              <div id="mgsPreview" class="mgs-preview mgs-preview--ar-wide" aria-hidden="true">
                 <span class="mgs-preview-label">Live preview</span>
               </div>
             </div>
-            <p class="muted" style="margin-top: 0.75rem; font-size: 0.8125rem">
-              Use a dedicated wrapper with no text children so optional <code>filter</code> animation does not tint your content. Put content in a
-              sibling with a higher stacking context if needed.
+
+            <p class="mgs-hint">
+              Use a dedicated background wrapper with no text inside if you export <strong>motion</strong> or <strong>grain</strong>—both use overlays that
+              can affect descendants. Place copy in a sibling with <code>position: relative; z-index: 1</code>.
             </p>
 
-            <div class="mgs-output" style="margin-top: 1.25rem">
+            <div class="mgs-output mgs-output--card">
+              <div class="mgs-output__head">
+                <h2>Generated code</h2>
+              </div>
               <label for="mgsOut" class="sr-only">Generated CSS and HTML</label>
               <textarea id="mgsOut" readonly spellcheck="false"></textarea>
               <div class="mgs-output-actions">
                 <button type="button" class="btn" id="mgsCopy">Copy all</button>
+                <button type="button" class="btn btn--secondary" id="mgsCopyCss">CSS only</button>
+                <button type="button" class="btn btn--secondary" id="mgsCopyHtml">HTML only</button>
                 <span class="mgs-copy-status" id="mgsCopyStatus" hidden aria-live="polite"></span>
               </div>
             </div>
@@ -191,26 +337,69 @@
 
     <script>
       (function () {
+        var GRAIN_DATA =
+          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
+
+        var PRESETS = {
+          stripe: { base: "#f6f9fc", c1: "#635bff", c2: "#00d4ff", c3: "#ff6b9d", c4: "#a78bfa" },
+          sunset: { base: "#fff5f0", c1: "#ff6b35", c2: "#f7c59f", c3: "#9b5de5", c4: "#ff006e" },
+          ocean: { base: "#f0f9ff", c1: "#0ea5e9", c2: "#6366f1", c3: "#14b8a6", c4: "#38bdf8" },
+          forest: { base: "#f0fdf4", c1: "#22c55e", c2: "#84cc16", c3: "#166534", c4: "#4ade80" },
+          noir: { base: "#0f172a", c1: "#6366f1", c2: "#a855f7", c3: "#ec4899", c4: "#38bdf8" },
+          dawn: { base: "#fef7ff", c1: "#e879f9", c2: "#818cf8", c3: "#fcd34d", c4: "#fb7185" }
+        };
+
         var preview = document.getElementById("mgsPreview");
         var out = document.getElementById("mgsOut");
         var basePicker = document.getElementById("mgsBase");
         var baseHex = document.getElementById("mgsBaseHex");
-        var c1 = document.getElementById("mgsC1");
-        var c2 = document.getElementById("mgsC2");
-        var c3 = document.getElementById("mgsC3");
+        var pickers = [
+          { p: document.getElementById("mgsC1"), h: document.getElementById("mgsHex1") },
+          { p: document.getElementById("mgsC2"), h: document.getElementById("mgsHex2") },
+          { p: document.getElementById("mgsC3"), h: document.getElementById("mgsHex3") },
+          { p: document.getElementById("mgsC4"), h: document.getElementById("mgsHex4") }
+        ];
+        var satEl = document.getElementById("mgsSat");
+        var satOut = document.getElementById("mgsSatOut");
         var layersEl = document.getElementById("mgsLayers");
         var layersOut = document.getElementById("mgsLayersOut");
+        var sizeMinEl = document.getElementById("mgsSizeMin");
+        var sizeMinOut = document.getElementById("mgsSizeMinOut");
+        var sizeMaxEl = document.getElementById("mgsSizeMax");
+        var sizeMaxOut = document.getElementById("mgsSizeMaxOut");
         var opacityEl = document.getElementById("mgsOpacity");
         var opacityOut = document.getElementById("mgsOpacityOut");
         var fadeEl = document.getElementById("mgsFade");
         var fadeOut = document.getElementById("mgsFadeOut");
+        var biasXEl = document.getElementById("mgsBiasX");
+        var biasXOut = document.getElementById("mgsBiasXOut");
+        var biasYEl = document.getElementById("mgsBiasY");
+        var biasYOut = document.getElementById("mgsBiasYOut");
         var seedEl = document.getElementById("mgsSeed");
-        var animEl = document.getElementById("mgsAnim");
+        var hueAmtEl = document.getElementById("mgsHueAmt");
+        var hueAmtOut = document.getElementById("mgsHueAmtOut");
+        var animPreviewEl = document.getElementById("mgsAnimPreview");
+        var animExportEl = document.getElementById("mgsAnimExport");
+        var grainPreviewEl = document.getElementById("mgsGrainPreview");
+        var grainExportEl = document.getElementById("mgsGrainExport");
         var minifyEl = document.getElementById("mgsMinify");
+        var classEl = document.getElementById("mgsClass");
+        var minHEl = document.getElementById("mgsMinH");
+        var presetBtns = document.querySelectorAll(".mgs-preset");
+        var aspectBtns = document.querySelectorAll(".mgs-aspect");
         var btnRandom = document.getElementById("mgsRandom");
         var btnRegen = document.getElementById("mgsRegen");
+        var btnDefaults = document.getElementById("mgsDefaults");
+        var btnNewSeed = document.getElementById("mgsNewSeed");
+        var btnCopySeed = document.getElementById("mgsCopySeed");
         var btnCopy = document.getElementById("mgsCopy");
+        var btnCopyCss = document.getElementById("mgsCopyCss");
+        var btnCopyHtml = document.getElementById("mgsCopyHtml");
         var copyStatus = document.getElementById("mgsCopyStatus");
+
+        var lastCss = "";
+        var lastHtml = "";
+        var customPreset = false;
 
         function hashSeed(str) {
           var h = 1779033703;
@@ -236,32 +425,32 @@
           return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
         }
 
-        function rgbaFromHex(hex, a) {
-          var c = hexToRgb(hex);
-          return "rgba(" + c.r + "," + c.g + "," + c.b + "," + a.toFixed(3) + ")";
-        }
-
-        function normalizeHex(hex) {
-          var m = /^#?([a-f\d]{6})$/i.exec(String(hex).trim());
-          if (!m) return null;
-          return "#" + m[1].toLowerCase();
-        }
-
-        function syncBaseFromPicker() {
-          baseHex.value = basePicker.value;
-        }
-
-        function syncPickerFromHex() {
-          var n = normalizeHex(baseHex.value);
-          if (n) {
-            basePicker.value = n;
-            baseHex.value = n;
+        function rgbToHsl(r, g, b) {
+          r /= 255;
+          g /= 255;
+          b /= 255;
+          var max = Math.max(r, g, b);
+          var min = Math.min(r, g, b);
+          var h;
+          var s;
+          var l = (max + min) / 2;
+          if (max === min) {
+            h = s = 0;
+          } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r:
+                h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+                break;
+              case g:
+                h = ((b - r) / d + 2) / 6;
+                break;
+              default:
+                h = ((r - g) / d + 4) / 6;
+            }
           }
-        }
-
-        function randomHex() {
-          var n = (Math.random() * 0xffffff) | 0;
-          return "#" + ("000000" + n.toString(16)).slice(-6);
+          return { h: h * 360, s: s * 100, l: l * 100 };
         }
 
         function hslToHex(h, s, l) {
@@ -284,42 +473,117 @@
           );
         }
 
-        function randomHarmoniousPalette() {
-          var baseHue = Math.random() * 360;
-          c1.value = hslToHex(baseHue, 72, 62);
-          c2.value = hslToHex((baseHue + 38) % 360, 68, 58);
-          c3.value = hslToHex((baseHue + 195) % 360, 55, 68);
-          basePicker.value = hslToHex((baseHue + 210) % 360, 18, 97);
-          syncBaseFromPicker();
+        function adjustSaturationHex(hex, factor) {
+          var rgb = hexToRgb(hex);
+          var hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+          hsl.s = Math.max(0, Math.min(100, hsl.s * factor));
+          return hslToHex(hsl.h, hsl.s, hsl.l);
+        }
+
+        function rgbaFromHex(hex, a) {
+          var c = hexToRgb(hex);
+          return "rgba(" + c.r + "," + c.g + "," + c.b + "," + a.toFixed(3) + ")";
+        }
+
+        function normalizeHex(hex) {
+          var m = /^#?([a-f\d]{6})$/i.exec(String(hex).trim());
+          if (!m) return null;
+          return "#" + m[1].toLowerCase();
+        }
+
+        function sanitizeClassName(s) {
+          var t = String(s || "")
+            .trim()
+            .replace(/[^a-zA-Z0-9_-]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+          if (!t) return "mesh-hero-bg";
+          if (/^[0-9]/.test(t)) {
+            t = "mesh-" + t;
+          }
+          return t;
+        }
+
+        function syncPickerHex(pair) {
+          pair.h.value = pair.p.value;
+        }
+
+        function applyHexToPicker(pair) {
+          var n = normalizeHex(pair.h.value);
+          if (n) {
+            pair.p.value = n;
+            pair.h.value = n;
+          }
+        }
+
+        function setPresetPressed(name) {
+          presetBtns.forEach(function (b) {
+            b.setAttribute("aria-pressed", b.getAttribute("data-preset") === name ? "true" : "false");
+          });
+        }
+
+        function applyPreset(name) {
+          var p = PRESETS[name];
+          if (!p) return;
+          basePicker.value = p.base;
+          baseHex.value = p.base;
+          pickers[0].p.value = p.c1;
+          pickers[1].p.value = p.c2;
+          pickers[2].p.value = p.c3;
+          pickers[3].p.value = p.c4;
+          pickers.forEach(syncPickerHex);
+          setPresetPressed(name);
+          customPreset = false;
+        }
+
+        function markCustomPreset() {
+          if (!customPreset) {
+            customPreset = true;
+            presetBtns.forEach(function (b) {
+              b.setAttribute("aria-pressed", "false");
+            });
+          }
         }
 
         function getRng() {
           var raw = seedEl.value.trim();
           if (!raw) {
-            return { rand: Math.random, seeded: false };
+            return Math.random;
           }
-          var seed = hashSeed(raw);
-          var rng = mulberry32(seed);
-          return { rand: rng, seeded: true };
+          return mulberry32(hashSeed(raw));
+        }
+
+        function getPaletteProcessed() {
+          var factor = (parseInt(satEl.value, 10) || 100) / 100;
+          return pickers.map(function (pair) {
+            var hex = normalizeHex(pair.p.value) || "#888888";
+            return adjustSaturationHex(hex, factor);
+          });
         }
 
         function buildMesh(rand) {
           var base = normalizeHex(basePicker.value) || "#f6f9fc";
-          var palette = [c1.value, c2.value, c3.value];
+          var palette = getPaletteProcessed();
           var n = parseInt(layersEl.value, 10) || 6;
           var maxOp = (parseInt(opacityEl.value, 10) || 35) / 100;
           var fadeMid = (parseInt(fadeEl.value, 10) || 68) / 100;
+          var smin = parseInt(sizeMinEl.value, 10) || 55;
+          var smax = parseInt(sizeMaxEl.value, 10) || 97;
+          if (smin >= smax) {
+            smax = smin + 8;
+          }
+          var biasX = parseInt(biasXEl.value, 10) || 0;
+          var biasY = parseInt(biasYEl.value, 10) || 0;
           var parts = [];
           var i;
           var x, y, w, h, fade, alpha, color;
           for (i = 0; i < n; i++) {
-            x = rand() * 100;
-            y = rand() * 100;
-            w = 55 + rand() * 42;
-            h = 42 + rand() * 48;
+            x = Math.min(100, Math.max(0, rand() * 100 + biasX));
+            y = Math.min(100, Math.max(0, rand() * 100 + biasY));
+            w = smin + rand() * (smax - smin);
+            h = smin * 0.55 + rand() * (smax - smin) * 0.95;
             fade = Math.min(92, (fadeMid - 0.12 + rand() * 0.22) * 100);
-            alpha = Math.max(0.06, rand() * maxOp);
-            color = palette[i % 3];
+            alpha = Math.max(0.05, rand() * maxOp);
+            color = palette[i % 4];
             parts.push(
               "radial-gradient(ellipse " +
                 w.toFixed(1) +
@@ -346,65 +610,130 @@
           preview.style.backgroundSize = "100% 100%";
         }
 
-        function cssBlock(mesh, minify, includeAnim) {
-          var className = "mesh-hero-bg";
-          var layersJoined = mesh.layers.join(minify ? "," : ",\n    ");
-          var bgImage = minify ? "background-image:" + layersJoined + ";" : "  background-image:\n    " + layersJoined + ";";
-          var core =
-            "." +
-            className +
-            " {\n" +
-            "  min-height: 100vh;\n" +
-            "  width: 100%;\n" +
-            "  background-color: " +
-            mesh.base +
-            ";\n" +
-            bgImage +
-            "\n" +
-            "  background-repeat: no-repeat;\n" +
-            "  background-size: 100% 100%;\n" +
-            "}";
-          var motion =
-            "\n\n@media (prefers-reduced-motion: no-preference) {\n" +
-            "  ." +
-            className +
-            "--motion {\n" +
-            "    animation: mesh-hero-hue 22s ease-in-out infinite;\n" +
-            "  }\n" +
-            "}\n\n" +
-            "@keyframes mesh-hero-hue {\n" +
-            "  0%, 100% { filter: hue-rotate(0deg); }\n" +
-            "  50% { filter: hue-rotate(14deg); }\n" +
-            "}";
-          var html =
-            '<!-- Background only: avoid text inside this node if you use --motion (filter affects descendants). -->\n<div class="' +
-            className +
-            (includeAnim ? " " + className + "--motion" : "") +
-            '" aria-hidden="true"></div>';
-          if (minify) {
-            core = core.replace(/\s+/g, " ").replace(/ {\s*/g, "{").replace(/;\s*/g, ";").replace(/\s*}\s*/g, "}");
+        function minifyCss(s) {
+          return s
+            .replace(/\s*\/\*[\s\S]*?\*\/\s*/g, "")
+            .replace(/\s+/g, " ")
+            .replace(/ {\s*/g, "{")
+            .replace(/;\s*/g, ";")
+            .replace(/\s*}\s*/g, "}")
+            .replace(/\s*:\s*/g, ":")
+            .replace(/\s*,\s*/g, ",")
+            .trim();
+        }
+
+        function buildExport(mesh, opts) {
+          var cn = opts.className;
+          var motionCn = cn + "--motion";
+          var minH = opts.minHeight;
+          var minify = opts.minify;
+          var anim = opts.animExport;
+          var grain = opts.grainExport;
+          var hueDeg = opts.hueDeg || 14;
+          var kfName = "mgsHue" + (hashSeed(cn) % 100000);
+
+          var layersStr = mesh.layers.join(",\n    ");
+          var lines = [];
+          lines.push("/* " + cn + " — mesh gradient background */");
+          lines.push("." + cn + " {");
+          lines.push("  min-height: " + minH + ";");
+          lines.push("  width: 100%;");
+          lines.push("  background-color: " + mesh.base + ";");
+          lines.push("  background-image:");
+          lines.push("    " + layersStr + ";");
+          lines.push("  background-repeat: no-repeat;");
+          lines.push("  background-size: 100% 100%;");
+          if (grain) {
+            lines.push("  position: relative;");
+            lines.push("  isolation: isolate;");
           }
-          var css = core + (includeAnim ? (minify ? motion.replace(/\s+/g, " ") : motion) : "");
+          lines.push("}");
+          if (grain) {
+            lines.push("." + cn + "::after {");
+            lines.push('  content: "";');
+            lines.push("  position: absolute;");
+            lines.push("  inset: 0;");
+            lines.push("  opacity: 0.22;");
+            lines.push("  pointer-events: none;");
+            lines.push("  background: url(\"" + GRAIN_DATA + '\") repeat;');
+            lines.push("  background-size: 128px 128px;");
+            lines.push("  mix-blend-mode: overlay;");
+            lines.push("}");
+          }
+          if (anim) {
+            lines.push("");
+            lines.push("@media (prefers-reduced-motion: no-preference) {");
+            lines.push("  ." + motionCn + " {");
+            lines.push("    animation: " + kfName + " 22s ease-in-out infinite;");
+            lines.push("  }");
+            lines.push("}");
+            lines.push("");
+            lines.push("@keyframes " + kfName + " {");
+            lines.push("  0%, 100% { filter: hue-rotate(0deg); }");
+            lines.push("  50% { filter: hue-rotate(" + hueDeg + "deg); }");
+            lines.push("}");
+          }
+
+          var cssPretty = lines.join("\n");
+          var css = minify ? minifyCss(cssPretty) : cssPretty;
+          var classes = cn + (anim ? " " + motionCn : "");
+          var html =
+            "<!-- Background wrapper: keep empty if you use motion or grain (filter / overlay). -->\n" +
+            '<div class="' +
+            classes +
+            '" aria-hidden="true"></div>';
           return { css: css, html: html };
         }
 
+        function setAspect(aspect) {
+          preview.classList.remove("mgs-preview--ar-hero", "mgs-preview--ar-wide", "mgs-preview--ar-box", "mgs-preview--ar-tall", "mgs-preview--ar-free");
+          var map = {
+            hero: "mgs-preview--ar-hero",
+            wide: "mgs-preview--ar-wide",
+            box: "mgs-preview--ar-box",
+            tall: "mgs-preview--ar-tall",
+            free: "mgs-preview--ar-free"
+          };
+          preview.classList.add(map[aspect] || "mgs-preview--ar-wide");
+          aspectBtns.forEach(function (b) {
+            b.setAttribute("aria-pressed", b.getAttribute("data-aspect") === aspect ? "true" : "false");
+          });
+        }
+
         function refresh() {
-          syncBaseFromPicker();
+          syncPickerHex({ p: basePicker, h: baseHex });
+          pickers.forEach(function (pair) {
+            syncPickerHex(pair);
+          });
           var rng = getRng();
-          var mesh = buildMesh(rng.rand);
+          var mesh = buildMesh(rng);
           applyPreview(mesh);
-          var includeAnim = animEl.checked;
-          var minify = minifyEl.checked;
-          var pack = cssBlock(mesh, minify, includeAnim);
-          out.value =
-            "/* Paste into your stylesheet */\n\n" +
-            pack.css +
-            "\n\n/* Paste into your HTML (adjust min-height as needed) */\n\n" +
-            pack.html;
-          if (includeAnim) {
+          var cn = sanitizeClassName(classEl.value);
+
+          var hueDeg = parseInt(hueAmtEl.value, 10) || 14;
+          preview.style.setProperty("--mgs-hue-amt", hueDeg + "deg");
+
+          var pack = buildExport(mesh, {
+            className: cn,
+            minHeight: minHEl.value,
+            minify: minifyEl.checked,
+            animExport: animExportEl.checked,
+            grainExport: grainExportEl.checked,
+            hueDeg: hueDeg
+          });
+          lastCss = pack.css;
+          lastHtml = pack.html;
+          out.value = "/* ——— CSS ——— */\n\n" + pack.css + "\n\n/* ——— HTML ——— */\n\n" + pack.html;
+
+          if (animPreviewEl.checked) {
             preview.classList.add("mgs-preview--anim");
           } else {
             preview.classList.remove("mgs-preview--anim");
+          }
+          if (grainPreviewEl.checked) {
+            preview.classList.add("mgs-preview--grain");
+          } else {
+            preview.classList.remove("mgs-preview--grain");
           }
         }
 
@@ -417,8 +746,107 @@
           }, 2200);
         }
 
+        function copyText(t, okMsg) {
+          if (!t) return;
+          function ok() {
+            flashCopy(okMsg || "Copied.");
+          }
+          function fail() {
+            flashCopy("Copy failed—select text and use ⌘/Ctrl+C.");
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(t).then(ok).catch(fail);
+          } else {
+            fail();
+          }
+        }
+
+        presetBtns.forEach(function (b) {
+          b.addEventListener("click", function () {
+            applyPreset(b.getAttribute("data-preset"));
+            refresh();
+          });
+        });
+
+        aspectBtns.forEach(function (b) {
+          b.addEventListener("click", function () {
+            setAspect(b.getAttribute("data-aspect"));
+          });
+        });
+
+        basePicker.addEventListener("input", function () {
+          markCustomPreset();
+          baseHex.value = basePicker.value;
+          refresh();
+        });
+        baseHex.addEventListener("change", function () {
+          markCustomPreset();
+          var n = normalizeHex(baseHex.value);
+          if (n) {
+            basePicker.value = n;
+            baseHex.value = n;
+          }
+          refresh();
+        });
+        baseHex.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            markCustomPreset();
+            var n = normalizeHex(baseHex.value);
+            if (n) {
+              basePicker.value = n;
+              baseHex.value = n;
+            }
+            refresh();
+          }
+        });
+
+        pickers.forEach(function (pair) {
+          pair.p.addEventListener("input", function () {
+            markCustomPreset();
+            syncPickerHex(pair);
+            refresh();
+          });
+          pair.h.addEventListener("change", function () {
+            markCustomPreset();
+            applyHexToPicker(pair);
+            refresh();
+          });
+          pair.h.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+              markCustomPreset();
+              applyHexToPicker(pair);
+              refresh();
+            }
+          });
+        });
+
+        satEl.addEventListener("input", function () {
+          markCustomPreset();
+          satOut.textContent = satEl.value + "%";
+          refresh();
+        });
         layersEl.addEventListener("input", function () {
           layersOut.textContent = layersEl.value;
+          refresh();
+        });
+        sizeMinEl.addEventListener("input", function () {
+          var a = parseInt(sizeMinEl.value, 10);
+          var b = parseInt(sizeMaxEl.value, 10);
+          if (a >= b) {
+            sizeMaxEl.value = String(Math.min(135, a + 10));
+            sizeMaxOut.textContent = sizeMaxEl.value;
+          }
+          sizeMinOut.textContent = sizeMinEl.value;
+          refresh();
+        });
+        sizeMaxEl.addEventListener("input", function () {
+          var a = parseInt(sizeMinEl.value, 10);
+          var b = parseInt(sizeMaxEl.value, 10);
+          if (b <= a) {
+            sizeMinEl.value = String(Math.max(28, b - 10));
+            sizeMinOut.textContent = sizeMinEl.value;
+          }
+          sizeMaxOut.textContent = sizeMaxEl.value;
           refresh();
         });
         opacityEl.addEventListener("input", function () {
@@ -429,69 +857,134 @@
           fadeOut.textContent = fadeEl.value + "%";
           refresh();
         });
-        basePicker.addEventListener("input", function () {
-          syncBaseFromPicker();
+        biasXEl.addEventListener("input", function () {
+          biasXOut.textContent = biasXEl.value;
           refresh();
         });
-        baseHex.addEventListener("change", function () {
-          syncPickerFromHex();
+        biasYEl.addEventListener("input", function () {
+          biasYOut.textContent = biasYEl.value;
           refresh();
         });
-        baseHex.addEventListener("keydown", function (e) {
+        seedEl.addEventListener("input", refresh);
+        hueAmtEl.addEventListener("input", function () {
+          hueAmtOut.textContent = hueAmtEl.value + "°";
+          refresh();
+        });
+        animPreviewEl.addEventListener("change", refresh);
+        animExportEl.addEventListener("change", refresh);
+        grainPreviewEl.addEventListener("change", refresh);
+        grainExportEl.addEventListener("change", refresh);
+        minifyEl.addEventListener("change", refresh);
+        classEl.addEventListener("input", refresh);
+        classEl.addEventListener("blur", function () {
+          classEl.value = sanitizeClassName(classEl.value);
+          refresh();
+        });
+        classEl.addEventListener("keydown", function (e) {
           if (e.key === "Enter") {
-            syncPickerFromHex();
+            classEl.value = sanitizeClassName(classEl.value);
             refresh();
           }
         });
-        [c1, c2, c3].forEach(function (el) {
-          el.addEventListener("input", refresh);
-        });
-        seedEl.addEventListener("input", refresh);
-        seedEl.addEventListener("change", refresh);
-        animEl.addEventListener("change", refresh);
-        minifyEl.addEventListener("change", refresh);
+        minHEl.addEventListener("change", refresh);
+
         btnRegen.addEventListener("click", refresh);
-        btnRandom.addEventListener("click", function () {
-          randomHarmoniousPalette();
-          seedEl.value = ("0000" + ((Math.random() * 0xffffffff) | 0).toString(16)).slice(-8);
-          layersEl.value = String(5 + ((Math.random() * 5) | 0));
-          layersOut.textContent = layersEl.value;
-          opacityEl.value = String(22 + ((Math.random() * 28) | 0));
-          opacityOut.textContent = (parseInt(opacityEl.value, 10) / 100).toFixed(2);
-          fadeEl.value = String(58 + ((Math.random() * 22) | 0));
-          fadeOut.textContent = fadeEl.value + "%";
+        btnNewSeed.addEventListener("click", function () {
+          seedEl.value = ("00000000" + ((Math.random() * 0xffffffff) >>> 0).toString(16)).slice(-8);
           refresh();
         });
+        btnCopySeed.addEventListener("click", function () {
+          if (!seedEl.value.trim()) {
+            seedEl.value = ("00000000" + ((Math.random() * 0xffffffff) >>> 0).toString(16)).slice(-8);
+            refresh();
+          }
+          copyText(seedEl.value.trim(), "Seed copied.");
+        });
+
+        btnRandom.addEventListener("click", function () {
+          var keys = Object.keys(PRESETS);
+          var pick = keys[(Math.random() * keys.length) | 0];
+          applyPreset(pick);
+          seedEl.value = ("00000000" + ((Math.random() * 0xffffffff) >>> 0).toString(16)).slice(-8);
+          layersEl.value = String(4 + ((Math.random() * 7) | 0));
+          layersOut.textContent = layersEl.value;
+          opacityEl.value = String(18 + ((Math.random() * 32) | 0));
+          opacityOut.textContent = (parseInt(opacityEl.value, 10) / 100).toFixed(2);
+          fadeEl.value = String(55 + ((Math.random() * 22) | 0));
+          fadeOut.textContent = fadeEl.value + "%";
+          sizeMinEl.value = String(42 + ((Math.random() * 22) | 0));
+          sizeMinOut.textContent = sizeMinEl.value;
+          sizeMaxEl.value = String(88 + ((Math.random() * 28) | 0));
+          sizeMaxOut.textContent = sizeMaxEl.value;
+          biasXEl.value = String(((Math.random() * 41) | 0) - 20);
+          biasYEl.value = String(((Math.random() * 41) | 0) - 20);
+          biasXOut.textContent = biasXEl.value;
+          biasYOut.textContent = biasYEl.value;
+          satEl.value = String(85 + ((Math.random() * 40) | 0));
+          satOut.textContent = satEl.value + "%";
+          refresh();
+        });
+
+        btnDefaults.addEventListener("click", function () {
+          applyPreset("stripe");
+          seedEl.value = "";
+          layersEl.value = "6";
+          layersOut.textContent = "6";
+          sizeMinEl.value = "55";
+          sizeMaxEl.value = "97";
+          sizeMinOut.textContent = "55";
+          sizeMaxOut.textContent = "97";
+          opacityEl.value = "35";
+          opacityOut.textContent = "0.35";
+          fadeEl.value = "68";
+          fadeOut.textContent = "68%";
+          biasXEl.value = "0";
+          biasYEl.value = "0";
+          biasXOut.textContent = "0";
+          biasYOut.textContent = "0";
+          satEl.value = "100";
+          satOut.textContent = "100%";
+          hueAmtEl.value = "14";
+          hueAmtOut.textContent = "14°";
+          animPreviewEl.checked = false;
+          animExportEl.checked = false;
+          grainPreviewEl.checked = false;
+          grainExportEl.checked = false;
+          minifyEl.checked = false;
+          classEl.value = "mesh-hero-bg";
+          minHEl.selectedIndex = 0;
+          setAspect("wide");
+          refresh();
+        });
+
         btnCopy.addEventListener("click", function () {
-          var t = out.value;
-          if (!t) return;
-          function ok() {
-            flashCopy("Copied to clipboard.");
-          }
-          function fail() {
-            flashCopy("Select and copy manually (⌘/Ctrl+C).");
-          }
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(t).then(ok).catch(fail);
-          } else {
-            out.select();
-            try {
-              document.execCommand("copy");
-              ok();
-            } catch (e) {
-              fail();
-            }
-          }
+          copyText(out.value, "Copied CSS + HTML.");
+        });
+        btnCopyCss.addEventListener("click", function () {
+          copyText(lastCss, "Copied CSS.");
+        });
+        btnCopyHtml.addEventListener("click", function () {
+          copyText(lastHtml, "Copied HTML.");
         });
 
         if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          animEl.checked = false;
-          animEl.disabled = true;
+          animPreviewEl.checked = false;
+          animPreviewEl.disabled = true;
+          animExportEl.checked = false;
+          animExportEl.disabled = true;
         }
 
         layersOut.textContent = layersEl.value;
+        sizeMinOut.textContent = sizeMinEl.value;
+        sizeMaxOut.textContent = sizeMaxEl.value;
         opacityOut.textContent = (parseInt(opacityEl.value, 10) / 100).toFixed(2);
         fadeOut.textContent = fadeEl.value + "%";
+        biasXOut.textContent = biasXEl.value;
+        biasYOut.textContent = biasYEl.value;
+        satOut.textContent = satEl.value + "%";
+        hueAmtOut.textContent = hueAmtEl.value + "°";
+        setAspect("wide");
+        applyPreset("stripe");
         refresh();
       })();
     </script>

@@ -92,7 +92,7 @@
   {
     "slug": "mesh-gradient-studio",
     "name": "Mesh gradient studio",
-    "shortDescription": "Layer soft hero-style radial gradients, randomize or lock a seed, then copy CSS and HTML for your site.",
+    "shortDescription": "Hero-style mesh gradients: presets, four blob colors, shape/bias sliders, grain, motion, and copy-ready CSS.",
     "tags": ["visual", "developer", "css", "generator"],
     "status": "beta",
     "path": "tools/mesh-gradient-studio/index.html",

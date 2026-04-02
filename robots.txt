@@ -1,4 +1,15 @@
 # https://onepagetoys.com
+#
+# Meta (Facebook / Instagram) link previews use these user-agents. If the Sharing
+# Debugger returns 403, add explicit Allow rules here first, then allowlist the same
+# user-agents at your host / CDN / WAF if blocking continues.
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
 User-agent: *
 Allow: /
 
