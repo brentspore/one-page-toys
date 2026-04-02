@@ -201,6 +201,12 @@
 
         orb.addEventListener("click", speak);
         again.addEventListener("click", speak);
+
+        inner.addEventListener("animationend", function (e) {
+          if (e.animationName === "vo-shake") {
+            inner.classList.remove("vo-orb--shook");
+          }
+        });
       })();
     </script>
     <script src="../../assets/tool-cross.js" defer></script>
