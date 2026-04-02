@@ -19,7 +19,8 @@ When the user asks to add a toy, tool, or page to this site, **bias toward ideas
 
 - Add `tools/<slug>/` with `index.html` + `styles.css` (and a local `.js` file only if the script is large or worth splitting—otherwise inline is fine).
 - In `<head>`, after `../../assets/styles.css`, link **`../../assets/tool-shell.css`** (shared `.tool` / `.panel` for all tool pages), then `styles.css`. **Do not** put tool-specific selectors or scripts in `assets/styles.css` or `assets/main.js`—those stay for the gallery shell (home, cards, footer, topbar).
-- Register in `tools-registry.json` with a **specific, benefit-led** `shortDescription` (good snippet text).
+- Register in `tools-registry.json` with a **specific, benefit-led** `shortDescription` (good snippet text) and a **`related` array** (2–4 sibling slugs) for cross-links.
+- On the tool page: `body data-tool-slug="<slug>"`, `<div id="toolCrossRoot" class="tool-cross-mount"></div>` before `</main>`, and `<script src="../../assets/tool-cross.js" defer></script>` before `</body>` (loads the “Related tools & toys” block from the registry).
 - Add the URL to `sitemap.xml` unless the page should be `noindex`.
 - Reuse the global header/footer, gtag, and `https://onepagetoys.com/` SEO pattern from sibling tools.
 

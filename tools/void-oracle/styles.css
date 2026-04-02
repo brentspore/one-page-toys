@@ -1,0 +1,132 @@
+/* Void Oracle — local only */
+
+.vo-layout {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 0.35rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.vo-orb-wrap {
+  position: relative;
+  width: min(220px, 70vw);
+  aspect-ratio: 1;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  border-radius: 50%;
+}
+
+.vo-orb-wrap:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-offset, 0 0 0 2px var(--surface)), var(--ring, 0 0 0 3px rgba(37, 99, 235, 0.35));
+  border-radius: 50%;
+}
+
+.vo-orb {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.55), transparent 42%),
+    radial-gradient(circle at 70% 75%, rgba(139, 92, 246, 0.9), transparent 55%),
+    radial-gradient(circle at 50% 50%, #6d28d9, #1e1b4b 72%, #0f0728);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 20px 50px rgba(76, 29, 149, 0.45),
+    0 0 80px rgba(139, 92, 246, 0.25);
+  animation: vo-pulse 4.2s ease-in-out infinite;
+}
+
+.vo-orb--shook {
+  animation: vo-shake 0.55s ease-out;
+}
+
+@keyframes vo-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: scale(1.03);
+    filter: hue-rotate(12deg);
+  }
+}
+
+@keyframes vo-shake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-4deg) scale(1.02);
+  }
+  40% {
+    transform: rotate(4deg) scale(1.04);
+  }
+  60% {
+    transform: rotate(-2deg);
+  }
+  80% {
+    transform: rotate(2deg);
+  }
+}
+
+.vo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.vo-prophecy {
+  width: 100%;
+  max-width: 36rem;
+  min-height: 6.5rem;
+  margin: 0;
+  padding: 1.15rem 1.25rem;
+  border-radius: var(--radius-sm, 12px);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  background: linear-gradient(165deg, rgba(76, 29, 149, 0.07), rgba(15, 7, 40, 0.04));
+  font-size: 1.05rem;
+  line-height: 1.65;
+  font-weight: 650;
+  color: var(--text);
+  text-align: left;
+}
+
+.vo-prophecy--flash {
+  animation: vo-flash 0.45s ease;
+}
+
+@keyframes vo-flash {
+  from {
+    opacity: 0.35;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vo-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  max-width: 32rem;
+}
+
+.vo-whisper {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7c3aed;
+  margin: 0 0 0.35rem;
+}

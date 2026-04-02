@@ -1,4 +1,4 @@
-/* Renders the gallery cards from tools-registry.json (same-origin fetch). */
+/* Gallery: tools-registry.json + search, tag filters, URL sync. */
 
 function escapeHTML(str) {
   return String(str).replace(/[&<>"']/g, function (ch) {
@@ -27,17 +27,175 @@ function badgeClassForStatus(status) {
   return "badge";
 }
 
+let allTools = [];
+let activeTag = "";
+let knownTags = [];
+
+function normalizeHaystack(tool) {
+  const parts = [
+    tool.name,
+    tool.shortDescription,
+    tool.slug,
+    tool.status,
+    Array.isArray(tool.tags) ? tool.tags.join(" ") : ""
+  ];
+  return parts
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+function toolMatchesSearch(tool, tokens) {
+  if (!tokens.length) return true;
+  const hay = normalizeHaystack(tool);
+  return tokens.every(function (tok) {
+    return hay.indexOf(tok) !== -1;
+  });
+}
+
+function toolMatchesTag(tool) {
+  if (!activeTag) return true;
+  const tags = Array.isArray(tool.tags) ? tool.tags : [];
+  return tags.some(function (t) {
+    return String(t).toLowerCase() === activeTag;
+  });
+}
+
+function getSearchTokens() {
+  const el = document.getElementById("toolsSearch");
+  const raw = (el && el.value) || "";
+  return raw
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function getFilteredTools() {
+  const tokens = getSearchTokens();
+  return allTools.filter(function (tool) {
+    return toolMatchesTag(tool) && toolMatchesSearch(tool, tokens);
+  });
+}
+
+function collectTagsFromTools(tools) {
+  const set = new Set();
+  tools.forEach(function (t) {
+    (Array.isArray(t.tags) ? t.tags : []).forEach(function (tag) {
+      set.add(String(tag).toLowerCase());
+    });
+  });
+  return Array.from(set).sort(function (a, b) {
+    return a.localeCompare(b);
+  });
+}
+
+function formatTagLabel(tag) {
+  return tag.charAt(0).toUpperCase() + tag.slice(1);
+}
+
+function syncURL() {
+  const qEl = document.getElementById("toolsSearch");
+  const q = (qEl && qEl.value.trim()) || "";
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  if (activeTag) params.set("tag", activeTag);
+  const qs = params.toString();
+  const path = location.pathname;
+  const hash = location.hash || "";
+  const next = qs ? path + "?" + qs + hash : path + hash;
+  if (next !== path + location.search + hash) {
+    history.replaceState(null, "", next);
+  }
+}
+
+function readFiltersFromURL() {
+  let q = "";
+  let tag = "";
+  try {
+    const p = new URLSearchParams(location.search);
+    q = p.get("q") || "";
+    tag = (p.get("tag") || "").toLowerCase().trim();
+  } catch (e) {
+    /* ignore */
+  }
+  return { q, tag };
+}
+
+function renderTagChips() {
+  const wrap = document.getElementById("toolsTags");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  function addChip(label, value, pressed) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tools-tag";
+    btn.textContent = label;
+    btn.setAttribute("data-tag", value);
+    btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+    btn.addEventListener("click", function () {
+      activeTag = value;
+      renderTagChips();
+      applyFilters();
+    });
+    wrap.appendChild(btn);
+  }
+
+  addChip("All", "", activeTag === "");
+  knownTags.forEach(function (t) {
+    addChip(formatTagLabel(t), t, activeTag === t);
+  });
+}
+
+function updateClearButton() {
+  const btn = document.getElementById("toolsClearFilters");
+  const qEl = document.getElementById("toolsSearch");
+  if (!btn || !qEl) return;
+  const hasQ = qEl.value.trim().length > 0;
+  const hasTag = activeTag.length > 0;
+  btn.hidden = !hasQ && !hasTag;
+}
+
+function updateMeta(filteredCount, total) {
+  const meta = document.getElementById("toolsMeta");
+  if (!meta) return;
+  const tokens = getSearchTokens();
+  const filtered = filteredCount !== total || tokens.length > 0 || activeTag;
+  if (total === 0) {
+    meta.textContent = "No toys yet";
+    return;
+  }
+  if (filtered) {
+    meta.textContent =
+      filteredCount === total
+        ? "Showing all " + total
+        : "Showing " + filteredCount + " of " + total;
+  } else {
+    meta.textContent = total === 1 ? "1 toy" : total + " toys";
+  }
+}
+
 function renderCards(tools) {
   const grid = document.getElementById("toolsGrid");
-  const meta = document.getElementById("toolsMeta");
   const errorEl = document.getElementById("toolsError");
+  const emptyEl = document.getElementById("toolsEmpty");
 
   if (!grid) return;
   grid.innerHTML = "";
 
-  if (meta) meta.textContent = tools.length ? `Showing ${tools.length} toys` : "No toys yet";
+  if (emptyEl) {
+    emptyEl.hidden = tools.length > 0;
+  }
 
-  if (!tools.length) return;
+  const total = allTools.length;
+  updateMeta(tools.length, total);
+
+  if (!tools.length) {
+    if (errorEl) errorEl.hidden = true;
+    return;
+  }
 
   for (const tool of tools) {
     const card = document.createElement("a");
@@ -81,7 +239,6 @@ function renderCards(tools) {
     card.appendChild(tagsEl);
     card.appendChild(cta);
 
-    // Keep cards accessible; prevent empty href from stealing focus.
     if (!tool.path) card.href = "#";
     if (tool.path) card.rel = "noopener";
 
@@ -89,6 +246,59 @@ function renderCards(tools) {
   }
 
   if (errorEl) errorEl.hidden = true;
+}
+
+function applyFilters() {
+  const filtered = getFilteredTools();
+  renderCards(filtered);
+  updateClearButton();
+  syncURL();
+}
+
+function validateActiveTag() {
+  if (!activeTag) return;
+  if (knownTags.indexOf(activeTag) === -1) activeTag = "";
+}
+
+function wireRandomButton() {
+  const randomBtn = document.getElementById("randomToolBtn");
+  if (!randomBtn) return;
+  randomBtn.addEventListener("click", function () {
+    const filtered = getFilteredTools().filter(function (t) {
+      return t && t.path;
+    });
+    const pool = filtered.length ? filtered : allTools.filter(function (t) {
+      return t && t.path;
+    });
+    if (!pool.length) return;
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    window.location.href = pick.path;
+  });
+}
+
+function wireSearchAndFilters() {
+  const searchEl = document.getElementById("toolsSearch");
+  const clearBtn = document.getElementById("toolsClearFilters");
+
+  if (searchEl) {
+    searchEl.addEventListener("input", function () {
+      applyFilters();
+    });
+    searchEl.addEventListener("search", function () {
+      applyFilters();
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function () {
+      if (searchEl) searchEl.value = "";
+      activeTag = "";
+      renderTagChips();
+      applyFilters();
+      if (searchEl) searchEl.focus();
+    });
+  }
+
 }
 
 async function loadRegistryAndRender() {
@@ -99,26 +309,28 @@ async function loadRegistryAndRender() {
 
   try {
     const res = await fetch("tools-registry.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`Failed to load registry (${res.status})`);
+    if (!res.ok) throw new Error("Failed to load registry (" + res.status + ")");
     const tools = await res.json();
 
     if (!Array.isArray(tools)) {
       throw new Error("tools-registry.json must export an array of tools");
     }
 
-    // Sort stable by name for predictable browsing.
-    const sorted = tools.slice().sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
-    renderCards(sorted);
+    allTools = tools.slice().sort(function (a, b) {
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    });
+    knownTags = collectTagsFromTools(allTools);
 
-    const randomBtn = document.getElementById("randomToolBtn");
-    if (randomBtn) {
-      randomBtn.addEventListener("click", () => {
-        const list = sorted.filter((t) => t && t.path);
-        if (!list.length) return;
-        const pick = list[Math.floor(Math.random() * list.length)];
-        window.location.href = pick.path;
-      });
-    }
+    const urlState = readFiltersFromURL();
+    const searchEl = document.getElementById("toolsSearch");
+    if (searchEl) searchEl.value = urlState.q;
+    activeTag = urlState.tag;
+    validateActiveTag();
+
+    renderTagChips();
+    wireSearchAndFilters();
+    wireRandomButton();
+    applyFilters();
   } catch (err) {
     if (errorEl) {
       errorEl.hidden = false;
@@ -127,7 +339,6 @@ async function loadRegistryAndRender() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
   loadRegistryAndRender();
 });
-

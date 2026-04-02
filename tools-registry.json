@@ -3,17 +3,19 @@
     "slug": "passphrase-generator",
     "name": "Passphrase & Password Generator",
     "shortDescription": "Random passwords or multi-word passphrases using Web Crypto—copy with one tap.",
-    "tags": ["utility", "security"],
+    "tags": ["utility", "security", "generator"],
     "status": "beta",
-    "path": "tools/passphrase-generator/index.html"
+    "path": "tools/passphrase-generator/index.html",
+    "related": ["qr-code-generator", "json-pretty-print-validate-minify", "wcag-contrast-checker"]
   },
   {
     "slug": "qr-code-generator",
     "name": "QR Code Generator",
     "shortDescription": "Turn text or URLs into a QR code and download a PNG.",
-    "tags": ["utility", "media"],
+    "tags": ["utility", "media", "link"],
     "status": "beta",
-    "path": "tools/qr-code-generator/index.html"
+    "path": "tools/qr-code-generator/index.html",
+    "related": ["image-converter", "passphrase-generator", "json-pretty-print-validate-minify"]
   },
   {
     "slug": "reflex-challenge",
@@ -21,7 +23,8 @@
     "shortDescription": "Wait for green, then click—see your reaction time in milliseconds.",
     "tags": ["game", "experiment"],
     "status": "experimental",
-    "path": "tools/reflex-challenge/index.html"
+    "path": "tools/reflex-challenge/index.html",
+    "related": ["snake-mini", "typing-speed-sprint", "coin-flipper"]
   },
   {
     "slug": "snake-mini",
@@ -29,55 +32,62 @@
     "shortDescription": "Classic grid snake with keyboard, WASD, and on-screen arrows.",
     "tags": ["game", "experiment"],
     "status": "experimental",
-    "path": "tools/snake-mini/index.html"
+    "path": "tools/snake-mini/index.html",
+    "related": ["reflex-challenge", "typing-speed-sprint"]
   },
   {
     "slug": "wcag-contrast-checker",
     "name": "WCAG Contrast Checker",
     "shortDescription": "Check text and background colors for WCAG 2.1 contrast and AA / AAA pass levels.",
-    "tags": ["utility", "accessibility"],
+    "tags": ["utility", "accessibility", "color"],
     "status": "beta",
-    "path": "tools/wcag-contrast-checker/index.html"
+    "path": "tools/wcag-contrast-checker/index.html",
+    "related": ["random-palette-explorer", "json-pretty-print-validate-minify", "word-character-counter"]
   },
   {
     "slug": "json-pretty-print-validate-minify",
     "name": "JSON Format & Validate",
     "shortDescription": "Pretty-print, minify, and validate JSON locally—errors include line and column.",
-    "tags": ["utility", "developer"],
+    "tags": ["utility", "developer", "json", "format"],
     "status": "beta",
-    "path": "tools/json-pretty-print-validate-minify/index.html"
+    "path": "tools/json-pretty-print-validate-minify/index.html",
+    "related": ["wcag-contrast-checker", "passphrase-generator", "meeting-cost-timer"]
   },
   {
     "slug": "random-palette-explorer",
     "name": "Random Palette Explorer",
     "shortDescription": "Explore color palettes by clicking the vibe you like until one set remains.",
-    "tags": ["visual", "experiment"],
+    "tags": ["visual", "experiment", "color"],
     "status": "beta",
-    "path": "tools/random-palette-explorer/index.html"
+    "path": "tools/random-palette-explorer/index.html",
+    "related": ["wcag-contrast-checker", "weird-generative-canvas", "json-pretty-print-validate-minify"]
   },
   {
     "slug": "meeting-cost-timer",
     "name": "Meeting Cost Timer",
     "shortDescription": "Enter $/hour and people; watch the cost rise live as time progresses.",
-    "tags": ["utility", "productivity"],
+    "tags": ["utility", "productivity", "timer", "money"],
     "status": "beta",
-    "path": "tools/meeting-cost-timer/index.html"
+    "path": "tools/meeting-cost-timer/index.html",
+    "related": ["percentage-calculator", "word-character-counter", "json-pretty-print-validate-minify"]
   },
   {
     "slug": "image-converter",
     "name": "Quick Image Converter",
     "shortDescription": "Drag-and-drop an image and convert it instantly to another format.",
-    "tags": ["utility", "media"],
+    "tags": ["utility", "media", "image", "format"],
     "status": "experimental",
-    "path": "tools/image-converter/index.html"
+    "path": "tools/image-converter/index.html",
+    "related": ["qr-code-generator", "weird-generative-canvas", "wcag-contrast-checker"]
   },
   {
     "slug": "weird-generative-canvas",
     "name": "Weird Generative Canvas",
     "shortDescription": "A random algorithm with a random color scheme that animates on your screen.",
-    "tags": ["visual", "experiment"],
+    "tags": ["visual", "experiment", "canvas", "animation"],
     "status": "experimental",
-    "path": "tools/weird-generative-canvas/index.html"
+    "path": "tools/weird-generative-canvas/index.html",
+    "related": ["random-palette-explorer", "blob-choir", "reflex-challenge"]
   },
   {
     "slug": "word-character-counter",
@@ -85,7 +95,8 @@
     "shortDescription": "Live counts for words, characters, lines, sentences, paragraphs, and rough read time.",
     "tags": ["utility", "writing"],
     "status": "beta",
-    "path": "tools/word-character-counter/index.html"
+    "path": "tools/word-character-counter/index.html",
+    "related": ["json-pretty-print-validate-minify", "meeting-cost-timer", "percentage-calculator"]
   },
   {
     "slug": "percentage-calculator",
@@ -93,7 +104,8 @@
     "shortDescription": "What is X% of Y, or X is what percent of Y—solved locally in two panels.",
     "tags": ["utility", "math"],
     "status": "beta",
-    "path": "tools/percentage-calculator/index.html"
+    "path": "tools/percentage-calculator/index.html",
+    "related": ["meeting-cost-timer", "word-character-counter"]
   },
   {
     "slug": "coin-flipper",
@@ -101,14 +113,34 @@
     "shortDescription": "Fair virtual coin with crypto randomness, heads/tails tallies, and a streak counter.",
     "tags": ["game", "experiment"],
     "status": "beta",
-    "path": "tools/coin-flipper/index.html"
+    "path": "tools/coin-flipper/index.html",
+    "related": ["void-oracle", "reflex-challenge", "blob-choir"]
   },
   {
     "slug": "typing-speed-sprint",
     "name": "Typing Speed Sprint",
     "shortDescription": "Thirty-second word sprint in the browser—see your WPM when time is up.",
-    "tags": ["game", "experiment"],
+    "tags": ["game", "experiment", "keyboard"],
     "status": "beta",
-    "path": "tools/typing-speed-sprint/index.html"
+    "path": "tools/typing-speed-sprint/index.html",
+    "related": ["reflex-challenge", "snake-mini", "word-character-counter"]
+  },
+  {
+    "slug": "void-oracle",
+    "name": "Void Oracle",
+    "shortDescription": "Consult a purple orb for surreal prophecies—nonsense wisdom, cosmic vibes, zero stakes.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/void-oracle/index.html",
+    "related": ["blob-choir", "coin-flipper", "weird-generative-canvas"]
+  },
+  {
+    "slug": "blob-choir",
+    "name": "Blob Choir",
+    "shortDescription": "Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums.",
+    "tags": ["audio", "experiment"],
+    "status": "experimental",
+    "path": "tools/blob-choir/index.html",
+    "related": ["void-oracle", "weird-generative-canvas", "reflex-challenge"]
   }
 ]

@@ -13,20 +13,20 @@
       gtag('config', 'G-VBVJ93GL8L');
     </script>
     <title>One Page Toys</title>
-    <meta name="description" content="A clean gallery of one-page tools and playful experiments." />
+    <meta name="description" content="Browse one-page tools and playful experiments—search by name or description, filter by tag, open anything in a click." />
     <link rel="canonical" href="https://onepagetoys.com/" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#2563eb" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
     <meta property="og:title" content="One Page Toys" />
-    <meta property="og:description" content="A clean gallery of one-page tools and playful experiments." />
+    <meta property="og:description" content="Browse one-page tools and playful experiments—search, filter by tag, open in a click." />
     <meta property="og:url" content="https://onepagetoys.com/" />
     <meta property="og:image" content="https://onepagetoys.com/assets/synergy-logo.svg" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="One Page Toys" />
-    <meta name="twitter:description" content="A clean gallery of one-page tools and playful experiments." />
+    <meta name="twitter:description" content="Browse one-page tools and playful experiments—search, filter by tag, open in a click." />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/synergy-logo.svg" />
     <script type="application/ld+json">
       {
@@ -34,7 +34,7 @@
         "@type": "WebSite",
         "name": "One Page Toys",
         "url": "https://onepagetoys.com/",
-        "description": "A clean gallery of one-page tools and playful experiments.",
+        "description": "Browse one-page tools and playful experiments with search and tag filters.",
         "publisher": {
           "@type": "Organization",
           "name": "Synergy",
@@ -66,9 +66,35 @@
       <section id="tools" class="tools">
         <div class="tools__header">
           <h2>Tools</h2>
-          <div id="toolsMeta" class="muted" aria-live="polite"></div>
+          <div id="toolsMeta" class="tools-meta" aria-live="polite"></div>
         </div>
+
+        <div class="tools-find" role="search">
+          <label class="tools-find__label" for="toolsSearch">Search tools</label>
+          <div class="tools-find__row">
+            <input
+              type="search"
+              id="toolsSearch"
+              class="tools-find__input"
+              placeholder="Name, description, or tag (e.g. json, color, game)…"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+              enterkeyhint="search"
+            />
+            <button type="button" class="btn tools-find__clear" id="toolsClearFilters" hidden>
+              Clear filters
+            </button>
+          </div>
+        </div>
+
+        <div class="tools-tags-wrap">
+          <span class="tools-tags__label" id="toolsTagsLabel">Filter by tag</span>
+          <div class="tools-tags" id="toolsTags" role="group" aria-labelledby="toolsTagsLabel"></div>
+        </div>
+
         <div id="toolsGrid" class="grid" aria-live="polite"></div>
+        <p id="toolsEmpty" class="tools-empty" hidden>No toys match those filters. Try another search or tag.</p>
         <div id="toolsError" class="error" role="alert" hidden></div>
       </section>
 

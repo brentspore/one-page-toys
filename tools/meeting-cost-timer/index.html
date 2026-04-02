@@ -46,7 +46,7 @@
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-tool-slug="meeting-cost-timer">
     <header class="topbar">
       <div class="topbar__inner">
         <a class="brand" href="../../index.html">One Page Toys</a>
@@ -169,6 +169,7 @@
         </div>
       </section>
 
+    <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
 
     <footer class="site-footer" role="contentinfo">
@@ -397,5 +398,6 @@
       updateUI();
       setRunning(false);
     </script>
+    <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

@@ -45,7 +45,7 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   </head>
-  <body>
+  <body data-tool-slug="qr-code-generator">
     <header class="topbar">
       <div class="topbar__inner">
         <a class="brand" href="../../index.html">One Page Toys</a>
@@ -92,6 +92,7 @@
           </p>
         </div>
       </section>
+    <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
 
     <footer class="site-footer" role="contentinfo">
@@ -220,5 +221,6 @@
         }
       })();
     </script>
+    <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>
