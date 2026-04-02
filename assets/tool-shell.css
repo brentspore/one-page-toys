@@ -5,6 +5,10 @@
 
 .tool{
   max-width: 52rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
 .tool h1{
@@ -63,6 +67,10 @@
 .tool-cross-mount{
   margin-top: 28px;
   max-width: 52rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
 .tool-cross .tool-cross__title{
