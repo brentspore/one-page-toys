@@ -60,7 +60,7 @@
     "tags": ["visual", "experiment", "color"],
     "status": "beta",
     "path": "tools/random-palette-explorer/index.html",
-    "related": ["wcag-contrast-checker", "weird-generative-canvas", "json-pretty-print-validate-minify"]
+    "related": ["wcag-contrast-checker", "weird-generative-canvas", "mesh-gradient-studio"]
   },
   {
     "slug": "meeting-cost-timer",
@@ -87,7 +87,16 @@
     "tags": ["visual", "experiment", "canvas", "animation"],
     "status": "experimental",
     "path": "tools/weird-generative-canvas/index.html",
-    "related": ["random-palette-explorer", "blob-choir", "reflex-challenge"]
+    "related": ["random-palette-explorer", "mesh-gradient-studio", "blob-choir"]
+  },
+  {
+    "slug": "mesh-gradient-studio",
+    "name": "Mesh gradient studio",
+    "shortDescription": "Layer soft hero-style radial gradients, randomize or lock a seed, then copy CSS and HTML for your site.",
+    "tags": ["visual", "developer", "css", "generator"],
+    "status": "beta",
+    "path": "tools/mesh-gradient-studio/index.html",
+    "related": ["random-palette-explorer", "weird-generative-canvas", "wcag-contrast-checker"]
   },
   {
     "slug": "word-character-counter",

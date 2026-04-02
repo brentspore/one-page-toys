@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VBVJ93GL8L");
+    </script>
+    <title>Mesh gradient studio — hero-style CSS backgrounds</title>
+    <meta
+      name="description"
+      content="Layer soft radial gradients like a Stripe-style hero. Tune colors, layers, and seed—or randomize—then copy CSS and HTML for your own site."
+    />
+    <link rel="canonical" href="https://onepagetoys.com/tools/mesh-gradient-studio/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#635bff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Mesh gradient studio — hero-style CSS backgrounds" />
+    <meta
+      property="og:description"
+      content="Layer soft radial gradients like a Stripe-style hero. Tune colors, layers, and seed—or randomize—then copy CSS and HTML for your own site."
+    />
+    <meta property="og:url" content="https://onepagetoys.com/tools/mesh-gradient-studio/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mesh gradient studio — hero-style CSS backgrounds" />
+    <meta
+      name="twitter:description"
+      content="Layer soft radial gradients like a Stripe-style hero. Tune colors, layers, and seed—or randomize—then copy CSS and HTML for your own site."
+    />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Mesh gradient studio",
+        "url": "https://onepagetoys.com/tools/mesh-gradient-studio/index.html",
+        "description": "Generate layered radial mesh gradients and copy CSS for your site. Runs in the browser.",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="mesh-gradient-studio">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1>Mesh gradient studio</h1>
+        <p class="lead">
+          Stack soft, oversized radial gradients—similar in spirit to polished product hero backgrounds. Adjust colors and complexity, lock a seed for
+          reproducible layouts, or hit randomize. Copy the CSS (and a tiny HTML snippet) into your own project.
+        </p>
+        <p class="tool-ext-link muted">
+          Pair with palettes &amp; contrast:
+          <a href="../random-palette-explorer/index.html">Random palette explorer</a>
+          <span aria-hidden="true"> · </span>
+          <a href="../wcag-contrast-checker/index.html">WCAG contrast checker</a>
+        </p>
+
+        <div class="panel mgs-layout">
+          <div class="mgs-controls">
+            <div class="mgs-field">
+              <label for="mgsBase">Base fill</label>
+              <div class="mgs-row">
+                <input type="color" id="mgsBase" value="#f6f9fc" aria-label="Base background color" />
+                <input type="text" id="mgsBaseHex" value="#f6f9fc" maxlength="7" spellcheck="false" aria-label="Base color hex" />
+              </div>
+            </div>
+            <div class="mgs-field">
+              <span id="mgsBlobLabel">Blob colors</span>
+              <div class="mgs-row" role="group" aria-labelledby="mgsBlobLabel">
+                <input type="color" id="mgsC1" value="#635bff" aria-label="Blob color 1" />
+                <input type="color" id="mgsC2" value="#00d4ff" aria-label="Blob color 2" />
+                <input type="color" id="mgsC3" value="#ff6b9d" aria-label="Blob color 3" />
+              </div>
+            </div>
+            <div class="mgs-field">
+              <label for="mgsLayers">Layers <output id="mgsLayersOut">6</output></label>
+              <div class="mgs-slider-row">
+                <input type="range" id="mgsLayers" min="3" max="10" value="6" />
+              </div>
+            </div>
+            <div class="mgs-field">
+              <label for="mgsOpacity">Blob strength <output id="mgsOpacityOut">0.35</output></label>
+              <div class="mgs-slider-row">
+                <input type="range" id="mgsOpacity" min="10" max="55" value="35" />
+              </div>
+              <span class="muted">Max opacity per layer (lower = subtler).</span>
+            </div>
+            <div class="mgs-field">
+              <label for="mgsFade">Soft edge <output id="mgsFadeOut">68%</output></label>
+              <div class="mgs-slider-row">
+                <input type="range" id="mgsFade" min="50" max="88" value="68" />
+              </div>
+              <span class="muted">Where each radial fades to transparent.</span>
+            </div>
+            <div class="mgs-field">
+              <label for="mgsSeed">Seed <span class="muted">(optional)</span></label>
+              <input type="text" id="mgsSeed" placeholder="Leave empty for non-deterministic" spellcheck="false" autocomplete="off" />
+              <span class="muted">Same seed + settings reproduces the same mesh.</span>
+            </div>
+            <label class="mgs-check">
+              <input type="checkbox" id="mgsAnim" />
+              Preview subtle hue motion
+            </label>
+            <label class="mgs-check">
+              <input type="checkbox" id="mgsMinify" />
+              Minify copied CSS
+            </label>
+            <div class="mgs-actions">
+              <button type="button" class="btn" id="mgsRandom">Randomize</button>
+              <button type="button" class="btn btn--secondary" id="mgsRegen">Regenerate</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="mgs-preview-wrap">
+              <div id="mgsPreview" class="mgs-preview" aria-hidden="true">
+                <span class="mgs-preview-label">Live preview</span>
+              </div>
+            </div>
+            <p class="muted" style="margin-top: 0.75rem; font-size: 0.8125rem">
+              Use a dedicated wrapper with no text children so optional <code>filter</code> animation does not tint your content. Put content in a
+              sibling with a higher stacking context if needed.
+            </p>
+
+            <div class="mgs-output" style="margin-top: 1.25rem">
+              <label for="mgsOut" class="sr-only">Generated CSS and HTML</label>
+              <textarea id="mgsOut" readonly spellcheck="false"></textarea>
+              <div class="mgs-output-actions">
+                <button type="button" class="btn" id="mgsCopy">Copy all</button>
+                <span class="mgs-copy-status" id="mgsCopyStatus" hidden aria-live="polite"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small tools and playful experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html#tools">Browse tools</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var preview = document.getElementById("mgsPreview");
+        var out = document.getElementById("mgsOut");
+        var basePicker = document.getElementById("mgsBase");
+        var baseHex = document.getElementById("mgsBaseHex");
+        var c1 = document.getElementById("mgsC1");
+        var c2 = document.getElementById("mgsC2");
+        var c3 = document.getElementById("mgsC3");
+        var layersEl = document.getElementById("mgsLayers");
+        var layersOut = document.getElementById("mgsLayersOut");
+        var opacityEl = document.getElementById("mgsOpacity");
+        var opacityOut = document.getElementById("mgsOpacityOut");
+        var fadeEl = document.getElementById("mgsFade");
+        var fadeOut = document.getElementById("mgsFadeOut");
+        var seedEl = document.getElementById("mgsSeed");
+        var animEl = document.getElementById("mgsAnim");
+        var minifyEl = document.getElementById("mgsMinify");
+        var btnRandom = document.getElementById("mgsRandom");
+        var btnRegen = document.getElementById("mgsRegen");
+        var btnCopy = document.getElementById("mgsCopy");
+        var copyStatus = document.getElementById("mgsCopyStatus");
+
+        function hashSeed(str) {
+          var h = 1779033703;
+          for (var i = 0; i < str.length; i++) {
+            h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+            h = (h << 13) | (h >>> 19);
+          }
+          return h >>> 0;
+        }
+
+        function mulberry32(seed) {
+          return function () {
+            var t = (seed += 0x6d2b79f5) | 0;
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+
+        function hexToRgb(hex) {
+          var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex).trim());
+          if (!m) return { r: 99, g: 91, b: 255 };
+          return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
+        }
+
+        function rgbaFromHex(hex, a) {
+          var c = hexToRgb(hex);
+          return "rgba(" + c.r + "," + c.g + "," + c.b + "," + a.toFixed(3) + ")";
+        }
+
+        function normalizeHex(hex) {
+          var m = /^#?([a-f\d]{6})$/i.exec(String(hex).trim());
+          if (!m) return null;
+          return "#" + m[1].toLowerCase();
+        }
+
+        function syncBaseFromPicker() {
+          baseHex.value = basePicker.value;
+        }
+
+        function syncPickerFromHex() {
+          var n = normalizeHex(baseHex.value);
+          if (n) {
+            basePicker.value = n;
+            baseHex.value = n;
+          }
+        }
+
+        function randomHex() {
+          var n = (Math.random() * 0xffffff) | 0;
+          return "#" + ("000000" + n.toString(16)).slice(-6);
+        }
+
+        function hslToHex(h, s, l) {
+          s /= 100;
+          l /= 100;
+          var a = s * Math.min(l, 1 - l);
+          function f(n) {
+            var k = (n + h / 30) % 12;
+            var c = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * c);
+          }
+          var r = f(0),
+            g = f(8),
+            b = f(4);
+          return (
+            "#" +
+            ("0" + r.toString(16)).slice(-2) +
+            ("0" + g.toString(16)).slice(-2) +
+            ("0" + b.toString(16)).slice(-2)
+          );
+        }
+
+        function randomHarmoniousPalette() {
+          var baseHue = Math.random() * 360;
+          c1.value = hslToHex(baseHue, 72, 62);
+          c2.value = hslToHex((baseHue + 38) % 360, 68, 58);
+          c3.value = hslToHex((baseHue + 195) % 360, 55, 68);
+          basePicker.value = hslToHex((baseHue + 210) % 360, 18, 97);
+          syncBaseFromPicker();
+        }
+
+        function getRng() {
+          var raw = seedEl.value.trim();
+          if (!raw) {
+            return { rand: Math.random, seeded: false };
+          }
+          var seed = hashSeed(raw);
+          var rng = mulberry32(seed);
+          return { rand: rng, seeded: true };
+        }
+
+        function buildMesh(rand) {
+          var base = normalizeHex(basePicker.value) || "#f6f9fc";
+          var palette = [c1.value, c2.value, c3.value];
+          var n = parseInt(layersEl.value, 10) || 6;
+          var maxOp = (parseInt(opacityEl.value, 10) || 35) / 100;
+          var fadeMid = (parseInt(fadeEl.value, 10) || 68) / 100;
+          var parts = [];
+          var i;
+          var x, y, w, h, fade, alpha, color;
+          for (i = 0; i < n; i++) {
+            x = rand() * 100;
+            y = rand() * 100;
+            w = 55 + rand() * 42;
+            h = 42 + rand() * 48;
+            fade = Math.min(92, (fadeMid - 0.12 + rand() * 0.22) * 100);
+            alpha = Math.max(0.06, rand() * maxOp);
+            color = palette[i % 3];
+            parts.push(
+              "radial-gradient(ellipse " +
+                w.toFixed(1) +
+                "% " +
+                h.toFixed(1) +
+                "% at " +
+                x.toFixed(1) +
+                "% " +
+                y.toFixed(1) +
+                "%," +
+                rgbaFromHex(color, alpha) +
+                " 0%,transparent " +
+                fade.toFixed(1) +
+                "%)"
+            );
+          }
+          return { base: base, layers: parts };
+        }
+
+        function applyPreview(mesh) {
+          preview.style.backgroundColor = mesh.base;
+          preview.style.backgroundImage = mesh.layers.join(",");
+          preview.style.backgroundRepeat = "no-repeat";
+          preview.style.backgroundSize = "100% 100%";
+        }
+
+        function cssBlock(mesh, minify, includeAnim) {
+          var className = "mesh-hero-bg";
+          var layersJoined = mesh.layers.join(minify ? "," : ",\n    ");
+          var bgImage = minify ? "background-image:" + layersJoined + ";" : "  background-image:\n    " + layersJoined + ";";
+          var core =
+            "." +
+            className +
+            " {\n" +
+            "  min-height: 100vh;\n" +
+            "  width: 100%;\n" +
+            "  background-color: " +
+            mesh.base +
+            ";\n" +
+            bgImage +
+            "\n" +
+            "  background-repeat: no-repeat;\n" +
+            "  background-size: 100% 100%;\n" +
+            "}";
+          var motion =
+            "\n\n@media (prefers-reduced-motion: no-preference) {\n" +
+            "  ." +
+            className +
+            "--motion {\n" +
+            "    animation: mesh-hero-hue 22s ease-in-out infinite;\n" +
+            "  }\n" +
+            "}\n\n" +
+            "@keyframes mesh-hero-hue {\n" +
+            "  0%, 100% { filter: hue-rotate(0deg); }\n" +
+            "  50% { filter: hue-rotate(14deg); }\n" +
+            "}";
+          var html =
+            '<!-- Background only: avoid text inside this node if you use --motion (filter affects descendants). -->\n<div class="' +
+            className +
+            (includeAnim ? " " + className + "--motion" : "") +
+            '" aria-hidden="true"></div>';
+          if (minify) {
+            core = core.replace(/\s+/g, " ").replace(/ {\s*/g, "{").replace(/;\s*/g, ";").replace(/\s*}\s*/g, "}");
+          }
+          var css = core + (includeAnim ? (minify ? motion.replace(/\s+/g, " ") : motion) : "");
+          return { css: css, html: html };
+        }
+
+        function refresh() {
+          syncBaseFromPicker();
+          var rng = getRng();
+          var mesh = buildMesh(rng.rand);
+          applyPreview(mesh);
+          var includeAnim = animEl.checked;
+          var minify = minifyEl.checked;
+          var pack = cssBlock(mesh, minify, includeAnim);
+          out.value =
+            "/* Paste into your stylesheet */\n\n" +
+            pack.css +
+            "\n\n/* Paste into your HTML (adjust min-height as needed) */\n\n" +
+            pack.html;
+          if (includeAnim) {
+            preview.classList.add("mgs-preview--anim");
+          } else {
+            preview.classList.remove("mgs-preview--anim");
+          }
+        }
+
+        function flashCopy(msg) {
+          copyStatus.textContent = msg;
+          copyStatus.hidden = false;
+          clearTimeout(flashCopy._t);
+          flashCopy._t = setTimeout(function () {
+            copyStatus.hidden = true;
+          }, 2200);
+        }
+
+        layersEl.addEventListener("input", function () {
+          layersOut.textContent = layersEl.value;
+          refresh();
+        });
+        opacityEl.addEventListener("input", function () {
+          opacityOut.textContent = (parseInt(opacityEl.value, 10) / 100).toFixed(2);
+          refresh();
+        });
+        fadeEl.addEventListener("input", function () {
+          fadeOut.textContent = fadeEl.value + "%";
+          refresh();
+        });
+        basePicker.addEventListener("input", function () {
+          syncBaseFromPicker();
+          refresh();
+        });
+        baseHex.addEventListener("change", function () {
+          syncPickerFromHex();
+          refresh();
+        });
+        baseHex.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            syncPickerFromHex();
+            refresh();
+          }
+        });
+        [c1, c2, c3].forEach(function (el) {
+          el.addEventListener("input", refresh);
+        });
+        seedEl.addEventListener("input", refresh);
+        seedEl.addEventListener("change", refresh);
+        animEl.addEventListener("change", refresh);
+        minifyEl.addEventListener("change", refresh);
+        btnRegen.addEventListener("click", refresh);
+        btnRandom.addEventListener("click", function () {
+          randomHarmoniousPalette();
+          seedEl.value = ("0000" + ((Math.random() * 0xffffffff) | 0).toString(16)).slice(-8);
+          layersEl.value = String(5 + ((Math.random() * 5) | 0));
+          layersOut.textContent = layersEl.value;
+          opacityEl.value = String(22 + ((Math.random() * 28) | 0));
+          opacityOut.textContent = (parseInt(opacityEl.value, 10) / 100).toFixed(2);
+          fadeEl.value = String(58 + ((Math.random() * 22) | 0));
+          fadeOut.textContent = fadeEl.value + "%";
+          refresh();
+        });
+        btnCopy.addEventListener("click", function () {
+          var t = out.value;
+          if (!t) return;
+          function ok() {
+            flashCopy("Copied to clipboard.");
+          }
+          function fail() {
+            flashCopy("Select and copy manually (⌘/Ctrl+C).");
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(t).then(ok).catch(fail);
+          } else {
+            out.select();
+            try {
+              document.execCommand("copy");
+              ok();
+            } catch (e) {
+              fail();
+            }
+          }
+        });
+
+        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          animEl.checked = false;
+          animEl.disabled = true;
+        }
+
+        layersOut.textContent = layersEl.value;
+        opacityOut.textContent = (parseInt(opacityEl.value, 10) / 100).toFixed(2);
+        fadeOut.textContent = fadeEl.value + "%";
+        refresh();
+      })();
+    </script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>
