@@ -3,23 +3,44 @@
  * Not loaded on the gallery home — keeps global styles.css smaller.
  */
 
+.tool{
+  max-width: 52rem;
+}
+
 .tool h1{
-  margin: 0 0 8px;
-  font-size: 30px;
-  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
 }
 
 .tool .lead{
-  margin: 0 0 18px;
+  margin: 0 0 22px;
   color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 42rem;
 }
 
 .panel{
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
+  padding: 22px 22px 20px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before{
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #6366f1);
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 .sr-only{

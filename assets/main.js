@@ -72,9 +72,14 @@ function renderCards(tools) {
       tagsEl.appendChild(chip);
     }
 
+    const cta = document.createElement("span");
+    cta.className = "card__cta";
+    cta.textContent = "Open";
+
     card.appendChild(cardTop);
     card.appendChild(desc);
     card.appendChild(tagsEl);
+    card.appendChild(cta);
 
     // Keep cards accessible; prevent empty href from stealing focus.
     if (!tool.path) card.href = "#";
