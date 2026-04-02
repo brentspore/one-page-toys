@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://onepagetoys.com -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://onepagetoys.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/wcag-contrast-checker/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/json-pretty-print-validate-minify/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/random-palette-explorer/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/meeting-cost-timer/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/image-converter/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/weird-generative-canvas/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+</urlset>

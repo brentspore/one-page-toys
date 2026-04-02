@@ -1,0 +1,179 @@
+/*
+ * WCAG Contrast Checker — tool-specific styles.
+ */
+
+.wcc-title {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.wcc-lead {
+  text-align: center;
+  max-width: 38rem;
+  margin: 0 auto 1.25rem;
+}
+
+.wcc-panel {
+  margin-bottom: 1rem;
+}
+
+.wcc-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.wcc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.wcc-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.wcc-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wcc-input-row input[type="color"] {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: var(--surface);
+}
+
+.wcc-input-row input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9rem;
+}
+
+.wcc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.wcc-preview {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  min-height: 5.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.wcc-preview-line {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.wcc-preview-line--large {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.wcc-preview-muted {
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+
+.wcc-ratio {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.wcc-ratio-num {
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.wcc-ratio-label {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.wcc-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wcc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.wcc-table th,
+.wcc-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.wcc-table th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.wcc-pass {
+  color: #15803d;
+  font-weight: 800;
+}
+
+.wcc-fail {
+  color: #b91c1c;
+  font-weight: 800;
+}
+
+.wcc-note {
+  margin: 1rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.wcc-error {
+  text-align: center;
+  color: #b91c1c;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.wcc-hidden {
+  display: none !important;
+}

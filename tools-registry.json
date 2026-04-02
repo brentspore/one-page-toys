@@ -1,5 +1,21 @@
 [
   {
+    "slug": "wcag-contrast-checker",
+    "name": "WCAG Contrast Checker",
+    "shortDescription": "Check text and background colors for WCAG 2.1 contrast and AA / AAA pass levels.",
+    "tags": ["utility", "accessibility"],
+    "status": "beta",
+    "path": "tools/wcag-contrast-checker/index.html"
+  },
+  {
+    "slug": "json-pretty-print-validate-minify",
+    "name": "JSON Format & Validate",
+    "shortDescription": "Pretty-print, minify, and validate JSON locally—errors include line and column.",
+    "tags": ["utility", "developer"],
+    "status": "beta",
+    "path": "tools/json-pretty-print-validate-minify/index.html"
+  },
+  {
     "slug": "random-palette-explorer",
     "name": "Random Palette Explorer",
     "shortDescription": "Explore color palettes by clicking the vibe you like until one set remains.",

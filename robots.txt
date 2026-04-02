@@ -1,0 +1,5 @@
+# https://onepagetoys.com
+User-agent: *
+Allow: /
+
+Sitemap: https://onepagetoys.com/sitemap.xml
