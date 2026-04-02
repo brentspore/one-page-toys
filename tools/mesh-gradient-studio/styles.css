@@ -1,7 +1,7 @@
 /* Mesh gradient studio — layout & UI */
 
 .tool.mgs-tool {
-  max-width: min(72rem, 100%);
+  max-width: 52rem;
 }
 
 .mgs-layout {

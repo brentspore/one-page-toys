@@ -9,6 +9,8 @@
   margin-left: auto;
   margin-right: auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .tool h1{
@@ -29,7 +31,7 @@
 
 /* Optional outbound promo line (e.g. Symmetry Genius) — keep copy short */
 .tool-ext-link{
-  margin: -8px 0 22px;
+  margin: 12px 0 0;
   font-size: 0.88rem;
   line-height: 1.55;
   max-width: 42rem;
@@ -48,7 +50,22 @@
 }
 
 .tool-ext-link + .tool-ext-link{
-  margin-top: -12px;
+  margin-top: 8px;
+}
+
+/* Re-order outbound promo text so it appears after the main editor panels,
+   but still before the related-tools container (#toolCrossRoot). */
+.tool > h1{
+  order: 0;
+}
+.tool > .lead{
+  order: 1;
+}
+.tool > .panel{
+  order: 2;
+}
+.tool > .tool-ext-link{
+  order: 3;
 }
 
 .panel{
