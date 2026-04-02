@@ -267,7 +267,7 @@ function applyFilters() {
         return t && t.path;
       });
       const shuffled = shuffleInPlace(pool.slice(), Math.random);
-      homeFeatured = shuffled.slice(0, 12);
+      homeFeatured = shuffled.slice(0, 9);
     }
     renderCards(homeFeatured);
     updateClearButton();
