@@ -175,6 +175,10 @@ code{
   color: var(--accent-hover, #1d4ed8);
 }
 
+.hero__partner + .hero__partner{
+  margin-top: -10px;
+}
+
 .sr-only{
   position: absolute;
   width: 1px;
