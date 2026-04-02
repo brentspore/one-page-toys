@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>QR Code Generator</title>
+    <meta name="description" content="Turn any text or URL into a QR code in your browser. Download a PNG when you are done." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/qr-code-generator/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="QR Code Generator" />
+    <meta property="og:description" content="Turn any text or URL into a QR code in your browser. Download a PNG when you are done." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/qr-code-generator/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/synergy-logo.svg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="QR Code Generator" />
+    <meta name="twitter:description" content="Turn any text or URL into a QR code in your browser. Download a PNG when you are done." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/synergy-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "QR Code Generator",
+        "url": "https://onepagetoys.com/tools/qr-code-generator/index.html",
+        "description": "Turn any text or URL into a QR code in your browser. Download a PNG when you are done.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Loads qrcodejs from cdnjs to draw codes.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1 class="qrg-title">QR code generator</h1>
+        <p class="lead qrg-lead muted">
+          Type or paste text or a URL.           Your message stays in the page until you leave—encoding uses the
+          <strong>qrcodejs</strong> script from cdnjs (same-origin draw; script is third-party).
+        </p>
+
+        <div id="qrgError" class="qrg-error qrg-hidden" role="alert"></div>
+
+        <div class="panel qrg-panel">
+          <label class="qrg-label" for="qrgInput">Content</label>
+          <textarea id="qrgInput" class="qrg-textarea" rows="4" placeholder="https://onepagetoys.com/" spellcheck="false"></textarea>
+
+          <div class="qrg-row">
+            <div class="qrg-field">
+              <label class="qrg-label" for="qrgSize">Size</label>
+              <select id="qrgSize" class="qrg-select">
+                <option value="160">Small (160 px)</option>
+                <option value="240" selected>Medium (240 px)</option>
+                <option value="320">Large (320 px)</option>
+                <option value="400">XL (400 px)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="qrg-qr-wrap">
+            <div id="qrgMount" class="qrg-mount" aria-label="QR code output"></div>
+          </div>
+
+          <div class="qrg-actions">
+            <button type="button" class="btn btn--primary" id="qrgUpdate">Update QR</button>
+            <button type="button" class="btn" id="qrgDownload">Download PNG</button>
+          </div>
+
+          <p class="qrg-note muted">
+            Very long text may hit QR capacity limits. If encoding fails, try a shorter string or a URL shortener.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small tools and playful experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html#tools">Browse tools</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var elIn = document.getElementById("qrgInput");
+        var elMount = document.getElementById("qrgMount");
+        var elErr = document.getElementById("qrgError");
+        var elSize = document.getElementById("qrgSize");
+        var qrInstance = null;
+
+        function showErr(msg) {
+          if (!msg) {
+            elErr.classList.add("qrg-hidden");
+            elErr.textContent = "";
+            return;
+          }
+          elErr.textContent = msg;
+          elErr.classList.remove("qrg-hidden");
+        }
+
+        function draw() {
+          var QR = window.QRCode;
+          if (typeof QR !== "function") {
+            showErr("QR library did not load. Check your network or try again.");
+            return;
+          }
+          var text = elIn.value.trim();
+          if (!text) {
+            showErr("Enter some text or a URL.");
+            elMount.innerHTML = "";
+            qrInstance = null;
+            return;
+          }
+          var w = parseInt(elSize.value, 10) || 240;
+          showErr("");
+          elMount.innerHTML = "";
+          qrInstance = null;
+          try {
+            qrInstance = new QRCode(elMount, {
+              text: text,
+              width: w,
+              height: w,
+              colorDark: "#0f172a",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.M,
+            });
+          } catch (e) {
+            showErr((e && e.message) || "Could not create QR code (content may be too long).");
+          }
+        }
+
+        var t = 0;
+        function debounceDraw() {
+          clearTimeout(t);
+          t = setTimeout(draw, 280);
+        }
+
+        document.getElementById("qrgUpdate").addEventListener("click", draw);
+        elIn.addEventListener("input", debounceDraw);
+        elSize.addEventListener("change", draw);
+
+        document.getElementById("qrgDownload").addEventListener("click", function () {
+          if (!elIn.value.trim()) {
+            showErr("Nothing to download—add content first.");
+            return;
+          }
+          var canvas = elMount.querySelector("canvas");
+          if (!canvas) {
+            showErr("No QR image yet—click Update QR or wait a moment.");
+            return;
+          }
+          try {
+            var url = canvas.toDataURL("image/png");
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "qrcode.png";
+            a.rel = "noopener";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            showErr("");
+          } catch (e) {
+            showErr("Could not export PNG from this browser.");
+          }
+        });
+
+        function boot() {
+          if (typeof window.QRCode !== "function") {
+            showErr("QR library did not load. Check your network or try again.");
+            return;
+          }
+          elIn.value = "https://onepagetoys.com/";
+          draw();
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", boot);
+        } else {
+          boot();
+        }
+      })();
+    </script>
+  </body>
+</html>

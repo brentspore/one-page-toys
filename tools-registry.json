@@ -1,5 +1,37 @@
 [
   {
+    "slug": "passphrase-generator",
+    "name": "Passphrase & Password Generator",
+    "shortDescription": "Random passwords or multi-word passphrases using Web Crypto—copy with one tap.",
+    "tags": ["utility", "security"],
+    "status": "beta",
+    "path": "tools/passphrase-generator/index.html"
+  },
+  {
+    "slug": "qr-code-generator",
+    "name": "QR Code Generator",
+    "shortDescription": "Turn text or URLs into a QR code and download a PNG.",
+    "tags": ["utility", "media"],
+    "status": "beta",
+    "path": "tools/qr-code-generator/index.html"
+  },
+  {
+    "slug": "reflex-challenge",
+    "name": "Reflex Challenge",
+    "shortDescription": "Wait for green, then click—see your reaction time in milliseconds.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/reflex-challenge/index.html"
+  },
+  {
+    "slug": "snake-mini",
+    "name": "Mini Snake",
+    "shortDescription": "Classic grid snake with keyboard, WASD, and on-screen arrows.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/snake-mini/index.html"
+  },
+  {
     "slug": "wcag-contrast-checker",
     "name": "WCAG Contrast Checker",
     "shortDescription": "Check text and background colors for WCAG 2.1 contrast and AA / AAA pass levels.",

@@ -1,0 +1,147 @@
+/* Passphrase & password generator */
+
+.pwg-title {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.pwg-lead {
+  text-align: center;
+  max-width: 36rem;
+  margin: 0 auto 1.25rem;
+}
+
+.pwg-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.pwg-tab {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.pwg-tab[aria-selected="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.pwg-panel {
+  margin-bottom: 1rem;
+}
+
+.pwg-field {
+  margin-bottom: 1rem;
+}
+
+.pwg-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.pwg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.pwg-check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pwg-check input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent);
+}
+
+.pwg-range-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pwg-range {
+  flex: 1;
+  min-width: 120px;
+  max-width: 280px;
+  accent-color: var(--accent);
+}
+
+.pwg-range-val {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  min-width: 2ch;
+}
+
+.pwg-out-wrap {
+  margin-top: 1rem;
+}
+
+.pwg-out {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.03);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  word-break: break-all;
+  min-height: 3.5rem;
+}
+
+.pwg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  justify-content: center;
+}
+
+.pwg-meta {
+  margin: 0.75rem 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.pwg-error {
+  text-align: center;
+  color: #b91c1c;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.pwg-hidden {
+  display: none !important;
+}
+
+.pwg-block[hidden] {
+  display: none !important;
+}

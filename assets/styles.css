@@ -304,18 +304,10 @@ code{
   gap: 14px 24px;
 }
 
-.site-footer__hint{
-  margin: 0;
-  font-size: 13px;
-  max-width: 52ch;
-  line-height: 1.5;
-}
-
 .site-footer__bottom-right{
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 a.site-footer__madeby{
@@ -359,25 +351,6 @@ a.site-footer__madeby:focus-visible{
 
 @media (max-width: 640px){
   .site-footer__bottom-right{
-    align-items: flex-start;
+    justify-content: flex-start;
   }
-}
-
-.tool h1{
-  margin: 0 0 8px;
-  font-size: 30px;
-  letter-spacing: -0.02em;
-}
-
-.tool .lead{
-  margin: 0 0 18px;
-  color: var(--muted);
-}
-
-.panel{
-  border: 1px solid var(--border);
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
 }

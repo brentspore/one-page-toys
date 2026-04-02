@@ -1,0 +1,119 @@
+/* QR code generator */
+
+.qrg-title {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.qrg-lead {
+  text-align: center;
+  max-width: 34rem;
+  margin: 0 auto 1.25rem;
+}
+
+.qrg-panel {
+  margin-bottom: 1rem;
+}
+
+.qrg-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.qrg-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 100px;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.qrg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.qrg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.qrg-select {
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  min-width: 8rem;
+}
+
+.qrg-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border);
+  background: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1rem;
+  min-height: 200px;
+  justify-content: center;
+}
+
+.qrg-mount {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qrg-mount canvas,
+.qrg-mount img {
+  display: block;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.qrg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.qrg-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.45;
+}
+
+.qrg-error {
+  text-align: center;
+  color: #b91c1c;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.qrg-hidden {
+  display: none !important;
+}

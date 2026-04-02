@@ -1,0 +1,23 @@
+/*
+ * Tool pages only (tools/<slug>/*.html).
+ * Not loaded on the gallery home — keeps global styles.css smaller.
+ */
+
+.tool h1{
+  margin: 0 0 8px;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+
+.tool .lead{
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.panel{
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}

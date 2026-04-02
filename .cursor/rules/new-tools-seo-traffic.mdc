@@ -1,0 +1,33 @@
+---
+description: When adding gallery toys/tools, prioritize traffic and SEO opportunity
+alwaysApply: true
+---
+
+# New tools — traffic & SEO first
+
+When the user asks to add a toy, tool, or page to this site, **bias toward ideas that earn organic visits and clear search/share intent** — not only “fun” or technical novelty.
+
+## Prefer tools that
+
+- **Match real queries**: “how to…”, calculators, converters, checkers, validators, generators, timers, comparisons (things people type into Google).
+- **Support long-tail copy**: specific `<title>`, `<meta name="description">`, H1, and body text that naturally include target phrases (without stuffing).
+- **Are cite‑ and link‑worthy**: useful enough that blogs, docs, or social posts might link to them (utilities > pure toys unless the toy is highly shareable).
+- **Differentiate**: avoid clones of ten identical free tools unless we add a clearer angle (speed, privacy, UX, niche audience).
+- **Stay indexable**: real HTML pages with the same SEO stack as existing tools (`canonical`, Open Graph, Twitter, JSON-LD `WebApplication`, `robots` / `noindex` only when appropriate).
+
+## Implementation checklist (do not skip)
+
+- Add `tools/<slug>/` with `index.html` + `styles.css` (and a local `.js` file only if the script is large or worth splitting—otherwise inline is fine).
+- In `<head>`, after `../../assets/styles.css`, link **`../../assets/tool-shell.css`** (shared `.tool` / `.panel` for all tool pages), then `styles.css`. **Do not** put tool-specific selectors or scripts in `assets/styles.css` or `assets/main.js`—those stay for the gallery shell (home, cards, footer, topbar).
+- Register in `tools-registry.json` with a **specific, benefit-led** `shortDescription` (good snippet text).
+- Add the URL to `sitemap.xml` unless the page should be `noindex`.
+- Reuse the global header/footer, gtag, and `https://onepagetoys.com/` SEO pattern from sibling tools.
+
+## Before building
+
+Offer **2–3 candidate ideas** in short form, each with one line on **who searches for it** and **what phrase cluster** it could capture. Let the user pick or combine — unless they already named the tool.
+
+## Deprioritize for pure SEO goals
+
+- Ultra-niche experiments with no search volume and no share hook.
+- Duplicate functionality of an existing on-site tool without a new keyword angle.
