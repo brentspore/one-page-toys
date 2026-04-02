@@ -4,10 +4,14 @@
   display: grid;
   gap: 1.25rem;
   margin-top: 0.5rem;
+  min-width: 0;
 }
 
 .wcnt-area {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 12rem;
   padding: 0.85rem 1rem;
   border-radius: 0.65rem;
