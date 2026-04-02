@@ -24,7 +24,7 @@
     "tags": ["game", "experiment"],
     "status": "experimental",
     "path": "tools/reflex-challenge/index.html",
-    "related": ["snake-mini", "typing-speed-sprint", "coin-flipper"]
+    "related": ["snake-mini", "memory-match", "tic-tac-toe"]
   },
   {
     "slug": "snake-mini",
@@ -33,7 +33,7 @@
     "tags": ["game", "experiment"],
     "status": "experimental",
     "path": "tools/snake-mini/index.html",
-    "related": ["reflex-challenge", "typing-speed-sprint"]
+    "related": ["reflex-challenge", "memory-match", "typing-speed-sprint"]
   },
   {
     "slug": "wcag-contrast-checker",
@@ -114,7 +114,7 @@
     "tags": ["game", "experiment"],
     "status": "beta",
     "path": "tools/coin-flipper/index.html",
-    "related": ["void-oracle", "reflex-challenge", "blob-choir"]
+    "related": ["void-oracle", "memory-match", "tic-tac-toe"]
   },
   {
     "slug": "typing-speed-sprint",
@@ -123,7 +123,25 @@
     "tags": ["game", "experiment", "keyboard"],
     "status": "beta",
     "path": "tools/typing-speed-sprint/index.html",
-    "related": ["reflex-challenge", "snake-mini", "word-character-counter"]
+    "related": ["reflex-challenge", "snake-mini", "memory-match"]
+  },
+  {
+    "slug": "memory-match",
+    "name": "Memory Match",
+    "shortDescription": "Flip cards on a 4×4 grid and find eight emoji pairs—track your move count.",
+    "tags": ["game", "experiment", "puzzle"],
+    "status": "experimental",
+    "path": "tools/memory-match/index.html",
+    "related": ["tic-tac-toe", "reflex-challenge", "snake-mini"]
+  },
+  {
+    "slug": "tic-tac-toe",
+    "name": "Tic-Tac-Toe vs Computer",
+    "shortDescription": "You’re X versus an O that plays perfectly with minimax—draws are a solid outcome.",
+    "tags": ["game", "experiment", "classic"],
+    "status": "experimental",
+    "path": "tools/tic-tac-toe/index.html",
+    "related": ["memory-match", "reflex-challenge", "snake-mini"]
   },
   {
     "slug": "void-oracle",

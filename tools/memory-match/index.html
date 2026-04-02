@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Memory Match</title>
+    <meta name="description" content="Flip cards and find all eight pairs—4×4 memory game in your browser, move counter and new deal anytime." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/memory-match/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#4f46e5" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Memory Match" />
+    <meta property="og:description" content="Flip cards and find all eight pairs—4×4 memory game in your browser." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/memory-match/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/synergy-logo.svg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Memory Match" />
+    <meta name="twitter:description" content="Flip cards and find all eight pairs—4×4 memory game in your browser." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/synergy-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Memory Match",
+        "url": "https://onepagetoys.com/tools/memory-match/index.html",
+        "description": "Card-matching memory game with eight pairs on a 4×4 grid.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="memory-match">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1>Memory match</h1>
+        <p class="lead">
+          Eight pairs hidden on a 4×4 grid. Flip two at a time—match them to clear the board. Fewer moves is better.
+        </p>
+
+        <div class="panel">
+          <div class="mm-layout">
+            <div class="mm-bar">
+              <span class="mm-stat" id="mmMoves">Moves: 0</span>
+              <span class="mm-stat" id="mmPairs">Pairs: 0 / 8</span>
+            </div>
+            <p class="mm-status" id="mmStatus" aria-live="polite">Tap a card to begin.</p>
+            <div class="mm-grid" id="mmGrid" role="group" aria-label="Card grid"></div>
+            <div class="mm-actions">
+              <button type="button" class="btn btn--primary" id="mmNew">New game</button>
+            </div>
+            <p class="mm-hint">Keyboard: Tab between cards, Enter or Space to flip.</p>
+          </div>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small tools and playful experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html#tools">Browse tools</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var SYMBOLS = ["🌟", "🌙", "🔮", "🎲", "🎯", "🎪", "🦎", "🍀"];
+        var gridEl = document.getElementById("mmGrid");
+        var movesEl = document.getElementById("mmMoves");
+        var pairsEl = document.getElementById("mmPairs");
+        var statusEl = document.getElementById("mmStatus");
+        var newBtn = document.getElementById("mmNew");
+
+        var cards = [];
+        var firstIdx = null;
+        var lock = false;
+        var moves = 0;
+        var matched = 0;
+
+        function shuffle(a) {
+          var i = a.length;
+          while (i > 1) {
+            var j = Math.floor(Math.random() * i);
+            i--;
+            var t = a[i];
+            a[i] = a[j];
+            a[j] = t;
+          }
+          return a;
+        }
+
+        function renderGrid() {
+          gridEl.innerHTML = "";
+          cards.forEach(function (c, i) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "mm-card";
+            btn.dataset.index = String(i);
+            if (c.matched) btn.classList.add("mm-card--matched");
+            else if (c.flipped) btn.classList.add("mm-card--flipped");
+            btn.setAttribute("aria-label", c.matched ? "Matched pair" : c.flipped ? "Card showing " + c.sym : "Hidden card");
+
+            var inner = document.createElement("span");
+            inner.className = "mm-card-inner";
+            var back = document.createElement("span");
+            back.className = "mm-card-face mm-card-face--back";
+            back.textContent = "?";
+            var front = document.createElement("span");
+            front.className = "mm-card-face mm-card-face--front";
+            front.setAttribute("aria-hidden", "true");
+            front.textContent = c.sym;
+            inner.appendChild(back);
+            inner.appendChild(front);
+            btn.appendChild(inner);
+
+            btn.addEventListener("click", function () {
+              onPick(i);
+            });
+            gridEl.appendChild(btn);
+          });
+        }
+
+        function updateHud() {
+          movesEl.textContent = "Moves: " + moves;
+          pairsEl.textContent = "Pairs: " + matched + " / 8";
+        }
+
+        function onPick(i) {
+          if (lock || cards[i].matched || cards[i].flipped) return;
+          cards[i].flipped = true;
+          renderGrid();
+
+          if (firstIdx === null) {
+            firstIdx = i;
+            statusEl.textContent = "Pick a second card.";
+            return;
+          }
+
+          if (firstIdx === i) return;
+
+          moves++;
+          updateHud();
+          var a = firstIdx;
+          var b = i;
+          firstIdx = null;
+
+          if (cards[a].sym === cards[b].sym) {
+            cards[a].matched = true;
+            cards[b].matched = true;
+            matched++;
+            statusEl.textContent = "Match!";
+            renderGrid();
+            if (matched === 8) {
+              statusEl.textContent = "You cleared the board in " + moves + " moves. Nice.";
+            }
+            return;
+          }
+
+          lock = true;
+          statusEl.textContent = "No match—try again.";
+          setTimeout(function () {
+            cards[a].flipped = false;
+            cards[b].flipped = false;
+            lock = false;
+            statusEl.textContent = "Keep going.";
+            renderGrid();
+          }, 700);
+        }
+
+        function newGame() {
+          var deck = SYMBOLS.concat(SYMBOLS);
+          shuffle(deck);
+          cards = deck.map(function (sym) {
+            return { sym: sym, flipped: false, matched: false };
+          });
+          firstIdx = null;
+          lock = false;
+          moves = 0;
+          matched = 0;
+          updateHud();
+          statusEl.textContent = "Tap a card to begin.";
+          renderGrid();
+        }
+
+        newBtn.addEventListener("click", newGame);
+        newGame();
+      })();
+    </script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>
