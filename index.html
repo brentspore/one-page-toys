@@ -50,12 +50,13 @@
     </script>
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
-  <body>
+  <body data-gallery-mode="home">
     <header class="topbar">
       <div class="topbar__inner">
         <a class="brand" href="index.html">One Page Toys</a>
         <div class="hero__actions" aria-label="Gallery actions">
           <button id="randomToolBtn" class="btn btn--primary" type="button">Surprise me</button>
+          <a class="btn btn--secondary" href="all-tools.html">All tools</a>
         </div>
       </div>
     </header>
@@ -83,36 +84,18 @@
 
       <section id="tools" class="tools">
         <div class="tools__header">
-          <h2>Tools</h2>
+          <div>
+            <h2>Featured tools</h2>
+            <p class="tools-subtle">
+              A small, randomized slice of the gallery. Want the full list with search + filters?
+              <a class="tools-subtle__link" href="all-tools.html">Browse all tools</a>.
+            </p>
+          </div>
           <div id="toolsMeta" class="tools-meta" aria-live="polite"></div>
         </div>
 
-        <div class="tools-find" role="search">
-          <label class="tools-find__label" for="toolsSearch">Search tools</label>
-          <div class="tools-find__row">
-            <input
-              type="search"
-              id="toolsSearch"
-              class="tools-find__input"
-              placeholder="Name, description, or tag (e.g. json, color, game)…"
-              autocomplete="off"
-              autocorrect="off"
-              spellcheck="false"
-              enterkeyhint="search"
-            />
-            <button type="button" class="btn tools-find__clear" id="toolsClearFilters" hidden>
-              Clear filters
-            </button>
-          </div>
-        </div>
-
-        <div class="tools-tags-wrap">
-          <span class="tools-tags__label" id="toolsTagsLabel">Filter by tag</span>
-          <div class="tools-tags" id="toolsTags" role="group" aria-labelledby="toolsTagsLabel"></div>
-        </div>
-
         <div id="toolsGrid" class="grid" aria-live="polite"></div>
-        <p id="toolsEmpty" class="tools-empty" hidden>No toys match those filters. Try another search or tag.</p>
+        <p id="toolsEmpty" class="tools-empty" hidden>No toys yet.</p>
         <div id="toolsError" class="error" role="alert" hidden></div>
       </section>
 
@@ -129,7 +112,7 @@
           </div>
           <nav class="site-footer__nav" aria-label="Site">
             <a href="index.html">Gallery</a>
-            <a href="index.html#tools">Browse tools</a>
+            <a href="all-tools.html">All tools</a>
           </nav>
         </div>
         <div class="site-footer__bottom">

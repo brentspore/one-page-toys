@@ -67,7 +67,7 @@
         var more = document.createElement("p");
         more.className = "tool-cross__more";
         var ga = document.createElement("a");
-        ga.href = "../../index.html#tools";
+        ga.href = "../../all-tools.html";
         ga.textContent = "Browse all tools & search the gallery";
         more.appendChild(ga);
         section.appendChild(more);

@@ -30,6 +30,18 @@ function badgeClassForStatus(status) {
 let allTools = [];
 let activeTag = "";
 let knownTags = [];
+let galleryMode = "all";
+let homeFeatured = null;
+
+function shuffleInPlace(arr, rand) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor((rand ? rand() : Math.random()) * (i + 1));
+    const tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+  }
+  return arr;
+}
 
 function normalizeHaystack(tool) {
   const parts = [
@@ -249,6 +261,19 @@ function renderCards(tools) {
 }
 
 function applyFilters() {
+  if (galleryMode === "home") {
+    if (!homeFeatured) {
+      const pool = allTools.filter(function (t) {
+        return t && t.path;
+      });
+      const shuffled = shuffleInPlace(pool.slice(), Math.random);
+      homeFeatured = shuffled.slice(0, 12);
+    }
+    renderCards(homeFeatured);
+    updateClearButton();
+    return;
+  }
+
   const filtered = getFilteredTools();
   renderCards(filtered);
   updateClearButton();
@@ -308,7 +333,11 @@ async function loadRegistryAndRender() {
   if (!grid) return;
 
   try {
-    const res = await fetch("tools-registry.json", { cache: "no-store" });
+    const modeAttr = document.body && document.body.getAttribute("data-gallery-mode");
+    galleryMode = modeAttr === "home" ? "home" : "all";
+    homeFeatured = null;
+
+    const res = await fetch(new URL("tools-registry.json", location.href).toString(), { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to load registry (" + res.status + ")");
     const tools = await res.json();
 
