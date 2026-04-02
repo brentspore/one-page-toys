@@ -78,5 +78,37 @@
     "tags": ["visual", "experiment"],
     "status": "experimental",
     "path": "tools/weird-generative-canvas/index.html"
+  },
+  {
+    "slug": "word-character-counter",
+    "name": "Word & Character Counter",
+    "shortDescription": "Live counts for words, characters, lines, sentences, paragraphs, and rough read time.",
+    "tags": ["utility", "writing"],
+    "status": "beta",
+    "path": "tools/word-character-counter/index.html"
+  },
+  {
+    "slug": "percentage-calculator",
+    "name": "Percentage Calculator",
+    "shortDescription": "What is X% of Y, or X is what percent of Y—solved locally in two panels.",
+    "tags": ["utility", "math"],
+    "status": "beta",
+    "path": "tools/percentage-calculator/index.html"
+  },
+  {
+    "slug": "coin-flipper",
+    "name": "Coin Flip",
+    "shortDescription": "Fair virtual coin with crypto randomness, heads/tails tallies, and a streak counter.",
+    "tags": ["game", "experiment"],
+    "status": "beta",
+    "path": "tools/coin-flipper/index.html"
+  },
+  {
+    "slug": "typing-speed-sprint",
+    "name": "Typing Speed Sprint",
+    "shortDescription": "Thirty-second word sprint in the browser—see your WPM when time is up.",
+    "tags": ["game", "experiment"],
+    "status": "beta",
+    "path": "tools/typing-speed-sprint/index.html"
   }
 ]

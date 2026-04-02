@@ -1,0 +1,67 @@
+/* Word & Character Counter — local only */
+
+.wcnt-layout {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.wcnt-area {
+  width: 100%;
+  min-height: 12rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.12));
+  background: var(--panel, #fff);
+  color: inherit;
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.wcnt-area:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.wcnt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.wcnt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.wcnt-stat {
+  padding: 0.9rem 1rem;
+  border-radius: 0.65rem;
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.12);
+}
+
+.wcnt-stat__label {
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted, #64748b);
+  margin: 0 0 0.2rem;
+}
+
+.wcnt-stat__value {
+  font-size: 1.65rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.wcnt-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted, #64748b);
+}
