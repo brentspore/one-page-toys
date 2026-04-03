@@ -60,8 +60,7 @@ When we want a “new look,” prefer creating a **theme/variant** rather than c
 We can introduce a simple mechanism when needed (e.g., `data-theme` on `<html>`/`<body>` and `assets/themes/<name>.css`).
 
 - **Content pages (scoped)**
-  - `toys/<slug>/index.html`: toys, games, and experiments.
-  - `tools/<slug>/index.html`: utilitarian tools (kept clean on purpose).
+  - `toys/<slug>/index.html`: all pages (games, visual toys, and utilities).
   - Each page owns its own `styles.css` for local visuals only; scripts are typically inline in `index.html` unless they grow large.
 
 - **Tool registry**
@@ -83,10 +82,10 @@ Every toy/tool page should:
 
 ### Global vs tool-unique rule of thumb
 
-Before adding CSS to global files, scan across toys/tools:
+Before adding CSS to global files, scan across `toys/<slug>/`:
 - **Global** (`assets/styles.css` / `assets/tool-shell.css`) if it’s an app-wide invariant
-  or a reusable pattern that appears in multiple toys/tools (rule of thumb: ~3+ pages).
-- **Tool-local** (`toys/<slug>/styles.css` or `tools/<slug>/styles.css`) if it’s part of the page’s identity or interaction.
+  or a reusable pattern that appears in multiple pages (rule of thumb: ~3+ pages).
+- **Tool-local** (`toys/<slug>/styles.css`) if it’s part of the page’s identity or interaction.
 - Prefer adding/using **tokens** over duplicating big CSS blocks.
 - Never put tool-specific selectors (like `.mm-*`, `.mgs-*`) in global assets.
 
