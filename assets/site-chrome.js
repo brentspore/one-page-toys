@@ -103,7 +103,7 @@
     var title =
       (h1 && h1.textContent && h1.textContent.replace(/\s+/g, " ").trim()) ||
       (document.title.split(/\s*[—–-]\s*/)[0] || "").trim() ||
-      "Tool";
+      "Toy";
 
     var nav = document.createElement("nav");
     nav.className = "tool-breadcrumb";
