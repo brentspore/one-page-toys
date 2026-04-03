@@ -12,102 +12,7 @@
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/reflex-challenge/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/snake-mini/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/random-palette-explorer/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/weird-generative-canvas/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/coin-flipper/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/typing-speed-sprint/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/void-oracle/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/blob-choir/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/memory-match/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/tic-tac-toe/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/mesh-gradient-studio/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/dice-roller/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/emoji-slots/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/compliment-cannon/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/magic-eight-ball/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/rock-paper-scissors/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/late-excuse-generator/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/button-mash-sprint/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/pixel-doodle/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/star-click-sky/index.html</loc>
+    <loc>https://onepagetoys.com/toys/a11y-quick-checklist/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -117,7 +22,12 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/odd-emoji-out/index.html</loc>
+    <loc>https://onepagetoys.com/tools/base64-url-encoder/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/blob-choir/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -127,107 +37,27 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/three-doors/index.html</loc>
+    <loc>https://onepagetoys.com/toys/button-mash-sprint/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/clipboard-stack/index.html</loc>
+    <loc>https://onepagetoys.com/tools/clipboard-stack/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/diff-two-texts/index.html</loc>
+    <loc>https://onepagetoys.com/toys/coin-flipper/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/regex-tester/index.html</loc>
+    <loc>https://onepagetoys.com/toys/compliment-cannon/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/uuid-nanoid-generator/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/timestamp-converter/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/csv-json-converter/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/base64-url-encoder/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/jwt-inspector/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/palette-from-image/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/gradient-generator/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/favicon-generator/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/image-compressor/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/markdown-previewer/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/og-meta-builder/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/a11y-quick-checklist/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/unit-converter/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/meeting-notes-timer/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/ux-copy-generator/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/file-hash-tool/index.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://onepagetoys.com/toys/json-schema-quickcheck/index.html</loc>
+    <loc>https://onepagetoys.com/tools/csv-json-converter/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -237,12 +67,97 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/reaction-ladder/index.html</loc>
+    <loc>https://onepagetoys.com/toys/dice-roller/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/tiny-idle-garden/index.html</loc>
+    <loc>https://onepagetoys.com/tools/diff-two-texts/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/emoji-slots/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/favicon-generator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/file-hash-tool/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/gradient-generator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/image-compressor/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/image-converter/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/json-pretty-print-validate-minify/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/json-schema-quickcheck/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/jwt-inspector/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/late-excuse-generator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/magic-eight-ball/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/markdown-previewer/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/meeting-cost-timer/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/meeting-notes-timer/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/memory-match/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/mesh-gradient-studio/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/micro-rhythm-tapper/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -252,7 +167,132 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/toys/micro-rhythm-tapper/index.html</loc>
+    <loc>https://onepagetoys.com/toys/odd-emoji-out/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/og-meta-builder/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/palette-from-image/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/passphrase-generator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/percentage-calculator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/pixel-doodle/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/qr-code-generator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/random-palette-explorer/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/reaction-ladder/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/reflex-challenge/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/regex-tester/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/rock-paper-scissors/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/snake-mini/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/star-click-sky/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/three-doors/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/tic-tac-toe/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/timestamp-converter/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/tiny-idle-garden/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/typing-speed-sprint/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/unit-converter/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/uuid-nanoid-generator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/ux-copy-generator/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/void-oracle/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/wcag-contrast-checker/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/weird-generative-canvas/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/word-character-counter/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>

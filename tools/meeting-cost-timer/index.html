@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>How much does this meeting cost?</title>
+    <meta name="description" content="See a live dollar counter for how much this meeting costs as time passes." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/meeting-cost-timer/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Meeting Cost Timer" />
+    <meta property="og:description" content="See a live dollar counter for how much this meeting costs as time passes." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/meeting-cost-timer/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Meeting Cost Timer" />
+    <meta name="twitter:description" content="See a live dollar counter for how much this meeting costs as time passes." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Meeting Cost Timer",
+        "url": "https://onepagetoys.com/tools/meeting-cost-timer/index.html",
+        "description": "See a live dollar counter for how much this meeting costs as time passes.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="meeting-cost-timer">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1 style="text-align: center;">How much is this meeting bleeding?</h1>
+        <p class="lead" style="text-align: center; max-width: 40rem; margin-left: auto; margin-right: auto;">
+          A giant money meter for your calendar circus. Pick a rate, count the humans, and watch the dollars sprint away.
+        </p>
+        <p
+          class="tool-ext-link muted"
+          style="text-align: center; max-width: 40rem; margin-left: auto; margin-right: auto;"
+        >
+          More productivity utilities:
+          <a href="https://buildutilities.com" target="_blank" rel="noopener noreferrer">BuildUtilities<span class="sr-only"> (opens in new tab)</span></a>
+        </p>
+        <div class="panel" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
+          <!-- HERO COST DISPLAY + INLINE SETTINGS -->
+          <div style="padding: 22px 18px 20px; border: 1px solid var(--border); border-radius: 22px; background: rgba(255,255,255,0.9);">
+            <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 12px; align-items: start;">
+              <div style="text-align: left;">
+                <div class="muted" style="font-weight: 800; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">
+                  Total cost so far
+                </div>
+                <div
+                  id="totalCostText"
+                  style="font-size: clamp(110px, 26vw, 220px); font-weight: 900; letter-spacing: -0.11em; line-height: 0.88;"
+                >
+                  $0.00
+                </div>
+              </div>
+
+              <div style="text-align: right;">
+                <div
+                  id="meetingTitle"
+                  contenteditable="true"
+                  spellcheck="false"
+                  style="display: inline-block; min-width: 120px; font-size: clamp(18px, 3.2vw, 28px); font-weight: 800; letter-spacing: -0.03em; border-radius: 12px; padding: 4px 8px; outline: none; border: 1px solid transparent; background: transparent; text-align: right;"
+                >
+                  Untitled meeting
+                </div>
+
+                <div style="margin-top: 10px; font-size: 13px;">
+                  <div class="muted" style="font-weight: 700; margin-bottom: 2px;">Avg $ / hour per person</div>
+                  <div
+                    id="hourlyRateInline"
+                    contenteditable="true"
+                    spellcheck="false"
+                    style="display: inline-block; min-width: 40px; padding: 2px 4px; border-radius: 999px; border: 1px solid transparent; background: transparent; font-weight: 700; outline: none;"
+                  >
+                    100
+                  </div>
+                </div>
+
+                <div style="margin-top: 6px; font-size: 13px;">
+                  <div class="muted" style="font-weight: 700; margin-bottom: 2px;">People</div>
+                  <div
+                    id="peopleCountInline"
+                    contenteditable="true"
+                    spellcheck="false"
+                    style="display: inline-block; min-width: 24px; padding: 2px 4px; border-radius: 999px; border: 1px solid transparent; background: transparent; font-weight: 700; outline: none;"
+                  >
+                    6
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; align-items: baseline;">
+              <div>
+                <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                  Elapsed
+                </div>
+                <div
+                  id="elapsedText"
+                  style="font-size: clamp(20px, 4vw, 30px); font-weight: 800; letter-spacing: 0.02em; line-height: 1.1;"
+                >
+                  00:00:00
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;">
+                <div>
+                  <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                    / second
+                  </div>
+                  <div id="ratePerSecondText" style="font-weight: 800; font-size: 18px;">$0.00</div>
+                </div>
+                <div>
+                  <div class="muted" style="font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                    / minute
+                  </div>
+                  <div id="ratePerMinuteText" style="font-weight: 800; font-size: 18px;">$0.00</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTROLS BELOW HERO -->
+            <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px;">
+              <p class="muted" style="margin: 0 0 12px; font-size: 13px; text-align: center; max-width: 28rem; margin-left: auto; margin-right: auto;">
+                The meter starts when you press Start and pauses whenever you need a breather.
+              </p>
+              <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: center;">
+                <button
+                  id="toggleBtn"
+                  class="btn btn--primary"
+                  type="button"
+                  style="font-size: 1.25rem; padding: 18px 36px; min-width: 11rem; font-weight: 800;"
+                >
+                  Start
+                </button>
+                <button
+                  id="resetBtn"
+                  class="btn"
+                  type="button"
+                  style="font-size: 0.8rem; padding: 6px 12px; font-weight: 600; opacity: 0.85;"
+                >
+                  Reset
+                </button>
+              </div>
+              <div id="statusMsg" class="muted ui-live" aria-live="polite" style="font-weight: 800; font-size: 13px; margin-top: 8px; text-align: center;"></div>
+            </div>
+          </div>
+
+          <p class="tool-directions" style="margin-bottom: 0;">
+            <strong>How to use.</strong> Edit the meeting title, <strong>$ / hour per person</strong>, and <strong>people</strong> count inline—the giant total and per-second rate follow. Tap <strong>Start</strong> to run the timer (it toggles to <strong>Pause</strong>); <strong>Reset</strong> clears elapsed time and money back to zero.
+          </p>
+        </div>
+      </section>
+
+    <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a
+              class="site-footer__madeby"
+              href="https://synergyprod.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img
+                class="site-footer__synergy-logo"
+                src="../../assets/synergy-logo.svg"
+                alt="Synergy"
+                width="51"
+                height="13"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const hourlyRateEl = document.getElementById("hourlyRateInline");
+      const peopleCountEl = document.getElementById("peopleCountInline");
+      const meetingTitleEl = document.getElementById("meetingTitle");
+      const toggleBtn = document.getElementById("toggleBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const statusMsgEl = document.getElementById("statusMsg");
+
+      const elapsedTextEl = document.getElementById("elapsedText");
+      const totalCostTextEl = document.getElementById("totalCostText");
+      const ratePerSecondTextEl = document.getElementById("ratePerSecondText");
+      const ratePerMinuteTextEl = document.getElementById("ratePerMinuteText");
+
+      let running = false;
+      let elapsedMs = 0;
+      let startPerfMs = 0; // performance.now() at start/resume
+      let intervalId = null;
+
+      const STORAGE_KEY = "meeting-cost-timer:v1";
+
+      function loadPersisted() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data && typeof data === "object") {
+            if (typeof data.title === "string" && data.title.trim()) {
+              meetingTitleEl.textContent = data.title;
+            }
+            if (typeof data.hourlyRate === "number" && Number.isFinite(data.hourlyRate)) {
+              hourlyRateEl.textContent = String(data.hourlyRate);
+            }
+            if (typeof data.people === "number" && Number.isFinite(data.people) && data.people > 0) {
+              peopleCountEl.textContent = String(Math.floor(data.people));
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      function persist() {
+        try {
+          const { hourlyRate, people } = getInputs();
+          const title = (meetingTitleEl.textContent || meetingTitleEl.innerText || "").trim();
+          const payload = {
+            title,
+            hourlyRate,
+            people,
+          };
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch {
+          // ignore
+        }
+      }
+
+      function clampNumber(n) {
+        const x = Number(String(n).replace(/[^0-9.+-]/g, ""));
+        return Number.isFinite(x) ? x : 0;
+      }
+
+      function getInputs() {
+        const hourlyRate = clampNumber(hourlyRateEl.textContent || hourlyRateEl.innerText || "");
+        const people = Math.max(0, Math.floor(clampNumber(peopleCountEl.textContent || peopleCountEl.innerText || "")));
+        return { hourlyRate, people };
+      }
+
+      function formatMoney(amount) {
+        const v = Number(amount);
+        if (!Number.isFinite(v)) return "$0.00";
+        return "$" + v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function formatElapsed(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const hh = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+        const mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+        const ss = String(totalSeconds % 60).padStart(2, "0");
+        return `${hh}:${mm}:${ss}`;
+      }
+
+      function computeCostRate() {
+        const { hourlyRate, people } = getInputs();
+        // Interpret $/hour as per-person cost. Total hourly cost = hourlyRate * people.
+        const totalPerSecond = (hourlyRate * people) / 3600;
+        const totalPerMinute = totalPerSecond * 60;
+        const totalPerMs = totalPerSecond / 1000;
+        return { totalPerSecond, totalPerMinute, totalPerMs };
+      }
+
+      function updateUI() {
+        const { totalPerSecond, totalPerMinute, totalPerMs } = computeCostRate();
+
+        elapsedTextEl.textContent = formatElapsed(elapsedMs);
+        totalCostTextEl.textContent = formatMoney(totalPerMs * elapsedMs);
+        ratePerSecondTextEl.textContent = formatMoney(totalPerSecond);
+        ratePerMinuteTextEl.textContent = formatMoney(totalPerMinute);
+      }
+
+      function setRunning(nextRunning) {
+        running = nextRunning;
+        if (running) {
+          toggleBtn.textContent = "Stop";
+          toggleBtn.style.backgroundColor = "#dc2626";
+          toggleBtn.style.borderColor = "#dc2626";
+          toggleBtn.style.color = "#fff";
+          statusMsgEl.textContent = "Running…";
+        } else {
+          toggleBtn.textContent = "Start";
+          toggleBtn.style.backgroundColor = "";
+          toggleBtn.style.borderColor = "";
+          toggleBtn.style.color = "";
+          statusMsgEl.textContent = elapsedMs > 0 ? "Stopped" : "Ready";
+        }
+      }
+
+      function startTimer() {
+        const { hourlyRate, people } = getInputs();
+        if (hourlyRate < 0) {
+          statusMsgEl.textContent = "Hourly rate must be >= 0";
+          return;
+        }
+        if (people <= 0) {
+          statusMsgEl.textContent = "People must be at least 1";
+          return;
+        }
+
+        setRunning(true);
+        startPerfMs = performance.now() - elapsedMs;
+
+        if (intervalId) clearInterval(intervalId);
+        intervalId = setInterval(() => {
+          elapsedMs = performance.now() - startPerfMs;
+          updateUI();
+        }, 100);
+      }
+
+      function resetTimer() {
+        setRunning(false);
+        elapsedMs = 0;
+        if (intervalId) clearInterval(intervalId);
+        intervalId = null;
+        updateUI();
+      }
+
+      toggleBtn.addEventListener("click", () => {
+        if (running) {
+          // behave like pause/stop
+          elapsedMs = performance.now() - startPerfMs;
+          setRunning(false);
+          if (intervalId) clearInterval(intervalId);
+          intervalId = null;
+          updateUI();
+        } else {
+          startTimer();
+        }
+      });
+      resetBtn.addEventListener("click", resetTimer);
+
+      // Recompute rates live as inline values change (even while paused).
+      [hourlyRateEl, peopleCountEl].forEach((el) => {
+        el.addEventListener("input", () => {
+          if (!running) {
+            statusMsgEl.textContent = elapsedMs > 0 ? "Paused (inputs updated)" : "Ready";
+            updateUI();
+          }
+          persist();
+        });
+        el.addEventListener("blur", () => {
+          // Normalize text on blur to keep things tidy.
+          const val = clampNumber(el.textContent || el.innerText || "");
+          el.textContent = String(val || (el === peopleCountEl ? 1 : 0));
+          if (!running) updateUI();
+          persist();
+        });
+      });
+
+      // Persist title edits as you type.
+      meetingTitleEl.addEventListener("input", () => {
+        persist();
+      });
+
+      // Load any saved settings before first render.
+      loadPersisted();
+
+      // Initial render.
+      updateUI();
+      setRunning(false);
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

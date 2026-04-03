@@ -38,7 +38,7 @@
       "encoder-tool"
     ],
     "status": "beta",
-    "path": "toys/base64-url-encoder/index.html",
+    "path": "tools/base64-url-encoder/index.html",
     "related": [
       "markdown-previewer",
       "clipboard-stack",
@@ -102,7 +102,7 @@
       "clipboard-tool"
     ],
     "status": "beta",
-    "path": "toys/clipboard-stack/index.html",
+    "path": "tools/clipboard-stack/index.html",
     "related": [
       "og-meta-builder",
       "regex-tester",
@@ -150,7 +150,7 @@
       "data-converter"
     ],
     "status": "experimental",
-    "path": "toys/csv-json-converter/index.html",
+    "path": "tools/csv-json-converter/index.html",
     "related": [
       "og-meta-builder",
       "diff-two-texts",
@@ -198,7 +198,7 @@
       "diff-tool"
     ],
     "status": "experimental",
-    "path": "toys/diff-two-texts/index.html",
+    "path": "tools/diff-two-texts/index.html",
     "related": [
       "unit-converter",
       "uuid-nanoid-generator",
@@ -246,7 +246,7 @@
       "hash-tool"
     ],
     "status": "beta",
-    "path": "toys/file-hash-tool/index.html",
+    "path": "tools/file-hash-tool/index.html",
     "related": [
       "meeting-notes-timer",
       "timestamp-converter",
@@ -278,11 +278,43 @@
       "image-tool"
     ],
     "status": "beta",
-    "path": "toys/image-compressor/index.html",
+    "path": "tools/image-compressor/index.html",
     "related": [
       "clipboard-stack",
       "jwt-inspector",
       "json-schema-quickcheck"
+    ]
+  },
+  {
+    "slug": "image-converter",
+    "name": "Quick image converter",
+    "shortDescription": "Drag and drop an image and convert to PNG, JPEG, or WebP in the browser.",
+    "category": "utility",
+    "tags": [
+      "image-tool"
+    ],
+    "status": "beta",
+    "path": "tools/image-converter/index.html",
+    "related": [
+      "image-compressor",
+      "palette-from-image",
+      "favicon-generator"
+    ]
+  },
+  {
+    "slug": "json-pretty-print-validate-minify",
+    "name": "JSON format & validate",
+    "shortDescription": "Pretty-print, minify, and validate JSON in your browser. Errors show line and column.",
+    "category": "utility",
+    "tags": [
+      "json-tool"
+    ],
+    "status": "beta",
+    "path": "tools/json-pretty-print-validate-minify/index.html",
+    "related": [
+      "json-schema-quickcheck",
+      "csv-json-converter",
+      "jwt-inspector"
     ]
   },
   {
@@ -294,7 +326,7 @@
       "json-tool"
     ],
     "status": "experimental",
-    "path": "toys/json-schema-quickcheck/index.html",
+    "path": "tools/json-schema-quickcheck/index.html",
     "related": [
       "diff-two-texts",
       "image-compressor",
@@ -310,7 +342,7 @@
       "jwt-tool"
     ],
     "status": "beta",
-    "path": "toys/jwt-inspector/index.html",
+    "path": "tools/jwt-inspector/index.html",
     "related": [
       "diff-two-texts",
       "markdown-previewer",
@@ -358,11 +390,27 @@
       "markdown-tool"
     ],
     "status": "experimental",
-    "path": "toys/markdown-previewer/index.html",
+    "path": "tools/markdown-previewer/index.html",
     "related": [
       "timestamp-converter",
       "meeting-notes-timer",
       "uuid-nanoid-generator"
+    ]
+  },
+  {
+    "slug": "meeting-cost-timer",
+    "name": "Meeting cost timer",
+    "shortDescription": "See a live dollar counter for how much this meeting costs as time passes.",
+    "category": "utility",
+    "tags": [
+      "notes-tool"
+    ],
+    "status": "beta",
+    "path": "tools/meeting-cost-timer/index.html",
+    "related": [
+      "meeting-notes-timer",
+      "timestamp-converter",
+      "unit-converter"
     ]
   },
   {
@@ -374,7 +422,7 @@
       "notes-tool"
     ],
     "status": "experimental",
-    "path": "toys/meeting-notes-timer/index.html",
+    "path": "tools/meeting-notes-timer/index.html",
     "related": [
       "timestamp-converter",
       "unit-converter",
@@ -428,22 +476,6 @@
     ]
   },
   {
-    "slug": "snake-mini",
-    "name": "Mini Snake",
-    "shortDescription": "Classic grid snake with keyboard, WASD, and on-screen arrows.",
-    "category": "game",
-    "tags": [
-      "snake-game"
-    ],
-    "status": "experimental",
-    "path": "toys/snake-mini/index.html",
-    "related": [
-      "reflex-challenge",
-      "memory-match",
-      "typing-speed-sprint"
-    ]
-  },
-  {
     "slug": "mood-meteor",
     "name": "Mood meteor",
     "shortDescription": "Pick a mood and generate an animated sky; log today’s vibe.",
@@ -484,7 +516,7 @@
       "seo-tool"
     ],
     "status": "beta",
-    "path": "toys/og-meta-builder/index.html",
+    "path": "tools/og-meta-builder/index.html",
     "related": [
       "base64-url-encoder",
       "file-hash-tool",
@@ -508,6 +540,38 @@
     ]
   },
   {
+    "slug": "passphrase-generator",
+    "name": "Passphrase & password generator",
+    "shortDescription": "Generate strong random passwords or memorable multi-word passphrases with Web Crypto.",
+    "category": "utility",
+    "tags": [
+      "id-generator"
+    ],
+    "status": "beta",
+    "path": "tools/passphrase-generator/index.html",
+    "related": [
+      "uuid-nanoid-generator",
+      "base64-url-encoder",
+      "regex-tester"
+    ]
+  },
+  {
+    "slug": "percentage-calculator",
+    "name": "Percentage calculator",
+    "shortDescription": "Find a percentage of a number, or what percent one number is of another.",
+    "category": "utility",
+    "tags": [
+      "math-tool"
+    ],
+    "status": "live",
+    "path": "tools/percentage-calculator/index.html",
+    "related": [
+      "unit-converter",
+      "timestamp-converter",
+      "csv-json-converter"
+    ]
+  },
+  {
     "slug": "pixel-doodle",
     "name": "Pixel doodle",
     "shortDescription": "12×12 toggle pixels—doodle glyphs, noise, or alien flags; clear or randomize.",
@@ -521,6 +585,22 @@
       "mesh-gradient-studio",
       "random-palette-explorer",
       "weird-generative-canvas"
+    ]
+  },
+  {
+    "slug": "qr-code-generator",
+    "name": "QR code generator",
+    "shortDescription": "Turn any text or URL into a QR code in your browser. Download a PNG when you are done.",
+    "category": "utility",
+    "tags": [
+      "qr-tool"
+    ],
+    "status": "beta",
+    "path": "tools/qr-code-generator/index.html",
+    "related": [
+      "og-meta-builder",
+      "favicon-generator",
+      "markdown-previewer"
     ]
   },
   {
@@ -580,7 +660,7 @@
       "regex-tool"
     ],
     "status": "beta",
-    "path": "toys/regex-tester/index.html",
+    "path": "tools/regex-tester/index.html",
     "related": [
       "og-meta-builder",
       "diff-two-texts",
@@ -601,6 +681,22 @@
       "tic-tac-toe",
       "dice-roller",
       "odd-emoji-out"
+    ]
+  },
+  {
+    "slug": "snake-mini",
+    "name": "Mini Snake",
+    "shortDescription": "Classic grid snake with keyboard, WASD, and on-screen arrows.",
+    "category": "game",
+    "tags": [
+      "snake-game"
+    ],
+    "status": "experimental",
+    "path": "toys/snake-mini/index.html",
+    "related": [
+      "reflex-challenge",
+      "memory-match",
+      "typing-speed-sprint"
     ]
   },
   {
@@ -661,7 +757,7 @@
       "time-tool"
     ],
     "status": "beta",
-    "path": "toys/timestamp-converter/index.html",
+    "path": "tools/timestamp-converter/index.html",
     "related": [
       "meeting-notes-timer",
       "uuid-nanoid-generator",
@@ -709,7 +805,7 @@
       "unit-tool"
     ],
     "status": "beta",
-    "path": "toys/unit-converter/index.html",
+    "path": "tools/unit-converter/index.html",
     "related": [
       "ux-copy-generator",
       "timestamp-converter",
@@ -725,7 +821,7 @@
       "id-generator"
     ],
     "status": "beta",
-    "path": "toys/uuid-nanoid-generator/index.html",
+    "path": "tools/uuid-nanoid-generator/index.html",
     "related": [
       "ux-copy-generator",
       "csv-json-converter",
@@ -741,7 +837,7 @@
       "copy-tool"
     ],
     "status": "experimental",
-    "path": "toys/ux-copy-generator/index.html",
+    "path": "tools/ux-copy-generator/index.html",
     "related": [
       "meeting-notes-timer",
       "timestamp-converter",
@@ -765,6 +861,22 @@
     ]
   },
   {
+    "slug": "wcag-contrast-checker",
+    "name": "WCAG contrast checker",
+    "shortDescription": "Check two colors for WCAG 2.1 contrast ratio and AA / AAA pass for text sizes.",
+    "category": "utility",
+    "tags": [
+      "a11y-tool"
+    ],
+    "status": "beta",
+    "path": "tools/wcag-contrast-checker/index.html",
+    "related": [
+      "a11y-quick-checklist",
+      "palette-from-image",
+      "gradient-generator"
+    ]
+  },
+  {
     "slug": "weird-generative-canvas",
     "name": "Weird Generative Canvas",
     "shortDescription": "A random algorithm with a random color scheme that animates on your screen.",
@@ -778,6 +890,22 @@
       "random-palette-explorer",
       "mesh-gradient-studio",
       "pixel-doodle"
+    ]
+  },
+  {
+    "slug": "word-character-counter",
+    "name": "Word & character counter",
+    "shortDescription": "Count words, characters, sentences, and paragraphs from pasted text—runs locally.",
+    "category": "utility",
+    "tags": [
+      "word-count-tool"
+    ],
+    "status": "beta",
+    "path": "tools/word-character-counter/index.html",
+    "related": [
+      "diff-two-texts",
+      "markdown-previewer",
+      "ux-copy-generator"
     ]
   }
 ]

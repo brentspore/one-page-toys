@@ -50,6 +50,7 @@ function write(p, s) {
 
 function baseHead(t) {
   const title = `${t.name} — One Page Toys`;
+  const dirBase = t.dirBase || "toys";
   return `    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
@@ -64,14 +65,14 @@ function baseHead(t) {
     </script>
     <title>${esc(title)}</title>
     <meta name="description" content="${esc(t.desc)}" />
-    <link rel="canonical" href="${SITE}/toys/${t.slug}/index.html" />
+    <link rel="canonical" href="${SITE}/${dirBase}/${t.slug}/index.html" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="${esc(t.color)}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
     <meta property="og:title" content="${esc(title)}" />
     <meta property="og:description" content="${esc(t.desc)}" />
-    <meta property="og:url" content="${SITE}/toys/${t.slug}/index.html" />
+    <meta property="og:url" content="${SITE}/${dirBase}/${t.slug}/index.html" />
     <meta property="og:image" content="${OG}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -223,14 +224,16 @@ function main() {
   NEW_SLUGS.forEach((slug) => {
     const meta = bySlug[slug];
     if (!meta) return;
-    const dir = path.join("toys", slug);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     const cat = String(meta.category || "utility").toLowerCase();
+    const dirBase = cat === "utility" ? "tools" : "toys";
+    const dir = path.join(dirBase, slug);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     const t = {
       slug,
       name: meta.name,
       desc: meta.shortDescription,
-      color: colorMap[cat] || "#e85d44"
+      color: colorMap[cat] || "#e85d44",
+      dirBase
     };
     const builder = IMPLEMENTATIONS[slug];
     const page = builder ? builder() : impl_scaffold(slug);

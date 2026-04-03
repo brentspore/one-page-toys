@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Unit converter — One Page Toys</title>
+    <meta name="description" content="Quick convert px↔rem, spacing scales, and common UI units." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/unit-converter/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Unit converter — One Page Toys" />
+    <meta property="og:description" content="Quick convert px↔rem, spacing scales, and common UI units." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/unit-converter/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Unit converter — One Page Toys" />
+    <meta name="twitter:description" content="Quick convert px↔rem, spacing scales, and common UI units." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="unit-converter">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Unit converter</h1>
+        <p class="lead">Quick convert px↔rem, spacing scales, and common UI units.</p>
+        <div class="panel">
+          <div class="local">
+            <div class="ui-hud"><div class="ui-stat"><span class="ui-stat__label">Base px</span><span class="ui-stat__value" id="uB">16</span></div></div>
+            <div class="local-row local-row--2">
+              <div><label class="muted" for="uRoot" style="font-weight:800">Root font (px)</label><input class="local-input" type="number" id="uRoot" min="8" max="32" value="16" /></div>
+              <div></div>
+            </div>
+            <div class="local-row local-row--2">
+              <div><label class="muted" for="uPx" style="font-weight:800">px</label><input class="local-input" id="uPx" inputmode="decimal" placeholder="24" /></div>
+              <div><label class="muted" for="uRem" style="font-weight:800">rem</label><input class="local-input" id="uRem" inputmode="decimal" placeholder="1.5" /></div>
+            </div>
+            <p class="ui-live" id="uS" aria-live="polite">Type in either field.</p>
+            <ul class="ui-history" id="uSteps" aria-label="Scale"></ul>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>Notes.</strong> Runs locally. Uses your browser storage when it needs to remember things.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ res(); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+        function eHTML(str){ return String(str).replace(/[&<>"']/g,function(ch){ switch(ch){ case '&':return '&amp;'; case '<':return '&lt;'; case '>':return '&gt;'; case '"':return '&quot;'; case "'":return '&#39;'; default:return ch; } }); }
+
+        function f(v){ var n=parseFloat(String(v).trim()); return isNaN(n)?null:n; }
+        function root(){ return Math.max(8,Math.min(32,parseInt($('uRoot').value,10)||16)); }
+        function scaleRow(b, r, k){ return (Math.round(b*Math.pow(r,k)*1000)/1000)+'px · '+(Math.round(Math.pow(r,k)*1000)/1000)+'rem'; }
+        function renderSteps(){ var b=root(), r=1.25, ul=$('uSteps'); ul.innerHTML=''; [-2,-1,0,1,2,3].forEach(function(k){ var li=document.createElement('li'); li.textContent=scaleRow(b,r,k); ul.appendChild(li); }); }
+        function sync(src){
+          var b=root(); $('uB').textContent=String(b); $('uRoot').value=String(b); renderSteps();
+          var px=f($('uPx').value), rm=f($('uRem').value);
+          if(src==='px'&&px!=null){ $('uRem').value=String(Math.round(px/b*1000)/1000); }
+          if(src==='rem'&&rm!=null){ $('uPx').value=String(Math.round(rm*b*1000)/1000); }
+          setStatus('uS','Updated.');
+        }
+        on($('uPx'),'input',function(){ sync('px'); }); on($('uRem'),'input',function(){ sync('rem'); }); on($('uRoot'),'input',function(){ sync('px'); });
+        sync('px');
+              })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

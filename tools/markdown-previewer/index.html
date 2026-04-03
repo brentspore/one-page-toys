@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Markdown previewer — One Page Toys</title>
+    <meta name="description" content="Write Markdown and preview it instantly—copy HTML or plain text." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/markdown-previewer/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Markdown previewer — One Page Toys" />
+    <meta property="og:description" content="Write Markdown and preview it instantly—copy HTML or plain text." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/markdown-previewer/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Markdown previewer — One Page Toys" />
+    <meta name="twitter:description" content="Write Markdown and preview it instantly—copy HTML or plain text." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="markdown-previewer">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Markdown previewer</h1>
+        <p class="lead">Write Markdown and preview it instantly—copy HTML or plain text.</p>
+        <div class="panel">
+          <div class="local">
+            <div class="local-row local-row--2">
+              <div><label class="muted" for="mdIn" style="font-weight:800">Markdown</label><textarea class="local-text" id="mdIn" placeholder="# Hello"></textarea></div>
+              <div><label class="muted" for="mdOut" style="font-weight:800">Preview</label><div class="panel md-body" id="mdOut" style="padding:12px;min-height:10rem"></div></div>
+            </div>
+            <div class="local-actions"><button type="button" class="btn btn--secondary" id="mdHtml">Copy HTML-ish</button></div>
+            <p class="ui-live" id="mdS" aria-live="polite">Type to preview.</p>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>Notes.</strong> Runs locally. Uses your browser storage when it needs to remember things.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ res(); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+        function eHTML(str){ return String(str).replace(/[&<>"']/g,function(ch){ switch(ch){ case '&':return '&amp;'; case '<':return '&lt;'; case '>':return '&gt;'; case '"':return '&quot;'; case "'":return '&#39;'; default:return ch; } }); }
+
+        function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+        function inline(s){
+          s=esc(s); var BT=String.fromCharCode(96);
+          s=s.replace(new RegExp(BT+'([^'+BT+']+)'+BT,'g'),'<code>$1</code>');
+          s=s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+          s=s.replace(/\*([^*]+)\*/g,'<em>$1</em>');
+          s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+          return s;
+        }
+        function run(){
+          var t=$('mdIn').value||'';
+          var lines=t.split(/\n/), html=[], i=0, inCode=false, buf=[];
+          var fence=String.fromCharCode(96,96,96);
+          function flushCode(){ if(buf.length){ html.push('<pre><code>'+esc(buf.join('\n'))+'</code></pre>'); buf=[]; } }
+          while(i<lines.length){
+            var L=lines[i];
+            if(new RegExp('^\\s*'+fence).test(L)){ if(inCode){ flushCode(); inCode=false; } else { flushCode(); inCode=true; } i++; continue; }
+            if(inCode){ buf.push(L); i++; continue; }
+            if(/^####\s+/.test(L)){ html.push('<h4>'+inline(L.replace(/^####\s+/,''))+'</h4>'); i++; continue; }
+            if(/^###\s+/.test(L)){ html.push('<h3>'+inline(L.replace(/^###\s+/,''))+'</h3>'); i++; continue; }
+            if(/^##\s+/.test(L)){ html.push('<h2>'+inline(L.replace(/^##\s+/,''))+'</h2>'); i++; continue; }
+            if(/^#\s+/.test(L)){ html.push('<h1>'+inline(L.replace(/^#\s+/,''))+'</h1>'); i++; continue; }
+            if(/^-\s+/.test(L)){ var items=[]; while(i<lines.length && /^-\s+/.test(lines[i])){ items.push('<li>'+inline(lines[i].replace(/^-\s+/,''))+'</li>'); i++; } html.push('<ul>'+items.join('')+'</ul>'); continue; }
+            if(L.trim()===''){ i++; continue; }
+            html.push('<p>'+inline(L)+'</p>'); i++;
+          }
+          flushCode();
+          $('mdOut').innerHTML=html.join(''); setStatus('mdS','Updated.');
+        }
+        on($('mdIn'),'input',run);
+        on($('mdHtml'),'click',function(){ copyText($('mdOut').innerHTML).then(function(){ setStatus('mdS','Copied.'); }); });
+        run();
+              })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

@@ -17,12 +17,12 @@ When the user asks to add a toy, tool, or page to this site, **bias toward ideas
 
 ## Implementation checklist (do not skip)
 
-- Add `toys/<slug>/` with `index.html` + `styles.css` (and a local `.js` file only if the script is large or worth splitting—otherwise inline is fine).
-- In `<head>`, after `../../assets/styles.css`, link **`../../assets/tool-shell.css`** (shared `.tool` / `.panel` for all tool pages), then `styles.css`. **Do not** put tool-specific selectors or scripts in `assets/styles.css` or `assets/main.js`—those stay for the gallery shell (home, cards, footer, topbar).
-- Register in `tools-registry.json` with a **`category`** (`utility` | `game` | `visual` | `audio` | `wellness`), **specific, benefit-led** `shortDescription`, **`tags`** naming **what the tool is** (role nouns: e.g. `json-formatter`, `contrast-checker`)—1–2 hyphenated labels per tool, reused for chips—and a **`related` array** (2–4 sibling slugs). When you add a **new** `tags` value, add a matching entry to **`TYPE_NL_PHRASES`** in `assets/main.js` (synonyms and natural phrases people type) so gallery search still behaves like natural-language filtering.
-- On the tool page: `body data-tool-slug="<slug>"`, `<div id="toolCrossRoot" class="tool-cross-mount"></div>` before `</main>`, and `<script src="../../assets/tool-cross.js" defer></script>` before `</body>` (loads the “Related tools & toys” block from the registry).
-- Add the URL to `sitemap.xml` unless the page should be `noindex`.
-- Reuse the global header/footer, gtag, and `https://onepagetoys.com/` SEO pattern from sibling tools.
+- **Pick the folder from `category`:** `utility` → `tools/<slug>/`; **`game` | `visual` | `audio` | `wellness`** → `toys/<slug>/`. Paths in `tools-registry.json` must be `tools/<slug>/index.html` or `toys/<slug>/index.html` accordingly (run `node scripts/build-sitemap.cjs` after registry edits).
+- Add the page under that folder: `index.html` + `styles.css` (and a local `.js` only if the script is large—otherwise inline is fine).
+- In `<head>`, after `../../assets/styles.css`, link **`../../assets/tool-shell.css`**, then `styles.css`. **Do not** put tool-specific selectors or scripts in `assets/styles.css` or `assets/main.js`—those stay for the gallery shell (home, cards, footer, topbar).
+- Register in `tools-registry.json` with **`category`**, **specific `shortDescription`**, **`tags`** (1–2 hyphenated role nouns; add **`TYPE_NL_PHRASES`** in `assets/main.js` for any new tag), and **`related`** (2–4 slugs that exist in the registry).
+- On the page: `body data-tool-slug="<slug>"`, `<div id="toolCrossRoot" class="tool-cross-mount"></div>` before `</main>`, and `<script src="../../assets/site-chrome.js" defer></script>` + `<script src="../../assets/tool-cross.js" defer></script>` before `</body>`.
+- Reuse the global header/footer, gtag, and **`https://onepagetoys.com/tools/...` or `.../toys/...`** canonical pattern matching the folder you chose.
 
 ## Before building
 

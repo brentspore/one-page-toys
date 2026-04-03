@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Quick Image Converter</title>
+    <meta name="description" content="Drag and drop an image and convert to PNG, JPEG, or WebP in the browser." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/image-converter/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Quick Image Converter" />
+    <meta property="og:description" content="Drag and drop an image and convert to PNG, JPEG, or WebP in the browser." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/image-converter/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Quick Image Converter" />
+    <meta name="twitter:description" content="Drag and drop an image and convert to PNG, JPEG, or WebP in the browser." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Quick Image Converter",
+        "url": "https://onepagetoys.com/tools/image-converter/index.html",
+        "description": "Drag and drop an image and convert to PNG, JPEG, or WebP in the browser.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="image-converter">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1 class="icv-title">Quick Image Converter</h1>
+        <p class="lead icv-lead muted">
+          Drag in an image or browse (max <strong id="icvMaxSizeLabel">20 MB</strong> per file). Everything runs in your browser—nothing is uploaded.
+        </p>
+        <p class="tool-ext-link muted">
+          See also
+          <a href="https://symmetrygenius.com" target="_blank" rel="noopener noreferrer">Symmetry Genius<span class="sr-only"> (opens in new tab)</span></a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://buildutilities.com" target="_blank" rel="noopener noreferrer">BuildUtilities<span class="sr-only"> (opens in new tab)</span></a>
+        </p>
+        <p class="tool-ext-link muted">
+          Assets for email:
+          <a href="https://beautifulinbox.com/" target="_blank" rel="noopener noreferrer">Beautiful Inbox<span class="sr-only"> (opens in new tab)</span></a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://superchargedemail.com/" target="_blank" rel="noopener noreferrer">Supercharged Email<span class="sr-only"> (opens in new tab)</span></a>
+        </p>
+
+        <div id="icvError" class="icv-error icv-hidden" role="alert"></div>
+
+        <div class="panel icv-panel">
+          <input id="icvFile" type="file" class="icv-file-input" accept="image/*" />
+
+          <button type="button" class="icv-dropzone" id="icvDropzone" aria-label="Upload image">
+            <span class="icv-dropzone-main">Drop an image here</span>
+            <span class="icv-dropzone-sub muted"
+              >or click to choose · PNG, JPEG, GIF, WebP, … · max <span id="icvMaxSizeDrop">20 MB</span></span>
+          </button>
+
+          <div id="icvPreviewWrap" class="icv-preview-wrap icv-hidden">
+            <div class="icv-preview-head">
+              <div>
+                <div id="icvFileName" class="icv-file-name"></div>
+                <div id="icvFileMeta" class="icv-file-meta muted"></div>
+              </div>
+              <button type="button" class="btn" id="icvClear">Clear</button>
+            </div>
+            <div class="icv-preview-row">
+              <img id="icvThumb" class="icv-thumb" alt="Preview" />
+            </div>
+
+            <div class="icv-controls">
+              <div class="icv-field">
+                <label for="icvFormat" class="icv-label">Output format</label>
+                <select id="icvFormat" class="icv-select">
+                  <option value="image/png">PNG</option>
+                  <option value="image/jpeg" selected>JPEG</option>
+                  <option value="image/webp" id="icvOptWebp">WebP</option>
+                </select>
+              </div>
+              <div class="icv-field icv-field-grow" id="icvQualityWrap">
+                <label for="icvQuality" class="icv-label">
+                  Quality <span id="icvQualityVal" class="muted">0.92</span>
+                </label>
+                <input id="icvQuality" class="icv-range" type="range" min="0.5" max="1" step="0.01" value="0.92" />
+              </div>
+            </div>
+
+            <div class="icv-actions">
+              <button type="button" class="btn btn--primary" id="icvConvert">Convert &amp; download</button>
+            </div>
+            <p id="icvHint" class="icv-hint muted"></p>
+          </div>
+
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> <strong>Drop</strong> an image on the zone or click to browse. After it loads, pick <strong>output format</strong> and any resize/quality options, then download. <strong>Clear</strong> removes the file and preview—nothing leaves your browser.
+          </p>
+        </div>
+      </section>
+
+    <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a
+              class="site-footer__madeby"
+              href="https://synergyprod.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img
+                class="site-footer__synergy-logo"
+                src="../../assets/synergy-logo.svg"
+                alt="Synergy"
+                width="51"
+                height="13"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        /** Max input file size (bytes). Keeps huge images from freezing the tab. */
+        var MAX_FILE_BYTES = 20 * 1024 * 1024;
+
+        var elError = document.getElementById("icvError");
+        var elMaxSizeLabel = document.getElementById("icvMaxSizeLabel");
+        var elMaxSizeDrop = document.getElementById("icvMaxSizeDrop");
+        var elFile = document.getElementById("icvFile");
+        var elDrop = document.getElementById("icvDropzone");
+        var elPreviewWrap = document.getElementById("icvPreviewWrap");
+        var elFileName = document.getElementById("icvFileName");
+        var elFileMeta = document.getElementById("icvFileMeta");
+        var elThumb = document.getElementById("icvThumb");
+        var elClear = document.getElementById("icvClear");
+        var elFormat = document.getElementById("icvFormat");
+        var elOptWebp = document.getElementById("icvOptWebp");
+        var elQualityWrap = document.getElementById("icvQualityWrap");
+        var elQuality = document.getElementById("icvQuality");
+        var elQualityVal = document.getElementById("icvQualityVal");
+        var elConvert = document.getElementById("icvConvert");
+        var elHint = document.getElementById("icvHint");
+
+        var currentFile = null;
+        var currentObjectUrl = null;
+        var loadedImage = null;
+
+        function formatBytesShort(n) {
+          if (!n && n !== 0) return "";
+          if (n < 1024) return n + " B";
+          if (n < 1024 * 1024) return Math.round(n / 1024) + " KB";
+          var mb = n / (1024 * 1024);
+          return (Math.round(mb * 10) / 10) + " MB";
+        }
+
+        var maxLabelText = formatBytesShort(MAX_FILE_BYTES);
+        if (elMaxSizeLabel) elMaxSizeLabel.textContent = maxLabelText;
+        if (elMaxSizeDrop) elMaxSizeDrop.textContent = maxLabelText;
+
+        function showError(msg) {
+          if (!msg) {
+            elError.classList.add("icv-hidden");
+            elError.textContent = "";
+            return;
+          }
+          elError.textContent = msg;
+          elError.classList.remove("icv-hidden");
+        }
+
+        function revokeCurrentUrl() {
+          if (currentObjectUrl) {
+            URL.revokeObjectURL(currentObjectUrl);
+            currentObjectUrl = null;
+          }
+        }
+
+        function formatBytes(n) {
+          if (!n && n !== 0) return "";
+          if (n < 1024) return n + " B";
+          if (n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+          return (n / (1024 * 1024)).toFixed(2) + " MB";
+        }
+
+        function extForMime(mime) {
+          if (mime === "image/png") return "png";
+          if (mime === "image/jpeg") return "jpg";
+          if (mime === "image/webp") return "webp";
+          return "bin";
+        }
+
+        function baseName(name) {
+          var i = name.lastIndexOf(".");
+          return i > 0 ? name.slice(0, i) : name;
+        }
+
+        function canvasSupportsMime(mime) {
+          try {
+            var c = document.createElement("canvas");
+            c.width = c.height = 1;
+            var d = c.toDataURL(mime);
+            if (mime === "image/webp") return d.indexOf("webp") !== -1;
+            return d.indexOf("data:" + mime) === 0 || d.length > 6;
+          } catch (e) {
+            return false;
+          }
+        }
+
+        function toggleQualityVisibility() {
+          var mime = elFormat.value;
+          var lossy = mime === "image/jpeg" || mime === "image/webp";
+          elQualityWrap.style.display = lossy ? "" : "none";
+        }
+
+        function loadImageFromFile(file) {
+          return new Promise(function (resolve, reject) {
+            revokeCurrentUrl();
+            currentObjectUrl = URL.createObjectURL(file);
+            var img = new Image();
+            img.onload = function () {
+              resolve(img);
+            };
+            img.onerror = function () {
+              reject(new Error("Could not read this image. Try another file."));
+            };
+            img.src = currentObjectUrl;
+          });
+        }
+
+        function setFile(file) {
+          if (!file || !file.type || file.type.indexOf("image/") !== 0) {
+            showError("Please choose an image file.");
+            return;
+          }
+          if (typeof file.size === "number" && file.size > MAX_FILE_BYTES) {
+            showError(
+              "This file is too large (" +
+                formatBytes(file.size) +
+                "). Max size is " +
+                formatBytesShort(MAX_FILE_BYTES) +
+                "."
+            );
+            return;
+          }
+          currentFile = file;
+          showError("");
+          elFileName.textContent = file.name;
+          elFileMeta.textContent = formatBytes(file.size) + " · loading…";
+          elPreviewWrap.classList.remove("icv-hidden");
+          elThumb.removeAttribute("src");
+
+          loadImageFromFile(file)
+            .then(function (img) {
+              loadedImage = img;
+              elThumb.src = currentObjectUrl;
+              elFileMeta.textContent =
+                formatBytes(file.size) +
+                " · " +
+                img.naturalWidth +
+                " × " +
+                img.naturalHeight +
+                " px";
+              elHint.textContent =
+                elFormat.value === "image/jpeg" || elFormat.value === "image/webp"
+                  ? "JPEG/WebP use a white background where the source was transparent."
+                  : "";
+            })
+            .catch(function (e) {
+              loadedImage = null;
+              showError((e && e.message) || "Failed to load image.");
+              elPreviewWrap.classList.add("icv-hidden");
+            });
+        }
+
+        function clearAll() {
+          currentFile = null;
+          loadedImage = null;
+          elFile.value = "";
+          elThumb.removeAttribute("src");
+          revokeCurrentUrl();
+          elPreviewWrap.classList.add("icv-hidden");
+          showError("");
+          elHint.textContent = "";
+        }
+
+        function convertAndDownload() {
+          if (!loadedImage || !currentFile) {
+            showError("Add an image first.");
+            return;
+          }
+
+          var mime = elFormat.value;
+          var quality = parseFloat(elQuality.value);
+          if (!canvasSupportsMime(mime)) {
+            showError("This browser cannot encode " + mime.replace("image/", "").toUpperCase() + ". Try PNG or JPEG.");
+            return;
+          }
+
+          var w = loadedImage.naturalWidth;
+          var h = loadedImage.naturalHeight;
+          if (!w || !h) {
+            showError("Image has no dimensions.");
+            return;
+          }
+
+          var canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          var ctx = canvas.getContext("2d");
+          if (!ctx) {
+            showError("Canvas is not available.");
+            return;
+          }
+
+          if (mime === "image/jpeg" || mime === "image/webp") {
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+          }
+          ctx.drawImage(loadedImage, 0, 0);
+
+          showError("");
+
+          canvas.toBlob(
+            function (blob) {
+              if (!blob) {
+                showError("Encoding failed. Try a different format.");
+                return;
+              }
+              var ext = extForMime(mime);
+              var outName = baseName(currentFile.name) + "." + ext;
+              var url = URL.createObjectURL(blob);
+              var a = document.createElement("a");
+              a.href = url;
+              a.download = outName;
+              a.rel = "noopener";
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              setTimeout(function () {
+                URL.revokeObjectURL(url);
+              }, 4000);
+              elHint.textContent = "Saved as " + outName + " (" + formatBytes(blob.size) + ").";
+            },
+            mime,
+            mime === "image/png" ? undefined : quality
+          );
+        }
+
+        if (!canvasSupportsMime("image/webp")) {
+          elOptWebp.disabled = true;
+          elOptWebp.textContent = "WebP (not supported here)";
+        }
+
+        elDrop.addEventListener("click", function () {
+          elFile.click();
+        });
+
+        elFile.addEventListener("change", function () {
+          var f = elFile.files && elFile.files[0];
+          if (f) setFile(f);
+        });
+
+        ["dragenter", "dragover"].forEach(function (ev) {
+          elDrop.addEventListener(ev, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            elDrop.classList.add("icv-dropzone--active");
+          });
+        });
+
+        ["dragleave", "drop"].forEach(function (ev) {
+          elDrop.addEventListener(ev, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            elDrop.classList.remove("icv-dropzone--active");
+          });
+        });
+
+        elDrop.addEventListener("drop", function (e) {
+          var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+          if (f) {
+            elFile.value = "";
+            setFile(f);
+          }
+        });
+
+        elClear.addEventListener("click", clearAll);
+
+        elFormat.addEventListener("change", function () {
+          toggleQualityVisibility();
+          if (loadedImage && currentFile) {
+            elHint.textContent =
+              elFormat.value === "image/jpeg" || elFormat.value === "image/webp"
+                ? "JPEG/WebP use a white background where the source was transparent."
+                : "";
+          }
+        });
+
+        elQuality.addEventListener("input", function () {
+          elQualityVal.textContent = parseFloat(elQuality.value).toFixed(2);
+        });
+
+        elConvert.addEventListener("click", convertAndDownload);
+
+        toggleQualityVisibility();
+        elQualityVal.textContent = parseFloat(elQuality.value).toFixed(2);
+      })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

@@ -1,6 +1,19 @@
 /* Renders "Related tools" from tools-registry.json using body[data-tool-slug]. */
 
 (function () {
+  /** Relative href from current page to registry path (e.g. tools/foo/index.html). */
+  function hrefToRegistryPath(registryPath) {
+    var parts = location.pathname.split("/").filter(Boolean);
+    var depth = 0;
+    if (parts.length && /\.html$/i.test(parts[parts.length - 1])) {
+      depth = parts.length - 1;
+    } else {
+      depth = parts.length;
+    }
+    var up = depth ? new Array(depth).fill("..").join("/") + "/" : "";
+    return up + registryPath;
+  }
+
   var CATEGORY_LABELS = {
     utility: "Tools",
     game: "Games & play",
@@ -54,7 +67,7 @@
           var li = document.createElement("li");
           var a = document.createElement("a");
           a.className = "tool-cross__link";
-          a.href = "../" + t.slug + "/index.html";
+          a.href = hrefToRegistryPath(t.path);
 
           var name = document.createElement("span");
           name.className = "tool-cross__name";
