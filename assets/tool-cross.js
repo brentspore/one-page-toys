@@ -1,6 +1,14 @@
 /* Renders "Related tools" from tools-registry.json using body[data-tool-slug]. */
 
 (function () {
+  var CATEGORY_LABELS = {
+    utility: "Utilities & dev",
+    game: "Games & play",
+    visual: "Visual & color",
+    audio: "Audio",
+    wellness: "Wellness"
+  };
+
   document.addEventListener("DOMContentLoaded", function () {
     var root = document.getElementById("toolCrossRoot");
     var slug = document.body && document.body.getAttribute("data-tool-slug");
@@ -66,10 +74,21 @@
 
         var more = document.createElement("p");
         more.className = "tool-cross__more";
+
+        var cat = current.category && String(current.category).toLowerCase();
+        if (cat && CATEGORY_LABELS[cat]) {
+          var catA = document.createElement("a");
+          catA.href = "../../all-tools.html?cat=" + encodeURIComponent(cat);
+          catA.textContent = "More in " + CATEGORY_LABELS[cat];
+          more.appendChild(catA);
+          more.appendChild(document.createTextNode(" · "));
+        }
+
         var ga = document.createElement("a");
         ga.href = "../../all-tools.html";
-        ga.textContent = "Browse all tools & search the gallery";
+        ga.textContent = "Browse all tools";
         more.appendChild(ga);
+
         section.appendChild(more);
 
         root.appendChild(section);

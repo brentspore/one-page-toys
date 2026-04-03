@@ -27,9 +27,22 @@ function badgeClassForStatus(status) {
   return "badge";
 }
 
+/** Stable ordering for category chips and “sort by category”. */
+const CATEGORY_ORDER = ["utility", "game", "visual", "audio", "wellness"];
+
+const CATEGORY_LABELS = {
+  utility: "Utilities & dev",
+  game: "Games & play",
+  visual: "Visual & color",
+  audio: "Audio",
+  wellness: "Wellness"
+};
+
 let allTools = [];
 let activeTag = "";
+let activeCategory = "";
 let knownTags = [];
+let knownCategories = [];
 let galleryMode = "all";
 let homeFeatured = null;
 
@@ -44,11 +57,17 @@ function shuffleInPlace(arr, rand) {
 }
 
 function normalizeHaystack(tool) {
+  const cat = String(tool.category || "").toLowerCase();
+  const catLabel =
+    cat && CATEGORY_LABELS[cat] ? String(CATEGORY_LABELS[cat]).toLowerCase() : "";
   const parts = [
     tool.name,
     tool.shortDescription,
     tool.slug,
+    tool.slug ? tool.slug.replace(/-/g, " ") : "",
     tool.status,
+    cat,
+    catLabel,
     Array.isArray(tool.tags) ? tool.tags.join(" ") : ""
   ];
   return parts
@@ -58,11 +77,28 @@ function normalizeHaystack(tool) {
     .replace(/\s+/g, " ");
 }
 
+function splitHayWords(hay) {
+  return hay.split(/[^a-z0-9]+/).filter(function (w) {
+    return w.length > 0;
+  });
+}
+
+/** Substring match, or prefix match on any word (e.g. “typ” → typing). */
+function tokenMatchesHaystack(tok, hay) {
+  if (!tok.length) return true;
+  if (hay.indexOf(tok) !== -1) return true;
+  if (tok.length < 2) return false;
+  const words = splitHayWords(hay);
+  return words.some(function (w) {
+    return w.indexOf(tok) === 0;
+  });
+}
+
 function toolMatchesSearch(tool, tokens) {
   if (!tokens.length) return true;
   const hay = normalizeHaystack(tool);
   return tokens.every(function (tok) {
-    return hay.indexOf(tok) !== -1;
+    return tokenMatchesHaystack(tok, hay);
   });
 }
 
@@ -72,6 +108,11 @@ function toolMatchesTag(tool) {
   return tags.some(function (t) {
     return String(t).toLowerCase() === activeTag;
   });
+}
+
+function toolMatchesCategory(tool) {
+  if (!activeCategory) return true;
+  return String(tool.category || "").toLowerCase() === activeCategory;
 }
 
 function getSearchTokens() {
@@ -87,8 +128,35 @@ function getSearchTokens() {
 function getFilteredTools() {
   const tokens = getSearchTokens();
   return allTools.filter(function (tool) {
-    return toolMatchesTag(tool) && toolMatchesSearch(tool, tokens);
+    return (
+      toolMatchesCategory(tool) &&
+      toolMatchesTag(tool) &&
+      toolMatchesSearch(tool, tokens)
+    );
   });
+}
+
+function sortToolsForDisplay(tools) {
+  const sortEl = document.getElementById("toolsSort");
+  const sortMode = sortEl && sortEl.value === "category" ? "category" : "name";
+  const slice = tools.slice();
+  if (sortMode === "category") {
+    slice.sort(function (a, b) {
+      const ca = String(a.category || "").toLowerCase();
+      const cb = String(b.category || "").toLowerCase();
+      const ia = CATEGORY_ORDER.indexOf(ca);
+      const ib = CATEGORY_ORDER.indexOf(cb);
+      const sa = ia === -1 ? 999 : ia;
+      const sb = ib === -1 ? 999 : ib;
+      if (sa !== sb) return sa - sb;
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    });
+  } else {
+    slice.sort(function (a, b) {
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    });
+  }
+  return slice;
 }
 
 function collectTagsFromTools(tools) {
@@ -103,6 +171,22 @@ function collectTagsFromTools(tools) {
   });
 }
 
+function collectCategoriesFromTools(tools) {
+  const set = new Set();
+  tools.forEach(function (t) {
+    const c = String(t.category || "").toLowerCase();
+    if (c) set.add(c);
+  });
+  return Array.from(set).sort(function (a, b) {
+    const ia = CATEGORY_ORDER.indexOf(a);
+    const ib = CATEGORY_ORDER.indexOf(b);
+    const sa = ia === -1 ? 999 : ia;
+    const sb = ib === -1 ? 999 : ib;
+    if (sa !== sb) return sa - sb;
+    return a.localeCompare(b);
+  });
+}
+
 function formatTagLabel(tag) {
   return tag.charAt(0).toUpperCase() + tag.slice(1);
 }
@@ -113,6 +197,9 @@ function syncURL() {
   const params = new URLSearchParams();
   if (q) params.set("q", q);
   if (activeTag) params.set("tag", activeTag);
+  if (activeCategory) params.set("cat", activeCategory);
+  const sortEl = document.getElementById("toolsSort");
+  if (sortEl && sortEl.value === "category") params.set("sort", "category");
   const qs = params.toString();
   const path = location.pathname;
   const hash = location.hash || "";
@@ -125,14 +212,18 @@ function syncURL() {
 function readFiltersFromURL() {
   let q = "";
   let tag = "";
+  let cat = "";
+  let sort = "";
   try {
     const p = new URLSearchParams(location.search);
     q = p.get("q") || "";
     tag = (p.get("tag") || "").toLowerCase().trim();
+    cat = (p.get("cat") || "").toLowerCase().trim();
+    sort = (p.get("sort") || "").toLowerCase().trim();
   } catch (e) {
     /* ignore */
   }
-  return { q, tag };
+  return { q, tag, cat, sort };
 }
 
 function renderTagChips() {
@@ -161,20 +252,49 @@ function renderTagChips() {
   });
 }
 
+function renderCategoryChips() {
+  const wrap = document.getElementById("toolsCategories");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  function addChip(label, value, pressed) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tools-tag tools-tag--category";
+    btn.textContent = label;
+    btn.setAttribute("data-category", value);
+    btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+    btn.addEventListener("click", function () {
+      activeCategory = value;
+      renderCategoryChips();
+      applyFilters();
+    });
+    wrap.appendChild(btn);
+  }
+
+  addChip("All categories", "", activeCategory === "");
+  knownCategories.forEach(function (c) {
+    const label = CATEGORY_LABELS[c] || formatTagLabel(c);
+    addChip(label, c, activeCategory === c);
+  });
+}
+
 function updateClearButton() {
   const btn = document.getElementById("toolsClearFilters");
   const qEl = document.getElementById("toolsSearch");
   if (!btn || !qEl) return;
   const hasQ = qEl.value.trim().length > 0;
   const hasTag = activeTag.length > 0;
-  btn.hidden = !hasQ && !hasTag;
+  const hasCat = activeCategory.length > 0;
+  btn.hidden = !hasQ && !hasTag && !hasCat;
 }
 
 function updateMeta(filteredCount, total) {
   const meta = document.getElementById("toolsMeta");
   if (!meta) return;
   const tokens = getSearchTokens();
-  const filtered = filteredCount !== total || tokens.length > 0 || activeTag;
+  const filtered =
+    filteredCount !== total || tokens.length > 0 || activeTag || activeCategory;
   if (total === 0) {
     meta.textContent = "No toys yet";
     return;
@@ -218,9 +338,18 @@ function renderCards(tools) {
     cardTop.className = "card__top";
 
     const h3Wrap = document.createElement("div");
+    h3Wrap.className = "card__title-stack";
     const h3 = document.createElement("h3");
     h3.textContent = tool.name || tool.slug || "Untitled";
     h3Wrap.appendChild(h3);
+
+    const catKey = String(tool.category || "").toLowerCase();
+    if (catKey && CATEGORY_LABELS[catKey]) {
+      const catLine = document.createElement("p");
+      catLine.className = "card__category";
+      catLine.textContent = CATEGORY_LABELS[catKey];
+      h3Wrap.appendChild(catLine);
+    }
 
     const status = document.createElement("span");
     status.className = badgeClassForStatus(tool.status);
@@ -274,7 +403,7 @@ function applyFilters() {
     return;
   }
 
-  const filtered = getFilteredTools();
+  const filtered = sortToolsForDisplay(getFilteredTools());
   renderCards(filtered);
   updateClearButton();
   syncURL();
@@ -283,6 +412,11 @@ function applyFilters() {
 function validateActiveTag() {
   if (!activeTag) return;
   if (knownTags.indexOf(activeTag) === -1) activeTag = "";
+}
+
+function validateActiveCategory() {
+  if (!activeCategory) return;
+  if (knownCategories.indexOf(activeCategory) === -1) activeCategory = "";
 }
 
 function wireRandomButton() {
@@ -318,12 +452,22 @@ function wireSearchAndFilters() {
     clearBtn.addEventListener("click", function () {
       if (searchEl) searchEl.value = "";
       activeTag = "";
+      activeCategory = "";
+      const sortEl = document.getElementById("toolsSort");
+      if (sortEl) sortEl.value = "name";
       renderTagChips();
+      renderCategoryChips();
       applyFilters();
       if (searchEl) searchEl.focus();
     });
   }
 
+  const sortEl = document.getElementById("toolsSort");
+  if (sortEl) {
+    sortEl.addEventListener("change", function () {
+      applyFilters();
+    });
+  }
 }
 
 async function loadRegistryAndRender() {
@@ -349,14 +493,28 @@ async function loadRegistryAndRender() {
       return String(a.name || "").localeCompare(String(b.name || ""));
     });
     knownTags = collectTagsFromTools(allTools);
+    knownCategories = collectCategoriesFromTools(allTools);
 
     const urlState = readFiltersFromURL();
     const searchEl = document.getElementById("toolsSearch");
-    if (searchEl) searchEl.value = urlState.q;
-    activeTag = urlState.tag;
+    if (galleryMode === "home") {
+      if (searchEl) searchEl.value = "";
+      activeTag = "";
+      activeCategory = "";
+    } else {
+      if (searchEl) searchEl.value = urlState.q;
+      activeTag = urlState.tag;
+      activeCategory = urlState.cat;
+      const sortEl = document.getElementById("toolsSort");
+      if (sortEl) {
+        sortEl.value = urlState.sort === "category" ? "category" : "name";
+      }
+    }
     validateActiveTag();
+    validateActiveCategory();
 
     renderTagChips();
+    renderCategoryChips();
     wireSearchAndFilters();
     wireRandomButton();
     applyFilters();

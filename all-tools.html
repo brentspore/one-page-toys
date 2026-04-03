@@ -18,7 +18,7 @@
     <title>All tools — One Page Toys</title>
     <meta
       name="description"
-      content="Browse every One Page Toy—search by name/description, filter by tag, and open anything in a click."
+      content="Browse every One Page Toy—search by name, filter by category or tag, sort A–Z or by category, and open anything in a click."
     />
     <link rel="canonical" href="https://onepagetoys.com/all-tools.html" />
     <meta name="robots" content="index, follow" />
@@ -28,7 +28,7 @@
     <meta property="og:title" content="All tools — One Page Toys" />
     <meta
       property="og:description"
-      content="Browse every One Page Toy—search by name/description, filter by tag, and open anything in a click."
+      content="Browse every One Page Toy—search by name, filter by category or tag, sort A–Z or by category, and open anything in a click."
     />
     <meta property="og:url" content="https://onepagetoys.com/all-tools.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
@@ -40,7 +40,7 @@
     <meta name="twitter:title" content="All tools — One Page Toys" />
     <meta
       name="twitter:description"
-      content="Browse every One Page Toy—search by name/description, filter by tag, and open anything in a click."
+      content="Browse every One Page Toy—search by name, filter by category or tag, sort A–Z or by category, and open anything in a click."
     />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <script type="application/ld+json">
@@ -69,7 +69,10 @@
       <section class="hero" style="padding-bottom: 0">
         <p class="hero__eyebrow">Gallery</p>
         <h1>All tools</h1>
-        <p class="hero__lede">Search by name, description, or tag. Or click a tag to explore a category.</p>
+        <p class="hero__lede">
+          Search matches names, descriptions, tags, and slugs (try shorthand like <strong>typ</strong> for typing). Narrow by
+          <strong>category</strong> or <strong>tag</strong>, then sort A–Z or group by category.
+        </p>
       </section>
 
       <section id="tools" class="tools">
@@ -85,16 +88,28 @@
               type="search"
               id="toolsSearch"
               class="tools-find__input"
-              placeholder="Name, description, or tag (e.g. json, color, game)…"
+              placeholder="Words, tags, or prefixes (json, wcag, typ…)…"
               autocomplete="off"
               autocorrect="off"
               spellcheck="false"
               enterkeyhint="search"
             />
+            <div class="tools-find__sort">
+              <label class="tools-find__sort-label" for="toolsSort">Sort</label>
+              <select id="toolsSort" class="tools-find__select" aria-label="Sort tools">
+                <option value="name">A–Z by name</option>
+                <option value="category">By category</option>
+              </select>
+            </div>
             <button type="button" class="btn tools-find__clear" id="toolsClearFilters" hidden>
               Clear filters
             </button>
           </div>
+        </div>
+
+        <div class="tools-cats-wrap">
+          <span class="tools-tags__label" id="toolsCatsLabel">Browse by category</span>
+          <div class="tools-tags" id="toolsCategories" role="group" aria-labelledby="toolsCatsLabel"></div>
         </div>
 
         <div class="tools-tags-wrap">
