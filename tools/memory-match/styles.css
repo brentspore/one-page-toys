@@ -28,6 +28,8 @@
   max-width: 22rem;
   margin: 0 auto;
   perspective: 800px;
+  position: relative;
+  z-index: 1; /* Ensure cards stay clickable above any panel chrome */
 }
 
 .mm-card {
@@ -40,6 +42,7 @@
   background: transparent;
   font: inherit;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 
 .mm-card:focus-visible {
