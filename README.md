@@ -41,13 +41,15 @@ This lets us adopt modern UX/UI trends as **swappable themes/variants** without 
 
 ### Where things live
 
-- **Global base (gallery + shared tokens)**
-  - `assets/styles.css`: base site styling and global tokens (no tool-specific selectors).
-  - `assets/main.js`: gallery behavior (home grid, all-tools search/filters).
+The **entire static app** (gallery, registry, shared assets, and every page) lives under **`toys/`**. Repo root holds only a **`index.html`** redirect into `toys/index.html`, plus `CNAME`, `robots.txt`, and Node metadata.
 
-- **Tool shell (toy/tool pages only)**
-  - `assets/tool-shell.css`: shared page layout, `.panel`, `.tool-directions`, shared components.
-  - `assets/tool-cross.js`: injects “Related tools” from `tools-registry.json`.
+- **Global base (gallery + shared tokens)** — under `toys/assets/`
+  - `toys/assets/styles.css`: base site styling and global tokens (no tool-specific selectors).
+  - `toys/assets/main.js`: gallery behavior (home grid, all-tools search/filters).
+
+- **Tool shell (toy/tool pages only)** — under `toys/assets/`
+  - `toys/assets/tool-shell.css`: shared page layout, `.panel`, `.tool-directions`, shared components.
+  - `toys/assets/tool-cross.js`: injects “Related tools” from `tools-registry.json`.
 
 ### Themes & style variants (future-proofing)
 
@@ -57,36 +59,38 @@ When we want a “new look,” prefer creating a **theme/variant** rather than c
 - Keep shared components reading semantic tokens, so they re-skin automatically.
 - Only add component variants when multiple pages need them.
 
-We can introduce a simple mechanism when needed (e.g., `data-theme` on `<html>`/`<body>` and `assets/themes/<name>.css`).
+We can introduce a simple mechanism when needed (e.g., `data-theme` on `<html>`/`<body>` and `toys/assets/themes/<name>.css`).
+
+- **Gallery**
+  - `toys/index.html`, `toys/all-tools.html`
 
 - **Content pages (scoped)**
-  - `toys/<slug>/index.html`: toys, games, and experiments.
-  - `tools/<slug>/index.html`: utilitarian tools (kept clean on purpose).
+  - `toys/<slug>/index.html`: every toy, game, and utility page.
   - Each page owns its own `styles.css` for local visuals only; scripts are typically inline in `index.html` unless they grow large.
 
 - **Tool registry**
-  - `tools-registry.json`: the catalog the gallery uses (cards, categories, tags, related).
-  - `sitemap.xml`: public URLs for SEO.
+  - `toys/tools-registry.json`: the catalog the gallery uses (cards, categories, tags, related).
+  - `toys/sitemap.xml`: public URLs for SEO.
 
 ### Tool page contract (copy/paste standard)
 
 Every toy/tool page should:
 - Include styles in this order:
-  - `../../assets/styles.css`
-  - `../../assets/tool-shell.css`
+  - `../assets/styles.css`
+  - `../assets/tool-shell.css`
   - `styles.css` (tool-local)
 - Set `body data-tool-slug="<slug>"`
 - Include `<div id="toolCrossRoot" class="tool-cross-mount"></div>` before `</main>`
-- Load `../../assets/tool-cross.js` (defer)
+- Load `../assets/tool-cross.js` (defer)
 - Put the primary interactive surface in a `.panel`
 - Put `.tool-directions` after the primary controls (help is secondary to doing)
 
 ### Global vs tool-unique rule of thumb
 
-Before adding CSS to global files, scan across toys/tools:
-- **Global** (`assets/styles.css` / `assets/tool-shell.css`) if it’s an app-wide invariant
-  or a reusable pattern that appears in multiple toys/tools (rule of thumb: ~3+ pages).
-- **Tool-local** (`toys/<slug>/styles.css` or `tools/<slug>/styles.css`) if it’s part of the page’s identity or interaction.
+Before adding CSS to global files, scan across `toys/<slug>/`:
+- **Global** (`toys/assets/styles.css` / `toys/assets/tool-shell.css`) if it’s an app-wide invariant
+  or a reusable pattern that appears in multiple pages (rule of thumb: ~3+ pages).
+- **Tool-local** (`toys/<slug>/styles.css`) if it’s part of the page’s identity or interaction.
 - Prefer adding/using **tokens** over duplicating big CSS blocks.
 - Never put tool-specific selectors (like `.mm-*`, `.mgs-*`) in global assets.
 

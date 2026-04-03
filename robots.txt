@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://onepagetoys.com/sitemap.xml
+Sitemap: https://onepagetoys.com/toys/sitemap.xml

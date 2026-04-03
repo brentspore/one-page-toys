@@ -2,12 +2,12 @@
 <!-- https://onepagetoys.com -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://onepagetoys.com/</loc>
+    <loc>https://onepagetoys.com/toys/index.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://onepagetoys.com/all-tools.html</loc>
+    <loc>https://onepagetoys.com/toys/all-tools.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>

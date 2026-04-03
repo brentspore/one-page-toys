@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://onepagetoys.com";
-const OG = SITE + "/assets/og-image.png";
+const OG = SITE + "/toys/assets/og-image.png";
 
 const NEW_SLUGS = [
   "clipboard-stack",
@@ -52,9 +52,9 @@ function baseHead(t) {
   const title = `${t.name} — One Page Toys`;
   return `    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
-    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
-    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" sizes="180x180" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -81,8 +81,8 @@ function baseHead(t) {
     <meta name="twitter:title" content="${esc(title)}" />
     <meta name="twitter:description" content="${esc(t.desc)}" />
     <meta name="twitter:image" content="${OG}" />
-    <link rel="stylesheet" href="../../assets/styles.css" />
-    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />`;
 }
 
@@ -95,7 +95,7 @@ ${baseHead(t)}
   <body data-tool-slug="${esc(t.slug)}">
     <header class="topbar">
       <div class="topbar__inner">
-        <a class="brand" href="../../index.html">One Page Toys</a>
+        <a class="brand" href="../index.html">One Page Toys</a>
       </div>
     </header>
     <main class="container">
@@ -119,8 +119,8 @@ ${inner}
             <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Home</a>
-            <a href="../../all-tools.html">All toys</a>
+            <a href="../index.html">Home</a>
+            <a href="../all-tools.html">All toys</a>
           </nav>
         </div>
         <div class="site-footer__bottom">
@@ -128,7 +128,7 @@ ${inner}
           <div class="site-footer__bottom-right">
             <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
               <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+              <img class="site-footer__synergy-logo" src="../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
             </a>
           </div>
         </div>
@@ -137,8 +137,8 @@ ${inner}
     <script>
 ${script}
     </script>
-    <script src="../../assets/site-chrome.js" defer></script>
-    <script src="../../assets/tool-cross.js" defer></script>
+    <script src="../assets/site-chrome.js" defer></script>
+    <script src="../assets/tool-cross.js" defer></script>
   </body>
 </html>
 `;
@@ -207,7 +207,10 @@ const IMPLEMENTATIONS = Object.assign(
 );
 
 function main() {
-  const reg = JSON.parse(fs.readFileSync("tools-registry.json", "utf8"));
+  const toyRoot = path.join(__dirname, "..");
+  const reg = JSON.parse(
+    fs.readFileSync(path.join(toyRoot, "tools-registry.json"), "utf8")
+  );
   const bySlug = {};
   reg.forEach((t) => (bySlug[t.slug] = t));
 
@@ -223,7 +226,7 @@ function main() {
   NEW_SLUGS.forEach((slug) => {
     const meta = bySlug[slug];
     if (!meta) return;
-    const dir = path.join("toys", slug);
+    const dir = path.join(toyRoot, slug);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     const cat = String(meta.category || "utility").toLowerCase();
     const t = {

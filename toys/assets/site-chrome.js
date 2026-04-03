@@ -11,6 +11,12 @@
       path = path.replace(/\/$/, "");
     }
     var segs = path.split("/").filter(Boolean);
+    var ti = segs.lastIndexOf("toys");
+    if (ti !== -1) {
+      var after = segs.length - ti - 1;
+      if (after <= 0) return "./";
+      return "../".repeat(after);
+    }
     if (!segs.length) return "./";
     return segs.map(function () {
       return "..";
@@ -182,7 +188,7 @@
     addLink(root + "index.html", "Home");
     addLink(root + "all-tools.html", "All toys");
     if (isDetail && slug) {
-      addLink(root + "toys/" + slug + "/index.html", "Palette explorer");
+      addLink(root + slug + "/index.html", "Palette explorer");
     }
 
     var liCur = document.createElement("li");

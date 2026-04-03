@@ -15,20 +15,20 @@ alwaysApply: true
   - Incorporate modern UX/UI trends as **swappable themes/variants**, not as ad-hoc one-offs baked into tool/toy pages.
   - When proposing a trend-driven change, specify which layer it belongs to (architecture vs style) and why.
 
-- Use the existing design tokens and components from `assets/styles.css` / `assets/tool-shell.css` (CSS vars like `--accent`, `--shadow-md`, `--radius`, focus rings, etc.); avoid introducing one-off colors/shadows unless they map to a token.
-- Keep global gallery styling in the gallery shell only: do not add page-specific selectors or behavior into `assets/styles.css` or `assets/main.js`. Put page visuals in `toys/<slug>/styles.css` or `tools/<slug>/styles.css` (or a small inline fallback inside the page if needed).
+- Use the existing design tokens and components from `toys/assets/styles.css` / `toys/assets/tool-shell.css` (CSS vars like `--accent`, `--shadow-md`, `--radius`, focus rings, etc.); avoid introducing one-off colors/shadows unless they map to a token.
+- Keep global gallery styling in the gallery shell only: do not add page-specific selectors or behavior into `toys/assets/styles.css` or `toys/assets/main.js`. Put page visuals in `toys/<slug>/styles.css` (or a small inline fallback inside the page if needed).
 - Tool-level extension, but within reason:
   - Tools may add their own visuals (e.g. game-specific widgets, canvases, special controls) as long as they *inherit the shared language* (tokens, radii, shadows, focus rings, typography).
-  - New visual rules must be scoped to the page (prefer `toys/<slug>/styles.css` or `tools/<slug>/styles.css` selectors, or a page-specific wrapper class/ID) so they don’t leak into the gallery or other pages.
+  - New visual rules must be scoped to the page (prefer `toys/<slug>/styles.css` selectors, or a page-specific wrapper class/ID) so they don’t leak into the gallery or other pages.
   - Maintain UX invariants: keyboard focus visibility, readable contrast, and correct click/tap layering (`pointer-events`, `z-index`) for interactive regions.
   - Avoid redefining shared primitives (don’t restyle `.btn`, `.tool`, `.panel`, etc. from inside tool CSS).
 - Global style vs tool-unique (always audit across tools first):
-  - Put a style in the shared shell (`assets/styles.css` / `assets/tool-shell.css`) only if it is an app-wide invariant or a reusable UI pattern that appears in multiple tools (rule of thumb: ~3+ tools or clearly “core”).
+  - Put a style in the shared shell (`toys/assets/styles.css` / `toys/assets/tool-shell.css`) only if it is an app-wide invariant or a reusable UI pattern that appears in multiple tools (rule of thumb: ~3+ tools or clearly “core”).
   - Keep it unique to a tool if it’s part of that tool’s core interaction/identity (custom canvases, algorithm-specific layout, one-off widgets).
   - Prefer adding/using design tokens for variability (colors, spacing scales, radii) rather than duplicating full CSS blocks across tools.
   - Never add tool-specific selectors into global assets (no `.mm-*`/`.mgs-*`/etc. in gallery shell CSS/JS).
 - Tool page structure consistency:
-  - After `../../assets/styles.css`, link `../../assets/tool-shell.css`, then `styles.css` (tool-local).
+  - After `../assets/styles.css`, link `../assets/tool-shell.css`, then `styles.css` (tool-local).
   - Place interactive primary UI before secondary details.
   - Ensure `.tool-directions` sits after the main panel/controls (so the interaction surface reads first).
   - Ensure outbound “related/ext links” styling uses the shared `.tool-ext-link` patterns and appears after the main panel.
@@ -36,8 +36,8 @@ alwaysApply: true
   - For any clickable canvas/grid/button surface inside a panel, verify `pointer-events` and stacking context (`z-index`) so overlays don’t swallow clicks.
   - Always preserve a visible `:focus-visible` state for keyboard users.
 - Gallery visual rhythm:
-  - Keep category chip ordering stable (from `assets/main.js`).
+  - Keep category chip ordering stable (from `toys/assets/main.js`).
   - Prefer warm palette + chunky shadows consistently; don’t make one tool “feel different” via ad-hoc styling.
 - Natural-language coherence:
-  - When updating tool filters/search terms, adjust synonyms in `assets/main.js` (`TYPE_NL_PHRASES`) to match new `tools-registry.json` tags so the UX stays “intentful,” not accidental.
+  - When updating tool filters/search terms, adjust synonyms in `toys/assets/main.js` (`TYPE_NL_PHRASES`) to match new `toys/tools-registry.json` tags so the UX stays “intentful,” not accidental.
 
