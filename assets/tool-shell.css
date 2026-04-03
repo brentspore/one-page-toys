@@ -282,3 +282,101 @@
   outline: none;
   box-shadow: var(--ring-offset), var(--ring);
 }
+
+/* =========================
+ * Shared tool UI components
+ * ========================= */
+
+/* Chips / segmented controls (use with role="group" and aria-pressed). */
+.ui-chip-group{
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.ui-chip{
+  appearance: none;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: rgba(255, 254, 248, 0.9);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(45, 42, 38, 0.08);
+  transition:
+    transform 140ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.ui-chip:hover{
+  transform: translate(-1px, -1px);
+  border-color: rgba(107, 92, 255, 0.55);
+  background: rgba(107, 92, 255, 0.08);
+  box-shadow: 4px 4px 0 rgba(45, 42, 38, 0.1);
+}
+
+.ui-chip:active{
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 rgba(45, 42, 38, 0.08);
+}
+
+.ui-chip[aria-pressed="true"]{
+  border-color: rgba(107, 92, 255, 0.65);
+  background: rgba(107, 92, 255, 0.16);
+}
+
+/* Big choice buttons (emoji choices, doors, etc.). */
+.ui-choice-row{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.ui-choice{
+  appearance: none;
+  border: 2px solid var(--border-strong);
+  background: rgba(255, 254, 248, 0.95);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  min-height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  font-size: 1.35rem;
+  transition:
+    transform 140ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.ui-choice:hover{
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(240, 180, 41, 0.75);
+}
+
+.ui-choice:active{
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 420px){
+  .ui-choice{
+    min-height: 56px;
+    font-size: 1.2rem;
+  }
+}
+

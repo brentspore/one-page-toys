@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>WCAG Contrast Checker</title>
+    <meta
+      name="description"
+      content="Check two colors for WCAG 2.1 contrast ratio and AA / AAA pass for normal and large text."
+    />
+    <link rel="canonical" href="https://onepagetoys.com/toys/wcag-contrast-checker/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="WCAG Contrast Checker" />
+    <meta
+      property="og:description"
+      content="Check two colors for WCAG 2.1 contrast ratio and AA / AAA pass for normal and large text."
+    />
+    <meta property="og:url" content="https://onepagetoys.com/toys/wcag-contrast-checker/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WCAG Contrast Checker" />
+    <meta
+      name="twitter:description"
+      content="Check two colors for WCAG 2.1 contrast ratio and AA / AAA pass for normal and large text."
+    />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "WCAG Contrast Checker",
+        "url": "https://onepagetoys.com/toys/wcag-contrast-checker/index.html",
+        "description": "Check two colors for WCAG 2.1 contrast ratio and AA / AAA pass for normal and large text.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="wcag-contrast-checker">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1 class="wcc-title">WCAG Contrast Checker</h1>
+        <p class="lead wcc-lead muted">
+          Enter a text color and a background (hex or the swatches). We use the WCAG 2.1 relative luminance formula—everything stays in your browser.
+        </p>
+        <p class="tool-ext-link muted">
+          Exploring how color pairs feel together? Try
+          <a href="https://symmetrygenius.com" target="_blank" rel="noopener noreferrer">Symmetry Genius<span class="sr-only"> (opens in new tab)</span></a>
+          for symmetry-focused visuals.
+        </p>
+        <p class="tool-ext-link muted">
+          More web utilities:
+          <a href="https://buildutilities.com" target="_blank" rel="noopener noreferrer">BuildUtilities<span class="sr-only"> (opens in new tab)</span></a>
+        </p>
+        <p class="tool-ext-link muted">
+          Accessible email design:
+          <a href="https://beautifulinbox.com/" target="_blank" rel="noopener noreferrer">Beautiful Inbox<span class="sr-only"> (opens in new tab)</span></a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://superchargedemail.com/" target="_blank" rel="noopener noreferrer">Supercharged Email<span class="sr-only"> (opens in new tab)</span></a>
+        </p>
+
+        <div id="wccError" class="wcc-error wcc-hidden" role="alert"></div>
+
+        <div class="panel wcc-panel">
+          <div class="wcc-row">
+            <div class="wcc-field">
+              <label class="wcc-label" for="wccFgText">Text (foreground)</label>
+              <div class="wcc-input-row">
+                <input type="color" id="wccFgPick" value="#0f172a" aria-label="Text color picker" />
+                <input type="text" id="wccFgText" value="#0f172a" maxlength="7" spellcheck="false" autocomplete="off" />
+              </div>
+            </div>
+            <div class="wcc-field">
+              <label class="wcc-label" for="wccBgText">Background</label>
+              <div class="wcc-input-row">
+                <input type="color" id="wccBgPick" value="#ffffff" aria-label="Background color picker" />
+                <input type="text" id="wccBgText" value="#ffffff" maxlength="7" spellcheck="false" autocomplete="off" />
+              </div>
+            </div>
+          </div>
+          <div class="wcc-actions">
+            <button type="button" class="btn" id="wccSwap" title="Swap text and background colors">Swap colors</button>
+          </div>
+
+          <div id="wccPreview" class="wcc-preview" aria-live="polite">
+            <p class="wcc-preview-line" id="wccSampleNormal">Sample body text at normal weight.</p>
+            <p class="wcc-preview-line wcc-preview-line--large" id="wccSampleLarge">Large bold heading text</p>
+            <p class="wcc-preview-muted" id="wccSampleMuted">Secondary line for context.</p>
+          </div>
+
+          <div class="wcc-ratio">
+            <div class="wcc-ratio-num" id="wccRatioDisplay">—</div>
+            <p class="wcc-ratio-label">contrast ratio</p>
+          </div>
+
+          <div class="wcc-table-wrap">
+            <table class="wcc-table">
+              <thead>
+                <tr>
+                  <th scope="col">Requirement</th>
+                  <th scope="col">Minimum</th>
+                  <th scope="col">Result</th>
+                </tr>
+              </thead>
+              <tbody id="wccTbody"></tbody>
+            </table>
+          </div>
+
+          <p class="wcc-note muted">
+            Large text = 18pt+ regular or 14pt+ bold (about 24px / 18.67px at default sizing). Thresholds follow WCAG 2.1 §1.4.3.
+          </p>
+
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 14px;">
+            <strong>How to use.</strong> Set <strong>text</strong> and <strong>background</strong> with the color wells or type <strong>#RRGGBB</strong> hex. The page computes WCAG 2.1 contrast and shows pass/fail for normal and large text. All math stays in your browser.
+          </p>
+        </div>
+      </section>
+    <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small tools and playful experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a
+              class="site-footer__madeby"
+              href="https://synergyprod.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img
+                class="site-footer__synergy-logo"
+                src="../../assets/synergy-logo.svg"
+                alt="Synergy"
+                width="51"
+                height="13"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var AA_NORMAL = 4.5;
+        var AAA_NORMAL = 7;
+        var AA_LARGE = 3;
+        var AAA_LARGE = 4.5;
+
+        var elErr = document.getElementById("wccError");
+        var elFgText = document.getElementById("wccFgText");
+        var elBgText = document.getElementById("wccBgText");
+        var elFgPick = document.getElementById("wccFgPick");
+        var elBgPick = document.getElementById("wccBgPick");
+        var elPreview = document.getElementById("wccPreview");
+        var elSampleNormal = document.getElementById("wccSampleNormal");
+        var elSampleLarge = document.getElementById("wccSampleLarge");
+        var elSampleMuted = document.getElementById("wccSampleMuted");
+        var elRatio = document.getElementById("wccRatioDisplay");
+        var elTbody = document.getElementById("wccTbody");
+
+        function normalizeHex(s) {
+          if (!s) return null;
+          var t = String(s).trim();
+          if (t[0] === "#") t = t.slice(1);
+          if (t.length === 3) {
+            t = t
+              .split("")
+              .map(function (c) {
+                return c + c;
+              })
+              .join("");
+          }
+          if (!/^[0-9a-fA-F]{6}$/.test(t)) return null;
+          return "#" + t.toLowerCase();
+        }
+
+        function hexToRgb(hex) {
+          var h = normalizeHex(hex);
+          if (!h) return null;
+          var n = parseInt(h.slice(1), 16);
+          return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+        }
+
+        function hexToRgbString(hex) {
+          var rgb = hexToRgb(hex);
+          if (!rgb) return "";
+          return "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
+        }
+
+        function channelLinear(c) {
+          c = c / 255;
+          return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        }
+
+        function luminance(rgb) {
+          return (
+            0.2126 * channelLinear(rgb.r) + 0.7152 * channelLinear(rgb.g) + 0.0722 * channelLinear(rgb.b)
+          );
+        }
+
+        function contrastRatio(l1, l2) {
+          var L = Math.max(l1, l2);
+          var D = Math.min(l1, l2);
+          return (L + 0.05) / (D + 0.05);
+        }
+
+        function row(label, need, pass) {
+          var tr = document.createElement("tr");
+          var td1 = document.createElement("td");
+          td1.textContent = label;
+          var td2 = document.createElement("td");
+          td2.textContent = need + ":1";
+          var td3 = document.createElement("td");
+          td3.className = pass ? "wcc-pass" : "wcc-fail";
+          td3.textContent = pass ? "Pass" : "Fail";
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          return tr;
+        }
+
+        function update() {
+          var fgH = elFgText.value;
+          var bgH = elBgText.value;
+          var fg = hexToRgb(fgH);
+          var bg = hexToRgb(bgH);
+
+          if (!fg || !bg) {
+            elErr.textContent = "Use a valid hex color (#rgb or #rrggbb) for both fields.";
+            elErr.classList.remove("wcc-hidden");
+            elRatio.textContent = "—";
+            elTbody.innerHTML = "";
+            return;
+          }
+          elErr.classList.add("wcc-hidden");
+
+          var lf = luminance(fg);
+          var lb = luminance(bg);
+          var ratio = contrastRatio(lf, lb);
+          var rText = ratio.toFixed(2);
+
+          elFgPick.value = normalizeHex(fgH);
+          elBgPick.value = normalizeHex(bgH);
+
+          elPreview.style.color = hexToRgbString(fgH);
+          elPreview.style.backgroundColor = hexToRgbString(bgH);
+          elSampleNormal.style.color = "";
+          elSampleLarge.style.color = "";
+          elSampleMuted.style.color = "";
+          elSampleMuted.style.opacity = "0.85";
+
+          elRatio.textContent = rText;
+
+          var aaN = ratio >= AA_NORMAL;
+          var aaaN = ratio >= AAA_NORMAL;
+          var aaL = ratio >= AA_LARGE;
+          var aaaL = ratio >= AAA_LARGE;
+
+          elTbody.innerHTML = "";
+          elTbody.appendChild(row("Normal text — AA", AA_NORMAL, aaN));
+          elTbody.appendChild(row("Normal text — AAA", AAA_NORMAL, aaaN));
+          elTbody.appendChild(row("Large text — AA", AA_LARGE, aaL));
+          elTbody.appendChild(row("Large text — AAA", AAA_LARGE, aaaL));
+        }
+
+        function syncFromPicker(which) {
+          if (which === "fg") {
+            elFgText.value = elFgPick.value;
+          } else {
+            elBgText.value = elBgPick.value;
+          }
+          update();
+        }
+
+        elFgText.addEventListener("input", update);
+        elBgText.addEventListener("input", update);
+        elFgPick.addEventListener("input", function () {
+          syncFromPicker("fg");
+        });
+        elBgPick.addEventListener("input", function () {
+          syncFromPicker("bg");
+        });
+
+        document.getElementById("wccSwap").addEventListener("click", function () {
+          var a = elFgText.value;
+          elFgText.value = elBgText.value;
+          elBgText.value = a;
+          update();
+        });
+
+        update();
+      })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

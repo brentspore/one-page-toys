@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Passphrase &amp; Password Generator</title>
+    <meta name="description" content="Generate strong random passwords or memorable multi-word passphrases in your browser with Web Crypto." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/passphrase-generator/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Passphrase &amp; Password Generator" />
+    <meta property="og:description" content="Generate strong random passwords or memorable multi-word passphrases in your browser with Web Crypto." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/passphrase-generator/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Passphrase &amp; Password Generator" />
+    <meta name="twitter:description" content="Generate strong random passwords or memorable multi-word passphrases in your browser with Web Crypto." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Passphrase & Password Generator",
+        "url": "https://onepagetoys.com/toys/passphrase-generator/index.html",
+        "description": "Generate strong random passwords or memorable multi-word passphrases in your browser with Web Crypto.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript and Web Crypto (getRandomValues).",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="passphrase-generator">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1 class="pwg-title">Passphrase &amp; password</h1>
+        <p class="lead pwg-lead muted">
+          Uses <strong>crypto.getRandomValues</strong>—nothing is sent to a server. Pick a random character password or a hyphen-separated word passphrase.
+        </p>
+        <p class="tool-ext-link muted">
+          More utility tools:
+          <a href="https://buildutilities.com" target="_blank" rel="noopener noreferrer">BuildUtilities<span class="sr-only"> (opens in new tab)</span></a>
+        </p>
+
+        <div id="pwgError" class="pwg-error pwg-hidden" role="alert"></div>
+
+        <div class="panel pwg-panel">
+          <div class="pwg-tabs" role="tablist" aria-label="Generator mode">
+            <button type="button" class="pwg-tab" id="pwgTabPw" role="tab" aria-selected="true" aria-controls="pwgBlockPw">Password</button>
+            <button type="button" class="pwg-tab" id="pwgTabPhrase" role="tab" aria-selected="false" aria-controls="pwgBlockPhrase">Passphrase</button>
+          </div>
+
+          <div id="pwgBlockPw" class="pwg-block" role="tabpanel" aria-labelledby="pwgTabPw">
+            <div class="pwg-field">
+              <label class="pwg-label" for="pwgLen">Length <span class="muted pwg-range-val" id="pwgLenVal">16</span></label>
+              <div class="pwg-range-row">
+                <input type="range" id="pwgLen" class="pwg-range" min="8" max="64" value="16" />
+              </div>
+            </div>
+            <div class="pwg-field">
+              <span class="pwg-label">Character sets</span>
+              <div class="pwg-row">
+                <label class="pwg-check"><input type="checkbox" id="pwgUpper" checked /> A–Z</label>
+                <label class="pwg-check"><input type="checkbox" id="pwgLower" checked /> a–z</label>
+                <label class="pwg-check"><input type="checkbox" id="pwgNum" checked /> 0–9</label>
+                <label class="pwg-check"><input type="checkbox" id="pwgSym" checked /> !@#$%^&amp;*…</label>
+              </div>
+            </div>
+            <div class="pwg-field">
+              <label class="pwg-check"><input type="checkbox" id="pwgAmb" /> Avoid ambiguous (0 O 1 l I)</label>
+            </div>
+            <div class="pwg-field">
+              <label class="pwg-check"><input type="checkbox" id="pwgEach" checked /> Require at least one from each selected set</label>
+            </div>
+          </div>
+
+          <div id="pwgBlockPhrase" class="pwg-block" role="tabpanel" aria-labelledby="pwgTabPhrase" hidden>
+            <div class="pwg-field">
+              <label class="pwg-label" for="pwgWords">Word count <span class="muted pwg-range-val" id="pwgWordsVal">5</span></label>
+              <div class="pwg-range-row">
+                <input type="range" id="pwgWords" class="pwg-range" min="3" max="10" value="5" />
+              </div>
+            </div>
+            <p class="muted" style="margin: 0; font-size: 0.88rem; line-height: 1.45;">
+              ~2,000-word list · more words = more entropy. Rough estimate shown below (ideal uniform draw).
+            </p>
+          </div>
+
+          <div class="pwg-out-wrap">
+            <label class="pwg-label" for="pwgOut">Output</label>
+            <div id="pwgOut" class="pwg-out" tabindex="0" aria-live="polite"></div>
+            <div class="pwg-actions">
+              <button type="button" class="btn btn--primary" id="pwgGen">Generate</button>
+              <button type="button" class="btn" id="pwgCopy">Copy</button>
+            </div>
+            <p id="pwgMeta" class="pwg-meta muted" aria-live="polite"></p>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Switch <strong>Password</strong> vs <strong>Passphrase</strong>, tune length and character/word options, then <strong>Generate</strong>. <strong>Copy</strong> grabs the latest result—random bytes never leave your browser.
+          </p>
+        </div>
+      </section>
+    <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small tools and playful experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var WORDS = "ability|able|about|above|accept|accord|acid|acorn|acre|actor|adapt|adept|admit|adobe|adopt|adult|after|again|agent|agile|agony|agree|ahead|aisle|alarm|album|alert|alien|align|alley|allow|alloy|alone|along|alpha|altar|alter|amber|amend|amigo|among|ample|angel|anger|angle|angry|ankle|apart|apple|apply|apron|arbor|arena|argue|arise|armor|aroma|arrow|asset|atlas|audio|audit|augur|aunty|avoid|awake|award|axiom|bacon|badge|bagel|balmy|banjo|barge|basic|batch|beach|beacon|beard|beast|begin|being|belly|below|bench|berry|biker|bingo|black|blade|blame|blank|blast|blaze|blend|bless|blimp|blind|blink|bliss|block|bloom|bluff|blunt|board|boast|bongo|bonus|boost|booth|bound|brace|brain|brake|brand|brass|brave|bread|break|brick|brief|bring|brink|broad|broke|brook|brown|brush|buddy|build|built|bully|bunch|bunny|burly|burst|buyer|cabin|cable|camel|canal|candy|canny|canoe|cargo|carry|carve|catch|cause|cedar|chain|chair|chalk|champ|chaos|charm|chart|chase|cheap|check|chess|chest|chili|chime|chord|chose|cider|cigar|circa|civic|civil|claim|clamp|clash|clasp|class|clean|clear|clerk|click|cliff|climb|clock|close|cloth|cloud|clown|coach|coast|cocoa|colon|comet|comic|corps|costa|couch|cough|could|count|court|cover|crack|craft|crane|crash|crawl|crazy|cream|creek|crest|crime|crisp|cross|crown|crush|curio|curve|cycle|daily|dairy|daisy|dance|dandy|datum|dealt|death|debug|decay|decor|decoy|delay|delta|demon|denim|dense|depot|depth|derby|deter|devil|diary|digit|diner|dingo|dirty|disco|ditch|diver|dizzy|dodge|donor|doubt|dozen|draft|drain|drama|drank|drawn|dream|dress|drift|drill|drink|drive|droop|drove|druid|drunk|dryer|eager|eagle|early|earth|easel|eaten|eater|ebony|eight|elbow|elder|elect|elite|elope|elude|email|ember|empty|enact|enemy|enjoy|enter|entry|epoch|equal|equip|erase|erode|error|erupt|essay|ether|evade|event|every|exact|excel|exile|expel|extra|fable|faced|facet|faint|fairy|faith|false|fancy|farms|fatal|fault|favor|feast|fence|ferry|fetal|fetch|fever|fiber|field|fiery|fifth|fifty|fight|final|flair|flake|flame|flare|flash|flask|fleck|flesh|flint|float|flock|flood|floor|flora|flour|fluid|fluke|flush|flute|flyer|focal|focus|foggy|force|forge|forth|found|frame|frank|fraud|freak|fresh|friar|frisk|front|frost|fruit|fully|funky|funny|furry|fussy|fuzzy|gamer|gamma|gauze|gecko|genre|ghost|giant|given|giver|glade|gland|glass|glaze|gleam|glean|glide|globe|gloom|glory|gloss|gnome|goals|goats|going|goody|goose|grace|grade|grain|grand|grant|grape|graph|grasp|grass|grate|grave|gravy|graze|great|green|greet|grief|grill|grind|gripe|groan|groin|groom|groove|gross|group|grove|growl|grown|grunt|guard|guess|guest|guide|guild|guilt|habit|hairy|happy|hardy|harsh|haste|hasty|hatch|haunt|haven|hazel|heart|heavy|hedge|heist|hello|hence|heron|hiker|hinge|hippo|hobby|hoist|holly|honey|honor|horde|horse|hotel|hound|house|hover|human|humid|humor|hurry|husky|hydro|hyper|icing|ideal|idiom|image|imply|inbox|index|infer|ingot|inked|inlay|input|intro|ionic|irony|issue|ivory|jaded|japan|jaunt|jazzy|jelly|jerky|jetty|jewel|jiffy|joint|joker|jolly|joust|judge|juice|jumbo|jumpy|jungle|karma|kayak|kebab|kiosk|knack|kneel|knife|knock|known|koala|labor|laden|lager|lanky|latch|later|lathe|laugh|layer|leafy|learn|lease|leash|least|leave|ledge|legal|lemon|lemur|level|lever|light|lilac|limbo|limit|linen|liner|lingo|liver|lizard|local|lodge|logic|lofty|loner|loose|lorry|loser|louse|lousy|lover|lower|loyal|lucid|lucky|lumen|lunar|lunch|lunge|lupus|lurch|lurid|macho|macro|madam|magic|major|maker|mango|manor|maple|march|marry|marsh|mason|match|maybe|mayor|meant|medal|media|melon|mercy|merge|merit|merry|metal|meter|micro|midge|might|mimic|mince|miner|minor|minty|minus|mirth|miser|misty|mixer|model|modem|moist|molar|money|month|moody|moose|moral|motor|motto|mound|mount|mourn|mouse|mouth|mover|movie|muddy|mummy|munch|music|nadir|naive|nanny|nasty|naval|navel|needy|nerve|never|newly|nexus|niche|night|ninja|ninth|noble|noise|noisy|north|notch|novel|nudge|nurse|nutty|nylon|oaken|ocean|octal|offer|often|olden|olive|omega|onion|onset|opera|orbit|order|organ|other|otter|ought|ounce|outer|overt|owner|oxide|ozone|pagan|paint|panda|panel|panic|paper|parka|party|pasta|patch|patio|pause|peace|peach|pearl|pedal|penny|perch|peril|petal|petty|phase|phone|photo|piano|piece|pilot|pinch|piney|pinto|pivot|pixel|pizza|place|plaid|plain|plank|plant|plate|plaza|plead|pluck|plumb|plume|plush|point|poise|poker|polar|polka|porch|poser|pouch|pound|power|prank|prawn|press|price|pride|prime|print|prior|prism|privy|prize|probe|promo|prone|proof|prose|proud|prove|proxy|prune|pulse|punch|pupil|puppy|purse|pushy|putty|quack|quake|qualm|quant|quark|quart|queen|quest|quick|quiet|quill|quilt|quota|quote|radar|radio|rainy|raise|rally|ranch|range|rapid|ratio|raven|razor|reach|react|ready|realm|rebel|refer|regal|rehab|relax|relay|relic|remix|renew|repay|reply|reset|retro|retry|revel|rhino|rhyme|rider|ridge|rifle|rigid|rigor|risky|rival|river|roach|roast|robin|robot|rocky|rodeo|rogue|roomy|roost|rotor|rough|round|route|rover|rowdy|royal|ruddy|rugby|ruled|ruler|rumba|rumor|rural|rusty|sadly|saint|salad|salsa|salty|salve|salvo|sandy|satin|sauce|sauna|savvy|scald|scale|scalp|scaly|scamp|scant|scare|scarf|scary|scene|scent|scoff|scold|scone|scoop|scoot|scope|score|scorn|scout|scrap|screw|scrub|scuba|sedan|seedy|sense|sepia|serif|serum|serve|setup|seven|sever|sewer|shack|shade|shady|shaft|shake|shaky|shall|shalt|shame|shank|shape|shard|share|shark|sharp|shave|sheep|sheer|sheet|shelf|shell|shift|shine|shiny|shire|shirt|shoal|shock|shoot|shore|short|shout|shove|shown|showy|shred|shrub|shrug|siege|sieve|sight|sigma|silky|silly|since|sinew|singe|siren|sixth|sixty|skate|skier|skiff|skill|skimp|skirt|skulk|skull|skunk|slack|slain|slang|slant|slash|slate|slave|sleek|sleep|sleet|slice|slick|slide|slime|slimy|sling|slink|slope|slosh|sloth|slump|slung|slurp|slush|slyly|smack|small|smart|smash|smear|smell|smile|smirk|smite|smith|smock|smoke|snack|snail|snake|snare|snarl|sneak|snide|sniff|snore|snort|snowy|snuck|snuff|soapy|sober|soggy|solar|solid|solve|sonar|sonic|sooth|sorry|sound|south|sower|space|spade|spank|spark|spasm|spawn|speak|speed|spell|spend|spent|spice|spicy|spike|spill|spine|spire|spite|split|spoil|spoke|spoof|spook|spool|spoon|sport|spout|spray|spree|sprig|spunk|spurn|spurt|squad|squat|squib|stack|staff|stage|stain|stair|stake|stale|stalk|stall|stamp|stand|stank|stare|stark|start|stash|state|stave|stead|steam|steel|steep|steer|stern|stick|stiff|still|stilt|sting|stink|stock|stoic|stoke|stole|stomp|stone|stony|stood|stool|stoop|store|stork|storm|story|stout|stove|strap|straw|stray|strip|strut|stuck|study|stuff|stump|stung|stunk|stunt|style|suave|sugar|suing|suite|sulky|sunny|super|surge|surly|sushi|swamp|swarm|swear|sweat|sweep|sweet|swell|swept|swift|swill|swine|swing|swirl|swish|sword|swore|sworn|swung|synod|syrup|table|taboo|tacit|tacky|taffy|taint|taken|taker|tally|talon|tamer|tango|taper|tardy|taste|tasty|tatty|taunt|teach|tease|teddy|tempo|tenet|tenor|tense|tenth|tepee|tepid|terra|terse|thank|theft|their|theme|there|these|thick|thief|thigh|thing|think|third|thorn|those|three|threw|throb|throw|thumb|thyme|tiara|tidal|tiger|tight|timer|timid|tipsy|titan|title|toast|today|token|tonal|tonga|tonic|tooth|topaz|topic|torch|torso|total|totem|touch|tough|towel|tower|toxic|trace|track|tract|trade|trail|train|trait|tramp|trash|trawl|tread|treat|trend|triad|trial|tribe|trick|tried|tripe|trite|troll|troop|trout|trove|truce|truck|truly|trump|trunk|truss|trust|truth|tryst|tulip|tummy|tuner|tunic|turbo|tutor|twang|tweak|tweed|twice|twine|twirl|twist|uncle|uncut|under|undid|unify|union|unite|unity|unlit|unmet|untie|until|unzip|upper|upset|urban|urine|usage|usher|using|usual|utter|vague|valet|valid|valor|value|valve|vapid|vapor|vault|vaunt|vegan|venom|venue|verge|verse|verve|vicar|video|vigil|vigor|villa|vinyl|viola|viper|viral|virus|visit|vista|vital|vivid|vixen|vocal|vodka|vogue|voice|vouch|vowel|vying|wacky|wafer|wager|wagon|waist|waltz|warty|waste|watch|water|waver|waxen|weary|weave|wedge|weird|whack|whale|wharf|wheat|wheel|where|which|whiff|while|whine|whiny|whirl|white|whole|whoop|whose|widen|wider|widow|width|wield|wight|windy|wiser|wispy|witch|witty|woken|woman|women|world|worry|worse|worst|worth|would|wound|woven|wrack|wrath|wreak|wreck|wrest|wring|wrist|write|wrong|wrote|yacht|yearn|yeast|yield|young|youth|zebra|zesty|zonal".split("|");
+
+        var elErr = document.getElementById("pwgError");
+        var elOut = document.getElementById("pwgOut");
+        var elMeta = document.getElementById("pwgMeta");
+        var tabPw = document.getElementById("pwgTabPw");
+        var tabPhrase = document.getElementById("pwgTabPhrase");
+        var blockPw = document.getElementById("pwgBlockPw");
+        var blockPhrase = document.getElementById("pwgBlockPhrase");
+        var mode = "pw";
+
+        function showErr(msg) {
+          if (!msg) {
+            elErr.classList.add("pwg-hidden");
+            elErr.textContent = "";
+            return;
+          }
+          elErr.textContent = msg;
+          elErr.classList.remove("pwg-hidden");
+        }
+
+        function randInt(max) {
+          if (max <= 0) return 0;
+          var buf = new Uint32Array(1);
+          window.crypto.getRandomValues(buf);
+          return buf[0] % max;
+        }
+
+        function pickCharFrom(str) {
+          return str.charAt(randInt(str.length));
+        }
+
+        function buildCharset() {
+          var upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          var lower = "abcdefghijklmnopqrstuvwxyz";
+          var num = "0123456789";
+          var sym = "!@#$%^&*-_+=[]{}|;:,.?/";
+          if (document.getElementById("pwgAmb").checked) {
+            upper = upper.replace(/[O]/g, "");
+            lower = lower.replace(/[l]/g, "");
+            num = num.replace(/[01]/g, "");
+          }
+          var s = "";
+          if (document.getElementById("pwgUpper").checked) s += upper;
+          if (document.getElementById("pwgLower").checked) s += lower;
+          if (document.getElementById("pwgNum").checked) s += num;
+          if (document.getElementById("pwgSym").checked) s += sym;
+          return s;
+        }
+
+        function generatePassword() {
+          var len = parseInt(document.getElementById("pwgLen").value, 10);
+          var charset = buildCharset();
+          if (charset.length < 2) {
+            showErr("Select at least one character set with 2+ available characters.");
+            return null;
+          }
+          showErr("");
+          var needEach = document.getElementById("pwgEach").checked;
+          var sets = [];
+          if (document.getElementById("pwgUpper").checked) {
+            var u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            if (document.getElementById("pwgAmb").checked) u = u.replace("O", "");
+            if (u.length) sets.push(u);
+          }
+          if (document.getElementById("pwgLower").checked) {
+            var lo = "abcdefghijklmnopqrstuvwxyz";
+            if (document.getElementById("pwgAmb").checked) lo = lo.replace("l", "");
+            if (lo.length) sets.push(lo);
+          }
+          if (document.getElementById("pwgNum").checked) {
+            var n = "0123456789";
+            if (document.getElementById("pwgAmb").checked) n = n.replace(/[01]/g, "");
+            if (n.length) sets.push(n);
+          }
+          if (document.getElementById("pwgSym").checked) sets.push("!@#$%^&*-_+=[]{}|;:,.?/");
+
+          var out = [];
+          var pos = 0;
+          if (needEach && sets.length) {
+            for (var i = 0; i < sets.length; i++) {
+              out.push(pickCharFrom(sets[i]));
+            }
+            pos = out.length;
+          }
+          while (out.length < len) {
+            out.push(pickCharFrom(charset));
+          }
+          for (var j = out.length - 1; j > 0; j--) {
+            var k = randInt(j + 1);
+            var t = out[j];
+            out[j] = out[k];
+            out[k] = t;
+          }
+          return out.join("");
+        }
+
+        function generatePassphrase() {
+          var n = parseInt(document.getElementById("pwgWords").value, 10);
+          var parts = [];
+          for (var i = 0; i < n; i++) {
+            parts.push(WORDS[randInt(WORDS.length)]);
+          }
+          return parts.join("-");
+        }
+
+        function bitsPassword(charsetSize, length) {
+          if (charsetSize < 2 || length < 1) return 0;
+          return Math.log2(Math.pow(charsetSize, length));
+        }
+
+        function bitsPassphrase(wordCount) {
+          var n = WORDS.length;
+          if (n < 2 || wordCount < 1) return 0;
+          return Math.log2(Math.pow(n, wordCount));
+        }
+
+        function render() {
+          var text;
+          if (mode === "pw") {
+            text = generatePassword();
+            if (!text) {
+              elOut.textContent = "";
+              elMeta.textContent = "";
+              return;
+            }
+            var cs = buildCharset().length;
+            var len = parseInt(document.getElementById("pwgLen").value, 10);
+            elMeta.textContent =
+              "~" + bitsPassword(cs, len).toFixed(1) + " bits entropy (if uniform random).";
+          } else {
+            showErr("");
+            text = generatePassphrase();
+            var w = parseInt(document.getElementById("pwgWords").value, 10);
+            elMeta.textContent = "~" + bitsPassphrase(w).toFixed(1) + " bits (uniform picks from " + WORDS.length + " words).";
+          }
+          elOut.textContent = text;
+        }
+
+        function setMode(m) {
+          mode = m;
+          var isPw = m === "pw";
+          tabPw.setAttribute("aria-selected", isPw ? "true" : "false");
+          tabPhrase.setAttribute("aria-selected", isPw ? "false" : "true");
+          blockPw.hidden = !isPw;
+          blockPhrase.hidden = isPw;
+          render();
+        }
+
+        tabPw.addEventListener("click", function () {
+          setMode("pw");
+        });
+        tabPhrase.addEventListener("click", function () {
+          setMode("phrase");
+        });
+
+        document.getElementById("pwgLen").addEventListener("input", function () {
+          document.getElementById("pwgLenVal").textContent = this.value;
+          if (mode === "pw") render();
+        });
+        document.getElementById("pwgWords").addEventListener("input", function () {
+          document.getElementById("pwgWordsVal").textContent = this.value;
+          if (mode === "phrase") render();
+        });
+        ["pwgUpper", "pwgLower", "pwgNum", "pwgSym", "pwgAmb", "pwgEach"].forEach(function (id) {
+          document.getElementById(id).addEventListener("change", function () {
+            if (mode === "pw") render();
+          });
+        });
+
+        document.getElementById("pwgGen").addEventListener("click", render);
+
+        document.getElementById("pwgCopy").addEventListener("click", function () {
+          var t = elOut.textContent;
+          if (!t) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(t).then(
+              function () {
+                elMeta.textContent = "Copied to clipboard.";
+              },
+              function () {
+                elMeta.textContent = "Clipboard blocked—select output and copy manually.";
+              }
+            );
+          } else {
+            var range = document.createRange();
+            range.selectNodeContents(elOut);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            try {
+              document.execCommand("copy");
+              elMeta.textContent = "Copied to clipboard.";
+            } catch (e) {
+              elMeta.textContent = "Could not copy automatically.";
+            }
+            sel.removeAllRanges();
+          }
+        });
+
+        if (!window.crypto || !window.crypto.getRandomValues) {
+          showErr("This browser does not support Web Crypto (getRandomValues).");
+          elOut.textContent = "";
+          elMeta.textContent = "";
+        } else {
+          render();
+        }
+      })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

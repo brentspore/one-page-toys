@@ -4,239 +4,384 @@
     "name": "Reflex Challenge",
     "shortDescription": "Wait for green, then click—see your reaction time in milliseconds.",
     "category": "game",
-    "tags": ["reaction-game"],
+    "tags": [
+      "reaction-game"
+    ],
     "status": "experimental",
-    "path": "tools/reflex-challenge/index.html",
-    "related": ["button-mash-sprint", "snake-mini", "typing-speed-sprint"]
+    "path": "toys/reflex-challenge/index.html",
+    "related": [
+      "button-mash-sprint",
+      "snake-mini",
+      "typing-speed-sprint"
+    ]
   },
   {
     "slug": "snake-mini",
     "name": "Mini Snake",
     "shortDescription": "Classic grid snake with keyboard, WASD, and on-screen arrows.",
     "category": "game",
-    "tags": ["snake-game"],
+    "tags": [
+      "snake-game"
+    ],
     "status": "experimental",
-    "path": "tools/snake-mini/index.html",
-    "related": ["reflex-challenge", "memory-match", "typing-speed-sprint"]
+    "path": "toys/snake-mini/index.html",
+    "related": [
+      "reflex-challenge",
+      "memory-match",
+      "typing-speed-sprint"
+    ]
   },
   {
     "slug": "random-palette-explorer",
     "name": "Random Palette Explorer",
     "shortDescription": "Explore color palettes by clicking the vibe you like until one set remains.",
     "category": "visual",
-    "tags": ["palette-browser"],
+    "tags": [
+      "palette-browser"
+    ],
     "status": "beta",
-    "path": "tools/random-palette-explorer/index.html",
-    "related": ["mesh-gradient-studio", "weird-generative-canvas", "pixel-doodle"]
+    "path": "toys/random-palette-explorer/index.html",
+    "related": [
+      "mesh-gradient-studio",
+      "weird-generative-canvas",
+      "pixel-doodle"
+    ]
   },
   {
     "slug": "weird-generative-canvas",
     "name": "Weird Generative Canvas",
     "shortDescription": "A random algorithm with a random color scheme that animates on your screen.",
     "category": "visual",
-    "tags": ["generative-art"],
+    "tags": [
+      "generative-art"
+    ],
     "status": "experimental",
-    "path": "tools/weird-generative-canvas/index.html",
-    "related": ["random-palette-explorer", "mesh-gradient-studio", "pixel-doodle"]
+    "path": "toys/weird-generative-canvas/index.html",
+    "related": [
+      "random-palette-explorer",
+      "mesh-gradient-studio",
+      "pixel-doodle"
+    ]
   },
   {
     "slug": "mesh-gradient-studio",
     "name": "Mesh gradient studio",
     "shortDescription": "Hero-style mesh gradients: presets, four blob colors, shape/bias sliders, grain, motion, and copy-ready CSS.",
     "category": "visual",
-    "tags": ["mesh-gradient-builder"],
+    "tags": [
+      "mesh-gradient-builder"
+    ],
     "status": "beta",
-    "path": "tools/mesh-gradient-studio/index.html",
-    "related": ["random-palette-explorer", "weird-generative-canvas", "pixel-doodle"]
+    "path": "toys/mesh-gradient-studio/index.html",
+    "related": [
+      "random-palette-explorer",
+      "weird-generative-canvas",
+      "pixel-doodle"
+    ]
   },
   {
     "slug": "coin-flipper",
     "name": "Coin Flip",
     "shortDescription": "Fair virtual coin with crypto randomness, heads/tails tallies, and a streak counter.",
     "category": "game",
-    "tags": ["coin-simulator"],
+    "tags": [
+      "coin-simulator"
+    ],
     "status": "beta",
-    "path": "tools/coin-flipper/index.html",
-    "related": ["dice-roller", "magic-eight-ball", "void-oracle"]
+    "path": "toys/coin-flipper/index.html",
+    "related": [
+      "dice-roller",
+      "magic-eight-ball",
+      "void-oracle"
+    ]
   },
   {
     "slug": "typing-speed-sprint",
     "name": "Typing Speed Sprint",
     "shortDescription": "Thirty-second word sprint in the browser—see your WPM when time is up.",
     "category": "game",
-    "tags": ["typing-test"],
+    "tags": [
+      "typing-test"
+    ],
     "status": "beta",
-    "path": "tools/typing-speed-sprint/index.html",
-    "related": ["reflex-challenge", "snake-mini", "memory-match"]
+    "path": "toys/typing-speed-sprint/index.html",
+    "related": [
+      "reflex-challenge",
+      "snake-mini",
+      "memory-match"
+    ]
   },
   {
     "slug": "memory-match",
     "name": "Memory Match",
     "shortDescription": "Flip cards on a 4×4 grid and find eight emoji pairs—track your move count.",
     "category": "game",
-    "tags": ["memory-game"],
+    "tags": [
+      "memory-game"
+    ],
     "status": "experimental",
-    "path": "tools/memory-match/index.html",
-    "related": ["odd-emoji-out", "tic-tac-toe", "emoji-slots"]
+    "path": "toys/memory-match/index.html",
+    "related": [
+      "odd-emoji-out",
+      "tic-tac-toe",
+      "emoji-slots"
+    ]
   },
   {
     "slug": "tic-tac-toe",
     "name": "Tic-Tac-Toe vs Computer",
     "shortDescription": "You’re X versus an O that plays perfectly with minimax—draws are a solid outcome.",
     "category": "game",
-    "tags": ["tic-tac-toe", "unbeatable-ai"],
+    "tags": [
+      "tic-tac-toe",
+      "unbeatable-ai"
+    ],
     "status": "experimental",
-    "path": "tools/tic-tac-toe/index.html",
-    "related": ["memory-match", "rock-paper-scissors", "snake-mini"]
+    "path": "toys/tic-tac-toe/index.html",
+    "related": [
+      "memory-match",
+      "rock-paper-scissors",
+      "snake-mini"
+    ]
   },
   {
     "slug": "void-oracle",
     "name": "Void Oracle",
     "shortDescription": "Consult a purple orb for surreal prophecies—nonsense wisdom, cosmic vibes, zero stakes.",
     "category": "game",
-    "tags": ["oracle-toy"],
+    "tags": [
+      "oracle-toy"
+    ],
     "status": "experimental",
-    "path": "tools/void-oracle/index.html",
-    "related": ["magic-eight-ball", "compliment-cannon", "late-excuse-generator"]
+    "path": "toys/void-oracle/index.html",
+    "related": [
+      "magic-eight-ball",
+      "compliment-cannon",
+      "late-excuse-generator"
+    ]
   },
   {
     "slug": "blob-choir",
     "name": "Blob Choir",
     "shortDescription": "Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums.",
     "category": "audio",
-    "tags": ["synth-toy"],
+    "tags": [
+      "synth-toy"
+    ],
     "status": "experimental",
-    "path": "tools/blob-choir/index.html",
-    "related": ["weird-generative-canvas", "void-oracle", "emoji-slots"]
+    "path": "toys/blob-choir/index.html",
+    "related": [
+      "weird-generative-canvas",
+      "void-oracle",
+      "emoji-slots"
+    ]
   },
   {
     "slug": "dice-roller",
     "name": "Dice roller",
     "shortDescription": "Roll d4–d20 with crypto randomness, a poppy result, and a short roll history.",
     "category": "game",
-    "tags": ["dice-roller"],
+    "tags": [
+      "dice-roller"
+    ],
     "status": "experimental",
-    "path": "tools/dice-roller/index.html",
-    "related": ["coin-flipper", "emoji-slots", "rock-paper-scissors"]
+    "path": "toys/dice-roller/index.html",
+    "related": [
+      "coin-flipper",
+      "emoji-slots",
+      "rock-paper-scissors"
+    ]
   },
   {
     "slug": "emoji-slots",
     "name": "Emoji slots",
     "shortDescription": "Spin three emoji reels—jackpot on three of a kind, bragging rights included.",
     "category": "game",
-    "tags": ["slot-machine"],
+    "tags": [
+      "slot-machine"
+    ],
     "status": "experimental",
-    "path": "tools/emoji-slots/index.html",
-    "related": ["dice-roller", "odd-emoji-out", "memory-match"]
+    "path": "toys/emoji-slots/index.html",
+    "related": [
+      "dice-roller",
+      "odd-emoji-out",
+      "memory-match"
+    ]
   },
   {
     "slug": "compliment-cannon",
     "name": "Compliment cannon",
     "shortDescription": "Fire a random absurd compliment; F or Space for rapid deployment.",
     "category": "game",
-    "tags": ["phrase-generator"],
+    "tags": [
+      "phrase-generator"
+    ],
     "status": "experimental",
-    "path": "tools/compliment-cannon/index.html",
-    "related": ["void-oracle", "late-excuse-generator", "banana-meter"]
+    "path": "toys/compliment-cannon/index.html",
+    "related": [
+      "void-oracle",
+      "late-excuse-generator",
+      "banana-meter"
+    ]
   },
   {
     "slug": "magic-eight-ball",
     "name": "Magic 8 ball",
     "shortDescription": "Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny.",
     "category": "game",
-    "tags": ["fortune-toy"],
+    "tags": [
+      "fortune-toy"
+    ],
     "status": "experimental",
-    "path": "tools/magic-eight-ball/index.html",
-    "related": ["void-oracle", "three-doors", "coin-flipper"]
+    "path": "toys/magic-eight-ball/index.html",
+    "related": [
+      "void-oracle",
+      "three-doors",
+      "coin-flipper"
+    ]
   },
   {
     "slug": "rock-paper-scissors",
     "name": "Rock paper scissors",
     "shortDescription": "Play RPS vs crypto-random throws with a running win / loss / tie tally.",
     "category": "game",
-    "tags": ["gesture-game"],
+    "tags": [
+      "gesture-game"
+    ],
     "status": "experimental",
-    "path": "tools/rock-paper-scissors/index.html",
-    "related": ["tic-tac-toe", "dice-roller", "odd-emoji-out"]
+    "path": "toys/rock-paper-scissors/index.html",
+    "related": [
+      "tic-tac-toe",
+      "dice-roller",
+      "odd-emoji-out"
+    ]
   },
   {
     "slug": "late-excuse-generator",
     "name": "Late excuse generator",
     "shortDescription": "Spin up a plausible-ish excuse—blame entropy, not your calendar.",
     "category": "game",
-    "tags": ["excuse-generator"],
+    "tags": [
+      "excuse-generator"
+    ],
     "status": "experimental",
-    "path": "tools/late-excuse-generator/index.html",
-    "related": ["compliment-cannon", "void-oracle", "magic-eight-ball"]
+    "path": "toys/late-excuse-generator/index.html",
+    "related": [
+      "compliment-cannon",
+      "void-oracle",
+      "magic-eight-ball"
+    ]
   },
   {
     "slug": "button-mash-sprint",
     "name": "Button mash sprint",
     "shortDescription": "Five seconds on the clock—how many mashes? A tiny thumb workout.",
     "category": "game",
-    "tags": ["tap-challenge"],
+    "tags": [
+      "tap-challenge"
+    ],
     "status": "experimental",
-    "path": "tools/button-mash-sprint/index.html",
-    "related": ["reflex-challenge", "emoji-slots", "typing-speed-sprint"]
+    "path": "toys/button-mash-sprint/index.html",
+    "related": [
+      "reflex-challenge",
+      "emoji-slots",
+      "typing-speed-sprint"
+    ]
   },
   {
     "slug": "pixel-doodle",
     "name": "Pixel doodle",
     "shortDescription": "12×12 toggle pixels—doodle glyphs, noise, or alien flags; clear or randomize.",
     "category": "visual",
-    "tags": ["pixel-editor"],
+    "tags": [
+      "pixel-editor"
+    ],
     "status": "experimental",
-    "path": "tools/pixel-doodle/index.html",
-    "related": ["mesh-gradient-studio", "random-palette-explorer", "weird-generative-canvas"]
+    "path": "toys/pixel-doodle/index.html",
+    "related": [
+      "mesh-gradient-studio",
+      "random-palette-explorer",
+      "weird-generative-canvas"
+    ]
   },
   {
     "slug": "star-click-sky",
     "name": "Star click sky",
     "shortDescription": "Click the night sky to drop twinkling stars—clear for a fresh universe.",
     "category": "visual",
-    "tags": ["starfield-toy"],
+    "tags": [
+      "starfield-toy"
+    ],
     "status": "experimental",
-    "path": "tools/star-click-sky/index.html",
-    "related": ["pixel-doodle", "weird-generative-canvas", "random-palette-explorer"]
+    "path": "toys/star-click-sky/index.html",
+    "related": [
+      "pixel-doodle",
+      "weird-generative-canvas",
+      "random-palette-explorer"
+    ]
   },
   {
     "slug": "banana-meter",
     "name": "Banana meter",
     "shortDescription": "Slide from ‘not banana’ to ‘maximum banana’—purely scientific (no).",
     "category": "game",
-    "tags": ["novelty-meter"],
+    "tags": [
+      "novelty-meter"
+    ],
     "status": "experimental",
-    "path": "tools/banana-meter/index.html",
-    "related": ["compliment-cannon", "void-oracle", "emoji-slots"]
+    "path": "toys/banana-meter/index.html",
+    "related": [
+      "compliment-cannon",
+      "void-oracle",
+      "emoji-slots"
+    ]
   },
   {
     "slug": "odd-emoji-out",
     "name": "Odd emoji out",
     "shortDescription": "Four emoji, three match—tap the impostor; score streaks on success.",
     "category": "game",
-    "tags": ["odd-one-out"],
+    "tags": [
+      "odd-one-out"
+    ],
     "status": "experimental",
-    "path": "tools/odd-emoji-out/index.html",
-    "related": ["emoji-slots", "memory-match", "rock-paper-scissors"]
+    "path": "toys/odd-emoji-out/index.html",
+    "related": [
+      "emoji-slots",
+      "memory-match",
+      "rock-paper-scissors"
+    ]
   },
   {
     "slug": "breathing-pacer",
     "name": "Breathing pacer",
     "shortDescription": "Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice.",
     "category": "wellness",
-    "tags": ["breathing-guide"],
+    "tags": [
+      "breathing-guide"
+    ],
     "status": "experimental",
-    "path": "tools/breathing-pacer/index.html",
-    "related": ["blob-choir", "void-oracle", "banana-meter"]
+    "path": "toys/breathing-pacer/index.html",
+    "related": [
+      "blob-choir",
+      "void-oracle",
+      "banana-meter"
+    ]
   },
   {
     "slug": "three-doors",
     "name": "Three doors",
     "shortDescription": "Pick a door: one star, two goats (friendly). Play again with a new hiding spot.",
     "category": "game",
-    "tags": ["door-game"],
+    "tags": [
+      "door-game"
+    ],
     "status": "experimental",
-    "path": "tools/three-doors/index.html",
-    "related": ["magic-eight-ball", "coin-flipper", "void-oracle"]
+    "path": "toys/three-doors/index.html",
+    "related": [
+      "magic-eight-ball",
+      "coin-flipper",
+      "void-oracle"
+    ]
   }
 ]

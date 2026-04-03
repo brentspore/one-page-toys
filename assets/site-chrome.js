@@ -75,7 +75,7 @@
     var aAll = document.createElement("a");
     aAll.className = "topbar__link";
     aAll.href = root + "all-tools.html";
-    aAll.textContent = "All tools";
+    aAll.textContent = "All toys";
     nav.appendChild(aHome);
     nav.appendChild(aAll);
     start.appendChild(nav);
@@ -123,9 +123,9 @@
     }
 
     addLink(root + "index.html", "Home");
-    addLink(root + "all-tools.html", "All tools");
+    addLink(root + "all-tools.html", "All toys");
     if (isDetail && slug) {
-      addLink(root + "tools/" + slug + "/index.html", "Palette explorer");
+      addLink(root + "toys/" + slug + "/index.html", "Palette explorer");
     }
 
     var liCur = document.createElement("li");

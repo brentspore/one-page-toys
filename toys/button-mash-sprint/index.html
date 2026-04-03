@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VBVJ93GL8L");
+    </script>
+    <title>Button mash sprint — 5 second frenzy</title>
+    <meta name="description" content="How many taps in five seconds? A tiny reflex toy—start, mash, see your score." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/button-mash-sprint/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#dc2626" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Button mash sprint — 5 second frenzy" />
+    <meta property="og:description" content="How many taps in five seconds? A tiny reflex toy—start, mash, see your score." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/button-mash-sprint/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Button mash sprint",
+        "url": "https://onepagetoys.com/toys/button-mash-sprint/index.html",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+  </head>
+  <body data-tool-slug="button-mash-sprint">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Button mash sprint</h1>
+        <p class="lead">Five seconds on the clock. Hammer the big button. Thumb athletes welcome.</p>
+        <div class="panel">
+          <div class="bms-panel">
+            <div class="bms-timer" id="bmsTimer" aria-live="polite">5.0</div>
+            <p class="bms-meta" id="bmsMeta">Press Start, then mash.</p>
+            <button type="button" class="bms-mash" id="bmsMash" disabled aria-label="Mash during sprint">MASH</button>
+            <div class="bms-row">
+              <button type="button" class="btn" id="bmsStart">Start</button>
+              <button type="button" class="btn btn--secondary" id="bmsAgain" hidden>Again</button>
+            </div>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to play.</strong> Tap <strong>Start</strong> first—the timer runs for 5 seconds. Only taps on <strong>MASH</strong> while the timer is going count toward your score. When it hits 0, use
+            <strong>Again</strong> for another sprint.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        var DUR = 5000;
+        var count = 0;
+        var running = false;
+        var endAt = 0;
+        var raf = null;
+        var mash = document.getElementById("bmsMash");
+        var timerEl = document.getElementById("bmsTimer");
+        var meta = document.getElementById("bmsMeta");
+        var startBtn = document.getElementById("bmsStart");
+        var againBtn = document.getElementById("bmsAgain");
+
+        function tick() {
+          if (!running) return;
+          var left = Math.max(0, endAt - performance.now());
+          timerEl.textContent = (left / 1000).toFixed(1);
+          if (left <= 0) {
+            running = false;
+            mash.disabled = true;
+            startBtn.hidden = false;
+            againBtn.hidden = false;
+            meta.textContent = "Score: " + count + " mashes. Legendary or leg day?";
+            return;
+          }
+          raf = requestAnimationFrame(tick);
+        }
+
+        function go() {
+          if (raf) cancelAnimationFrame(raf);
+          count = 0;
+          running = true;
+          endAt = performance.now() + DUR;
+          mash.disabled = false;
+          startBtn.hidden = true;
+          againBtn.hidden = true;
+          meta.textContent = "Go!";
+          timerEl.textContent = "5.0";
+          raf = requestAnimationFrame(tick);
+        }
+
+        mash.addEventListener("click", function () {
+          if (!running) return;
+          count++;
+        });
+        startBtn.addEventListener("click", go);
+        againBtn.addEventListener("click", go);
+      })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

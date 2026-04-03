@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Random Palette Explorer</title>
+    <meta name="description" content="Pick vibes and palettes until one set of colors wins." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/random-palette-explorer/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Random Palette Explorer" />
+    <meta property="og:description" content="Pick vibes and palettes until one set of colors wins." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/random-palette-explorer/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Random Palette Explorer" />
+    <meta name="twitter:description" content="Pick vibes and palettes until one set of colors wins." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Random Palette Explorer",
+        "url": "https://onepagetoys.com/toys/random-palette-explorer/index.html",
+        "description": "Pick vibes and palettes until one set of colors wins.",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="random-palette-explorer">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tool">
+        <h1 class="rpe-title">Random Palette Explorer</h1>
+        <p class="lead rpe-lead muted">
+          Cached palette vibes (ColourLovers-style). <strong>Click any palette card</strong> for the full breakdown (hex, RGB, HSL, export). Use vibe tags to narrow the pool—or explore until one palette is left.
+        </p>
+        <p class="tool-ext-link muted">
+          Into symmetry and visual balance?
+          <a href="https://symmetrygenius.com" target="_blank" rel="noopener noreferrer">Symmetry Genius<span class="sr-only"> (opens in new tab)</span></a>
+        </p>
+
+        <div id="rpeError" class="rpe-error rpe-hidden" role="alert"></div>
+        <div id="rpeStatus" class="rpe-status muted" aria-live="polite"></div>
+
+        <div id="rpePlay" class="panel">
+          <div id="rpeCardGrid" class="rpe-grid"></div>
+
+          <div class="muted" style="text-align: center; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem;">
+            Nudge by vibe
+          </div>
+          <div class="rpe-vibes" id="rpeVibes"></div>
+
+          <div class="rpe-actions">
+            <button type="button" class="btn" id="rpeShuffle">Shuffle four</button>
+            <button type="button" class="btn" id="rpeStartOver">Start over</button>
+          </div>
+
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 6px;">
+            <strong>How to use.</strong> <strong>Shuffle four</strong> pulls new palette cards from the pool. Tap a card to open the full breakdown (hex, RGB, HSL, exports). <strong>Vibe</strong> tags bias what gets drawn; <strong>Start over</strong> resets filters and the pool.
+          </p>
+        </div>
+      </section>
+
+    <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">
+              Small tools and playful experiments—each built to stay focused, simple, and easy to open.
+            </p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a
+              class="site-footer__madeby"
+              href="https://synergyprod.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img
+                class="site-footer__synergy-logo"
+                src="../../assets/synergy-logo.svg"
+                alt="Synergy"
+                width="51"
+                height="13"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        const STORAGE_URL = "palettes.json";
+        const DETAIL_STORAGE_KEY = "one-page-toys:rpe-selected-palette";
+        /** How many palette cards are shown at once for each shuffle / vibe step. */
+        const PALETTES_PER_ROUND = 4;
+
+        const vibeLabels = [
+          { id: "softer", label: "Softer" },
+          { id: "bolder", label: "Bolder" },
+          { id: "warmer", label: "Warmer" },
+          { id: "cooler", label: "Cooler" },
+          { id: "muted", label: "More muted" },
+          { id: "punchy", label: "More punchy" },
+        ];
+
+        /** @type {{ title: string, colors: string[] }[]} */
+        let allPalettes = [];
+        /** @type {{ title: string, colors: string[] }[]} */
+        let pool = [];
+        /** @type {{ title: string, colors: string[] }[]} */
+        let showing = [];
+
+        const elError = document.getElementById("rpeError");
+        const elStatus = document.getElementById("rpeStatus");
+        const elPlay = document.getElementById("rpePlay");
+        const elCardGrid = document.getElementById("rpeCardGrid");
+        const elVibes = document.getElementById("rpeVibes");
+
+        function hexToRgb(hex) {
+          const h = hex.replace("#", "").trim();
+          const v = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+          const n = parseInt(v, 16);
+          return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+        }
+
+        function rgbToHsl(r, g, b) {
+          r /= 255;
+          g /= 255;
+          b /= 255;
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          let h = 0;
+          let s = 0;
+          const l = (max + min) / 2;
+          const d = max - min;
+          if (d !== 0) {
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r:
+                h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+                break;
+              case g:
+                h = ((b - r) / d + 2) / 6;
+                break;
+              default:
+                h = ((r - g) / d + 4) / 6;
+                break;
+            }
+          }
+          return [h * 360, s, l];
+        }
+
+        function paletteAvgHsl(p) {
+          let h = 0;
+          let s = 0;
+          let l = 0;
+          const n = p.colors.length;
+          for (const c of p.colors) {
+            const [r, g, b] = hexToRgb(c);
+            const [hh, ss, ll] = rgbToHsl(r, g, b);
+            h += hh;
+            s += ss;
+            l += ll;
+          }
+          return { h: h / n, s: s / n, l: l / n };
+        }
+
+        function paletteAvgRgb(p) {
+          let r = 0;
+          let g = 0;
+          let b = 0;
+          const n = p.colors.length;
+          for (const c of p.colors) {
+            const [rr, gg, bb] = hexToRgb(c);
+            r += rr;
+            g += gg;
+            b += bb;
+          }
+          return { r: r / n, g: g / n, b: b / n };
+        }
+
+        function rgbDistance(a, b) {
+          const dr = a.r - b.r;
+          const dg = a.g - b.g;
+          const db = a.b - b.b;
+          return Math.sqrt(dr * dr + dg * dg + db * db);
+        }
+
+        function shuffle(arr) {
+          const a = arr.slice();
+          for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        }
+
+        function pickRound() {
+          if (pool.length === 0) {
+            showing = [];
+            return showing;
+          }
+          if (pool.length <= PALETTES_PER_ROUND) {
+            showing = shuffle(pool);
+            return showing;
+          }
+          showing = shuffle(pool).slice(0, PALETTES_PER_ROUND);
+          return showing;
+        }
+
+        function renderCards() {
+          elCardGrid.innerHTML = "";
+          const row = pickRound();
+
+          for (let i = 0; i < row.length; i++) {
+            const p = row[i];
+            const card = document.createElement("div");
+            card.className = "rpe-card";
+            card.setAttribute("role", "button");
+            card.setAttribute("tabindex", "0");
+            card.setAttribute(
+              "aria-label",
+              "Open details for palette: " + (p.title || "untitled")
+            );
+            card.addEventListener("click", function () {
+              openPaletteDetail(p);
+            });
+            card.addEventListener("keydown", function (ev) {
+              if (ev.key === "Enter" || ev.key === " ") {
+                ev.preventDefault();
+                openPaletteDetail(p);
+              }
+            });
+
+            const sw = document.createElement("div");
+            sw.className = "rpe-swatches";
+            for (const col of p.colors) {
+              const d = document.createElement("div");
+              d.className = "rpe-swatch";
+              d.style.background = col;
+              sw.appendChild(d);
+            }
+
+            const body = document.createElement("div");
+            body.className = "rpe-card-body";
+            const h3 = document.createElement("h3");
+            h3.className = "rpe-card-title";
+            h3.textContent = p.title;
+
+            const hint = document.createElement("p");
+            hint.className = "rpe-card-hint muted";
+            hint.textContent = "Click anywhere for full details";
+
+            body.appendChild(h3);
+            body.appendChild(hint);
+            card.appendChild(sw);
+            card.appendChild(body);
+            elCardGrid.appendChild(card);
+          }
+        }
+
+        function median(nums) {
+          const s = nums.slice().sort((a, b) => a - b);
+          const m = Math.floor(s.length / 2);
+          return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+        }
+
+        function applyVibe(id) {
+          if (pool.length <= 1) return;
+          const metrics = pool.map((p) => ({ p, m: paletteAvgHsl(p) }));
+          const sats = metrics.map((x) => x.m.s);
+          const lights = metrics.map((x) => x.m.l);
+          const medS = median(sats);
+          const medL = median(lights);
+
+          let next = pool.slice();
+
+          if (id === "softer") {
+            next = pool.filter((p) => paletteAvgHsl(p).s < medS * 1.02);
+          } else if (id === "bolder") {
+            next = pool.filter((p) => paletteAvgHsl(p).s > medS * 0.98);
+          } else if (id === "warmer") {
+            next = pool.filter((p) => {
+              const h = paletteAvgHsl(p).h;
+              return h <= 95 || h >= 310;
+            });
+          } else if (id === "cooler") {
+            next = pool.filter((p) => {
+              const h = paletteAvgHsl(p).h;
+              return h >= 150 && h <= 270;
+            });
+          } else if (id === "muted") {
+            next = pool.filter((p) => {
+              const m = paletteAvgHsl(p);
+              return m.s < 0.38 && m.l > 0.25 && m.l < 0.85;
+            });
+          } else if (id === "punchy") {
+            next = pool.filter((p) => {
+              const m = paletteAvgHsl(p);
+              return m.s > 0.35;
+            });
+          }
+
+          if (next.length === 0) {
+            elError.textContent = "That vibe wiped the pool—try Start over or a different nudge.";
+            elError.classList.remove("rpe-hidden");
+            return;
+          }
+          elError.classList.add("rpe-hidden");
+          pool = next;
+          finishOrRender();
+        }
+
+        function finishOrRender() {
+          elStatus.textContent = pool.length + " palette" + (pool.length === 1 ? "" : "s") + " left in the pool";
+
+          if (pool.length === 1) {
+            openPaletteDetail(pool[0]);
+            return;
+          }
+          renderCards();
+        }
+
+        function openPaletteDetail(p) {
+          try {
+            sessionStorage.setItem(
+              DETAIL_STORAGE_KEY,
+              JSON.stringify({
+                title: p.title,
+                colors: p.colors,
+                savedAt: new Date().toISOString(),
+              })
+            );
+          } catch (e) {
+            elError.textContent = "Could not open detail page—storage blocked? Allow cookies for this site.";
+            elError.classList.remove("rpe-hidden");
+            return;
+          }
+          window.location.assign("detail.html");
+        }
+
+        function resetAll() {
+          elPlay.classList.remove("rpe-hidden");
+          elError.classList.add("rpe-hidden");
+          pool = shuffle(allPalettes);
+          elStatus.textContent = pool.length + " palettes in the pool";
+          renderCards();
+        }
+
+        function initVibes() {
+          elVibes.innerHTML = "";
+          for (const v of vibeLabels) {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "rpe-vibe";
+            b.textContent = v.label;
+            b.addEventListener("click", function () {
+              applyVibe(v.id);
+            });
+            elVibes.appendChild(b);
+          }
+        }
+
+        document.getElementById("rpeShuffle").addEventListener("click", function () {
+          if (pool.length <= 1) return;
+          elError.classList.add("rpe-hidden");
+          renderCards();
+        });
+
+        document.getElementById("rpeStartOver").addEventListener("click", resetAll);
+
+        fetch(STORAGE_URL, { cache: "no-store" })
+          .then(function (r) {
+            if (!r.ok) throw new Error("Could not load palettes.json");
+            return r.json();
+          })
+          .then(function (data) {
+            if (!Array.isArray(data) || !data.length) throw new Error("Invalid palettes");
+            allPalettes = data.filter(function (p) {
+              return p && Array.isArray(p.colors) && p.colors.length && p.title;
+            });
+            if (!allPalettes.length) throw new Error("No palettes");
+            initVibes();
+            resetAll();
+          })
+          .catch(function (e) {
+            elError.textContent = (e && e.message) || "Failed to load palettes.";
+            elError.classList.remove("rpe-hidden");
+            elPlay.classList.add("rpe-hidden");
+          });
+      })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>
