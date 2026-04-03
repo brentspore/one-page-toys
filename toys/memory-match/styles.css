@@ -15,10 +15,7 @@
 }
 
 .mm-stat {
-  font-size: 0.9rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--text);
+  flex: 0 0 auto;
 }
 
 .mm-grid {

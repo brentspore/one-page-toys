@@ -76,19 +76,19 @@
               <button type="button" class="btn" id="coinFlip">Flip</button>
               <button type="button" class="btn btn--secondary" id="coinReset">Reset stats</button>
             </div>
-            <p class="coin-hint" id="coinLast" aria-live="polite">Ready. Flip to start.</p>
-            <div class="coin-stats" aria-live="polite">
-              <div class="coin-stat">
-                <p class="coin-stat__n" id="coinHeads">0</p>
-                <p class="coin-stat__lbl">Heads</p>
+            <p class="coin-hint ui-live" id="coinLast" aria-live="polite">Ready. Flip to start.</p>
+            <div class="coin-stats ui-hud" aria-label="Stats">
+              <div class="coin-stat ui-stat" aria-label="Heads">
+                <span class="ui-stat__label">Heads</span>
+                <span class="ui-stat__value" id="coinHeads">0</span>
               </div>
-              <div class="coin-stat">
-                <p class="coin-stat__n" id="coinTails">0</p>
-                <p class="coin-stat__lbl">Tails</p>
+              <div class="coin-stat ui-stat" aria-label="Tails">
+                <span class="ui-stat__label">Tails</span>
+                <span class="ui-stat__value" id="coinTails">0</span>
               </div>
-              <div class="coin-stat">
-                <p class="coin-stat__n" id="coinStreak">0</p>
-                <p class="coin-stat__lbl">Streak</p>
+              <div class="coin-stat ui-stat" aria-label="Streak">
+                <span class="ui-stat__label">Streak</span>
+                <span class="ui-stat__value" id="coinStreak">0</span>
               </div>
             </div>
           </div>

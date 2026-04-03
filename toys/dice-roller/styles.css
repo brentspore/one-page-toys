@@ -89,19 +89,9 @@
 }
 
 .dice-history {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  font-size: 0.8125rem;
-  color: var(--muted);
+  /* Layout/styling provided by shared `.ui-history` */
 }
 
 .dice-history li {
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.04);
-  font-variant-numeric: tabular-nums;
+  /* Styling provided by shared `.ui-history` */
 }

@@ -175,11 +175,17 @@
 
         <div class="panel">
           <div class="mm-layout">
-            <div class="mm-bar">
-              <span class="mm-stat" id="mmMoves">Moves: 0</span>
-              <span class="mm-stat" id="mmPairs">Pairs: 0 / 8</span>
+            <div class="mm-bar ui-hud" aria-label="Progress">
+              <div class="mm-stat ui-stat" aria-label="Moves">
+                <span class="ui-stat__label">Moves</span>
+                <span class="ui-stat__value" id="mmMoves">0</span>
+              </div>
+              <div class="mm-stat ui-stat" aria-label="Pairs">
+                <span class="ui-stat__label">Pairs</span>
+                <span class="ui-stat__value" id="mmPairs">0 / 8</span>
+              </div>
             </div>
-            <p class="mm-status" id="mmStatus" aria-live="polite">Tap a card to begin.</p>
+            <p class="mm-status ui-live" id="mmStatus" aria-live="polite">Tap a card to begin.</p>
             <div class="mm-grid" id="mmGrid" role="group" aria-label="Card grid"></div>
             <div class="mm-actions">
               <button type="button" class="btn btn--primary" id="mmNew">New game</button>
@@ -340,8 +346,8 @@
         }
 
         function updateHud() {
-          movesEl.textContent = "Moves: " + moves;
-          pairsEl.textContent = "Pairs: " + matched + " / 8";
+          movesEl.textContent = String(moves);
+          pairsEl.textContent = matched + " / 8";
         }
 
         function onPick(i) {

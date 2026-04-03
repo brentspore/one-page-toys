@@ -380,3 +380,99 @@
   }
 }
 
+/* Live state / progress (scores, timers, status lines, “last result”, etc.) */
+.ui-hud{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ui-stat{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: rgba(255, 254, 248, 0.88);
+  box-shadow: 2px 2px 0 rgba(45, 42, 38, 0.08);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-stat__label{
+  font-family: var(--font-display);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.ui-stat__value{
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+/* Generic live-status line. Intended for small, changing text (not big preview regions). */
+.ui-live{
+  margin: 0;
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 2px solid rgba(45, 42, 38, 0.08);
+  background: rgba(255, 254, 248, 0.7);
+  box-shadow: 2px 2px 0 rgba(45, 42, 38, 0.06);
+  font-weight: 650;
+  color: var(--muted);
+  text-align: center;
+}
+
+.ui-live:where(span){
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border-radius: var(--radius-pill);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-live strong{
+  color: var(--text);
+  font-weight: 750;
+}
+
+/* Recent history (e.g., last rolls, last results). */
+.ui-history{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.ui-history > li{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(45, 42, 38, 0.06);
+  border: 1px solid rgba(45, 42, 38, 0.06);
+  box-shadow: 1px 1px 0 rgba(45, 42, 38, 0.04);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-history:empty::before{
+  content: "No history yet.";
+  padding: 0.25rem 0.25rem;
+  color: var(--muted);
+}
+
+

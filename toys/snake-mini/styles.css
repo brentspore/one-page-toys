@@ -29,10 +29,7 @@
 }
 
 .sm-score {
-  font-size: 1.1rem;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  flex: 0 0 auto;
 }
 
 .sm-canvas-wrap {

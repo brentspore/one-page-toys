@@ -64,9 +64,22 @@
             <button type="button" class="rps-choice ui-choice" data-move="2" aria-label="Scissors">✂️</button>
           </div>
           <div class="rps-arena" style="margin-top: 1.25rem">
-            <p class="rps-line" id="rpsResult" aria-live="polite">Pick a move.</p>
+            <p class="rps-line ui-live" id="rpsResult" aria-live="polite">Pick a move.</p>
             <p class="rps-line rps-line--muted" id="rpsDetail"></p>
-            <p class="rps-line rps-line--muted" id="rpsScore">Wins 0 · Losses 0 · Ties 0</p>
+            <div class="ui-hud" aria-label="Score">
+              <div class="ui-stat" aria-label="Wins">
+                <span class="ui-stat__label">Wins</span>
+                <span class="ui-stat__value" id="rpsWins">0</span>
+              </div>
+              <div class="ui-stat" aria-label="Losses">
+                <span class="ui-stat__label">Losses</span>
+                <span class="ui-stat__value" id="rpsLosses">0</span>
+              </div>
+              <div class="ui-stat" aria-label="Ties">
+                <span class="ui-stat__label">Ties</span>
+                <span class="ui-stat__value" id="rpsTies">0</span>
+              </div>
+            </div>
           </div>
           <div style="margin-top: 1rem; text-align: center">
             <button type="button" class="btn btn--secondary" id="rpsReset">Reset score</button>
@@ -110,7 +123,9 @@
           t = 0;
         var resultEl = document.getElementById("rpsResult");
         var detailEl = document.getElementById("rpsDetail");
-        var scoreEl = document.getElementById("rpsScore");
+        var winsEl = document.getElementById("rpsWins");
+        var lossesEl = document.getElementById("rpsLosses");
+        var tiesEl = document.getElementById("rpsTies");
 
         function cpu() {
           var a = new Uint8Array(1);
@@ -137,7 +152,9 @@
           }
           resultEl.textContent = msg;
           detailEl.textContent = "You " + ICONS[you] + " " + LABELS[you] + " · CPU " + ICONS[them] + " " + LABELS[them];
-          scoreEl.textContent = "Wins " + w + " · Losses " + l + " · Ties " + t;
+          winsEl.textContent = String(w);
+          lossesEl.textContent = String(l);
+          tiesEl.textContent = String(t);
         }
 
         document.querySelectorAll(".rps-choice").forEach(function (b) {
@@ -149,7 +166,9 @@
           w = l = t = 0;
           resultEl.textContent = "Pick a move.";
           detailEl.textContent = "";
-          scoreEl.textContent = "Wins 0 · Losses 0 · Ties 0";
+          winsEl.textContent = "0";
+          lossesEl.textContent = "0";
+          tiesEl.textContent = "0";
         });
       })();
     </script>

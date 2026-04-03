@@ -56,7 +56,13 @@
         <p class="lead">Three twins, one stranger. Find the impostor before your pattern brain melts.</p>
         <div class="panel">
           <div class="odd-panel">
-            <p class="odd-meta" id="oddScore" aria-live="polite">Score: 0 — Tap the odd emoji.</p>
+            <div class="ui-hud" aria-label="Score">
+              <div class="ui-stat" aria-label="Score">
+                <span class="ui-stat__label">Score</span>
+                <span class="ui-stat__value" id="oddScore">0</span>
+              </div>
+            </div>
+            <p class="odd-meta ui-live" id="oddStatus" aria-live="polite">Tap the odd emoji.</p>
             <div class="odd-grid" id="oddGrid" role="group" aria-label="Pick the emoji that does not match"></div>
             <button type="button" class="btn btn--secondary" id="oddNext">New round</button>
           </div>
@@ -95,6 +101,7 @@
         var POOL = ["🐸", "🦊", "🐙", "🦄", "🐧", "🦉", "🍄", "🌵", "🎸", "🛸", "🧲", "🎪", "🍉", "🥑", "🧊", "🔮"];
         var grid = document.getElementById("oddGrid");
         var scoreEl = document.getElementById("oddScore");
+        var statusEl = document.getElementById("oddStatus");
         var score = 0;
         var oddIndex = 0;
         var locked = false;
@@ -121,7 +128,8 @@
 
         function round() {
           locked = false;
-          scoreEl.textContent = "Score: " + score + " — Tap the odd emoji.";
+          scoreEl.textContent = String(score);
+          statusEl.textContent = "Tap the odd emoji.";
           grid.innerHTML = "";
           var i = rand(POOL.length);
           var j = i;
@@ -143,7 +151,8 @@
                 if (idx === oddIndex) {
                   locked = true;
                   score++;
-                  scoreEl.textContent = "Score: " + score + " — Nice catch.";
+                  scoreEl.textContent = String(score);
+                  statusEl.textContent = "Nice catch.";
                   this.classList.add("odd-cell--right");
                 } else {
                   this.classList.add("odd-cell--wrong");

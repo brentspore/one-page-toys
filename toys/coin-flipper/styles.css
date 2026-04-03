@@ -71,34 +71,13 @@
 }
 
 .coin-stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
   width: 100%;
   max-width: 24rem;
 }
 
 .coin-stat {
-  text-align: center;
-  padding: 0.65rem;
-  border-radius: 0.6rem;
-  background: rgba(217, 119, 6, 0.08);
-  border: 1px solid rgba(217, 119, 6, 0.15);
-}
-
-.coin-stat__n {
-  font-size: 1.35rem;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  margin: 0;
-}
-
-.coin-stat__lbl {
-  margin: 0.15rem 0 0;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted, #64748b);
+  flex: 1 1 auto;
+  justify-content: center;
 }
 
 .coin-hint {

@@ -66,7 +66,10 @@
 
         <div class="panel sm-panel">
           <div class="sm-hud">
-            <span class="sm-score">Score <span id="smScore">0</span></span>
+            <div class="sm-score ui-stat" aria-label="Score">
+              <span class="ui-stat__label">Score</span>
+              <span class="ui-stat__value" id="smScore">0</span>
+            </div>
             <div class="sm-actions">
               <button type="button" class="btn btn--primary" id="smStart">Start</button>
               <button type="button" class="btn" id="smPause" disabled>Pause</button>
