@@ -278,24 +278,6 @@ code{
   color: var(--accent-hover, #1d4ed8);
 }
 
-.tools-partners__badge--stacked{
-  gap: 2px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.tools-partners__badge-domain{
-  font-size: 0.72rem;
-  font-weight: 650;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-  line-height: 1.2;
-  max-width: 16rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .sr-only{
   position: absolute;
   width: 1px;
