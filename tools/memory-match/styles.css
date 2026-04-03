@@ -95,6 +95,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   border: 2px solid rgba(45, 42, 38, 0.1);
+  opacity: 1;
 }
 
 .mm-card-face--front {
@@ -102,11 +103,21 @@
   border: 2px solid var(--border);
   transform: rotateY(180deg);
   color: var(--ink);
+  opacity: 0;
 }
 
 .mm-card--matched .mm-card-face--front {
   border-color: rgba(22, 163, 74, 0.45);
   background: rgba(22, 163, 74, 0.08);
+  opacity: 1;
+}
+
+.mm-card--flipped .mm-card-face--back {
+  opacity: 0;
+}
+
+.mm-card--flipped .mm-card-face--front {
+  opacity: 1;
 }
 
 .mm-card--matched {
