@@ -219,33 +219,81 @@ code{
   max-width: 40rem;
 }
 
-.tools-partners__links{
+.tools-partners__badges{
+  list-style: none;
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.65;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.tools-partners__badges > li{
+  margin: 0;
+}
+
+.tools-partners__badge{
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  background: rgba(255, 255, 255, 0.88);
   color: var(--text);
-  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 120ms ease;
 }
 
-.tools-partners__links a{
+.tools-partners__badge:hover{
+  border-color: rgba(37, 99, 235, 0.45);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.tools-partners__badge:focus-visible{
+  outline: none;
+  box-shadow: var(--ring-offset), var(--ring), var(--shadow-md);
+}
+
+.tools-partners__badge-label{
   font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
   color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(37, 99, 235, 0.38);
-  text-decoration-thickness: 2px;
 }
 
-.tools-partners__links a:hover{
+.tools-partners__badge:hover .tools-partners__badge-label{
   color: var(--accent-hover, #1d4ed8);
 }
 
-.tools-partners__sep{
-  display: inline-block;
-  margin: 0 0.35em;
+.tools-partners__badge--stacked{
+  gap: 2px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.tools-partners__badge-domain{
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
   color: var(--muted);
-  font-weight: 700;
-  user-select: none;
+  line-height: 1.2;
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sr-only{
