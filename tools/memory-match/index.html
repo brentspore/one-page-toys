@@ -93,8 +93,8 @@
       .mm-card--matched .mm-card-inner{transform:rotateY(180deg);}
       .mm-card--flipped .mm-card-inner,
       .mm-card--matched .mm-card-inner{
-        transform:rotateY(180deg) !important;
-        -webkit-transform:rotateY(180deg) !important;
+        transform:none !important;
+        -webkit-transform:none !important;
       }
       .mm-card-face{
         position:absolute;
@@ -103,8 +103,8 @@
         align-items:center;
         justify-content:center;
         border-radius:0.65rem;
-        backface-visibility:hidden;
-        -webkit-backface-visibility:hidden;
+        backface-visibility:visible;
+        -webkit-backface-visibility:visible;
         z-index:1;
         font-size:clamp(1.5rem,7vw,2rem);
         line-height:1;
@@ -121,7 +121,7 @@
       .mm-card-face--front{
         background:#fffef8;
         border:2px solid #e5dbd0;
-        transform:rotateY(180deg);
+        transform:none !important;
         color:#2d2a26;
         opacity:0;
       }
@@ -136,6 +136,8 @@
       }
       .mm-card--flipped .mm-card-face--back{opacity:0;}
       .mm-card--flipped .mm-card-face--front{opacity:1;}
+      .mm-card--matched .mm-card-face--back{opacity:0;}
+      .mm-card--matched .mm-card-face--front{opacity:1;}
     </style>
   </head>
   <body data-tool-slug="memory-match">

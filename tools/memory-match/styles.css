@@ -70,8 +70,8 @@
 
 .mm-card--flipped .mm-card-inner,
 .mm-card--matched .mm-card-inner {
-  transform: rotateY(180deg) !important;
-  -webkit-transform: rotateY(180deg) !important;
+  transform: none !important; /* avoid broken/blank 3D rendering */
+  -webkit-transform: none !important;
 }
 
 .mm-card-face {
@@ -88,6 +88,11 @@
   line-height: 1;
 }
 
+.mm-card-face{
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
 .mm-card-face--back {
   background: linear-gradient(145deg, #6366f1, #4338ca);
   color: #fff;
@@ -101,7 +106,7 @@
 .mm-card-face--front {
   background: var(--surface);
   border: 2px solid var(--border);
-  transform: rotateY(180deg);
+  transform: none !important;
   color: var(--ink);
   opacity: 0;
 }
