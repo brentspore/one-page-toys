@@ -88,6 +88,23 @@
   pointer-events: none;
 }
 
+/* Short how-to inside tool panels (keyboard, order of steps, scoring). */
+.tool-directions{
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.tool-directions strong{
+  color: var(--text);
+  font-weight: 750;
+}
+
 .sr-only{
   position: absolute;
   width: 1px;
