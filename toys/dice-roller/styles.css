@@ -1,9 +1,97 @@
-/* Local only */
-.local{display:grid;gap:1rem}
-.local-row{display:grid;gap:0.6rem}
-.local-row--2{grid-template-columns:1fr}
-@media (min-width:860px){.local-row--2{grid-template-columns:1fr 1fr}}
-.local-input, .local-text{width:100%;padding:0.65rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(255,255,255,0.9);font:inherit}
-.local-text{min-height:10rem;resize:vertical}
-.local-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center}
-.local-out{white-space:pre-wrap;word-break:break-word}
+.dice-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dice-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dice-types button {
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  color: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.dice-types button:hover {
+  border-color: rgba(124, 58, 237, 0.45);
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.dice-types button[aria-pressed="true"] {
+  border-color: rgba(124, 58, 237, 0.55);
+  background: rgba(124, 58, 237, 0.14);
+  color: var(--text);
+}
+
+.dice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.dice-stage {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border);
+  background: rgba(255, 255, 255, 0.5);
+  min-height: 7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.dice-result {
+  font-size: clamp(2.5rem, 8vw, 3.75rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.dice-result--pop {
+  animation: dice-pop 0.45s ease;
+}
+
+@keyframes dice-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  55% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.dice-meta {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.dice-history {
+  /* Layout/styling provided by shared `.ui-history` */
+}
+
+.dice-history li {
+  /* Styling provided by shared `.ui-history` */
+}

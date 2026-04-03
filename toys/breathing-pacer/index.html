@@ -9,32 +9,40 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-VBVJ93GL8L');
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VBVJ93GL8L");
     </script>
-    <title>Breathing pacer — One Page Toys</title>
-    <meta name="description" content="Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice." />
+    <title>Breathing pacer — gentle inhale / exhale</title>
+    <meta name="description" content="Follow the expanding circle—four seconds in, four seconds out. A tiny visual breath guide in the browser." />
     <link rel="canonical" href="https://onepagetoys.com/toys/breathing-pacer/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0f766e" />
+    <meta name="theme-color" content="#0ea5e9" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Breathing pacer — One Page Toys" />
-    <meta property="og:description" content="Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice." />
+    <meta property="og:title" content="Breathing pacer — gentle inhale / exhale" />
+    <meta property="og:description" content="Follow the expanding circle—four seconds in, four seconds out. A tiny visual breath guide in the browser." />
     <meta property="og:url" content="https://onepagetoys.com/toys/breathing-pacer/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Breathing pacer — One Page Toys" />
-    <meta name="twitter:description" content="Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice." />
-    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Breathing pacer",
+        "url": "https://onepagetoys.com/toys/breathing-pacer/index.html",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
   </head>
   <body data-tool-slug="breathing-pacer">
     <header class="topbar">
@@ -42,32 +50,26 @@
         <a class="brand" href="../../index.html">One Page Toys</a>
       </div>
     </header>
-
     <main class="container">
       <section class="tool">
         <h1>Breathing pacer</h1>
-        <p class="lead">Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice.</p>
-
+        <p class="lead">Not medical advice—just a slow circle. Inhale while it grows, exhale while it shrinks.</p>
         <div class="panel">
-          <div class="local">
-            <p class="ui-live" id="sStatus" aria-live="polite">This tool is scaffolded. Next pass will deepen its core logic.</p>
-            <div class="local-row">
-              <label class="muted" for="sNotes" style="font-weight:800">Notes (saved locally)</label>
-              <textarea class="local-text" id="sNotes" placeholder="What should this tool do next?"></textarea>
+          <div class="bp-layout">
+            <div class="bp-circle-wrap">
+              <div class="bp-circle" aria-hidden="true"></div>
             </div>
-            <div class="local-actions">
-              <button class="btn btn--secondary" type="button" id="sCopy">Copy notes</button>
-              <button class="btn" type="button" id="sClear">Clear</button>
-            </div>
+            <p class="bp-label ui-live" id="bpLabel" aria-live="polite">Breathe in…</p>
+            <p class="bp-hint">Cycle is ~8 seconds total (4s in, 4s out). Look away from the screen if you need a break.</p>
           </div>
           <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>Notes.</strong> Everything runs locally in your browser; nothing is uploaded.
+            <strong>How to use.</strong> Match your breath to the circle: it <strong>grows ~4s</strong> (inhale) then <strong>shrinks ~4s</strong> (exhale). Follow the label under it. Not medical advice. If your device uses
+            <strong>reduced motion</strong>, the circle stays still—still use the text cues.
           </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
-
     <footer class="site-footer" role="contentinfo">
       <div class="site-footer__inner">
         <div class="site-footer__top">
@@ -82,31 +84,25 @@
         </div>
         <div class="site-footer__bottom">
           <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
-
     <script>
-      (function(){
-        function $(id){return document.getElementById(id);}
-        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
-        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
-        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
-        function copyText(s){
-          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
-          return new Promise(function(res, rej){
-            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
-            catch(e){ rej(e); }
-          });
+      (function () {
+        var el = document.getElementById("bpLabel");
+        var inhale = true;
+        function tick() {
+          el.textContent = inhale ? "Breathe in…" : "Breathe out…";
+          inhale = !inhale;
         }
-        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
-
-        var KEY='ops_scaffold_'+"breathing-pacer"+'_v1';
-        var notes=$('sNotes');
-        notes.value = (load(KEY,{n:''}).n)||'';
-        on(notes,'input',function(){ save(KEY,{n:notes.value}); setStatus('sStatus','Saved.'); });
-        on($('sCopy'),'click',function(){ copyText(notes.value||'').then(()=>setStatus('sStatus','Copied.')); });
-        on($('sClear'),'click',function(){ notes.value=''; save(KEY,{n:''}); setStatus('sStatus','Cleared.'); });
+        tick();
+        setInterval(tick, 4000);
       })();
     </script>
     <script src="../../assets/site-chrome.js" defer></script>

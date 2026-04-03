@@ -1,9 +1,45 @@
-/* Local only */
-.local{display:grid;gap:1rem}
-.local-row{display:grid;gap:0.6rem}
-.local-row--2{grid-template-columns:1fr}
-@media (min-width:860px){.local-row--2{grid-template-columns:1fr 1fr}}
-.local-input, .local-text{width:100%;padding:0.65rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(255,255,255,0.9);font:inherit}
-.local-text{min-height:10rem;resize:vertical}
-.local-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center}
-.local-out{white-space:pre-wrap;word-break:break-word}
+.sky-wrap {
+  position: relative;
+  min-height: 280px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: radial-gradient(ellipse 120% 80% at 50% 100%, #1e3a5f 0%, #0f172a 55%, #020617 100%);
+  overflow: hidden;
+  cursor: crosshair;
+  touch-action: manipulation;
+}
+
+.sky-star {
+  position: absolute;
+  font-size: 1.25rem;
+  line-height: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: sky-twinkle 2.5s ease-in-out infinite;
+}
+
+@keyframes sky-twinkle {
+  0%,
+  100% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 4px rgba(250, 250, 250, 0.5));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(250, 250, 250, 0.9));
+  }
+}
+
+.sky-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.sky-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-align: center;
+}

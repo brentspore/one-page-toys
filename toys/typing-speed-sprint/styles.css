@@ -1,9 +1,116 @@
-/* Local only */
-.local{display:grid;gap:1rem}
-.local-row{display:grid;gap:0.6rem}
-.local-row--2{grid-template-columns:1fr}
-@media (min-width:860px){.local-row--2{grid-template-columns:1fr 1fr}}
-.local-input, .local-text{width:100%;padding:0.65rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(255,255,255,0.9);font:inherit}
-.local-text{min-height:10rem;resize:vertical}
-.local-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center}
-.local-out{white-space:pre-wrap;word-break:break-word}
+/* Typing speed sprint — local only */
+
+.tss-layout {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.tss-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tss-timer {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #7c3aed;
+}
+
+.tss-pill {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.1);
+  color: #5b21b6;
+}
+
+.tss-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.55rem;
+  padding: 1rem;
+  min-height: 4.5rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.12));
+  background: var(--panel, #fafafa);
+  align-content: flex-start;
+}
+
+.tss-word {
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.15rem 0.25rem;
+  border-radius: 0.25rem;
+  color: var(--muted, #64748b);
+}
+
+.tss-word--done {
+  color: #16a34a;
+}
+
+.tss-word--current {
+  background: rgba(124, 58, 237, 0.15);
+  color: #4c1d95;
+}
+
+.tss-word--wrong {
+  text-decoration: line-through;
+  color: #dc2626;
+}
+
+.tss-input-wrap {
+  margin-top: 0.25rem;
+}
+
+.tss-input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.15));
+  font: inherit;
+  font-size: 1.05rem;
+}
+
+.tss-input:focus {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+.tss-input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.tss-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tss-summary {
+  padding: 1rem 1.1rem;
+  border-radius: 0.65rem;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.14);
+}
+
+.tss-summary p {
+  margin: 0.25rem 0 0;
+}
+
+.tss-summary strong {
+  font-size: 1.35rem;
+  color: #4c1d95;
+}
+
+.tss-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted, #64748b);
+}

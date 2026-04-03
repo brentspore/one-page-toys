@@ -1,9 +1,129 @@
-/* Local only */
-.local{display:grid;gap:1rem}
-.local-row{display:grid;gap:0.6rem}
-.local-row--2{grid-template-columns:1fr}
-@media (min-width:860px){.local-row--2{grid-template-columns:1fr 1fr}}
-.local-input, .local-text{width:100%;padding:0.65rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(255,255,255,0.9);font:inherit}
-.local-text{min-height:10rem;resize:vertical}
-.local-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center}
-.local-out{white-space:pre-wrap;word-break:break-word}
+/* Mini Snake */
+
+.sm-title {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.sm-lead {
+  text-align: center;
+  max-width: 34rem;
+  margin: 0 auto 1.25rem;
+}
+
+.sm-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sm-hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.sm-score {
+  flex: 0 0 auto;
+}
+
+.sm-canvas-wrap {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  line-height: 0;
+  background: #0f172a;
+}
+
+.sm-canvas {
+  display: block;
+  width: 100%;
+  max-width: min(100vw - 40px, 400px);
+  height: auto;
+  touch-action: none;
+}
+
+.sm-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.82);
+  color: #f8fafc;
+  text-align: center;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+.sm-overlay h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.sm-overlay p {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  opacity: 0.9;
+}
+
+.sm-canvas-outer {
+  position: relative;
+  max-width: min(100vw - 40px, 400px);
+}
+
+.sm-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 3.25rem);
+  grid-template-rows: repeat(3, 3.25rem);
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.sm-dpad button {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+
+.sm-dpad button:active {
+  transform: scale(0.96);
+}
+
+.sm-dpad .sm-dpad-spacer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.sm-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  max-width: 28rem;
+}
+
+.sm-hidden {
+  display: none !important;
+}

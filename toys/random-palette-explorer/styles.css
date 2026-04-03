@@ -1,9 +1,250 @@
-/* Local only */
-.local{display:grid;gap:1rem}
-.local-row{display:grid;gap:0.6rem}
-.local-row--2{grid-template-columns:1fr}
-@media (min-width:860px){.local-row--2{grid-template-columns:1fr 1fr}}
-.local-input, .local-text{width:100%;padding:0.65rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(255,255,255,0.9);font:inherit}
-.local-text{min-height:10rem;resize:vertical}
-.local-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center}
-.local-out{white-space:pre-wrap;word-break:break-word}
+/*
+ * Random Palette Explorer — tool-specific styles.
+ * Loads after ../../assets/styles.css so rules here override or extend globals.
+ */
+
+.rpe-title {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.rpe-lead {
+  text-align: center;
+  max-width: 34rem;
+  margin: 0 auto 1.25rem;
+}
+
+.rpe-status {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.rpe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.rpe-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  text-align: left;
+}
+
+.rpe-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+}
+
+.rpe-card:focus {
+  outline: none;
+}
+
+.rpe-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.rpe-swatches {
+  display: flex;
+  height: 4.5rem;
+}
+
+.rpe-swatch {
+  flex: 1;
+  min-width: 0;
+}
+
+.rpe-card-body {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.rpe-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.rpe-card-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.rpe-vibes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.rpe-vibe {
+  font-size: 0.8rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.rpe-vibe:hover {
+  border-color: rgba(37, 99, 235, 0.45);
+}
+
+.rpe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.rpe-error {
+  text-align: center;
+  color: #b91c1c;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.rpe-hidden {
+  display: none !important;
+}
+
+/* ----- Palette detail page (detail.html) ----- */
+
+.rpd-back {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+}
+
+.rpd-back a {
+  font-weight: 700;
+}
+
+.rpd-empty {
+  text-align: center;
+  padding: 2rem 1.25rem;
+}
+
+.rpd-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+  letter-spacing: -0.03em;
+}
+
+.rpd-meta {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+}
+
+.rpd-hero-swatches {
+  display: flex;
+  height: min(6rem, 18vw);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.rpd-hero-cell {
+  flex: 1;
+  min-width: 0;
+}
+
+.rpd-table-panel {
+  margin-bottom: 1rem;
+}
+
+.rpd-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.rpd-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rpd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.rpd-table th,
+.rpd-table td {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.rpd-table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.rpd-td-swatch {
+  width: 3rem;
+}
+
+.rpd-mini-swatch {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.rpd-table code {
+  font-size: 0.84rem;
+  word-break: break-all;
+}
+
+.rpd-code-hsl {
+  white-space: nowrap;
+}
+
+.rpd-export-panel {
+  margin-top: 0.25rem;
+}
+
+.rpd-export-lead {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+}
+
+.rpd-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rpd-export-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
+}

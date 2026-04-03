@@ -9,32 +9,42 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-VBVJ93GL8L');
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VBVJ93GL8L");
     </script>
-    <title>Magic 8 ball — One Page Toys</title>
-    <meta name="description" content="Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny." />
+    <title>Magic 8 ball — browser oracle</title>
+    <meta name="description" content="Ask the void. Click the 8 ball for a classic-style answer—crypto random, zero mystic fees." />
     <link rel="canonical" href="https://onepagetoys.com/toys/magic-eight-ball/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#16a34a" />
+    <meta name="theme-color" content="#4c1d95" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Magic 8 ball — One Page Toys" />
-    <meta property="og:description" content="Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny." />
+    <meta property="og:title" content="Magic 8 ball — browser oracle" />
+    <meta property="og:description" content="Ask the void. Click the 8 ball for a classic-style answer—crypto random, zero mystic fees." />
     <meta property="og:url" content="https://onepagetoys.com/toys/magic-eight-ball/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Magic 8 ball — One Page Toys" />
-    <meta name="twitter:description" content="Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny." />
-    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Magic 8 ball",
+        "url": "https://onepagetoys.com/toys/magic-eight-ball/index.html",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
   </head>
   <body data-tool-slug="magic-eight-ball">
     <header class="topbar">
@@ -42,32 +52,28 @@
         <a class="brand" href="../../index.html">One Page Toys</a>
       </div>
     </header>
-
     <main class="container">
       <section class="tool">
         <h1>Magic 8 ball</h1>
-        <p class="lead">Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny.</p>
-
+        <p class="lead">Hold a question in mind—or don’t. Tap the ball; the triangle has opinions.</p>
         <div class="panel">
-          <div class="local">
-            <p class="ui-live" id="sStatus" aria-live="polite">This tool is scaffolded. Next pass will deepen its core logic.</p>
-            <div class="local-row">
-              <label class="muted" for="sNotes" style="font-weight:800">Notes (saved locally)</label>
-              <textarea class="local-text" id="sNotes" placeholder="What should this tool do next?"></textarea>
+          <div class="me8-layout">
+            <div class="me8-ball-wrap">
+              <button type="button" class="me8-ball" id="me8Btn" aria-label="Shake magic 8 ball">
+                <span class="me8-window">
+                  <span class="me8-answer" id="me8Text">ASK</span>
+                </span>
+              </button>
             </div>
-            <div class="local-actions">
-              <button class="btn btn--secondary" type="button" id="sCopy">Copy notes</button>
-              <button class="btn" type="button" id="sClear">Clear</button>
-            </div>
+            <p class="me8-hint ui-live" id="me8Hint" aria-live="polite">Click the ball for an answer.</p>
           </div>
           <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>Notes.</strong> Everything runs locally in your browser; nothing is uploaded.
+            <strong>How to use.</strong> Optional: think of a yes/no question. Click or tap the <strong>ball</strong>—it shakes, then the triangle shows a random answer. Ask again whenever you want.
           </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
-
     <footer class="site-footer" role="contentinfo">
       <div class="site-footer__inner">
         <div class="site-footer__top">
@@ -82,31 +88,65 @@
         </div>
         <div class="site-footer__bottom">
           <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
-
     <script>
-      (function(){
-        function $(id){return document.getElementById(id);}
-        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
-        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
-        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
-        function copyText(s){
-          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
-          return new Promise(function(res, rej){
-            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
-            catch(e){ rej(e); }
-          });
+      (function () {
+        var ANS = [
+          "It is certain",
+          "Without a doubt",
+          "Yes definitely",
+          "Reply hazy",
+          "Ask again",
+          "Better not tell you now",
+          "Cannot predict now",
+          "Concentrate and ask again",
+          "Don't count on it",
+          "My reply is no",
+          "Outlook not so good",
+          "Very doubtful",
+          "Signs point to yes",
+          "Yes",
+          "No",
+          "Absolutely not… maybe",
+          "Try snacks first",
+          "The Wi-Fi knows",
+          "Ship it",
+          "Sleep on it"
+        ];
+        var btn = document.getElementById("me8Btn");
+        var text = document.getElementById("me8Text");
+        var hint = document.getElementById("me8Hint");
+        var busy = false;
+        function pick() {
+          var a = new Uint32Array(1);
+          try {
+            crypto.getRandomValues(a);
+          } catch (e) {
+            a[0] = Math.floor(Math.random() * 0xffffffff);
+          }
+          return ANS[a[0] % ANS.length];
         }
-        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
-
-        var KEY='ops_scaffold_'+"magic-eight-ball"+'_v1';
-        var notes=$('sNotes');
-        notes.value = (load(KEY,{n:''}).n)||'';
-        on(notes,'input',function(){ save(KEY,{n:notes.value}); setStatus('sStatus','Saved.'); });
-        on($('sCopy'),'click',function(){ copyText(notes.value||'').then(()=>setStatus('sStatus','Copied.')); });
-        on($('sClear'),'click',function(){ notes.value=''; save(KEY,{n:''}); setStatus('sStatus','Cleared.'); });
+        btn.addEventListener("click", function () {
+          if (busy) return;
+          busy = true;
+          text.textContent = "…";
+          hint.textContent = "Shaking…";
+          btn.classList.add("me8-ball--shake");
+          setTimeout(function () {
+            btn.classList.remove("me8-ball--shake");
+            text.textContent = pick();
+            hint.textContent = "Ask again anytime.";
+            busy = false;
+          }, 650);
+        });
       })();
     </script>
     <script src="../../assets/site-chrome.js" defer></script>
