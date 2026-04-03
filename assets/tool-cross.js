@@ -2,7 +2,6 @@
 
 (function () {
   var CATEGORY_LABELS = {
-    utility: "Utilities & dev",
     game: "Games & play",
     visual: "Visual & color",
     audio: "Audio",

@@ -28,10 +28,9 @@ function badgeClassForStatus(status) {
 }
 
 /** Stable ordering for category chips and “sort by category”. */
-const CATEGORY_ORDER = ["utility", "game", "visual", "audio", "wellness"];
+const CATEGORY_ORDER = ["game", "visual", "audio", "wellness"];
 
 const CATEGORY_LABELS = {
-  utility: "Utilities & dev",
   game: "Games & play",
   visual: "Visual & color",
   audio: "Audio",
@@ -43,32 +42,16 @@ const CATEGORY_LABELS = {
  * (“check my colors”, “pretty print json”, “meeting cost”) without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
-  "password-generator":
-    "password passphrase secret credentials generator strong login signup account security crypto random",
-  "barcode-generator":
-    "qr qrcode code barcode scan scannable link share url encode png image download phone camera",
   "reaction-game":
     "reaction reflex timing wait green click milliseconds ms latency benchmark test skill speed measure",
   "snake-game":
     "snake classic arcade eat tail grid keyboard wasd arrows retro move hunger",
-  "contrast-checker":
-    "contrast wcag accessibility readable readability aa aaa legible text foreground background colour color a11y audit check vision pair colors",
-  "json-formatter":
-    "json javascript object notation format validate minify prettify pretty syntax error parse lint developer api config local",
   "palette-browser":
     "palette color colours swatch scheme explore vibe hue hex rgb designer export choose sample",
-  "cost-estimator":
-    "meeting cost money burn rate hourly salary people timer estimate clock waste budget expensive price dollars",
-  "image-converter":
-    "image picture photo convert conversion format png jpeg jpg gif webp file upload drag drop resize export",
   "generative-art":
     "generative procedural art pattern random canvas animation motion creative screensaver abstract algorithm",
   "mesh-gradient-builder":
     "mesh gradient hero background css stylesheet blob radial design landing soft ui export code snippet",
-  "text-statistics":
-    "word count character letter line paragraph essay copy paste writing length read time reading minutes estimate stats",
-  "percentage-calculator":
-    "percent percentage ratio fraction math tip discount tax proportion slice of share calculate solver office school",
   "coin-simulator":
     "coin flip heads tails random decide choose fifty chance fair streak toss call binary",
   "typing-test":

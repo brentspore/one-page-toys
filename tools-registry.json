@@ -1,25 +1,5 @@
 [
   {
-    "slug": "passphrase-generator",
-    "name": "Passphrase & Password Generator",
-    "shortDescription": "Random passwords or multi-word passphrases using Web Crypto—copy with one tap.",
-    "category": "utility",
-    "tags": ["password-generator"],
-    "status": "beta",
-    "path": "tools/passphrase-generator/index.html",
-    "related": ["qr-code-generator", "json-pretty-print-validate-minify", "word-character-counter"]
-  },
-  {
-    "slug": "qr-code-generator",
-    "name": "QR Code Generator",
-    "shortDescription": "Turn text or URLs into a QR code and download a PNG.",
-    "category": "utility",
-    "tags": ["barcode-generator"],
-    "status": "beta",
-    "path": "tools/qr-code-generator/index.html",
-    "related": ["image-converter", "passphrase-generator", "json-pretty-print-validate-minify"]
-  },
-  {
     "slug": "reflex-challenge",
     "name": "Reflex Challenge",
     "shortDescription": "Wait for green, then click—see your reaction time in milliseconds.",
@@ -40,26 +20,6 @@
     "related": ["reflex-challenge", "memory-match", "typing-speed-sprint"]
   },
   {
-    "slug": "wcag-contrast-checker",
-    "name": "WCAG Contrast Checker",
-    "shortDescription": "Check text and background colors for WCAG 2.1 contrast and AA / AAA pass levels.",
-    "category": "utility",
-    "tags": ["contrast-checker"],
-    "status": "beta",
-    "path": "tools/wcag-contrast-checker/index.html",
-    "related": ["random-palette-explorer", "mesh-gradient-studio", "word-character-counter"]
-  },
-  {
-    "slug": "json-pretty-print-validate-minify",
-    "name": "JSON Format & Validate",
-    "shortDescription": "Pretty-print, minify, and validate JSON locally—errors include line and column.",
-    "category": "utility",
-    "tags": ["json-formatter"],
-    "status": "beta",
-    "path": "tools/json-pretty-print-validate-minify/index.html",
-    "related": ["wcag-contrast-checker", "passphrase-generator", "word-character-counter"]
-  },
-  {
     "slug": "random-palette-explorer",
     "name": "Random Palette Explorer",
     "shortDescription": "Explore color palettes by clicking the vibe you like until one set remains.",
@@ -67,27 +27,7 @@
     "tags": ["palette-browser"],
     "status": "beta",
     "path": "tools/random-palette-explorer/index.html",
-    "related": ["wcag-contrast-checker", "mesh-gradient-studio", "weird-generative-canvas"]
-  },
-  {
-    "slug": "meeting-cost-timer",
-    "name": "Meeting Cost Timer",
-    "shortDescription": "Enter $/hour and people; watch the cost rise live as time progresses.",
-    "category": "utility",
-    "tags": ["cost-estimator"],
-    "status": "beta",
-    "path": "tools/meeting-cost-timer/index.html",
-    "related": ["percentage-calculator", "word-character-counter", "typing-speed-sprint"]
-  },
-  {
-    "slug": "image-converter",
-    "name": "Quick Image Converter",
-    "shortDescription": "Drag-and-drop an image and convert it instantly to another format.",
-    "category": "utility",
-    "tags": ["image-converter"],
-    "status": "experimental",
-    "path": "tools/image-converter/index.html",
-    "related": ["qr-code-generator", "wcag-contrast-checker", "mesh-gradient-studio"]
+    "related": ["mesh-gradient-studio", "weird-generative-canvas", "pixel-doodle"]
   },
   {
     "slug": "weird-generative-canvas",
@@ -107,27 +47,7 @@
     "tags": ["mesh-gradient-builder"],
     "status": "beta",
     "path": "tools/mesh-gradient-studio/index.html",
-    "related": ["random-palette-explorer", "weird-generative-canvas", "wcag-contrast-checker"]
-  },
-  {
-    "slug": "word-character-counter",
-    "name": "Word & Character Counter",
-    "shortDescription": "Live counts for words, characters, lines, sentences, paragraphs, and rough read time.",
-    "category": "utility",
-    "tags": ["text-statistics"],
-    "status": "beta",
-    "path": "tools/word-character-counter/index.html",
-    "related": ["json-pretty-print-validate-minify", "late-excuse-generator", "percentage-calculator"]
-  },
-  {
-    "slug": "percentage-calculator",
-    "name": "Percentage Calculator",
-    "shortDescription": "What is X% of Y, or X is what percent of Y—solved locally in two panels.",
-    "category": "utility",
-    "tags": ["percentage-calculator"],
-    "status": "beta",
-    "path": "tools/percentage-calculator/index.html",
-    "related": ["meeting-cost-timer", "word-character-counter", "wcag-contrast-checker"]
+    "related": ["random-palette-explorer", "weird-generative-canvas", "pixel-doodle"]
   },
   {
     "slug": "coin-flipper",
@@ -247,7 +167,7 @@
     "tags": ["excuse-generator"],
     "status": "experimental",
     "path": "tools/late-excuse-generator/index.html",
-    "related": ["compliment-cannon", "word-character-counter", "void-oracle"]
+    "related": ["compliment-cannon", "void-oracle", "magic-eight-ball"]
   },
   {
     "slug": "button-mash-sprint",
