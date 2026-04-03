@@ -94,13 +94,16 @@
 }
 
 .mm-card-face--back {
-  background: linear-gradient(145deg, #6366f1, #4338ca);
-  color: #fff;
+  background: linear-gradient(145deg, #6366f1, #4338ca) !important;
+  color: #fff !important;
   font-weight: 800;
-  font-size: 0.75rem;
+  font-size: 1.05rem; /* make clickable targets obvious */
   letter-spacing: 0.06em;
   border: 2px solid rgba(45, 42, 38, 0.1);
   opacity: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .mm-card-face--front {
@@ -108,21 +111,34 @@
   border: 2px solid var(--border);
   transform: none !important;
   color: var(--ink);
-  opacity: 0;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 .mm-card--matched .mm-card-face--front {
   border-color: rgba(22, 163, 74, 0.45);
   background: rgba(22, 163, 74, 0.08);
-  opacity: 1;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .mm-card--flipped .mm-card-face--back {
-  opacity: 0;
+  opacity: 0 !important;
+  visibility: hidden;
 }
 
 .mm-card--flipped .mm-card-face--front {
-  opacity: 1;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.mm-card-face--back {
+  visibility: visible;
+}
+
+.mm-card--matched .mm-card-face--back {
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 .mm-card--matched {
