@@ -123,7 +123,7 @@
     "tags": ["game", "experiment"],
     "status": "beta",
     "path": "tools/coin-flipper/index.html",
-    "related": ["void-oracle", "memory-match", "tic-tac-toe"]
+    "related": ["void-oracle", "emoji-slots", "dice-roller"]
   },
   {
     "slug": "typing-speed-sprint",
@@ -159,7 +159,7 @@
     "tags": ["game", "experiment"],
     "status": "experimental",
     "path": "tools/void-oracle/index.html",
-    "related": ["blob-choir", "coin-flipper", "weird-generative-canvas"]
+    "related": ["blob-choir", "compliment-cannon", "weird-generative-canvas"]
   },
   {
     "slug": "blob-choir",
@@ -169,5 +169,32 @@
     "status": "experimental",
     "path": "tools/blob-choir/index.html",
     "related": ["void-oracle", "weird-generative-canvas", "reflex-challenge"]
+  },
+  {
+    "slug": "dice-roller",
+    "name": "Dice roller",
+    "shortDescription": "Roll d4–d20 with crypto randomness, a poppy result, and a short roll history.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/dice-roller/index.html",
+    "related": ["coin-flipper", "emoji-slots", "void-oracle"]
+  },
+  {
+    "slug": "emoji-slots",
+    "name": "Emoji slots",
+    "shortDescription": "Spin three emoji reels—jackpot on three of a kind, bragging rights included.",
+    "tags": ["game", "experiment", "visual"],
+    "status": "experimental",
+    "path": "tools/emoji-slots/index.html",
+    "related": ["dice-roller", "coin-flipper", "compliment-cannon"]
+  },
+  {
+    "slug": "compliment-cannon",
+    "name": "Compliment cannon",
+    "shortDescription": "Fire a random absurd compliment; F or Space for rapid deployment.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/compliment-cannon/index.html",
+    "related": ["void-oracle", "emoji-slots", "coin-flipper"]
   }
 ]
