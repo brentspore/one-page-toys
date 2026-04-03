@@ -82,6 +82,20 @@
 
     var actions = document.createElement("div");
     actions.className = "topbar__actions";
+
+    var shareBtn = document.createElement("button");
+    shareBtn.type = "button";
+    shareBtn.className = "topbar__iconbtn";
+    shareBtn.id = "shareBtn";
+    shareBtn.setAttribute("aria-label", "Share this toy");
+    shareBtn.title = "Share";
+    shareBtn.innerHTML =
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path d="M16 8a3 3 0 1 0-2.83-4H13a3 3 0 0 0 3 4ZM6 14a3 3 0 1 0 2.83 4H9a3 3 0 0 0-3-4Zm10 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M8.7 16.3l6.6 3.4M15.3 8.3L8.7 11.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      "</svg>";
+    actions.appendChild(shareBtn);
+
     var btn = document.createElement("button");
     btn.type = "button";
     btn.id = "randomToolBtn";
@@ -91,6 +105,49 @@
     inner.appendChild(actions);
 
     wireSurprise(root);
+
+    (function wireShare() {
+      var b = shareBtn;
+      if (!b || b.dataset.chromeWired === "1") return;
+      b.dataset.chromeWired = "1";
+      b.addEventListener("click", function () {
+        var url = location.href;
+        var title = (document.title || "One Page Toys").trim();
+        if (navigator.share) {
+          navigator
+            .share({ title: title, url: url })
+            .catch(function () {});
+          return;
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(url)
+            .then(function () {
+              b.classList.add("topbar__iconbtn--ok");
+              b.setAttribute("aria-label", "Link copied");
+              b.title = "Copied";
+              setTimeout(function () {
+                b.classList.remove("topbar__iconbtn--ok");
+                b.setAttribute("aria-label", "Share this toy");
+                b.title = "Share";
+              }, 1100);
+            })
+            .catch(function () {});
+          return;
+        }
+        try {
+          var ta = document.createElement("textarea");
+          ta.value = url;
+          ta.setAttribute("readonly", "true");
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        } catch (e) {}
+      });
+    })();
   }
 
   function injectBreadcrumb() {
