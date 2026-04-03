@@ -457,9 +457,33 @@ function readFiltersFromURL() {
   return { q, tag, cat, sort };
 }
 
+function syncTypesFilterDetails() {
+  const det = document.getElementById("toolsFilterTypes");
+  if (!det) return;
+  det.open = Boolean(activeTag);
+}
+
+function syncTypesFilterSummary() {
+  const picked = document.getElementById("toolsTypesActiveSummary");
+  if (!picked) return;
+  if (activeTag) {
+    picked.hidden = false;
+    picked.textContent = formatTagLabel(activeTag);
+  } else {
+    picked.hidden = true;
+    picked.textContent = "";
+  }
+}
+
 function renderTagChips() {
   const wrap = document.getElementById("toolsTags");
   if (!wrap) return;
+
+  const hint = document.getElementById("toolsTypesHint");
+  if (hint) {
+    hint.textContent = knownTags.length ? knownTags.length + " types" : "";
+  }
+
   wrap.innerHTML = "";
 
   function addChip(label, value, pressed) {
@@ -481,6 +505,9 @@ function renderTagChips() {
   knownTags.forEach(function (t) {
     addChip(formatTagLabel(t), t, activeTag === t);
   });
+
+  syncTypesFilterDetails();
+  syncTypesFilterSummary();
 }
 
 function renderCategoryChips() {

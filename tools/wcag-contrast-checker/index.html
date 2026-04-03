@@ -93,9 +93,6 @@
         <div id="wccError" class="wcc-error wcc-hidden" role="alert"></div>
 
         <div class="panel wcc-panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Set <strong>text</strong> and <strong>background</strong> with the color wells or type <strong>#RRGGBB</strong> hex. The page computes WCAG 2.1 contrast and shows pass/fail for normal and large text. All math stays in your browser.
-          </p>
           <div class="wcc-row">
             <div class="wcc-field">
               <label class="wcc-label" for="wccFgText">Text (foreground)</label>
@@ -143,6 +140,10 @@
           <p class="wcc-note muted">
             Large text = 18pt+ regular or 14pt+ bold (about 24px / 18.67px at default sizing). Thresholds follow WCAG 2.1 §1.4.3.
           </p>
+
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 14px;">
+            <strong>How to use.</strong> Set <strong>text</strong> and <strong>background</strong> with the color wells or type <strong>#RRGGBB</strong> hex. The page computes WCAG 2.1 contrast and shows pass/fail for normal and large text. All math stays in your browser.
+          </p>
         </div>
       </section>
     <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -158,7 +159,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -337,6 +338,7 @@
         update();
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

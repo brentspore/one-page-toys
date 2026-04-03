@@ -55,14 +55,14 @@
         <h1>Pixel doodle</h1>
         <p class="lead">Twelve by twelve. Tap pixels on or off—low-res art, high-res vibes.</p>
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Tap squares to turn pixels <strong>on</strong> (blue) or <strong>off</strong> (white). <strong>Clear grid</strong> resets; <strong>Random noise</strong> fills the grid randomly.
-          </p>
           <div class="pxd-toolbar">
             <button type="button" class="btn btn--secondary" id="pxdClear">Clear grid</button>
             <button type="button" class="btn btn--secondary" id="pxdRandom">Random noise</button>
           </div>
           <div class="pxd-grid" id="pxdGrid" role="application" aria-label="12 by 12 pixel grid"></div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Tap squares to turn pixels <strong>on</strong> (blue) or <strong>off</strong> (white). <strong>Clear grid</strong> resets; <strong>Random noise</strong> fills the grid randomly.
+          </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -75,7 +75,7 @@
             <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -140,6 +140,7 @@
         build();
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

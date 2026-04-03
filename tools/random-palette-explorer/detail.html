@@ -57,9 +57,6 @@
 
     <main class="container">
       <section class="tool">
-        <p class="rpd-back muted">
-          <a href="index.html">← Random Palette Explorer</a>
-        </p>
         <p class="tool-ext-link muted">
           Into symmetry and visual balance?
           <a href="https://symmetrygenius.com" target="_blank" rel="noopener noreferrer">Symmetry Genius<span class="sr-only"> (opens in new tab)</span></a>
@@ -67,19 +64,15 @@
 
         <div id="rpdEmpty" class="rpd-empty panel rpe-hidden">
           <h1 class="rpd-title">No palette loaded</h1>
-          <p class="tool-directions">
+          <p><a class="btn btn--primary" href="index.html">Go to explorer</a></p>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
             <strong>What to do.</strong> Open the <a href="index.html">palette explorer</a> and <strong>tap a card</strong>—this page loads that palette’s colors and export options. If you opened this URL directly or your session expired, go back through the explorer.
           </p>
-          <p><a class="btn btn--primary" href="index.html">Go to explorer</a></p>
         </div>
 
         <div id="rpdContent" class="rpe-hidden">
           <h1 id="rpdPaletteTitle" class="rpd-title"></h1>
           <p id="rpdMeta" class="rpd-meta muted"></p>
-
-          <p class="tool-directions">
-            <strong>How to use.</strong> The table lists every swatch with <strong>hex</strong>, <strong>RGB</strong>, and <strong>HSL</strong>—use the clipboard column per row. The <strong>Copy &amp; export</strong> section bundles formats for code and design tools.
-          </p>
 
           <div id="rpdHeroSwatches" class="rpd-hero-swatches"></div>
 
@@ -112,6 +105,10 @@
             </div>
             <p id="rpdExportNote" class="muted rpd-export-note" aria-live="polite"></p>
           </div>
+
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 14px;">
+            <strong>How to use.</strong> The table lists every swatch with <strong>hex</strong>, <strong>RGB</strong>, and <strong>HSL</strong>—use the clipboard column per row. The <strong>Copy &amp; export</strong> section bundles formats for code and design tools.
+          </p>
         </div>
       </section>
 
@@ -128,7 +125,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -424,6 +421,7 @@
         }
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

@@ -71,9 +71,6 @@
         <div id="pwgError" class="pwg-error pwg-hidden" role="alert"></div>
 
         <div class="panel pwg-panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Switch <strong>Password</strong> vs <strong>Passphrase</strong>, tune length and character/word options, then <strong>Generate</strong>. <strong>Copy</strong> grabs the latest result—random bytes never leave your browser.
-          </p>
           <div class="pwg-tabs" role="tablist" aria-label="Generator mode">
             <button type="button" class="pwg-tab" id="pwgTabPw" role="tab" aria-selected="true" aria-controls="pwgBlockPw">Password</button>
             <button type="button" class="pwg-tab" id="pwgTabPhrase" role="tab" aria-selected="false" aria-controls="pwgBlockPhrase">Passphrase</button>
@@ -124,6 +121,9 @@
             </div>
             <p id="pwgMeta" class="pwg-meta muted" aria-live="polite"></p>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Switch <strong>Password</strong> vs <strong>Passphrase</strong>, tune length and character/word options, then <strong>Generate</strong>. <strong>Copy</strong> grabs the latest result—random bytes never leave your browser.
+          </p>
         </div>
       </section>
     <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -139,7 +139,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -366,6 +366,7 @@
         }
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

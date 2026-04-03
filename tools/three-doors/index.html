@@ -55,9 +55,6 @@
         <h1>Three doors</h1>
         <p class="lead">Monty-Hall-free zone: you get one pick, we reveal the vibes. No math homework required.</p>
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to play.</strong> One door hides a star (★); the others show goats (🐐). You choose <strong>once</strong> per round—then every door opens. Tap <strong>Play again</strong> to randomize where the star sits.
-          </p>
           <div class="doors-row" id="doorsRow" role="group" aria-label="Choose a door">
             <button type="button" class="door" data-i="0" aria-label="Door 1">1</button>
             <button type="button" class="door" data-i="1" aria-label="Door 2">2</button>
@@ -67,6 +64,9 @@
           <div style="text-align: center">
             <button type="button" class="btn btn--secondary" id="doorAgain" hidden>Play again</button>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to play.</strong> One door hides a star (★); the others show goats (🐐). You choose <strong>once</strong> per round—then every door opens. Tap <strong>Play again</strong> to randomize where the star sits.
+          </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -79,7 +79,7 @@
             <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -156,6 +156,7 @@
         setup();
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

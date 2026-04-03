@@ -65,9 +65,6 @@
         </p>
 
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to play.</strong> You’re <strong>X</strong> and always move first—tap any empty square. The computer is perfect <strong>O</strong> (minimax), so wins are rare; draws are normal. <strong>New game</strong> clears the board.
-          </p>
           <div class="ttt-layout">
             <p class="ttt-status" id="tttStatus" aria-live="polite">Your turn — pick a square.</p>
             <div class="ttt-board" id="tttBoard" role="grid" aria-label="Tic-tac-toe board"></div>
@@ -76,6 +73,9 @@
             </div>
             <p class="ttt-sub">Tip: against perfect O, the best you can do from a bad opening is usually a draw.</p>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to play.</strong> You’re <strong>X</strong> and always move first—tap any empty square. The computer is perfect <strong>O</strong> (minimax), so wins are rare; draws are normal. <strong>New game</strong> clears the board.
+          </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -91,7 +91,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -270,6 +270,7 @@
         newGame();
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

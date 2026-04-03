@@ -67,10 +67,6 @@
         </p>
 
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Pick a die (d4–d20), then tap <strong>Roll</strong> or press <kbd>R</kbd>. Recent rolls list below;
-            <strong>Clear history</strong> empties it.
-          </p>
           <div class="dice-panel">
             <div>
               <p class="muted" style="margin: 0 0 0.5rem; font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em">
@@ -98,6 +94,10 @@
               <ul class="dice-history" id="diceHistory" aria-label="Recent rolls"></ul>
             </div>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Pick a die (d4–d20), then tap <strong>Roll</strong> or press <kbd>R</kbd>. Recent rolls list below;
+            <strong>Clear history</strong> empties it.
+          </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -113,7 +113,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -208,6 +208,7 @@
         metaEl.textContent = "d6 · ready (press R to roll)";
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

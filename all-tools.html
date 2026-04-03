@@ -55,29 +55,34 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body data-gallery-mode="all">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
       <div class="topbar__inner">
-        <a class="brand" href="index.html">One Page Toys</a>
-        <div class="hero__actions" aria-label="Gallery actions">
+        <div class="topbar__start">
+          <a class="brand" href="index.html">One Page Toys</a>
+          <nav class="topbar__nav" aria-label="Site sections">
+            <a class="topbar__link" href="index.html">Home</a>
+            <a class="topbar__link" href="all-tools.html" aria-current="page">All tools</a>
+          </nav>
+        </div>
+        <div class="topbar__actions" aria-label="Quick actions">
           <button id="randomToolBtn" class="btn btn--primary" type="button">Surprise me</button>
-          <a class="btn btn--secondary" href="index.html">Home</a>
         </div>
       </div>
     </header>
 
-    <main class="container">
-      <section class="hero" style="padding-bottom: 0">
+    <main id="main-content" class="container">
+      <section class="hero hero--tool-focus" style="padding-bottom: 0">
         <p class="hero__eyebrow">Gallery</p>
         <h1>All tools</h1>
         <p class="hero__lede">
-          Search runs on each tool’s name, description, slug, category, and <strong>plain-language hints</strong> tied to its type (questions and synonyms—not shown on cards). Commas and filler words like “how to” are fine. Narrow by
-          <strong>category</strong> or <strong>tool type</strong>, then sort A–Z or group by category.
+          <strong>Search</strong> first—then category chips or open <strong>Tool types</strong> only if you need the full type list.
         </p>
       </section>
 
-      <section id="tools" class="tools">
+      <section id="tools" class="tools" aria-labelledby="browseHeading">
         <div class="tools__header">
-          <h2>Browse</h2>
+          <h2 id="browseHeading">Browse</h2>
           <div id="toolsMeta" class="tools-meta" aria-live="polite"></div>
         </div>
 
@@ -112,10 +117,22 @@
           <div class="tools-tags" id="toolsCategories" role="group" aria-labelledby="toolsCatsLabel"></div>
         </div>
 
-        <div class="tools-tags-wrap">
-          <span class="tools-tags__label" id="toolsTagsLabel">Filter by tool type</span>
-          <div class="tools-tags" id="toolsTags" role="group" aria-labelledby="toolsTagsLabel"></div>
-        </div>
+        <details class="tools-filter-types" id="toolsFilterTypes">
+          <summary class="tools-filter-types__summary">
+            <span class="tools-filter-types__title">Tool types</span>
+            <span class="tools-filter-types__meta">
+              <span id="toolsTypesHint" class="tools-filter-types__count muted"></span>
+              <strong id="toolsTypesActiveSummary" class="tools-filter-types__picked" hidden></strong>
+            </span>
+          </summary>
+          <div class="tools-filter-types__body">
+            <p class="tools-filter-types__lede muted">
+              Optional—types are also reachable from search. Use this when you want to browse every kind of tool.
+            </p>
+            <span class="sr-only" id="toolsTagsLabel">Pick a tool type filter</span>
+            <div class="tools-tags" id="toolsTags" role="group" aria-labelledby="toolsTagsLabel"></div>
+          </div>
+        </details>
 
         <div id="toolsGrid" class="grid" aria-live="polite"></div>
         <p id="toolsEmpty" class="tools-empty" hidden>No toys match those filters. Try another search, category, or type.</p>

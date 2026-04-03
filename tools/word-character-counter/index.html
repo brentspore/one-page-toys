@@ -75,9 +75,6 @@
         </p>
 
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Paste or type in the box—<strong>words</strong>, characters (with/without spaces), lines, and reading time update live. <strong>Clear</strong> empties the field. Counts use whitespace-separated words (~200 WPM for reading time).
-          </p>
           <div class="wcnt-layout">
             <label class="sr-only" for="wcntInput">Text to analyze</label>
             <textarea id="wcntInput" class="wcnt-area" placeholder="Paste your copy here…" autocomplete="off" spellcheck="true"></textarea>
@@ -87,6 +84,9 @@
             <div class="wcnt-grid" id="wcntStats" aria-live="polite"></div>
             <p class="wcnt-hint">Word count splits on whitespace. Reading time uses ~200 words per minute.</p>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Paste or type in the box—<strong>words</strong>, characters (with/without spaces), lines, and reading time update live. <strong>Clear</strong> empties the field. Counts use whitespace-separated words (~200 WPM for reading time).
+          </p>
         </div>
       </section>
     <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -102,7 +102,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -180,6 +180,7 @@
         render();
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

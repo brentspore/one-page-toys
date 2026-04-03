@@ -81,9 +81,6 @@
         <div id="icvError" class="icv-error icv-hidden" role="alert"></div>
 
         <div class="panel icv-panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> <strong>Drop</strong> an image on the zone or click to browse. After it loads, pick <strong>output format</strong> and any resize/quality options, then download. <strong>Clear</strong> removes the file and preview—nothing leaves your browser.
-          </p>
           <input id="icvFile" type="file" class="icv-file-input" accept="image/*" />
 
           <button type="button" class="icv-dropzone" id="icvDropzone" aria-label="Upload image">
@@ -126,6 +123,10 @@
             </div>
             <p id="icvHint" class="icv-hint muted"></p>
           </div>
+
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> <strong>Drop</strong> an image on the zone or click to browse. After it loads, pick <strong>output format</strong> and any resize/quality options, then download. <strong>Clear</strong> removes the file and preview—nothing leaves your browser.
+          </p>
         </div>
       </section>
 
@@ -142,7 +143,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -456,6 +457,7 @@
         elQualityVal.textContent = parseFloat(elQuality.value).toFixed(2);
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

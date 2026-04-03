@@ -74,9 +74,6 @@
         <div id="rpeStatus" class="rpe-status muted" aria-live="polite"></div>
 
         <div id="rpePlay" class="panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> <strong>Shuffle four</strong> pulls new palette cards from the pool. Tap a card to open the full breakdown (hex, RGB, HSL, exports). <strong>Vibe</strong> tags bias what gets drawn; <strong>Start over</strong> resets filters and the pool.
-          </p>
           <div id="rpeCardGrid" class="rpe-grid"></div>
 
           <div class="muted" style="text-align: center; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem;">
@@ -88,6 +85,10 @@
             <button type="button" class="btn" id="rpeShuffle">Shuffle four</button>
             <button type="button" class="btn" id="rpeStartOver">Start over</button>
           </div>
+
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 6px;">
+            <strong>How to use.</strong> <strong>Shuffle four</strong> pulls new palette cards from the pool. Tap a card to open the full breakdown (hex, RGB, HSL, exports). <strong>Vibe</strong> tags bias what gets drawn; <strong>Start over</strong> resets filters and the pool.
+          </p>
         </div>
       </section>
 
@@ -104,7 +105,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -434,6 +435,7 @@
           });
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

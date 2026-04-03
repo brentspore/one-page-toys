@@ -55,10 +55,6 @@
         <h1>Button mash sprint</h1>
         <p class="lead">Five seconds on the clock. Hammer the big button. Thumb athletes welcome.</p>
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to play.</strong> Tap <strong>Start</strong> first—the timer runs for 5 seconds. Only taps on <strong>MASH</strong> while the timer is going count toward your score. When it hits 0, use
-            <strong>Again</strong> for another sprint.
-          </p>
           <div class="bms-panel">
             <div class="bms-timer" id="bmsTimer" aria-live="polite">5.0</div>
             <p class="bms-meta" id="bmsMeta">Press Start, then mash.</p>
@@ -68,6 +64,10 @@
               <button type="button" class="btn btn--secondary" id="bmsAgain" hidden>Again</button>
             </div>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to play.</strong> Tap <strong>Start</strong> first—the timer runs for 5 seconds. Only taps on <strong>MASH</strong> while the timer is going count toward your score. When it hits 0, use
+            <strong>Again</strong> for another sprint.
+          </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -80,7 +80,7 @@
             <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -144,6 +144,7 @@
         againBtn.addEventListener("click", go);
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

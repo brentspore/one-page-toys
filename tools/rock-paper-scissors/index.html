@@ -57,9 +57,6 @@
         <h1>Rock paper scissors</h1>
         <p class="lead">You versus `crypto.getRandomValues`. First to bragging rights is you.</p>
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to play.</strong> Rock beats scissors, scissors beats paper, paper beats rock. Tap your move; the CPU picks randomly and the score updates. <strong>Reset score</strong> clears wins, losses, and ties.
-          </p>
           <p class="muted" style="margin: 0 0 0.75rem; text-align: center; font-weight: 700">Your throw</p>
           <div class="rps-row" role="group" aria-label="Choose rock paper or scissors">
             <button type="button" class="rps-choice" data-move="0" aria-label="Rock">🪨</button>
@@ -74,6 +71,9 @@
           <div style="margin-top: 1rem; text-align: center">
             <button type="button" class="btn btn--secondary" id="rpsReset">Reset score</button>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to play.</strong> Rock beats scissors, scissors beats paper, paper beats rock. Tap your move; the CPU picks randomly and the score updates. <strong>Reset score</strong> clears wins, losses, and ties.
+          </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -86,7 +86,7 @@
             <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -153,6 +153,7 @@
         });
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

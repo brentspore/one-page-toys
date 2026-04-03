@@ -79,9 +79,6 @@
         <div id="qrgError" class="qrg-error qrg-hidden" role="alert"></div>
 
         <div class="panel qrg-panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Enter a URL or any short text in <strong>Content</strong>, choose <strong>Size</strong>, then <strong>Update QR</strong> to render. <strong>Download PNG</strong> saves the image. Encoding runs in the page (QR library loads from CDN).
-          </p>
           <label class="qrg-label" for="qrgInput">Content</label>
           <textarea id="qrgInput" class="qrg-textarea" rows="4" placeholder="https://onepagetoys.com/" spellcheck="false"></textarea>
 
@@ -109,6 +106,9 @@
           <p class="qrg-note muted">
             Very long text may hit QR capacity limits. If encoding fails, try a shorter string or a URL shortener.
           </p>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Enter a URL or any short text in <strong>Content</strong>, choose <strong>Size</strong>, then <strong>Update QR</strong> to render. <strong>Download PNG</strong> saves the image. Encoding runs in the page (QR library loads from CDN).
+          </p>
         </div>
       </section>
     <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -124,7 +124,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -240,6 +240,7 @@
         }
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

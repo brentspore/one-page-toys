@@ -55,10 +55,6 @@
         <h1>Breathing pacer</h1>
         <p class="lead">Not medical advice—just a slow circle. Inhale while it grows, exhale while it shrinks.</p>
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Match your breath to the circle: it <strong>grows ~4s</strong> (inhale) then <strong>shrinks ~4s</strong> (exhale). Follow the label under it. Not medical advice. If your device uses
-            <strong>reduced motion</strong>, the circle stays still—still use the text cues.
-          </p>
           <div class="bp-layout">
             <div class="bp-circle-wrap">
               <div class="bp-circle" aria-hidden="true"></div>
@@ -66,6 +62,10 @@
             <p class="bp-label" id="bpLabel" aria-live="polite">Breathe in…</p>
             <p class="bp-hint">Cycle is ~8 seconds total (4s in, 4s out). Look away from the screen if you need a break.</p>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Match your breath to the circle: it <strong>grows ~4s</strong> (inhale) then <strong>shrinks ~4s</strong> (exhale). Follow the label under it. Not medical advice. If your device uses
+            <strong>reduced motion</strong>, the circle stays still—still use the text cues.
+          </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -78,7 +78,7 @@
             <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -105,6 +105,7 @@
         setInterval(tick, 4000);
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

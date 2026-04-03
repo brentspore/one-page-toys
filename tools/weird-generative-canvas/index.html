@@ -70,10 +70,11 @@
           <a href="https://symmetrygenius.com" target="_blank" rel="noopener noreferrer">Symmetry Genius<span class="sr-only"> (opens in new tab)</span></a>
         </p>
 
+        <div class="wgc-canvas-wrap panel">
+          <canvas id="wgcCanvas" class="wgc-canvas" width="800" height="500"></canvas>
+        </div>
+
         <div class="wgc-toolbar panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> <strong>New pattern</strong> picks a fresh algorithm and palette. <strong>Pause</strong> stops the animation; choose <strong>Speed</strong> (Chill / Normal / Hyper). The line under the buttons names the current mode.
-          </p>
           <div class="wgc-toolbar-row">
             <button type="button" class="btn btn--primary" id="wgcNew">New pattern</button>
             <button type="button" class="btn" id="wgcPause">Pause</button>
@@ -87,10 +88,9 @@
             </div>
           </div>
           <p id="wgcModeLine" class="wgc-mode muted" aria-live="polite"></p>
-        </div>
-
-        <div class="wgc-canvas-wrap panel">
-          <canvas id="wgcCanvas" class="wgc-canvas" width="800" height="500"></canvas>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> <strong>New pattern</strong> picks a fresh algorithm and palette. <strong>Pause</strong> stops the animation; choose <strong>Speed</strong> (Chill / Normal / Hyper). The line under the buttons names the current mode.
+          </p>
         </div>
       </section>
 
@@ -107,7 +107,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -906,6 +906,7 @@
         startLoop();
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

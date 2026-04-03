@@ -1,0 +1,146 @@
+/* Shared chrome for tool pages: skip link, top bar navigation, breadcrumb, random tool. */
+
+(function () {
+  "use strict";
+
+  function siteRootFromPathname() {
+    var path = location.pathname;
+    if (/\/[^/]+\.html$/i.test(path)) {
+      path = path.replace(/\/[^/]+\.html$/i, "");
+    } else {
+      path = path.replace(/\/$/, "");
+    }
+    var segs = path.split("/").filter(Boolean);
+    if (!segs.length) return "./";
+    return segs.map(function () {
+      return "..";
+    }).join("/") + "/";
+  }
+
+  function injectSkipLink() {
+    if (document.querySelector(".skip-link")) return;
+    var main = document.querySelector("main.container");
+    if (!main) return;
+    if (!main.id) main.id = "main-content";
+    var a = document.createElement("a");
+    a.className = "skip-link";
+    a.href = "#main-content";
+    a.textContent = "Skip to content";
+    document.body.insertBefore(a, document.body.firstChild);
+  }
+
+  function wireSurprise(root) {
+    var btn = document.getElementById("randomToolBtn");
+    if (!btn || btn.dataset.chromeWired === "1") return;
+    btn.dataset.chromeWired = "1";
+    btn.addEventListener("click", function () {
+      fetch(root + "tools-registry.json", { cache: "no-store" })
+        .then(function (r) {
+          if (!r.ok) throw new Error();
+          return r.json();
+        })
+        .then(function (tools) {
+          if (!Array.isArray(tools) || !tools.length) return;
+          var pool = tools.filter(function (t) {
+            return t && t.path;
+          });
+          if (!pool.length) return;
+          var pick = pool[Math.floor(Math.random() * pool.length)];
+          window.location.href = root + pick.path;
+        })
+        .catch(function () {});
+    });
+  }
+
+  function enhanceToolTopbar() {
+    if (!document.body.getAttribute("data-tool-slug")) return;
+    var inner = document.querySelector(".topbar__inner");
+    if (!inner || inner.querySelector(".topbar__start")) return;
+    var brand = inner.querySelector(".brand");
+    if (!brand) return;
+    var root = siteRootFromPathname();
+
+    var start = document.createElement("div");
+    start.className = "topbar__start";
+    inner.insertBefore(start, brand);
+    start.appendChild(brand);
+
+    var nav = document.createElement("nav");
+    nav.className = "topbar__nav";
+    nav.setAttribute("aria-label", "Site sections");
+    var aHome = document.createElement("a");
+    aHome.className = "topbar__link";
+    aHome.href = root + "index.html";
+    aHome.textContent = "Home";
+    var aAll = document.createElement("a");
+    aAll.className = "topbar__link";
+    aAll.href = root + "all-tools.html";
+    aAll.textContent = "All tools";
+    nav.appendChild(aHome);
+    nav.appendChild(aAll);
+    start.appendChild(nav);
+
+    var actions = document.createElement("div");
+    actions.className = "topbar__actions";
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "randomToolBtn";
+    btn.className = "btn btn--primary";
+    btn.textContent = "Surprise me";
+    actions.appendChild(btn);
+    inner.appendChild(actions);
+
+    wireSurprise(root);
+  }
+
+  function injectBreadcrumb() {
+    var tool = document.querySelector("section.tool");
+    if (!tool || tool.querySelector(".tool-breadcrumb")) return;
+    var root = siteRootFromPathname();
+    var slug = document.body.getAttribute("data-tool-slug") || "";
+    var isDetail = /detail\.html/i.test(location.pathname);
+    var h1 = tool.querySelector("h1");
+    var title =
+      (h1 && h1.textContent && h1.textContent.replace(/\s+/g, " ").trim()) ||
+      (document.title.split(/\s*[—–-]\s*/)[0] || "").trim() ||
+      "Tool";
+
+    var nav = document.createElement("nav");
+    nav.className = "tool-breadcrumb";
+    nav.setAttribute("aria-label", "Breadcrumb");
+    var ol = document.createElement("ol");
+    ol.className = "tool-breadcrumb__list";
+
+    function addLink(href, label) {
+      var li = document.createElement("li");
+      li.className = "tool-breadcrumb__item";
+      var a = document.createElement("a");
+      a.className = "tool-breadcrumb__link";
+      a.href = href;
+      a.textContent = label;
+      li.appendChild(a);
+      ol.appendChild(li);
+    }
+
+    addLink(root + "index.html", "Home");
+    addLink(root + "all-tools.html", "All tools");
+    if (isDetail && slug) {
+      addLink(root + "tools/" + slug + "/index.html", "Palette explorer");
+    }
+
+    var liCur = document.createElement("li");
+    liCur.className = "tool-breadcrumb__item tool-breadcrumb__item--current";
+    liCur.setAttribute("aria-current", "page");
+    liCur.textContent = isDetail ? title || "Palette detail" : title;
+    ol.appendChild(liCur);
+
+    nav.appendChild(ol);
+    tool.insertBefore(nav, tool.firstChild);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    injectSkipLink();
+    enhanceToolTopbar();
+    injectBreadcrumb();
+  });
+})();

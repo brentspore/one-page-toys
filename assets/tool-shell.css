@@ -13,28 +13,93 @@
   flex-direction: column;
 }
 
-.tool h1{
+.tool > .tool-breadcrumb{
+  order: -2;
+  width: 100%;
   margin: 0 0 10px;
-  font-size: clamp(1.5rem, 3.5vw, 2rem);
+}
+
+.tool-breadcrumb__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 8px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.tool-breadcrumb__item{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-breadcrumb__item:not(:last-child)::after{
+  content: "/";
+  color: var(--border-strong);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.tool-breadcrumb__link{
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(37, 99, 235, 0.35);
+}
+
+.tool-breadcrumb__link:hover{
+  color: var(--accent-hover, #1d4ed8);
+}
+
+.tool-breadcrumb__item--current{
+  color: var(--text);
+  font-weight: 750;
+}
+
+.tool > h1{
+  order: 0;
+  margin: 0 0 8px;
+  font-size: clamp(1.45rem, 3.2vw, 1.9rem);
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.15;
 }
 
-.tool .lead{
-  margin: 0 0 22px;
+.tool > .lead{
+  order: 1;
+  margin: 0 0 12px;
   color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.6;
-  max-width: 42rem;
+  font-size: 0.96rem;
+  line-height: 1.5;
+  max-width: 40rem;
 }
 
-/* Optional outbound promo line (e.g. Symmetry Genius) — keep copy short */
-.tool-ext-link{
-  margin: 12px 0 0;
-  font-size: 0.88rem;
-  line-height: 1.55;
+/* Errors / live status sit above the main panel but stay secondary to the title line. */
+.tool > [role="alert"],
+.tool > [aria-live="polite"]{
+  order: 2;
+  width: 100%;
+}
+
+.tool > .panel{
+  order: 3;
+}
+
+/* Outbound promo — after the main panel so the interactive surface stays the hero. */
+.tool > .tool-ext-link{
+  order: 4;
+  margin: 18px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
   max-width: 42rem;
+  color: var(--muted);
+  opacity: 0.92;
 }
 
 .tool-ext-link a{
@@ -49,31 +114,16 @@
   color: var(--accent-hover, #1d4ed8);
 }
 
-.tool-ext-link + .tool-ext-link{
-  margin-top: 8px;
-}
-
-/* Re-order outbound promo text so it appears after the main editor panels,
-   but still before the related-tools container (#toolCrossRoot). */
-.tool > h1{
-  order: 0;
-}
-.tool > .lead{
-  order: 1;
-}
-.tool > .panel{
-  order: 2;
-}
-.tool > .tool-ext-link{
-  order: 3;
+.tool > .tool-ext-link + .tool-ext-link{
+  margin-top: 6px;
 }
 
 .panel{
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 22px 22px 20px;
-  box-shadow: var(--shadow-md);
+  padding: 24px 24px 22px;
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
 }
@@ -88,15 +138,16 @@
   pointer-events: none;
 }
 
-/* Short how-to inside tool panels (keyboard, order of steps, scoring). */
+/* Short how-to inside tool panels — visually subordinate to primary controls. */
 .tool-directions{
-  margin: 0 0 18px;
-  padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(37, 99, 235, 0.06);
-  border: 1px solid rgba(37, 99, 235, 0.14);
-  font-size: 0.9rem;
-  line-height: 1.55;
+  margin: 0 0 12px;
+  padding: 8px 12px 8px 11px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  border: none;
+  border-left: 3px solid rgba(37, 99, 235, 0.45);
+  background: rgba(37, 99, 235, 0.045);
+  font-size: 0.8125rem;
+  line-height: 1.45;
   color: var(--muted);
 }
 
@@ -133,9 +184,11 @@
 
 .tool-cross .tool-cross__title{
   margin: 0 0 14px;
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+  color: var(--text);
+  opacity: 0.82;
 }
 
 .tool-cross__list{

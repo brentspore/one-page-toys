@@ -65,9 +65,6 @@
         </p>
 
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to play.</strong> Tap the big area to start a round. When it turns <strong>green</strong>, click or tap <strong>once</strong>—your reaction time is recorded. Clicks on red (too early) don’t count. <strong>Reset stats</strong> clears last, best, and rolling average.
-          </p>
           <div class="rc-stage-wrap">
             <div
               id="rcStage"
@@ -100,6 +97,9 @@
             <button type="button" class="btn" id="rcReset">Reset stats</button>
           </div>
           <p class="rc-hint muted">Tip: use a mouse or one finger; trackpads add a little latency.</p>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to play.</strong> Tap the big area to start a round. When it turns <strong>green</strong>, click or tap <strong>once</strong>—your reaction time is recorded. Clicks on red (too early) don’t count. <strong>Reset stats</strong> clears last, best, and rolling average.
+          </p>
         </div>
       </section>
     <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -115,7 +115,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -256,6 +256,7 @@
         updateStatsDisplay();
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

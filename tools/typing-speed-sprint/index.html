@@ -65,9 +65,6 @@
         </p>
 
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to play.</strong> Tap <strong>Start</strong>—the 30s timer runs and the input unlocks. Type the highlighted word exactly, then press <kbd>Space</kbd> to lock it in; mistakes keep you on the same word until it’s correct. <strong>Reset</strong> stops and clears the round.
-          </p>
           <div class="tss-layout">
             <div class="tss-bar">
               <span class="tss-timer" id="tssClock" aria-live="polite">30.0s</span>
@@ -88,6 +85,9 @@
             </div>
             <p class="tss-hint">WPM uses correct words ÷ minutes (standard gross word measure).</p>
           </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to play.</strong> Tap <strong>Start</strong>—the 30s timer runs and the input unlocks. Type the highlighted word exactly, then press <kbd>Space</kbd> to lock it in; mistakes keep you on the same word until it’s correct. <strong>Reset</strong> stops and clears the round.
+          </p>
         </div>
       </section>
     <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -103,7 +103,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -294,6 +294,7 @@
         resetBtn.addEventListener("click", resetAll);
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

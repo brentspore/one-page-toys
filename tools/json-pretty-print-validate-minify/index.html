@@ -80,9 +80,6 @@
         </p>
 
         <div class="panel">
-          <p class="tool-directions">
-            <strong>How to use.</strong> Paste JSON into <strong>Input</strong>. <strong>Format</strong> pretty-prints with 2-space indent; <strong>Minify</strong> collapses to one line; <strong>Validate</strong> checks parse errors. Results land in <strong>Output</strong>—use <strong>Copy output</strong> or <strong>Download</strong> when you’re happy.
-          </p>
           <div class="jpv-toolbar" role="toolbar" aria-label="JSON actions">
             <button type="button" class="btn btn--primary" id="jpvFormat">Format</button>
             <button type="button" class="btn" id="jpvMinify">Minify</button>
@@ -117,6 +114,9 @@
           <p id="jpvStatus" class="jpv-status jpv-status--muted" role="status" aria-live="polite">
             Ready. Paste JSON and choose an action.
           </p>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>How to use.</strong> Paste JSON into <strong>Input</strong>. <strong>Format</strong> pretty-prints with 2-space indent; <strong>Minify</strong> collapses to one line; <strong>Validate</strong> checks parse errors. Results land in <strong>Output</strong>—use <strong>Copy output</strong> or <strong>Download</strong> when you’re happy.
+          </p>
         </div>
       </section>
     <div id="toolCrossRoot" class="tool-cross-mount"></div>
@@ -132,7 +132,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Gallery</a>
+            <a href="../../index.html">Home</a>
             <a href="../../all-tools.html">All tools</a>
           </nav>
         </div>
@@ -302,6 +302,7 @@
         });
       })();
     </script>
+    <script src="../../assets/site-chrome.js" defer></script>
     <script src="../../assets/tool-cross.js" defer></script>
   </body>
 </html>

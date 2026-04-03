@@ -51,32 +51,53 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body data-gallery-mode="home">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
       <div class="topbar__inner">
-        <a class="brand" href="index.html">One Page Toys</a>
-        <div class="hero__actions" aria-label="Gallery actions">
+        <div class="topbar__start">
+          <a class="brand" href="index.html">One Page Toys</a>
+          <nav class="topbar__nav" aria-label="Site sections">
+            <a class="topbar__link" href="index.html" aria-current="page">Home</a>
+            <a class="topbar__link" href="all-tools.html">All tools</a>
+          </nav>
+        </div>
+        <div class="topbar__actions" aria-label="Quick actions">
           <button id="randomToolBtn" class="btn btn--primary" type="button">Surprise me</button>
-          <a class="btn btn--secondary" href="all-tools.html">All tools</a>
         </div>
       </div>
     </header>
 
-    <main class="container">
-      <section class="hero">
+    <main id="main-content" class="container">
+      <section class="hero hero--tool-focus">
         <p class="hero__eyebrow">Gallery</p>
         <h1>One-page tools and playful experiments</h1>
         <p class="hero__lede">
-          Useful utilities and weird little ideas—each built to stay focused, simple, and easy to explore.
+          Pick something below—the gallery is the star of this page.
         </p>
+        <ul class="site-paths" role="list">
+          <li>
+            <a class="site-paths__card" href="#tools">
+              Featured tools
+              <span class="site-paths__hint">Jump to the shuffled grid</span>
+            </a>
+          </li>
+          <li>
+            <a class="site-paths__card" href="all-tools.html">
+              Browse everything
+              <span class="site-paths__hint">Search, categories, and types</span>
+            </a>
+          </li>
+        </ul>
       </section>
 
-      <section id="tools" class="tools">
+      <section id="tools" class="tools" aria-labelledby="featHeading">
         <div class="tools__header">
           <div>
-            <h2>Featured tools</h2>
+            <h2 id="featHeading">Featured tools</h2>
             <p class="tools-subtle">
-              A small, randomized slice of the gallery. Want the full list with search + filters?
-              <a class="tools-subtle__link" href="all-tools.html">Browse all tools</a>.
+              Randomized picks —
+              <a class="tools-subtle__link" href="all-tools.html">all tools</a>
+              for search and filters.
             </p>
           </div>
           <div id="toolsMeta" class="tools-meta" aria-live="polite"></div>
@@ -138,7 +159,7 @@
             </p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
-            <a href="index.html">Gallery</a>
+            <a href="index.html">Home</a>
             <a href="all-tools.html">All tools</a>
           </nav>
         </div>

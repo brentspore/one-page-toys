@@ -9,6 +9,12 @@
   gap: 1.5rem;
 }
 
+.mgs-layout > .mgs-tool-directions {
+  grid-column: 1 / -1;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
 @media (min-width: 960px) {
   .mgs-layout {
     grid-template-columns: minmax(300px, 380px) 1fr;
