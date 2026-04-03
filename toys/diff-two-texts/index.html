@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Diff two texts — One Page Toys</title>
+    <meta name="description" content="Paste two texts and get a clean, readable line diff with highlights." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/diff-two-texts/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Diff two texts — One Page Toys" />
+    <meta property="og:description" content="Paste two texts and get a clean, readable line diff with highlights." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/diff-two-texts/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Diff two texts — One Page Toys" />
+    <meta name="twitter:description" content="Paste two texts and get a clean, readable line diff with highlights." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="diff-two-texts">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Diff two texts</h1>
+        <p class="lead">Paste two texts and get a clean, readable line diff with highlights.</p>
+        <div class="panel">
+          <div class="local">
+            <div class="ui-hud" aria-label="Diff"><div class="ui-stat"><span class="ui-stat__label">+</span><span class="ui-stat__value" id="dP">0</span></div><div class="ui-stat"><span class="ui-stat__label">−</span><span class="ui-stat__value" id="dM">0</span></div></div>
+            <div class="local-row local-row--2">
+              <div><label class="muted" for="dA" style="font-weight:800">A</label><textarea class="local-text" id="dA"></textarea></div>
+              <div><label class="muted" for="dB" style="font-weight:800">B</label><textarea class="local-text" id="dB"></textarea></div>
+            </div>
+            <div class="local-actions"><button type="button" class="btn btn--primary" id="dRun">Update</button><button type="button" class="btn btn--secondary" id="dCopy">Copy unified</button></div>
+            <p class="ui-live" id="dS" aria-live="polite">Ready.</p>
+            <pre class="panel d-out" id="dO"></pre>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>Notes.</strong> Runs locally. Uses your browser storage when it needs to remember things.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ res(); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+        function eHTML(str){ return String(str).replace(/[&<>"']/g,function(ch){ switch(ch){ case '&':return '&amp;'; case '<':return '&lt;'; case '>':return '&gt;'; case '"':return '&quot;'; case "'":return '&#39;'; default:return ch; } }); }
+
+        var K='ops_diff_v1'; var st=load(K,{a:'',b:''}); $('dA').value=st.a||''; $('dB').value=st.b||'';
+        function diff(a,b){ var A=a.split(/\n/), B=b.split(/\n/), n=A.length,m=B.length; var dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+          for(var i=n-1;i>=0;i--) for(var j=m-1;j>=0;j--) dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+          var i=0,j=0,o=[]; while(i<n&&j<m){ if(A[i]===B[j]){o.push({t:' ',v:A[i]});i++;j++;} else if(dp[i+1][j]>=dp[i][j+1]){o.push({t:'-',v:A[i++]});} else {o.push({t:'+',v:B[j++]});} }
+          while(i<n)o.push({t:'-',v:A[i++]}); while(j<m)o.push({t:'+',v:B[j++]}); return o; }
+        function run(){ var a=$('dA').value||'', b=$('dB').value||''; save(K,{a:a,b:b}); var ops=diff(a,b); var P=0,M=0; ops.forEach(function(o){ if(o.t==='+')P++; if(o.t==='-')M++; }); $('dP').textContent=String(P); $('dM').textContent=String(M);
+          var txt='--- A\n+++ B\n'; ops.forEach(function(o){ txt+=o.t+o.v+'\n'; }); $('dO').textContent=txt; setStatus('dS','Updated.'); }
+        on($('dRun'),'click',run); on($('dCopy'),'click',function(){ copyText($('dO').textContent||'').then(function(){ setStatus('dS','Copied.'); }); });
+        on($('dA'),'input',run); on($('dB'),'input',run); run();
+              })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

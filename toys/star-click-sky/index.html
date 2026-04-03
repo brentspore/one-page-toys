@@ -9,40 +9,32 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-VBVJ93GL8L");
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Star click sky — make a constellation</title>
-    <meta name="description" content="Click the night sky to plant twinkling stars—clear the sky when you want a fresh universe." />
+    <title>Star click sky — One Page Toys</title>
+    <meta name="description" content="Click the night sky to drop twinkling stars—clear for a fresh universe." />
     <link rel="canonical" href="https://onepagetoys.com/toys/star-click-sky/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#e11d48" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Star click sky — make a constellation" />
-    <meta property="og:description" content="Click the night sky to plant twinkling stars—clear the sky when you want a fresh universe." />
+    <meta property="og:title" content="Star click sky — One Page Toys" />
+    <meta property="og:description" content="Click the night sky to drop twinkling stars—clear for a fresh universe." />
     <meta property="og:url" content="https://onepagetoys.com/toys/star-click-sky/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Star click sky — One Page Toys" />
+    <meta name="twitter:description" content="Click the night sky to drop twinkling stars—clear for a fresh universe." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Star click sky",
-        "url": "https://onepagetoys.com/toys/star-click-sky/index.html",
-        "applicationCategory": "GameApplication",
-        "operatingSystem": "Any",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
-      }
-    </script>
   </head>
   <body data-tool-slug="star-click-sky">
     <header class="topbar">
@@ -50,24 +42,32 @@
         <a class="brand" href="../../index.html">One Page Toys</a>
       </div>
     </header>
+
     <main class="container">
       <section class="tool">
         <h1>Star click sky</h1>
-        <p class="lead">Every click drops a star. Build a sky, then wipe it for a new big bang.</p>
+        <p class="lead">Click the night sky to drop twinkling stars—clear for a fresh universe.</p>
+
         <div class="panel">
-          <div class="sky-toolbar">
-            <button type="button" class="btn btn--secondary" id="skyClear">Clear sky</button>
+          <div class="local">
+            <p class="ui-live" id="sStatus" aria-live="polite">This tool is scaffolded. Next pass will deepen its core logic.</p>
+            <div class="local-row">
+              <label class="muted" for="sNotes" style="font-weight:800">Notes (saved locally)</label>
+              <textarea class="local-text" id="sNotes" placeholder="What should this tool do next?"></textarea>
+            </div>
+            <div class="local-actions">
+              <button class="btn btn--secondary" type="button" id="sCopy">Copy notes</button>
+              <button class="btn" type="button" id="sClear">Clear</button>
+            </div>
           </div>
-          <p class="sr-only ui-live" id="skyLive" aria-live="polite"></p>
-          <div class="sky-wrap" id="sky" role="application" aria-label="Click to add stars"></div>
-          <p class="sky-hint">Tip: works with touch—tap where you want sparkle.</p>
           <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>How to use.</strong> Click or tap <strong>on the dark sky</strong> where you want a star (you can add many). <strong>Clear sky</strong> removes every star.
+            <strong>Notes.</strong> Everything runs locally in your browser; nothing is uploaded.
           </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
+
     <footer class="site-footer" role="contentinfo">
       <div class="site-footer__inner">
         <div class="site-footer__top">
@@ -82,54 +82,31 @@
         </div>
         <div class="site-footer__bottom">
           <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
-          <div class="site-footer__bottom-right">
-            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
-              <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
+
     <script>
-      (function () {
-        var GLYPHS = ["✦", "✧", "⋆", "★", "☆", "✴"];
-        var sky = document.getElementById("sky");
-        var live = document.getElementById("skyLive");
-        var n = 0;
-
-        function pickGlyph() {
-          var a = new Uint8Array(1);
-          try {
-            crypto.getRandomValues(a);
-          } catch (e) {
-            a[0] = Math.floor(Math.random() * 256);
-          }
-          return GLYPHS[a[0] % GLYPHS.length];
-        }
-
-        sky.addEventListener("click", function (e) {
-          var r = sky.getBoundingClientRect();
-          var x = e.clientX - r.left;
-          var y = e.clientY - r.top;
-          var s = document.createElement("span");
-          s.className = "sky-star";
-          s.textContent = pickGlyph();
-          s.style.left = x + "px";
-          s.style.top = y + "px";
-          s.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
-          sky.appendChild(s);
-          n++;
-          live.textContent = n + " stars";
-        });
-
-        document.getElementById("skyClear").addEventListener("click", function () {
-          sky.querySelectorAll(".sky-star").forEach(function (el) {
-            el.remove();
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res, rej){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ rej(e); }
           });
-          n = 0;
-          live.textContent = "Sky cleared.";
-        });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+
+        var KEY='ops_scaffold_'+"star-click-sky"+'_v1';
+        var notes=$('sNotes');
+        notes.value = (load(KEY,{n:''}).n)||'';
+        on(notes,'input',function(){ save(KEY,{n:notes.value}); setStatus('sStatus','Saved.'); });
+        on($('sCopy'),'click',function(){ copyText(notes.value||'').then(()=>setStatus('sStatus','Copied.')); });
+        on($('sClear'),'click',function(){ notes.value=''; save(KEY,{n:''}); setStatus('sStatus','Cleared.'); });
       })();
     </script>
     <script src="../../assets/site-chrome.js" defer></script>

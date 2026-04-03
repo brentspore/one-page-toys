@@ -28,9 +28,10 @@ function badgeClassForStatus(status) {
 }
 
 /** Stable ordering for category chips and “sort by category”. */
-const CATEGORY_ORDER = ["game", "visual", "audio", "wellness"];
+const CATEGORY_ORDER = ["utility", "game", "visual", "audio", "wellness"];
 
 const CATEGORY_LABELS = {
+  utility: "Tools",
   game: "Games & play",
   visual: "Visual & color",
   audio: "Audio",
@@ -91,7 +92,31 @@ const TYPE_NL_PHRASES = {
   "breathing-guide":
     "breathing breath calm anxiety relax inhale exhale box pacing meditation mindfulness stress wellness guide visual circle timing",
   "door-game":
-    "door doors choice mystery reveal star goat three pick guess hide prize surprise pickone monty probability"
+    "door doors choice mystery reveal star goat three pick guess hide prize surprise pickone monty probability",
+  "clipboard-tool": "clipboard snippets copy paste stack save pin label notes local storage multiple items",
+  "diff-tool": "diff compare text unified lines changes patch git style paste two versions",
+  "regex-tool": "regex regular expression pattern flags replace match test javascript",
+  "id-generator": "uuid nanoid random id bulk identifiers unique tokens",
+  "time-tool": "timestamp unix iso timezone convert utc epoch seconds date formatter",
+  "data-converter": "csv json comma delimiter header rows export import spreadsheet",
+  "encoder-tool": "base64 encode decode url encodeURIComponent atob btoa",
+  "jwt-tool": "jwt token decode payload header bearer exp expiry json web",
+  "palette-extractor": "palette swatches image photo colors css variables extract designer",
+  "gradient-tool": "linear gradient angle css background stops colors",
+  "icon-tool": "favicon png icon sizes download resize 32 16 apple touch",
+  "image-tool": "image compress jpeg quality canvas download smaller file size",
+  "markdown-tool": "markdown preview html heading list bold render writer",
+  "seo-tool": "open graph meta tags twitter card og:title og:description og:image",
+  "a11y-tool": "accessibility checklist wcag keyboard contrast labels aria",
+  "unit-tool": "px rem em conversion root font scale spacing design token",
+  "notes-tool": "meeting notes log timestamp timer export markdown minutes",
+  "copy-tool": "ux copy microcopy button label empty state error message tone",
+  "hash-tool": "sha256 sha1 digest checksum file hash crypto integrity",
+  "json-tool": "json schema validate object array required properties",
+  "prompt-toy": "daily prompt doodle creative streak sketch idea drawing",
+  "idle-toy": "idle garden grow water tap playful progress save",
+  "mood-toy": "mood sky gradient pick log feelings diary",
+  "rhythm-toy": "tap rhythm beat bpm metronome timing accuracy score"
 };
 
 const SEARCH_STOP_WORDS = new Set([

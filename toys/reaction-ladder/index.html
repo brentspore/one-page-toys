@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Reaction ladder — One Page Toys</title>
+    <meta name="description" content="Ten quick reaction rounds—track best, average, and recent runs." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/reaction-ladder/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#16a34a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Reaction ladder — One Page Toys" />
+    <meta property="og:description" content="Ten quick reaction rounds—track best, average, and recent runs." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/reaction-ladder/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Reaction ladder — One Page Toys" />
+    <meta name="twitter:description" content="Ten quick reaction rounds—track best, average, and recent runs." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="reaction-ladder">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Reaction ladder</h1>
+        <p class="lead">Ten quick reaction rounds—track best, average, and recent runs.</p>
+        <div class="panel">
+          <div class="local">
+            <div class="ui-hud"><div class="ui-stat"><span class="ui-stat__label">Round</span><span class="ui-stat__value" id="rlR">0/10</span></div><div class="ui-stat"><span class="ui-stat__label">Best</span><span class="ui-stat__value" id="rlB">—</span></div><div class="ui-stat"><span class="ui-stat__label">Avg</span><span class="ui-stat__value" id="rlA">—</span></div></div>
+            <div class="panel" style="padding:14px;text-align:center">
+              <button type="button" class="btn btn--primary rlb" id="rlBtn">Start</button>
+              <p class="ui-live" id="rlS" aria-live="polite" style="margin-top:12px">Wait for green-ish cue, then click.</p>
+            </div>
+            <p class="muted" style="margin:0;font-weight:800">Recent runs</p>
+            <ul class="ui-history" id="rlH"></ul>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>Notes.</strong> Runs locally. Uses your browser storage when it needs to remember things.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ res(); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+        function eHTML(str){ return String(str).replace(/[&<>"']/g,function(ch){ switch(ch){ case '&':return '&amp;'; case '<':return '&lt;'; case '>':return '&gt;'; case '"':return '&quot;'; case "'":return '&#39;'; default:return ch; } }); }
+
+        var K='ops_rladder_v1', st=load(K,{h:[]});
+        var rounds=[], total=10, phase='done', tmr=null, goAt=0, btn=$('rlBtn');
+        function ms(n){ return Math.round(n)+'ms'; }
+        function stats(){ if(!rounds.length){ $('rlB').textContent=$('rlA').textContent='—'; return; } var b=Math.min.apply(null,rounds), a=rounds.reduce(function(x,y){return x+y;},0)/rounds.length; $('rlB').textContent=ms(b); $('rlA').textContent=ms(a); }
+        function lbl(){ $('rlR').textContent=rounds.length+'/'+total; }
+        function hud(){ lbl(); stats(); }
+        function hist(){ var ul=$('rlH'); ul.innerHTML=''; (st.h||[]).slice(0,8).forEach(function(x){ var li=document.createElement('li'); li.textContent=ms(x.b)+' best · '+ms(x.a)+' avg'; ul.appendChild(li); }); }
+        function finish(){ var b=Math.min.apply(null,rounds), a=rounds.reduce(function(x,y){return x+y;},0)/rounds.length; st.h=[{b:b,a:a,t:Date.now()}].concat(st.h||[]).slice(0,10); save(K,st); hist(); phase='done'; btn.disabled=false; btn.textContent='Start again'; btn.style.background=''; hud(); setStatus('rlS','Run complete.'); }
+        function nextWait(){ if(rounds.length>=total){ finish(); return; }
+          phase='wait'; btn.disabled=true; btn.textContent='Wait…'; btn.style.background=''; setStatus('rlS','Wait…'); var d=550+Math.random()*1600;
+          tmr=setTimeout(function(){ phase='go'; btn.disabled=false; btn.textContent='Tap!'; btn.style.background='rgba(34,197,94,0.85)'; goAt=performance.now(); setStatus('rlS','Go!'); }, d);
+        }
+        on(btn,'click',function(){
+          if(phase==='done'){ rounds=[]; hud(); phase='wait'; nextWait(); return; }
+          if(phase==='wait'){ clearTimeout(tmr); btn.disabled=false; btn.textContent='Start again'; phase='done'; setStatus('rlS','Too soon—tap Start again.'); return; }
+          if(phase==='go'){ var dt=performance.now()-goAt; rounds.push(dt); btn.style.background=''; lbl(); stats(); setStatus('rlS',ms(dt)); setTimeout(nextWait, 400); }
+        });
+        hist(); hud(); btn.textContent='Start';
+              })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

@@ -9,40 +9,32 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-VBVJ93GL8L");
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Late excuse generator — plausible chaos</title>
-    <meta name="description" content="Generate a random excuse for being late—browser-side only, blame entropy not us." />
+    <title>Late excuse generator — One Page Toys</title>
+    <meta name="description" content="Spin up a plausible-ish excuse—blame entropy, not your calendar." />
     <link rel="canonical" href="https://onepagetoys.com/toys/late-excuse-generator/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#ea580c" />
+    <meta name="theme-color" content="#16a34a" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Late excuse generator — plausible chaos" />
-    <meta property="og:description" content="Generate a random excuse for being late—browser-side only, blame entropy not us." />
+    <meta property="og:title" content="Late excuse generator — One Page Toys" />
+    <meta property="og:description" content="Spin up a plausible-ish excuse—blame entropy, not your calendar." />
     <meta property="og:url" content="https://onepagetoys.com/toys/late-excuse-generator/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Late excuse generator — One Page Toys" />
+    <meta name="twitter:description" content="Spin up a plausible-ish excuse—blame entropy, not your calendar." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Late excuse generator",
-        "url": "https://onepagetoys.com/toys/late-excuse-generator/index.html",
-        "applicationCategory": "LifestyleApplication",
-        "operatingSystem": "Any",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
-      }
-    </script>
   </head>
   <body data-tool-slug="late-excuse-generator">
     <header class="topbar">
@@ -50,24 +42,32 @@
         <a class="brand" href="../../index.html">One Page Toys</a>
       </div>
     </header>
+
     <main class="container">
       <section class="tool">
         <h1>Late excuse generator</h1>
-        <p class="lead">For when the calendar is honest but the universe isn’t. Not legally binding.</p>
+        <p class="lead">Spin up a plausible-ish excuse—blame entropy, not your calendar.</p>
+
         <div class="panel">
-          <div class="exc-panel">
-            <p class="exc-out ui-live" id="excOut" aria-live="polite">Tap the button. Your alibi awaits.</p>
-            <div class="exc-actions">
-              <button type="button" class="btn" id="excBtn">New excuse</button>
+          <div class="local">
+            <p class="ui-live" id="sStatus" aria-live="polite">This tool is scaffolded. Next pass will deepen its core logic.</p>
+            <div class="local-row">
+              <label class="muted" for="sNotes" style="font-weight:800">Notes (saved locally)</label>
+              <textarea class="local-text" id="sNotes" placeholder="What should this tool do next?"></textarea>
+            </div>
+            <div class="local-actions">
+              <button class="btn btn--secondary" type="button" id="sCopy">Copy notes</button>
+              <button class="btn" type="button" id="sClear">Clear</button>
             </div>
           </div>
           <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>How to use.</strong> Tap <strong>New excuse</strong> each time you want another line. Everything runs in your browser—use in meetings at your own peril.
+            <strong>Notes.</strong> Everything runs locally in your browser; nothing is uploaded.
           </p>
         </div>
       </section>
       <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
+
     <footer class="site-footer" role="contentinfo">
       <div class="site-footer__inner">
         <div class="site-footer__top">
@@ -82,66 +82,31 @@
         </div>
         <div class="site-footer__bottom">
           <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
-          <div class="site-footer__bottom-right">
-            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
-              <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
+
     <script>
-      (function () {
-        var LINES = [
-          "A very confident pigeon negotiated a ceasefire on the sidewalk.",
-          "My calendar auto-migrated to a parallel Tuesday.",
-          "The elevator insisted on a team-building exercise between floors.",
-          "A software update respected my boundaries by ignoring my clock.",
-          "Traffic was sponsored by plot armor.",
-          "I fell into a flow state and it had a waiting list.",
-          "My keys staged a walkout; we’re in mediation.",
-          "The coffee machine filed a grievance.",
-          "GPS routed me through a metaphor.",
-          "A cloud backup restored my morning to an earlier draft.",
-          "The bike lane was written in disappearing ink.",
-          "I helped a printer find closure.",
-          "Time zones had a disagreement; I was collateral.",
-          "My alarm snoozed itself into a philosophy degree.",
-          "The crosswalk counted down in base unknown.",
-          "A notification asked for emotional labor.",
-          "I was buffering in real life.",
-          "The bus detoured around sincerity.",
-          "My shoe committed to a different timeline.",
-          "A meeting ran long in a dimension without clocks.",
-          "I honored a red light’s emotional needs.",
-          "The weather app sent mixed signals and I listened.",
-          "I queued behind someone paying with exact nostalgia.",
-          "My brain blue-screened on ‘which door’.",
-          "A dog looked disappointed; I had to debrief.",
-          "The escalator practiced mindfulness mid-step.",
-          "I was peer-reviewed by a revolving door.",
-          "My commute hit a merge conflict.",
-          "A stranger asked for directions to yesterday.",
-          "The universe deployed a hotfix to my route."
-        ];
-        var out = document.getElementById("excOut");
-        var last = -1;
-        document.getElementById("excBtn").addEventListener("click", function () {
-          var a = new Uint32Array(1);
-          try {
-            crypto.getRandomValues(a);
-          } catch (e) {
-            a[0] = Math.floor(Math.random() * 0xffffffff);
-          }
-          var i = a[0] % LINES.length;
-          if (LINES.length > 1 && i === last) i = (i + 1) % LINES.length;
-          last = i;
-          out.classList.remove("exc-out--pop");
-          void out.offsetWidth;
-          out.classList.add("exc-out--pop");
-          out.textContent = LINES[i];
-        });
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res, rej){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ rej(e); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+
+        var KEY='ops_scaffold_'+"late-excuse-generator"+'_v1';
+        var notes=$('sNotes');
+        notes.value = (load(KEY,{n:''}).n)||'';
+        on(notes,'input',function(){ save(KEY,{n:notes.value}); setStatus('sStatus','Saved.'); });
+        on($('sCopy'),'click',function(){ copyText(notes.value||'').then(()=>setStatus('sStatus','Copied.')); });
+        on($('sClear'),'click',function(){ notes.value=''; save(KEY,{n:''}); setStatus('sStatus','Cleared.'); });
       })();
     </script>
     <script src="../../assets/site-chrome.js" defer></script>

@@ -13,15 +13,15 @@
       gtag('js', new Date());
       gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Blob Choir</title>
-    <meta name="description" content="Tap wobbly blobs for weird bleeps and hums—Web Audio chaos in one page. No mic, no upload." />
+    <title>Blob Choir — One Page Toys</title>
+    <meta name="description" content="Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums." />
     <link rel="canonical" href="https://onepagetoys.com/toys/blob-choir/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0d9488" />
+    <meta name="theme-color" content="#f97316" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Blob Choir" />
-    <meta property="og:description" content="Tap wobbly blobs for weird bleeps and hums—Web Audio chaos in one page." />
+    <meta property="og:title" content="Blob Choir — One Page Toys" />
+    <meta property="og:description" content="Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums." />
     <meta property="og:url" content="https://onepagetoys.com/toys/blob-choir/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -29,23 +29,9 @@
     <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Blob Choir" />
-    <meta name="twitter:description" content="Tap wobbly blobs for weird bleeps and hums—Web Audio chaos in one page." />
+    <meta name="twitter:title" content="Blob Choir — One Page Toys" />
+    <meta name="twitter:description" content="Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums." />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Blob Choir",
-        "url": "https://onepagetoys.com/toys/blob-choir/index.html",
-        "description": "Interactive blobs that play odd synthesized tones in the browser.",
-        "applicationCategory": "GameApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript. Requires Web Audio API.",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
-      }
-    </script>
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
@@ -60,25 +46,26 @@
     <main class="container">
       <section class="tool">
         <h1>Blob Choir</h1>
-        <p class="lead">
-          Each blob is a tiny synthesizer: detuned oscillators, a quick envelope, and zero musical ambition. Poke them in any order.
-        </p>
+        <p class="lead">Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums.</p>
 
         <div class="panel">
-          <div class="bc-layout">
-            <p class="bc-status ui-live" id="bcStatus" aria-live="polite">Tap a blob to wake the choir.</p>
-            <div class="bc-toolbar">
-              <button type="button" class="btn btn--secondary" id="bcMute">Silence</button>
+          <div class="local">
+            <p class="ui-live" id="sStatus" aria-live="polite">This tool is scaffolded. Next pass will deepen its core logic.</p>
+            <div class="local-row">
+              <label class="muted" for="sNotes" style="font-weight:800">Notes (saved locally)</label>
+              <textarea class="local-text" id="sNotes" placeholder="What should this tool do next?"></textarea>
             </div>
-            <div class="bc-stage" id="bcStage" role="group" aria-label="Sound blobs"></div>
-            <p class="bc-hint">Audio needs a tap or click first (browser rule). If you hear nothing, try Silence then tap again.</p>
+            <div class="local-actions">
+              <button class="btn btn--secondary" type="button" id="sCopy">Copy notes</button>
+              <button class="btn" type="button" id="sClear">Clear</button>
+            </div>
           </div>
           <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>How to use.</strong> Tap any <strong>blob</strong> to trigger its sound (each is a tiny synth). Use <strong>Silence</strong> to stop everything—browsers need a tap/click before audio plays, so if it’s quiet, try Silence then tap again.
+            <strong>Notes.</strong> Everything runs locally in your browser; nothing is uploaded.
           </p>
         </div>
       </section>
-    <div id="toolCrossRoot" class="tool-cross-mount"></div>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
 
     <footer class="site-footer" role="contentinfo">
@@ -86,9 +73,7 @@
         <div class="site-footer__top">
           <div class="site-footer__intro">
             <strong class="site-footer__name">One Page Toys</strong>
-            <p class="site-footer__tagline">
-              Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.
-            </p>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
             <a href="../../index.html">Home</a>
@@ -97,100 +82,31 @@
         </div>
         <div class="site-footer__bottom">
           <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
-          <div class="site-footer__bottom-right">
-            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
-              <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
 
     <script>
-      (function () {
-        var BASES = [196, 247, 311, 370, 440, 523, 587, 659];
-        var stage = document.getElementById("bcStage");
-        var statusEl = document.getElementById("bcStatus");
-        var muteBtn = document.getElementById("bcMute");
-        var ctx = null;
-        var master = null;
-
-        function ensureCtx() {
-          if (ctx) return ctx;
-          var AC = window.AudioContext || window.webkitAudioContext;
-          if (!AC) {
-            statusEl.textContent = "Web Audio not available in this browser.";
-            return null;
-          }
-          ctx = new AC();
-          master = ctx.createGain();
-          master.gain.value = 0.22;
-          master.connect(ctx.destination);
-          return ctx;
-        }
-
-        function resume() {
-          var c = ensureCtx();
-          if (c && c.state === "suspended") c.resume();
-          return c;
-        }
-
-        function blorp(base, hueIndex) {
-          var c = resume();
-          if (!c) return;
-
-          var now = c.currentTime;
-          var dur = 0.14 + Math.random() * 0.22;
-          var detune = (Math.random() - 0.5) * 70;
-
-          var g = c.createGain();
-          g.gain.setValueAtTime(0.0001, now);
-          g.gain.exponentialRampToValueAtTime(0.55 + Math.random() * 0.35, now + 0.02);
-          g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-          g.connect(master);
-
-          var o1 = c.createOscillator();
-          o1.type = Math.random() > 0.45 ? "triangle" : "sawtooth";
-          o1.frequency.setValueAtTime(base * (0.98 + Math.random() * 0.06), now);
-          o1.detune.setValueAtTime(detune, now);
-          o1.connect(g);
-
-          var o2 = c.createOscillator();
-          o2.type = "sine";
-          o2.frequency.setValueAtTime(base * 1.503 + (Math.random() - 0.5) * 8, now);
-          o2.detune.setValueAtTime(-detune * 0.6, now);
-          o2.connect(g);
-
-          o1.start(now);
-          o2.start(now);
-          o1.stop(now + dur + 0.05);
-          o2.stop(now + dur + 0.05);
-
-          var names = ["Blorp", "Skronk", "Wibble", "Hnnng", "Bweep", "Thwoomp", "Shimmer", "Honk"];
-          statusEl.textContent = names[hueIndex % names.length] + " · blob " + (hueIndex + 1);
-        }
-
-        for (var i = 0; i < 8; i++) {
-          (function (idx) {
-            var b = document.createElement("button");
-            b.type = "button";
-            b.className = "bc-blob bc-blob--" + (idx + 1);
-            b.setAttribute("aria-label", "Play blob " + (idx + 1));
-            b.addEventListener("click", function () {
-              blorp(BASES[idx] * (0.92 + Math.random() * 0.16), idx);
-            });
-            stage.appendChild(b);
-          })(i);
-        }
-
-        muteBtn.addEventListener("click", function () {
-          var c = ensureCtx();
-          if (!c) return;
-          c.suspend().then(function () {
-            statusEl.textContent = "Choir napping. Tap a blob to resume.";
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res, rej){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ rej(e); }
           });
-        });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+
+        var KEY='ops_scaffold_'+"blob-choir"+'_v1';
+        var notes=$('sNotes');
+        notes.value = (load(KEY,{n:''}).n)||'';
+        on(notes,'input',function(){ save(KEY,{n:notes.value}); setStatus('sStatus','Saved.'); });
+        on($('sCopy'),'click',function(){ copyText(notes.value||'').then(()=>setStatus('sStatus','Copied.')); });
+        on($('sClear'),'click',function(){ notes.value=''; save(KEY,{n:''}); setStatus('sStatus','Cleared.'); });
       })();
     </script>
     <script src="../../assets/site-chrome.js" defer></script>

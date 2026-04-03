@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Daily doodle prompt — One Page Toys</title>
+    <meta name="description" content="A daily doodle prompt with streak tracking and a shareable summary." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/daily-doodle-prompt/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#e11d48" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Daily doodle prompt — One Page Toys" />
+    <meta property="og:description" content="A daily doodle prompt with streak tracking and a shareable summary." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/daily-doodle-prompt/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Daily doodle prompt — One Page Toys" />
+    <meta name="twitter:description" content="A daily doodle prompt with streak tracking and a shareable summary." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="daily-doodle-prompt">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Daily doodle prompt</h1>
+        <p class="lead">A daily doodle prompt with streak tracking and a shareable summary.</p>
+        <div class="panel">
+          <div class="local">
+            <div class="ui-hud"><div class="ui-stat"><span class="ui-stat__label">Streak</span><span class="ui-stat__value" id="dpK">0</span></div><div class="ui-stat"><span class="ui-stat__label">Last</span><span class="ui-stat__value" id="dpL">—</span></div></div>
+            <div class="panel" style="padding:12px"><p class="muted" style="margin:0 0 0.35rem;font-weight:800">Prompt</p><p style="margin:0;font-weight:800" id="dpP">—</p></div>
+            <div class="local-actions"><button type="button" class="btn btn--primary" id="dpD">Mark done</button><button type="button" class="btn" id="dpN">New</button><button type="button" class="btn btn--secondary" id="dpC">Copy</button></div>
+            <p class="ui-live" id="dpS" aria-live="polite">—</p>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>Notes.</strong> Runs locally. Uses your browser storage when it needs to remember things.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ res(); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+        function eHTML(str){ return String(str).replace(/[&<>"']/g,function(ch){ switch(ch){ case '&':return '&amp;'; case '<':return '&lt;'; case '>':return '&gt;'; case '"':return '&quot;'; case "'":return '&#39;'; default:return ch; } }); }
+
+        var PR=["Sketch a mascot for this site.","Design a button that feels honest.","Draw an icon for “Surprise me”.","Three shapes, two colors—make a sticker.","A loading state that feels humane.","An error message you’d actually read.","Constellation made of tiny tools.","A door that leads somewhere weird.","Typography-only creature.","Micro-interaction you can describe in one sentence."];
+        function day(d){ return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0'); }
+        function pick(seed){ var h=0; for(var i=0;i<seed.length;i++) h=(h*31+seed.charCodeAt(i))>>>0; return PR[h%PR.length]; }
+        var K='ops_doodle_v1', st=load(K,{day:'',prompt:'',streak:0,done:''});
+        function sync(){ var t=day(new Date()); if(st.day!==t){ st.day=t; st.prompt=pick(t+Math.random()); save(K,st); } $('dpP').textContent=st.prompt; $('dpK').textContent=String(st.streak||0); $('dpL').textContent=st.done||'—'; }
+        on($('dpD'),'click',function(){
+          var t=day(new Date()); if(st.done===t){ setStatus('dpS','Already today.'); return; }
+          var y=new Date(); y.setUTCDate(y.getUTCDate()-1);
+          st.streak = (st.done===day(y)) ? (st.streak||0)+1 : 1; st.done=t; save(K,st); sync(); setStatus('dpS','Marked done.');
+        });
+        on($('dpN'),'click',function(){ st.prompt=pick(String(Date.now())); save(K,st); sync(); setStatus('dpS','New prompt.'); });
+        on($('dpC'),'click',function(){ copyText($('dpP').textContent||'').then(function(){ setStatus('dpS','Copied.'); }); });
+        sync();
+              })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

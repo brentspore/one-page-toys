@@ -1,55 +1,9 @@
-.doors-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.door {
-  width: 5.5rem;
-  min-height: 8rem;
-  border-radius: var(--radius-sm);
-  border: 2px solid var(--border);
-  background: linear-gradient(180deg, #64748b 0%, #334155 40%, #1e293b 100%);
-  color: #f8fafc;
-  font-weight: 800;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0.75rem;
-  box-shadow: var(--shadow-md);
-  transition: transform 0.15s ease, border-color 0.15s ease;
-}
-
-.door:hover:not(:disabled) {
-  transform: translateY(-3px);
-  border-color: rgba(37, 99, 235, 0.45);
-}
-
-.door:disabled {
-  cursor: default;
-  opacity: 0.95;
-}
-
-.door--open {
-  background: linear-gradient(180deg, #fef3c7 0%, #fcd34d 50%, #f59e0b 100%);
-  color: #422006;
-  border-color: rgba(245, 158, 11, 0.6);
-}
-
-.door--goat {
-  background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%);
-  color: #0f172a;
-}
-
-.door-reveal {
-  margin: 0;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: 650;
-  color: var(--text);
-  min-height: 3em;
-}
+/* Local only */
+.local{display:grid;gap:1rem}
+.local-row{display:grid;gap:0.6rem}
+.local-row--2{grid-template-columns:1fr}
+@media (min-width:860px){.local-row--2{grid-template-columns:1fr 1fr}}
+.local-input, .local-text{width:100%;padding:0.65rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(255,255,255,0.9);font:inherit}
+.local-text{min-height:10rem;resize:vertical}
+.local-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center}
+.local-out{white-space:pre-wrap;word-break:break-word}

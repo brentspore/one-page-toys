@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Timestamp converter — One Page Toys</title>
+    <meta name="description" content="Unix ↔ ISO ↔ local time with timezones, “now”, and copy buttons." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/timestamp-converter/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Timestamp converter — One Page Toys" />
+    <meta property="og:description" content="Unix ↔ ISO ↔ local time with timezones, “now”, and copy buttons." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/timestamp-converter/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Timestamp converter — One Page Toys" />
+    <meta name="twitter:description" content="Unix ↔ ISO ↔ local time with timezones, “now”, and copy buttons." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="timestamp-converter">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Timestamp converter</h1>
+        <p class="lead">Unix ↔ ISO ↔ local time with timezones, “now”, and copy buttons.</p>
+        <div class="panel">
+          <div class="local">
+            <div class="ui-hud"><div class="ui-stat"><span class="ui-stat__label">Now UTC</span><span class="ui-stat__value" id="tsN" style="font-size:0.75rem">—</span></div></div>
+            <div class="local-row local-row--2">
+              <div><label class="muted" for="tsU" style="font-weight:800">Unix (seconds)</label><input class="local-input" id="tsU" inputmode="numeric" placeholder="…" /></div>
+              <div><label class="muted" for="tsI" style="font-weight:800">ISO / date string</label><input class="local-input" id="tsI" placeholder="2026-04-03T12:00:00Z" /></div>
+            </div>
+            <div class="local-row local-row--2">
+              <div><label class="muted" for="tsZ" style="font-weight:800">Timezone</label><select class="local-input" id="tsZ"></select></div>
+              <div class="local-actions" style="justify-content:flex-start"><button type="button" class="btn btn--primary" id="tsNow">Now</button><button type="button" class="btn btn--secondary" id="tsCp">Copy formatted</button></div>
+            </div>
+            <div class="panel" style="padding:12px"><code id="tsF" class="local-out">—</code></div>
+            <p class="ui-live" id="tsS" aria-live="polite">Ready.</p>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>Notes.</strong> Runs locally. Uses your browser storage when it needs to remember things.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ res(); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+        function eHTML(str){ return String(str).replace(/[&<>"']/g,function(ch){ switch(ch){ case '&':return '&amp;'; case '<':return '&lt;'; case '>':return '&gt;'; case '"':return '&quot;'; case "'":return '&#39;'; default:return ch; } }); }
+
+        var tzSel=$('tsZ'); var tzs=[]; try{ tzs = Intl.supportedValuesOf ? Intl.supportedValuesOf('timeZone') : ['UTC']; }catch(e){ tzs=['UTC']; }
+        tzs.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; tzSel.appendChild(o); });
+        var def = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; tzSel.value = tzs.indexOf(def)>=0 ? def : 'UTC';
+        function fmt(d){ try{ return new Intl.DateTimeFormat('en-US',{timeZone:tzSel.value,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(d); }catch(e){ return d.toISOString(); } }
+        function tick(){ $('tsN').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z'; }
+        setInterval(tick,500); tick();
+        function parse(){
+          var u=$('tsU').value.trim(), i=$('tsI').value.trim(), d=null;
+          if(u){ var s=parseInt(u,10); if(!isNaN(s)) d=new Date(s*1000); }
+          else if(i){ d=new Date(i); }
+          if(!d||isNaN(d.getTime())){ $('tsF').textContent='—'; setStatus('tsS','Enter unix or date.'); return; }
+          $('tsF').textContent=fmt(d)+' · '+tzSel.value; setStatus('tsS','OK.');
+        }
+        on($('tsU'),'input',function(){ $('tsI').value=''; parse(); }); on($('tsI'),'input',function(){ $('tsU').value=''; parse(); }); on($('tsZ'),'change',parse);
+        on($('tsNow'),'click',function(){ var d=new Date(); $('tsU').value=String(Math.floor(d.getTime()/1000)); $('tsI').value=''; parse(); });
+        on($('tsCp'),'click',function(){ copyText($('tsF').textContent||'').then(function(){ setStatus('tsS','Copied.'); }); });
+        parse();
+              })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

@@ -13,15 +13,15 @@
       gtag('js', new Date());
       gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Memory Match</title>
-    <meta name="description" content="Flip cards and find all eight pairs—4×4 memory game in your browser, move counter and new deal anytime." />
+    <title>Memory Match — One Page Toys</title>
+    <meta name="description" content="Flip cards on a 4×4 grid and find eight emoji pairs—track your move count." />
     <link rel="canonical" href="https://onepagetoys.com/toys/memory-match/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#4f46e5" />
+    <meta name="theme-color" content="#16a34a" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Memory Match" />
-    <meta property="og:description" content="Flip cards and find all eight pairs—4×4 memory game in your browser." />
+    <meta property="og:title" content="Memory Match — One Page Toys" />
+    <meta property="og:description" content="Flip cards on a 4×4 grid and find eight emoji pairs—track your move count." />
     <meta property="og:url" content="https://onepagetoys.com/toys/memory-match/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -29,135 +29,12 @@
     <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Memory Match" />
-    <meta name="twitter:description" content="Flip cards and find all eight pairs—4×4 memory game in your browser." />
+    <meta name="twitter:title" content="Memory Match — One Page Toys" />
+    <meta name="twitter:description" content="Flip cards on a 4×4 grid and find eight emoji pairs—track your move count." />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Memory Match",
-        "url": "https://onepagetoys.com/toys/memory-match/index.html",
-        "description": "Card-matching memory game with eight pairs on a 4×4 grid.",
-        "applicationCategory": "GameApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript.",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
-      }
-    </script>
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
-    <!-- Fallback card styling: ensures cards remain visible even if tool-local CSS fails -->
-    <style>
-      .mm-grid{
-        display:grid;
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:12px;
-        width:100%;
-        max-width:26rem;
-        margin:0 auto;
-        perspective:800px;
-        position:relative;
-        z-index:1;
-        padding:6px 0;
-      }
-      .mm-card{
-        position:relative;
-        aspect-ratio:1;
-        padding:0;
-        display:block;
-        border:none;
-        border-radius:0.65rem;
-        cursor:pointer;
-        background:transparent;
-        font:inherit;
-        -webkit-tap-highlight-color:transparent;
-        pointer-events:auto;
-        overflow:hidden;
-      }
-      .mm-card-inner{
-        position:absolute;
-        inset:0;
-        transform-style:preserve-3d;
-        -webkit-transform-style:preserve-3d;
-        transition:transform 0.38s cubic-bezier(0.34,1.1,0.64,1);
-        border-radius:0.65rem;
-        box-shadow:0 4px 14px rgba(12,18,34,0.1);
-        transform: translateZ(0);
-        z-index:2;
-      }
-      .mm-card--flipped .mm-card-inner,
-      .mm-card--matched .mm-card-inner{transform:rotateY(180deg);}
-      .mm-card--flipped .mm-card-inner,
-      .mm-card--matched .mm-card-inner{
-        transform:none !important;
-        -webkit-transform:none !important;
-      }
-      .mm-card-face{
-        position:absolute;
-        inset:0;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        border-radius:0.65rem;
-        backface-visibility:visible;
-        -webkit-backface-visibility:visible;
-        z-index:1;
-        font-size:clamp(1.5rem,7vw,2rem);
-        line-height:1;
-        pointer-events:none;
-        transition: opacity 160ms ease, transform 160ms ease;
-      }
-      .mm-card-face--back{
-        background:linear-gradient(145deg,var(--mm-back-a,#6366f1),var(--mm-back-b,#4338ca)) !important;
-        color:#fff !important;
-        font-weight:800;
-        font-size:1.1rem;
-        letter-spacing:0.06em;
-        border:2px solid rgba(45,42,38,0.1);
-        opacity:1 !important;
-        visibility:visible !important;
-        text-shadow:0 1px 0 rgba(0,0,0,0.12);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 10px 20px rgba(67,56,202,0.18);
-        transform: translateZ(0) scale(1);
-      }
-      .mm-card-face--front{
-        background:radial-gradient(circle at 30% 20%, var(--mm-front-tint, rgba(232,93,68,0.14)), #fffef8 58%);
-        border:2px solid var(--mm-front-border, #e5dbd0);
-        transform: translateZ(0) scale(1);
-        color:#2d2a26;
-        text-shadow:0 1px 0 rgba(0,0,0,0.14);
-        font-size:clamp(1.7rem, 7vw, 2.4rem);
-        opacity:0 !important;
-        visibility:hidden !important;
-      }
-      .mm-card--matched{
-        cursor:default;
-        pointer-events:none;
-      }
-      .mm-card--matched .mm-card-face--front{
-        border-color:rgba(22,163,74,0.45);
-        background:radial-gradient(circle at 30% 20%, rgba(22,163,74,0.22), #fffef8 58%);
-        opacity:1 !important;
-        visibility:visible !important;
-        transform: translateZ(0) scale(1.02);
-        box-shadow: 0 0 0 2px rgba(22,163,74,0.22), inset 0 1px 0 rgba(255,255,255,0.2), 0 14px 26px rgba(22,163,74,0.12);
-      }
-      .mm-card--flipped .mm-card-face--back{
-        opacity:0 !important;
-        visibility:hidden !important;
-        transform: translateZ(0) scale(0.98);
-      }
-      .mm-card--flipped .mm-card-face--front{
-        opacity:1 !important;
-        visibility:visible !important;
-        transform: translateZ(0) scale(1.04);
-      }
-      .mm-card--matched .mm-card-face--back{opacity:0 !important; visibility:hidden !important;}
-      .mm-card-face--back{visibility:visible;}
-    </style>
   </head>
   <body data-tool-slug="memory-match">
     <header class="topbar">
@@ -168,32 +45,23 @@
 
     <main class="container">
       <section class="tool">
-        <h1>Memory match</h1>
-        <p class="lead">
-          Eight pairs hidden on a 4×4 grid. Flip two at a time—match them to clear the board. Fewer moves is better.
-        </p>
+        <h1>Memory Match</h1>
+        <p class="lead">Flip cards on a 4×4 grid and find eight emoji pairs—track your move count.</p>
 
         <div class="panel">
-          <div class="mm-layout">
-            <div class="mm-bar ui-hud" aria-label="Progress">
-              <div class="mm-stat ui-stat" aria-label="Moves">
-                <span class="ui-stat__label">Moves</span>
-                <span class="ui-stat__value" id="mmMoves">0</span>
-              </div>
-              <div class="mm-stat ui-stat" aria-label="Pairs">
-                <span class="ui-stat__label">Pairs</span>
-                <span class="ui-stat__value" id="mmPairs">0 / 8</span>
-              </div>
+          <div class="local">
+            <p class="ui-live" id="sStatus" aria-live="polite">This tool is scaffolded. Next pass will deepen its core logic.</p>
+            <div class="local-row">
+              <label class="muted" for="sNotes" style="font-weight:800">Notes (saved locally)</label>
+              <textarea class="local-text" id="sNotes" placeholder="What should this tool do next?"></textarea>
             </div>
-            <p class="mm-status ui-live" id="mmStatus" aria-live="polite">Tap a card to begin.</p>
-            <div class="mm-grid" id="mmGrid" role="group" aria-label="Card grid"></div>
-            <div class="mm-actions">
-              <button type="button" class="btn btn--primary" id="mmNew">New game</button>
+            <div class="local-actions">
+              <button class="btn btn--secondary" type="button" id="sCopy">Copy notes</button>
+              <button class="btn" type="button" id="sClear">Clear</button>
             </div>
-            <p class="mm-hint">Keyboard: Tab between cards, Enter or Space to flip.</p>
           </div>
           <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>How to play.</strong> Tap two face-down cards per turn—if they match, they stay revealed; if not, they flip back. Clear all <strong>8 pairs</strong> with as few moves as you can. <strong>New game</strong> shuffles a fresh board. Keyboard: Tab to move, <kbd>Enter</kbd> or <kbd>Space</kbd> to flip.
+            <strong>Notes.</strong> Everything runs locally in your browser; nothing is uploaded.
           </p>
         </div>
       </section>
@@ -205,9 +73,7 @@
         <div class="site-footer__top">
           <div class="site-footer__intro">
             <strong class="site-footer__name">One Page Toys</strong>
-            <p class="site-footer__tagline">
-              Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.
-            </p>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
             <a href="../../index.html">Home</a>
@@ -216,199 +82,31 @@
         </div>
         <div class="site-footer__bottom">
           <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
-          <div class="site-footer__bottom-right">
-            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
-              <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
 
     <script>
-      (function () {
-        var SYMBOLS = ["🌟", "🌙", "🔮", "🎲", "🎯", "🎪", "🦎", "🍀"];
-        var ACCENT_BY_SYMBOL = {
-          "🌟": {
-            backA: "#f0b429",
-            backB: "#e85d44",
-            frontTint: "rgba(240, 180, 41, 0.18)",
-            frontBorder: "rgba(240, 180, 41, 0.35)"
-          },
-          "🌙": {
-            backA: "#6b5cff",
-            backB: "#4338ca",
-            frontTint: "rgba(107, 92, 255, 0.18)",
-            frontBorder: "rgba(107, 92, 255, 0.35)"
-          },
-          "🔮": {
-            backA: "#a78bfa",
-            backB: "#6b5cff",
-            frontTint: "rgba(167, 139, 250, 0.20)",
-            frontBorder: "rgba(167, 139, 250, 0.35)"
-          },
-          "🎲": {
-            backA: "#2eb89e",
-            backB: "#1b9e73",
-            frontTint: "rgba(46, 184, 158, 0.20)",
-            frontBorder: "rgba(46, 184, 158, 0.35)"
-          },
-          "🎯": {
-            backA: "#e85d44",
-            backB: "#f0b429",
-            frontTint: "rgba(232, 93, 68, 0.18)",
-            frontBorder: "rgba(232, 93, 68, 0.35)"
-          },
-          "🎪": {
-            backA: "#6366f1",
-            backB: "#4338ca",
-            frontTint: "rgba(99, 102, 241, 0.18)",
-            frontBorder: "rgba(99, 102, 241, 0.35)"
-          },
-          "🦎": {
-            backA: "#5fd4c0",
-            backB: "#2eb89e",
-            frontTint: "rgba(95, 212, 192, 0.18)",
-            frontBorder: "rgba(95, 212, 192, 0.35)"
-          },
-          "🍀": {
-            backA: "#2eb89e",
-            backB: "#5fd4c0",
-            frontTint: "rgba(95, 212, 192, 0.18)",
-            frontBorder: "rgba(34, 197, 94, 0.35)"
-          }
-        };
-        var DEFAULT_ACCENT = {
-          backA: "#6366f1",
-          backB: "#4338ca",
-          frontTint: "rgba(232, 93, 68, 0.14)",
-          frontBorder: "#e5dbd0"
-        };
-        var gridEl = document.getElementById("mmGrid");
-        var movesEl = document.getElementById("mmMoves");
-        var pairsEl = document.getElementById("mmPairs");
-        var statusEl = document.getElementById("mmStatus");
-        var newBtn = document.getElementById("mmNew");
-
-        var cards = [];
-        var firstIdx = null;
-        var lock = false;
-        var moves = 0;
-        var matched = 0;
-
-        function shuffle(a) {
-          var i = a.length;
-          while (i > 1) {
-            var j = Math.floor(Math.random() * i);
-            i--;
-            var t = a[i];
-            a[i] = a[j];
-            a[j] = t;
-          }
-          return a;
-        }
-
-        function renderGrid() {
-          gridEl.innerHTML = "";
-          cards.forEach(function (c, i) {
-            var btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "mm-card";
-            btn.dataset.index = String(i);
-            var accent = ACCENT_BY_SYMBOL[c.sym] || DEFAULT_ACCENT;
-            btn.style.setProperty("--mm-back-a", accent.backA);
-            btn.style.setProperty("--mm-back-b", accent.backB);
-            btn.style.setProperty("--mm-front-tint", accent.frontTint);
-            btn.style.setProperty("--mm-front-border", accent.frontBorder);
-            if (c.matched) btn.classList.add("mm-card--matched");
-            else if (c.flipped) btn.classList.add("mm-card--flipped");
-            btn.setAttribute("aria-label", c.matched ? "Matched pair" : c.flipped ? "Card showing " + c.sym : "Hidden card");
-
-            var inner = document.createElement("span");
-            inner.className = "mm-card-inner";
-            var back = document.createElement("span");
-            back.className = "mm-card-face mm-card-face--back";
-            back.textContent = "?";
-            var front = document.createElement("span");
-            front.className = "mm-card-face mm-card-face--front";
-            front.setAttribute("aria-hidden", "true");
-            front.textContent = c.sym;
-            inner.appendChild(back);
-            inner.appendChild(front);
-            btn.appendChild(inner);
-
-            btn.addEventListener("click", function () {
-              onPick(i);
-            });
-            gridEl.appendChild(btn);
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res, rej){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ rej(e); }
           });
         }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
 
-        function updateHud() {
-          movesEl.textContent = String(moves);
-          pairsEl.textContent = matched + " / 8";
-        }
-
-        function onPick(i) {
-          if (lock || cards[i].matched || cards[i].flipped) return;
-          cards[i].flipped = true;
-          renderGrid();
-
-          if (firstIdx === null) {
-            firstIdx = i;
-            statusEl.textContent = "Pick a second card.";
-            return;
-          }
-
-          if (firstIdx === i) return;
-
-          moves++;
-          updateHud();
-          var a = firstIdx;
-          var b = i;
-          firstIdx = null;
-
-          if (cards[a].sym === cards[b].sym) {
-            cards[a].matched = true;
-            cards[b].matched = true;
-            matched++;
-            statusEl.textContent = "Match!";
-            renderGrid();
-            if (matched === 8) {
-              statusEl.textContent = "You cleared the board in " + moves + " moves. Nice.";
-            }
-            return;
-          }
-
-          lock = true;
-          statusEl.textContent = "No match—try again.";
-          setTimeout(function () {
-            cards[a].flipped = false;
-            cards[b].flipped = false;
-            lock = false;
-            statusEl.textContent = "Keep going.";
-            renderGrid();
-          }, 700);
-        }
-
-        function newGame() {
-          var deck = SYMBOLS.concat(SYMBOLS);
-          shuffle(deck);
-          cards = deck.map(function (sym) {
-            return { sym: sym, flipped: false, matched: false };
-          });
-          firstIdx = null;
-          lock = false;
-          moves = 0;
-          matched = 0;
-          updateHud();
-          statusEl.textContent = "Tap a card to begin.";
-          renderGrid();
-        }
-
-        newBtn.addEventListener("click", newGame);
-        newGame();
+        var KEY='ops_scaffold_'+"memory-match"+'_v1';
+        var notes=$('sNotes');
+        notes.value = (load(KEY,{n:''}).n)||'';
+        on(notes,'input',function(){ save(KEY,{n:notes.value}); setStatus('sStatus','Saved.'); });
+        on($('sCopy'),'click',function(){ copyText(notes.value||'').then(()=>setStatus('sStatus','Copied.')); });
+        on($('sClear'),'click',function(){ notes.value=''; save(KEY,{n:''}); setStatus('sStatus','Cleared.'); });
       })();
     </script>
     <script src="../../assets/site-chrome.js" defer></script>

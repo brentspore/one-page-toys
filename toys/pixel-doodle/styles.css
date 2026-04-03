@@ -1,37 +1,9 @@
-.pxd-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.pxd-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 2px;
-  max-width: min(100%, 360px);
-  margin: 0 auto;
-  padding: 8px;
-  border-radius: var(--radius-sm);
-  background: var(--border);
-}
-
-.pxd-cell {
-  aspect-ratio: 1;
-  border: none;
-  border-radius: 2px;
-  background: #fff;
-  cursor: pointer;
-  padding: 0;
-  min-width: 0;
-}
-
-.pxd-cell--on {
-  background: var(--accent);
-}
-
-.pxd-cell:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
+/* Local only */
+.local{display:grid;gap:1rem}
+.local-row{display:grid;gap:0.6rem}
+.local-row--2{grid-template-columns:1fr}
+@media (min-width:860px){.local-row--2{grid-template-columns:1fr 1fr}}
+.local-input, .local-text{width:100%;padding:0.65rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(255,255,255,0.9);font:inherit}
+.local-text{min-height:10rem;resize:vertical}
+.local-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center}
+.local-out{white-space:pre-wrap;word-break:break-word}

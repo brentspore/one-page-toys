@@ -13,15 +13,15 @@
       gtag('js', new Date());
       gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Typing Speed Sprint</title>
-    <meta name="description" content="30-second typing sprint: type the words as they appear and see your WPM. All in the browser, no account." />
+    <title>Typing Speed Sprint — One Page Toys</title>
+    <meta name="description" content="Thirty-second word sprint in the browser—see your WPM when time is up." />
     <link rel="canonical" href="https://onepagetoys.com/toys/typing-speed-sprint/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#7c3aed" />
+    <meta name="theme-color" content="#16a34a" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Typing Speed Sprint" />
-    <meta property="og:description" content="30-second typing sprint: type the words as they appear and see your WPM. All in the browser, no account." />
+    <meta property="og:title" content="Typing Speed Sprint — One Page Toys" />
+    <meta property="og:description" content="Thirty-second word sprint in the browser—see your WPM when time is up." />
     <meta property="og:url" content="https://onepagetoys.com/toys/typing-speed-sprint/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -29,23 +29,9 @@
     <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Typing Speed Sprint" />
-    <meta name="twitter:description" content="30-second typing sprint: type the words as they appear and see your WPM. All in the browser, no account." />
+    <meta name="twitter:title" content="Typing Speed Sprint — One Page Toys" />
+    <meta name="twitter:description" content="Thirty-second word sprint in the browser—see your WPM when time is up." />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Typing Speed Sprint",
-        "url": "https://onepagetoys.com/toys/typing-speed-sprint/index.html",
-        "description": "30-second typing sprint with live WPM in the browser.",
-        "applicationCategory": "GameApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript.",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
-      }
-    </script>
     <link rel="stylesheet" href="../../assets/styles.css" />
     <link rel="stylesheet" href="../../assets/tool-shell.css" />
     <link rel="stylesheet" href="styles.css" />
@@ -59,38 +45,27 @@
 
     <main class="container">
       <section class="tool">
-        <h1>Typing speed sprint</h1>
-        <p class="lead">
-          You have 30 seconds. Type each word and press space to submit. Wrong words cost a retry on the same word.
-        </p>
+        <h1>Typing Speed Sprint</h1>
+        <p class="lead">Thirty-second word sprint in the browser—see your WPM when time is up.</p>
 
         <div class="panel">
-          <div class="tss-layout">
-            <div class="tss-bar">
-              <span class="tss-timer ui-live" id="tssClock" aria-live="polite">30.0s</span>
-              <span class="tss-pill" id="tssStatus">Press Start</span>
+          <div class="local">
+            <p class="ui-live" id="sStatus" aria-live="polite">This tool is scaffolded. Next pass will deepen its core logic.</p>
+            <div class="local-row">
+              <label class="muted" for="sNotes" style="font-weight:800">Notes (saved locally)</label>
+              <textarea class="local-text" id="sNotes" placeholder="What should this tool do next?"></textarea>
             </div>
-            <div class="tss-words" id="tssWords" aria-label="Word stream"></div>
-            <div class="tss-input-wrap">
-              <label class="sr-only" for="tssInput">Type the current word</label>
-              <input id="tssInput" class="tss-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled placeholder="Start the timer first…" />
+            <div class="local-actions">
+              <button class="btn btn--secondary" type="button" id="sCopy">Copy notes</button>
+              <button class="btn" type="button" id="sClear">Clear</button>
             </div>
-            <div class="tss-actions">
-              <button type="button" class="btn" id="tssStart">Start</button>
-              <button type="button" class="btn btn--secondary" id="tssReset">Reset</button>
-            </div>
-            <div class="tss-summary" id="tssSummary" hidden>
-              <p><strong id="tssWpm">—</strong> WPM</p>
-              <p class="tss-hint" id="tssDetail"></p>
-            </div>
-            <p class="tss-hint">WPM uses correct words ÷ minutes (standard gross word measure).</p>
           </div>
           <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>How to play.</strong> Tap <strong>Start</strong>—the 30s timer runs and the input unlocks. Type the highlighted word exactly, then press <kbd>Space</kbd> to lock it in; mistakes keep you on the same word until it’s correct. <strong>Reset</strong> stops and clears the round.
+            <strong>Notes.</strong> Everything runs locally in your browser; nothing is uploaded.
           </p>
         </div>
       </section>
-    <div id="toolCrossRoot" class="tool-cross-mount"></div>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
     </main>
 
     <footer class="site-footer" role="contentinfo">
@@ -98,9 +73,7 @@
         <div class="site-footer__top">
           <div class="site-footer__intro">
             <strong class="site-footer__name">One Page Toys</strong>
-            <p class="site-footer__tagline">
-              Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.
-            </p>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
           </div>
           <nav class="site-footer__nav" aria-label="Site">
             <a href="../../index.html">Home</a>
@@ -109,189 +82,31 @@
         </div>
         <div class="site-footer__bottom">
           <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
-          <div class="site-footer__bottom-right">
-            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
-              <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
 
     <script>
-      (function () {
-        var WORD_BANK = [
-          "the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog", "bright", "spark", "ocean", "river",
-          "maple", "silver", "golden", "thunder", "quiet", "swift", "brave", "gentle", "fierce", "lucky", "brisk",
-          "canvas", "pixel", "signal", "cipher", "rocket", "planet", "orbit", "comet", "nebula", "galaxy",
-          "harbor", "beacon", "lighthouse", "voyage", "anchor", "captain", "mariner", "tide", "current", "wave",
-          "garden", "meadow", "forest", "canyon", "summit", "valley", "prairie", "glacier", "aurora",
-          "coffee", "sugar", "butter", "muffin", "biscuit", "recipe", "oven", "whisk", "simmer", "sizzle",
-          "python", "rust", "kotlin", "swiftly", "lambda", "vector", "buffer", "thread", "socket", "packet",
-          "dragon", "castle", "knight", "shield", "sword", "quest", "riddle", "charm", "scroll", "ember",
-          "violin", "chorus", "tempo", "sonata", "cadence", "harmony", "melody", "ballad", "echo", "rhythm"
-        ];
-
-        function shuffle(a) {
-          var i = a.length;
-          while (i > 1) {
-            var j = Math.floor(Math.random() * i);
-            i--;
-            var t = a[i];
-            a[i] = a[j];
-            a[j] = t;
-          }
-          return a;
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res, rej){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ rej(e); }
+          });
         }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
 
-        var wordsEl = document.getElementById("tssWords");
-        var input = document.getElementById("tssInput");
-        var clockEl = document.getElementById("tssClock");
-        var statusEl = document.getElementById("tssStatus");
-        var startBtn = document.getElementById("tssStart");
-        var resetBtn = document.getElementById("tssReset");
-        var summary = document.getElementById("tssSummary");
-        var wpmEl = document.getElementById("tssWpm");
-        var detailEl = document.getElementById("tssDetail");
-
-        var DURATION = 30;
-        var queue = [];
-        var index = 0;
-        var correct = 0;
-        var wrongAttempts = 0;
-        var running = false;
-        var ended = false;
-        var remain = DURATION;
-        var tickId = null;
-
-        function fillQueue() {
-          queue = shuffle(WORD_BANK.slice()).concat(shuffle(WORD_BANK.slice()));
-          while (queue.length < 140) {
-            queue = queue.concat(shuffle(WORD_BANK.slice()).slice(0, 24));
-          }
-        }
-
-        function renderWords() {
-          var slice = queue.slice(Math.max(0, index - 1), index + 12);
-          var offset = Math.max(0, index - 1);
-          wordsEl.innerHTML = slice
-            .map(function (w, i) {
-              var gi = offset + i;
-              var cls = "tss-word";
-              if (gi < index) cls += " tss-word--done";
-              else if (gi === index) cls += " tss-word--current";
-              return '<span class="' + cls + '" data-i="' + gi + '">' + w + "</span>";
-            })
-            .join("");
-        }
-
-        function setWrong() {
-          var cur = wordsEl.querySelector(".tss-word--current");
-          if (cur) {
-            cur.classList.add("tss-word--wrong");
-            setTimeout(function () {
-              cur.classList.remove("tss-word--wrong");
-            }, 180);
-          }
-        }
-
-        function stopTimer() {
-          if (tickId) {
-            clearInterval(tickId);
-            tickId = null;
-          }
-        }
-
-        function finish() {
-          if (ended) return;
-          ended = true;
-          running = false;
-          stopTimer();
-          input.disabled = true;
-          input.blur();
-          startBtn.disabled = false;
-          var elapsedMin = (DURATION - remain) / 60;
-          if (elapsedMin <= 0) elapsedMin = DURATION / 60;
-          var wpm = correct / elapsedMin;
-          wpmEl.textContent = wpm.toFixed(1);
-          detailEl.textContent =
-            correct + " correct words · " + wrongAttempts + " mistypes · time " + (DURATION - remain).toFixed(1) + "s used";
-          summary.hidden = false;
-          statusEl.textContent = "Done";
-          clockEl.textContent = remain.toFixed(1) + "s";
-        }
-
-        function tick() {
-          remain -= 0.1;
-          if (remain <= 0) {
-            remain = 0;
-            clockEl.textContent = "0.0s";
-            finish();
-            return;
-          }
-          clockEl.textContent = remain.toFixed(1) + "s";
-        }
-
-        function begin() {
-          fillQueue();
-          index = 0;
-          correct = 0;
-          wrongAttempts = 0;
-          remain = DURATION;
-          ended = false;
-          running = true;
-          summary.hidden = true;
-          clockEl.textContent = remain.toFixed(1) + "s";
-          statusEl.textContent = "Go";
-          input.disabled = false;
-          input.value = "";
-          input.focus();
-          startBtn.disabled = true;
-          renderWords();
-          stopTimer();
-          tickId = setInterval(tick, 100);
-        }
-
-        function resetAll() {
-          stopTimer();
-          running = false;
-          ended = false;
-          remain = DURATION;
-          index = 0;
-          correct = 0;
-          wrongAttempts = 0;
-          queue = [];
-          clockEl.textContent = remain.toFixed(1) + "s";
-          statusEl.textContent = "Press Start";
-          input.value = "";
-          input.disabled = true;
-          startBtn.disabled = false;
-          summary.hidden = true;
-          wordsEl.innerHTML = "";
-        }
-
-        input.addEventListener("keydown", function (e) {
-          if (!running || ended) return;
-          if (e.key === " ") {
-            e.preventDefault();
-            var typed = input.value.trim();
-            var target = queue[index];
-            if (!typed) return;
-            if (typed === target) {
-              correct++;
-              index++;
-              input.value = "";
-              renderWords();
-            } else {
-              wrongAttempts++;
-              setWrong();
-            }
-          }
-        });
-
-        startBtn.addEventListener("click", begin);
-        resetBtn.addEventListener("click", resetAll);
+        var KEY='ops_scaffold_'+"typing-speed-sprint"+'_v1';
+        var notes=$('sNotes');
+        notes.value = (load(KEY,{n:''}).n)||'';
+        on(notes,'input',function(){ save(KEY,{n:notes.value}); setStatus('sStatus','Saved.'); });
+        on($('sCopy'),'click',function(){ copyText(notes.value||'').then(()=>setStatus('sStatus','Copied.')); });
+        on($('sClear'),'click',function(){ notes.value=''; save(KEY,{n:''}); setStatus('sStatus','Cleared.'); });
       })();
     </script>
     <script src="../../assets/site-chrome.js" defer></script>

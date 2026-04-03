@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Micro rhythm tapper — One Page Toys</title>
+    <meta name="description" content="Tap the beat, get accuracy, and keep a tiny run history." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/micro-rhythm-tapper/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f97316" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Micro rhythm tapper — One Page Toys" />
+    <meta property="og:description" content="Tap the beat, get accuracy, and keep a tiny run history." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/micro-rhythm-tapper/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Micro rhythm tapper — One Page Toys" />
+    <meta name="twitter:description" content="Tap the beat, get accuracy, and keep a tiny run history." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-tool-slug="micro-rhythm-tapper">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Micro rhythm tapper</h1>
+        <p class="lead">Tap the beat, get accuracy, and keep a tiny run history.</p>
+        <div class="panel">
+          <div class="local">
+            <div class="ui-hud"><div class="ui-stat"><span class="ui-stat__label">BPM</span><span class="ui-stat__value" id="rtB">100</span></div><div class="ui-stat"><span class="ui-stat__label">Score</span><span class="ui-stat__value" id="rtSc">—</span></div></div>
+            <div class="local-row local-row--2">
+              <div><label class="muted" for="rtIn" style="font-weight:800">Target BPM</label><input class="local-input" type="number" id="rtIn" min="40" max="200" value="100" /></div>
+              <div class="local-actions" style="justify-content:flex-start"><button type="button" class="btn btn--primary" id="rtSt">Start</button><button type="button" class="btn" id="rtSp">Stop</button></div>
+            </div>
+            <div class="panel" style="padding:14px;text-align:center"><button type="button" class="pad" id="rtPad">Tap on the beat</button><p class="ui-live" id="rtL" aria-live="polite">Space to tap.</p></div>
+            <ul class="ui-history" id="rtH"></ul>
+          </div>
+          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
+            <strong>Notes.</strong> Runs locally. Uses your browser storage when it needs to remember things.
+          </p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Home</a>
+            <a href="../../all-tools.html">All toys</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        function $(id){return document.getElementById(id);}
+        function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+        function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+        function load(key, fallback){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; } }
+        function copyText(s){
+          if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(s); }
+          return new Promise(function(res){
+            try{ var ta=document.createElement('textarea'); ta.value=s; ta.setAttribute('readonly','true'); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+            catch(e){ res(); }
+          });
+        }
+        function setStatus(id, msg){ var el=$(id); if(el) el.textContent=msg; }
+        function eHTML(str){ return String(str).replace(/[&<>"']/g,function(ch){ switch(ch){ case '&':return '&amp;'; case '<':return '&lt;'; case '>':return '&gt;'; case '"':return '&quot;'; case "'":return '&#39;'; default:return ch; } }); }
+
+        var run=false, t0=0, taps=[], iv=null, K='ops_rhy_v1', st=load(K,{h:[]});
+        function bpm(){ return Math.max(40,Math.min(200,parseInt($('rtIn').value,10)||100)); }
+        function beat(){ return 60000/bpm(); }
+        function score(){
+          if(taps.length<3){ $('rtSc').textContent='—'; return; }
+          var b=beat(), err=taps.map(function(t){ var x=(t-t0)%b; return Math.min(x,b-x); }), avg=err.reduce(function(a,c){return a+c;},0)/err.length, sc=Math.max(0,100-(avg/(b/2))*100);
+          $('rtSc').textContent=Math.round(sc)+'%';
+        }
+        function hist(){ var ul=$('rtH'); ul.innerHTML=''; (st.h||[]).slice(0,8).forEach(function(x){ var li=document.createElement('li'); li.textContent=x.b+' bpm · '+x.sc+'%'; ul.appendChild(li); }); }
+        function tap(){ if(!run){ setStatus('rtL','Start first.'); return; } taps.push(performance.now()); score(); }
+        on($('rtSt'),'click',function(){ run=true; taps=[]; t0=performance.now(); $('rtB').textContent=String(bpm()); iv=setInterval(function(){ $('rtPad').classList.toggle('btn--primary'); }, beat()); setStatus('rtL','Tap!'); });
+        on($('rtSp'),'click',function(){ run=false; clearInterval(iv); $('rtPad').classList.remove('btn--primary'); var sc=parseInt($('rtSc').textContent,10); if(!isNaN(sc)&&taps.length>=3){ st.h=[{b:bpm(),sc:sc,t:Date.now()}].concat(st.h||[]).slice(0,10); save(K,st); hist(); } setStatus('rtL','Stopped.'); });
+        on($('rtPad'),'click',tap); document.addEventListener('keydown',function(e){ if(e.code==='Space'){ e.preventDefault(); tap(); } });
+        hist();
+              })();
+    </script>
+    <script src="../../assets/site-chrome.js" defer></script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>
