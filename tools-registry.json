@@ -4,7 +4,7 @@
     "name": "Passphrase & Password Generator",
     "shortDescription": "Random passwords or multi-word passphrases using Web Crypto—copy with one tap.",
     "category": "utility",
-    "tags": ["utility", "security", "generator"],
+    "tags": ["password-generator"],
     "status": "beta",
     "path": "tools/passphrase-generator/index.html",
     "related": ["qr-code-generator", "json-pretty-print-validate-minify", "word-character-counter"]
@@ -14,7 +14,7 @@
     "name": "QR Code Generator",
     "shortDescription": "Turn text or URLs into a QR code and download a PNG.",
     "category": "utility",
-    "tags": ["utility", "media", "link"],
+    "tags": ["barcode-generator"],
     "status": "beta",
     "path": "tools/qr-code-generator/index.html",
     "related": ["image-converter", "passphrase-generator", "json-pretty-print-validate-minify"]
@@ -24,7 +24,7 @@
     "name": "Reflex Challenge",
     "shortDescription": "Wait for green, then click—see your reaction time in milliseconds.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["reaction-game"],
     "status": "experimental",
     "path": "tools/reflex-challenge/index.html",
     "related": ["button-mash-sprint", "snake-mini", "typing-speed-sprint"]
@@ -34,7 +34,7 @@
     "name": "Mini Snake",
     "shortDescription": "Classic grid snake with keyboard, WASD, and on-screen arrows.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["snake-game"],
     "status": "experimental",
     "path": "tools/snake-mini/index.html",
     "related": ["reflex-challenge", "memory-match", "typing-speed-sprint"]
@@ -44,7 +44,7 @@
     "name": "WCAG Contrast Checker",
     "shortDescription": "Check text and background colors for WCAG 2.1 contrast and AA / AAA pass levels.",
     "category": "utility",
-    "tags": ["utility", "accessibility", "color"],
+    "tags": ["contrast-checker"],
     "status": "beta",
     "path": "tools/wcag-contrast-checker/index.html",
     "related": ["random-palette-explorer", "mesh-gradient-studio", "word-character-counter"]
@@ -54,7 +54,7 @@
     "name": "JSON Format & Validate",
     "shortDescription": "Pretty-print, minify, and validate JSON locally—errors include line and column.",
     "category": "utility",
-    "tags": ["utility", "developer", "json", "format"],
+    "tags": ["json-formatter"],
     "status": "beta",
     "path": "tools/json-pretty-print-validate-minify/index.html",
     "related": ["wcag-contrast-checker", "passphrase-generator", "word-character-counter"]
@@ -64,7 +64,7 @@
     "name": "Random Palette Explorer",
     "shortDescription": "Explore color palettes by clicking the vibe you like until one set remains.",
     "category": "visual",
-    "tags": ["visual", "experiment", "color"],
+    "tags": ["palette-browser"],
     "status": "beta",
     "path": "tools/random-palette-explorer/index.html",
     "related": ["wcag-contrast-checker", "mesh-gradient-studio", "weird-generative-canvas"]
@@ -74,7 +74,7 @@
     "name": "Meeting Cost Timer",
     "shortDescription": "Enter $/hour and people; watch the cost rise live as time progresses.",
     "category": "utility",
-    "tags": ["utility", "productivity", "timer", "money"],
+    "tags": ["cost-estimator"],
     "status": "beta",
     "path": "tools/meeting-cost-timer/index.html",
     "related": ["percentage-calculator", "word-character-counter", "typing-speed-sprint"]
@@ -84,7 +84,7 @@
     "name": "Quick Image Converter",
     "shortDescription": "Drag-and-drop an image and convert it instantly to another format.",
     "category": "utility",
-    "tags": ["utility", "media", "image", "format"],
+    "tags": ["image-converter"],
     "status": "experimental",
     "path": "tools/image-converter/index.html",
     "related": ["qr-code-generator", "wcag-contrast-checker", "mesh-gradient-studio"]
@@ -94,7 +94,7 @@
     "name": "Weird Generative Canvas",
     "shortDescription": "A random algorithm with a random color scheme that animates on your screen.",
     "category": "visual",
-    "tags": ["visual", "experiment", "canvas", "animation"],
+    "tags": ["generative-art"],
     "status": "experimental",
     "path": "tools/weird-generative-canvas/index.html",
     "related": ["random-palette-explorer", "mesh-gradient-studio", "pixel-doodle"]
@@ -104,7 +104,7 @@
     "name": "Mesh gradient studio",
     "shortDescription": "Hero-style mesh gradients: presets, four blob colors, shape/bias sliders, grain, motion, and copy-ready CSS.",
     "category": "visual",
-    "tags": ["visual", "developer", "css", "generator"],
+    "tags": ["mesh-gradient-builder"],
     "status": "beta",
     "path": "tools/mesh-gradient-studio/index.html",
     "related": ["random-palette-explorer", "weird-generative-canvas", "wcag-contrast-checker"]
@@ -114,7 +114,7 @@
     "name": "Word & Character Counter",
     "shortDescription": "Live counts for words, characters, lines, sentences, paragraphs, and rough read time.",
     "category": "utility",
-    "tags": ["utility", "writing"],
+    "tags": ["text-statistics"],
     "status": "beta",
     "path": "tools/word-character-counter/index.html",
     "related": ["json-pretty-print-validate-minify", "late-excuse-generator", "percentage-calculator"]
@@ -124,7 +124,7 @@
     "name": "Percentage Calculator",
     "shortDescription": "What is X% of Y, or X is what percent of Y—solved locally in two panels.",
     "category": "utility",
-    "tags": ["utility", "math"],
+    "tags": ["percentage-calculator"],
     "status": "beta",
     "path": "tools/percentage-calculator/index.html",
     "related": ["meeting-cost-timer", "word-character-counter", "wcag-contrast-checker"]
@@ -134,7 +134,7 @@
     "name": "Coin Flip",
     "shortDescription": "Fair virtual coin with crypto randomness, heads/tails tallies, and a streak counter.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["coin-simulator"],
     "status": "beta",
     "path": "tools/coin-flipper/index.html",
     "related": ["dice-roller", "magic-eight-ball", "void-oracle"]
@@ -144,7 +144,7 @@
     "name": "Typing Speed Sprint",
     "shortDescription": "Thirty-second word sprint in the browser—see your WPM when time is up.",
     "category": "game",
-    "tags": ["game", "experiment", "keyboard"],
+    "tags": ["typing-test"],
     "status": "beta",
     "path": "tools/typing-speed-sprint/index.html",
     "related": ["reflex-challenge", "snake-mini", "memory-match"]
@@ -154,7 +154,7 @@
     "name": "Memory Match",
     "shortDescription": "Flip cards on a 4×4 grid and find eight emoji pairs—track your move count.",
     "category": "game",
-    "tags": ["game", "experiment", "puzzle"],
+    "tags": ["memory-game"],
     "status": "experimental",
     "path": "tools/memory-match/index.html",
     "related": ["odd-emoji-out", "tic-tac-toe", "emoji-slots"]
@@ -164,7 +164,7 @@
     "name": "Tic-Tac-Toe vs Computer",
     "shortDescription": "You’re X versus an O that plays perfectly with minimax—draws are a solid outcome.",
     "category": "game",
-    "tags": ["game", "experiment", "classic"],
+    "tags": ["tic-tac-toe", "unbeatable-ai"],
     "status": "experimental",
     "path": "tools/tic-tac-toe/index.html",
     "related": ["memory-match", "rock-paper-scissors", "snake-mini"]
@@ -174,7 +174,7 @@
     "name": "Void Oracle",
     "shortDescription": "Consult a purple orb for surreal prophecies—nonsense wisdom, cosmic vibes, zero stakes.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["oracle-toy"],
     "status": "experimental",
     "path": "tools/void-oracle/index.html",
     "related": ["magic-eight-ball", "compliment-cannon", "late-excuse-generator"]
@@ -184,7 +184,7 @@
     "name": "Blob Choir",
     "shortDescription": "Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums.",
     "category": "audio",
-    "tags": ["audio", "experiment"],
+    "tags": ["synth-toy"],
     "status": "experimental",
     "path": "tools/blob-choir/index.html",
     "related": ["weird-generative-canvas", "void-oracle", "emoji-slots"]
@@ -194,7 +194,7 @@
     "name": "Dice roller",
     "shortDescription": "Roll d4–d20 with crypto randomness, a poppy result, and a short roll history.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["dice-roller"],
     "status": "experimental",
     "path": "tools/dice-roller/index.html",
     "related": ["coin-flipper", "emoji-slots", "rock-paper-scissors"]
@@ -204,7 +204,7 @@
     "name": "Emoji slots",
     "shortDescription": "Spin three emoji reels—jackpot on three of a kind, bragging rights included.",
     "category": "game",
-    "tags": ["game", "experiment", "visual"],
+    "tags": ["slot-machine"],
     "status": "experimental",
     "path": "tools/emoji-slots/index.html",
     "related": ["dice-roller", "odd-emoji-out", "memory-match"]
@@ -214,7 +214,7 @@
     "name": "Compliment cannon",
     "shortDescription": "Fire a random absurd compliment; F or Space for rapid deployment.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["phrase-generator"],
     "status": "experimental",
     "path": "tools/compliment-cannon/index.html",
     "related": ["void-oracle", "late-excuse-generator", "banana-meter"]
@@ -224,7 +224,7 @@
     "name": "Magic 8 ball",
     "shortDescription": "Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["fortune-toy"],
     "status": "experimental",
     "path": "tools/magic-eight-ball/index.html",
     "related": ["void-oracle", "three-doors", "coin-flipper"]
@@ -234,7 +234,7 @@
     "name": "Rock paper scissors",
     "shortDescription": "Play RPS vs crypto-random throws with a running win / loss / tie tally.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["gesture-game"],
     "status": "experimental",
     "path": "tools/rock-paper-scissors/index.html",
     "related": ["tic-tac-toe", "dice-roller", "odd-emoji-out"]
@@ -244,7 +244,7 @@
     "name": "Late excuse generator",
     "shortDescription": "Spin up a plausible-ish excuse—blame entropy, not your calendar.",
     "category": "game",
-    "tags": ["game", "experiment", "writing"],
+    "tags": ["excuse-generator"],
     "status": "experimental",
     "path": "tools/late-excuse-generator/index.html",
     "related": ["compliment-cannon", "word-character-counter", "void-oracle"]
@@ -254,7 +254,7 @@
     "name": "Button mash sprint",
     "shortDescription": "Five seconds on the clock—how many mashes? A tiny thumb workout.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["tap-challenge"],
     "status": "experimental",
     "path": "tools/button-mash-sprint/index.html",
     "related": ["reflex-challenge", "emoji-slots", "typing-speed-sprint"]
@@ -264,7 +264,7 @@
     "name": "Pixel doodle",
     "shortDescription": "12×12 toggle pixels—doodle glyphs, noise, or alien flags; clear or randomize.",
     "category": "visual",
-    "tags": ["visual", "experiment"],
+    "tags": ["pixel-editor"],
     "status": "experimental",
     "path": "tools/pixel-doodle/index.html",
     "related": ["mesh-gradient-studio", "random-palette-explorer", "weird-generative-canvas"]
@@ -274,7 +274,7 @@
     "name": "Star click sky",
     "shortDescription": "Click the night sky to drop twinkling stars—clear for a fresh universe.",
     "category": "visual",
-    "tags": ["visual", "experiment"],
+    "tags": ["starfield-toy"],
     "status": "experimental",
     "path": "tools/star-click-sky/index.html",
     "related": ["pixel-doodle", "weird-generative-canvas", "random-palette-explorer"]
@@ -284,7 +284,7 @@
     "name": "Banana meter",
     "shortDescription": "Slide from ‘not banana’ to ‘maximum banana’—purely scientific (no).",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["novelty-meter"],
     "status": "experimental",
     "path": "tools/banana-meter/index.html",
     "related": ["compliment-cannon", "void-oracle", "emoji-slots"]
@@ -294,7 +294,7 @@
     "name": "Odd emoji out",
     "shortDescription": "Four emoji, three match—tap the impostor; score streaks on success.",
     "category": "game",
-    "tags": ["game", "experiment", "visual"],
+    "tags": ["odd-one-out"],
     "status": "experimental",
     "path": "tools/odd-emoji-out/index.html",
     "related": ["emoji-slots", "memory-match", "rock-paper-scissors"]
@@ -304,7 +304,7 @@
     "name": "Breathing pacer",
     "shortDescription": "Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice.",
     "category": "wellness",
-    "tags": ["experiment", "wellness"],
+    "tags": ["breathing-guide"],
     "status": "experimental",
     "path": "tools/breathing-pacer/index.html",
     "related": ["blob-choir", "void-oracle", "banana-meter"]
@@ -314,7 +314,7 @@
     "name": "Three doors",
     "shortDescription": "Pick a door: one star, two goats (friendly). Play again with a new hiding spot.",
     "category": "game",
-    "tags": ["game", "experiment"],
+    "tags": ["door-game"],
     "status": "experimental",
     "path": "tools/three-doors/index.html",
     "related": ["magic-eight-ball", "coin-flipper", "void-oracle"]

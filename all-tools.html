@@ -18,7 +18,7 @@
     <title>All tools — One Page Toys</title>
     <meta
       name="description"
-      content="Browse every One Page Toy—search by name, filter by category or tag, sort A–Z or by category, and open anything in a click."
+      content="Browse every One Page Toy—search by name, filter by category or tool type, sort A–Z or by category, and open anything in a click."
     />
     <link rel="canonical" href="https://onepagetoys.com/all-tools.html" />
     <meta name="robots" content="index, follow" />
@@ -28,7 +28,7 @@
     <meta property="og:title" content="All tools — One Page Toys" />
     <meta
       property="og:description"
-      content="Browse every One Page Toy—search by name, filter by category or tag, sort A–Z or by category, and open anything in a click."
+      content="Browse every One Page Toy—search by name, filter by category or tool type, sort A–Z or by category, and open anything in a click."
     />
     <meta property="og:url" content="https://onepagetoys.com/all-tools.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
@@ -40,7 +40,7 @@
     <meta name="twitter:title" content="All tools — One Page Toys" />
     <meta
       name="twitter:description"
-      content="Browse every One Page Toy—search by name, filter by category or tag, sort A–Z or by category, and open anything in a click."
+      content="Browse every One Page Toy—search by name, filter by category or tool type, sort A–Z or by category, and open anything in a click."
     />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <script type="application/ld+json">
@@ -70,8 +70,8 @@
         <p class="hero__eyebrow">Gallery</p>
         <h1>All tools</h1>
         <p class="hero__lede">
-          Search matches names, descriptions, tags, and slugs (try shorthand like <strong>typ</strong> for typing). Narrow by
-          <strong>category</strong> or <strong>tag</strong>, then sort A–Z or group by category.
+          Search runs on each tool’s name, description, slug, category, and <strong>plain-language hints</strong> tied to its type (questions and synonyms—not shown on cards). Commas and filler words like “how to” are fine. Narrow by
+          <strong>category</strong> or <strong>tool type</strong>, then sort A–Z or group by category.
         </p>
       </section>
 
@@ -88,7 +88,7 @@
               type="search"
               id="toolsSearch"
               class="tools-find__input"
-              placeholder="Words, tags, or prefixes (json, wcag, typ…)…"
+              placeholder="Natural language OK—e.g. pretty print json, wcag text colors, meeting burn rate…"
               autocomplete="off"
               autocorrect="off"
               spellcheck="false"
@@ -113,12 +113,12 @@
         </div>
 
         <div class="tools-tags-wrap">
-          <span class="tools-tags__label" id="toolsTagsLabel">Filter by tag</span>
+          <span class="tools-tags__label" id="toolsTagsLabel">Filter by tool type</span>
           <div class="tools-tags" id="toolsTags" role="group" aria-labelledby="toolsTagsLabel"></div>
         </div>
 
         <div id="toolsGrid" class="grid" aria-live="polite"></div>
-        <p id="toolsEmpty" class="tools-empty" hidden>No toys match those filters. Try another search or tag.</p>
+        <p id="toolsEmpty" class="tools-empty" hidden>No toys match those filters. Try another search, category, or type.</p>
         <div id="toolsError" class="error" role="alert" hidden></div>
       </section>
     </main>

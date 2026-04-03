@@ -1,4 +1,4 @@
-/* Gallery: tools-registry.json + search, tag filters, URL sync. */
+/* Gallery: tools-registry.json + search, category & tool-type filters, URL sync. */
 
 function escapeHTML(str) {
   return String(str).replace(/[&<>"']/g, function (ch) {
@@ -38,6 +38,207 @@ const CATEGORY_LABELS = {
   wellness: "Wellness"
 };
 
+/**
+ * Extra plain-language tokens for each tool-type tag so search matches how people type
+ * (“check my colors”, “pretty print json”, “meeting cost”) without stuffing the visible chips.
+ */
+const TYPE_NL_PHRASES = {
+  "password-generator":
+    "password passphrase secret credentials generator strong login signup account security crypto random",
+  "barcode-generator":
+    "qr qrcode code barcode scan scannable link share url encode png image download phone camera",
+  "reaction-game":
+    "reaction reflex timing wait green click milliseconds ms latency benchmark test skill speed measure",
+  "snake-game":
+    "snake classic arcade eat tail grid keyboard wasd arrows retro move hunger",
+  "contrast-checker":
+    "contrast wcag accessibility readable readability aa aaa legible text foreground background colour color a11y audit check vision pair colors",
+  "json-formatter":
+    "json javascript object notation format validate minify prettify pretty syntax error parse lint developer api config local",
+  "palette-browser":
+    "palette color colours swatch scheme explore vibe hue hex rgb designer export choose sample",
+  "cost-estimator":
+    "meeting cost money burn rate hourly salary people timer estimate clock waste budget expensive price dollars",
+  "image-converter":
+    "image picture photo convert conversion format png jpeg jpg gif webp file upload drag drop resize export",
+  "generative-art":
+    "generative procedural art pattern random canvas animation motion creative screensaver abstract algorithm",
+  "mesh-gradient-builder":
+    "mesh gradient hero background css stylesheet blob radial design landing soft ui export code snippet",
+  "text-statistics":
+    "word count character letter line paragraph essay copy paste writing length read time reading minutes estimate stats",
+  "percentage-calculator":
+    "percent percentage ratio fraction math tip discount tax proportion slice of share calculate solver office school",
+  "coin-simulator":
+    "coin flip heads tails random decide choose fifty chance fair streak toss call binary",
+  "typing-test":
+    "typing typist wpm words per minute speed keyboard practice benchmark sprint accuracy race skill",
+  "memory-game":
+    "memory match pairs cards flip remember concentration puzzle emoji grid recall find",
+  "tic-tac-toe":
+    "tic tac toe noughts crosses board grid xs os xsandos strategy classic three row column diagonal opponent",
+  "unbeatable-ai":
+    "perfect impossible optimal minimax computer ai opponent draw win never lose best play algorithm",
+  "oracle-toy":
+    "oracle prophecy wisdom void absurd surreal cosmic consult joke nonsense sphere purple random answer",
+  "synth-toy":
+    "music sound audio synthesizer synth tone instrument tap play choir noise fun ear experimental",
+  "dice-roller":
+    "dice roll d4 d6 d8 d10 d12 d20 tabletop rpg board random polyhedral rng history statistic",
+  "slot-machine":
+    "slot machine reels spin jackpot casino gamble luck emoji three match pull vegas",
+  "phrase-generator":
+    "compliment praise wholesome nice random funny fire cannon keyboard shortcut space rapid wholesome absurd",
+  "fortune-toy":
+    "magic eight ball shake destiny future mystical yes no question answer cloudy triangle toy decision",
+  "gesture-game":
+    "rock paper scissors roshambo rps hand throw beat versus win loss tie score random opponent",
+  "excuse-generator":
+    "excuse late sorry calendar meeting blame plausible funny reason story entropy apology alibi",
+  "tap-challenge":
+    "mash button tap click spam finger fastest hurry frantic seconds endurance score hurry drill",
+  "pixel-editor":
+    "pixel art grid draw doodle toggle bitmap sprite low resolution small squares design glyph",
+  "starfield-toy":
+    "star stars sky night twinkle click universe constellation ambient peaceful wallpaper sparkle galaxy",
+  "novelty-meter":
+    "banana slider gauge silly joke absurd meter useless science fruit scale humor satire",
+  "odd-one-out":
+    "odd different impostor spot find emoji four three match same puzzle which one unlike different quiz streak",
+  "breathing-guide":
+    "breathing breath calm anxiety relax inhale exhale box pacing meditation mindfulness stress wellness guide visual circle timing",
+  "door-game":
+    "door doors choice mystery reveal star goat three pick guess hide prize surprise pickone monty probability"
+};
+
+const SEARCH_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "the",
+  "to",
+  "for",
+  "of",
+  "in",
+  "on",
+  "at",
+  "by",
+  "with",
+  "from",
+  "is",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "being",
+  "have",
+  "has",
+  "had",
+  "do",
+  "does",
+  "did",
+  "will",
+  "would",
+  "could",
+  "should",
+  "i",
+  "you",
+  "we",
+  "they",
+  "it",
+  "this",
+  "that",
+  "these",
+  "those",
+  "my",
+  "your",
+  "our",
+  "their",
+  "me",
+  "us",
+  "what",
+  "which",
+  "who",
+  "whom",
+  "whose",
+  "where",
+  "when",
+  "why",
+  "how",
+  "if",
+  "or",
+  "as",
+  "so",
+  "than",
+  "too",
+  "very",
+  "just",
+  "only",
+  "own",
+  "same",
+  "such",
+  "also",
+  "both",
+  "few",
+  "more",
+  "most",
+  "other",
+  "some",
+  "no",
+  "nor",
+  "not",
+  "but",
+  "and",
+  "can",
+  "may",
+  "might",
+  "must",
+  "shall",
+  "want",
+  "needs",
+  "need",
+  "get",
+  "got",
+  "make",
+  "made",
+  "using",
+  "use",
+  "used",
+  "find",
+  "free",
+  "online",
+  "tool",
+  "page",
+  "app",
+  "help",
+  "like",
+  "into",
+  "about",
+  "over",
+  "after",
+  "before",
+  "between",
+  "through",
+  "during",
+  "any",
+  "all",
+  "every",
+  "another",
+  "am",
+  "im",
+  "ive",
+  "dont",
+  "doesnt",
+  "didnt",
+  "wont",
+  "cant",
+  "let",
+  "out",
+  "up",
+  "down",
+  "way"
+]);
+
 let allTools = [];
 let activeTag = "";
 let activeCategory = "";
@@ -56,6 +257,19 @@ function shuffleInPlace(arr, rand) {
   return arr;
 }
 
+function buildTagSearchHay(tags) {
+  if (!Array.isArray(tags) || !tags.length) return "";
+  const chunks = [];
+  tags.forEach(function (t) {
+    const tl = String(t).toLowerCase();
+    chunks.push(tl);
+    chunks.push(tl.replace(/-/g, " "));
+    const nl = TYPE_NL_PHRASES[tl];
+    if (nl) chunks.push(nl);
+  });
+  return chunks.join(" ");
+}
+
 function normalizeHaystack(tool) {
   const cat = String(tool.category || "").toLowerCase();
   const catLabel =
@@ -68,7 +282,7 @@ function normalizeHaystack(tool) {
     tool.status,
     cat,
     catLabel,
-    Array.isArray(tool.tags) ? tool.tags.join(" ") : ""
+    buildTagSearchHay(Array.isArray(tool.tags) ? tool.tags : [])
   ];
   return parts
     .filter(Boolean)
@@ -118,11 +332,22 @@ function toolMatchesCategory(tool) {
 function getSearchTokens() {
   const el = document.getElementById("toolsSearch");
   const raw = (el && el.value) || "";
-  return raw
-    .trim()
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean);
+  const lowered = raw.trim().toLowerCase();
+  const split = lowered.split(/[\s,;]+/).filter(Boolean);
+  const cleaned = split
+    .map(function (t) {
+      return t.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "");
+    })
+    .filter(function (t) {
+      return t.length > 0;
+    });
+  const unstopped = cleaned.filter(function (t) {
+    return !SEARCH_STOP_WORDS.has(t);
+  });
+  const meaningful = unstopped.length > 0 ? unstopped : cleaned;
+  return meaningful.filter(function (t) {
+    return t.length >= 2 || /^\d+$/.test(t);
+  });
 }
 
 function getFilteredTools() {
@@ -188,7 +413,13 @@ function collectCategoriesFromTools(tools) {
 }
 
 function formatTagLabel(tag) {
-  return tag.charAt(0).toUpperCase() + tag.slice(1);
+  return String(tag || "")
+    .split("-")
+    .filter(Boolean)
+    .map(function (w) {
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    })
+    .join(" ");
 }
 
 function syncURL() {
@@ -367,7 +598,7 @@ function renderCards(tools) {
     for (const tag of tags) {
       const chip = document.createElement("span");
       chip.className = "tag";
-      chip.textContent = tag;
+      chip.textContent = formatTagLabel(tag);
       tagsEl.appendChild(chip);
     }
 
