@@ -24,6 +24,21 @@ without rewriting tools.
   - A theme is primarily **CSS variables** that define the look.
   - Tools remain stable because they consume semantic tokens.
 
+### Architecture vs style (how we stay flexible)
+
+This framework intentionally separates:
+
+- **Architecture** (invariants)
+  - semantics, layout hierarchy, accessibility, interaction contracts
+  - scoping boundaries (global vs page-local)
+  - component “API” (classes + states like `[aria-pressed]`)
+
+- **Style** (aesthetics)
+  - token values: color, type, radii, shadows
+  - motion curves and optional component variants
+
+This lets us adopt modern UX/UI trends as **swappable themes/variants** without rewriting toys/tools.
+
 ### Where things live
 
 - **Global base (gallery + shared tokens)**
@@ -33,6 +48,16 @@ without rewriting tools.
 - **Tool shell (toy/tool pages only)**
   - `assets/tool-shell.css`: shared page layout, `.panel`, `.tool-directions`, shared components.
   - `assets/tool-cross.js`: injects “Related tools” from `tools-registry.json`.
+
+### Themes & style variants (future-proofing)
+
+When we want a “new look,” prefer creating a **theme/variant** rather than changing page-local CSS:
+
+- Add a theme file that primarily sets CSS variables (tokens).
+- Keep shared components reading semantic tokens, so they re-skin automatically.
+- Only add component variants when multiple pages need them.
+
+We can introduce a simple mechanism when needed (e.g., `data-theme` on `<html>`/`<body>` and `assets/themes/<name>.css`).
 
 - **Content pages (scoped)**
   - `toys/<slug>/index.html`: toys, games, and experiments.

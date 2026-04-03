@@ -5,6 +5,16 @@ alwaysApply: true
 
 # Intentional Design Principles
 
+- Collaborative reasoning is part of the build process:
+  - When a decision impacts global architecture (shared shells, tokens, reusable components), IA/naming, or future theming flexibility, surface the tradeoffs and **ask** if there’s any potential conflict or ambiguity.
+  - Default to tool/toy-local implementation first; only promote patterns globally after auditing reuse across pages.
+
+- Architecture vs style (consistency with flexible progression):
+  - **Architecture** defines invariants: information hierarchy, semantics, accessibility, interaction contracts, scoping boundaries, and the component “API” (classes + states like `[aria-pressed]`).
+  - **Style** defines aesthetics: token values (color, type, radii, shadows), motion curves, and optional component variants.
+  - Incorporate modern UX/UI trends as **swappable themes/variants**, not as ad-hoc one-offs baked into tool/toy pages.
+  - When proposing a trend-driven change, specify which layer it belongs to (architecture vs style) and why.
+
 - Use the existing design tokens and components from `assets/styles.css` / `assets/tool-shell.css` (CSS vars like `--accent`, `--shadow-md`, `--radius`, focus rings, etc.); avoid introducing one-off colors/shadows unless they map to a token.
 - Keep global gallery styling in the gallery shell only: do not add page-specific selectors or behavior into `assets/styles.css` or `assets/main.js`. Put page visuals in `toys/<slug>/styles.css` or `tools/<slug>/styles.css` (or a small inline fallback inside the page if needed).
 - Tool-level extension, but within reason:
