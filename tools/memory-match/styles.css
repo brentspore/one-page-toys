@@ -24,13 +24,14 @@
 .mm-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  max-width: 28rem;
+  max-width: 26rem;
   margin: 0 auto;
   perspective: 800px;
   position: relative;
   z-index: 1; /* Ensure cards stay clickable above any panel chrome */
+  padding: 6px 0;
 }
 
 .mm-card {
@@ -66,6 +67,14 @@
   z-index: 2;
 }
 
+.mm-card:hover .mm-card-inner {
+  transform: translateZ(0) translateY(-1px);
+}
+
+.mm-card:active .mm-card-inner {
+  transform: translateZ(0) translateY(0);
+}
+
 .mm-card--flipped .mm-card-inner,
 .mm-card--matched .mm-card-inner {
   transform: none !important; /* avoid broken/blank 3D rendering */
@@ -84,6 +93,8 @@
   z-index: 1;
   font-size: clamp(1.5rem, 7vw, 2rem);
   line-height: 1;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
 }
 
 .mm-card-face{
@@ -92,42 +103,66 @@
 }
 
 .mm-card-face--back {
-  background: linear-gradient(145deg, #6366f1, #4338ca) !important;
+  background: linear-gradient(
+      145deg,
+      var(--mm-back-a, #6366f1),
+      var(--mm-back-b, #4338ca)
+    ) !important;
   color: #fff !important;
   font-weight: 800;
-  font-size: 1.05rem; /* make clickable targets obvious */
+  font-size: 1.1rem; /* make unflipped tiles obvious */
   letter-spacing: 0.06em;
   border: 2px solid rgba(45, 42, 38, 0.1);
   opacity: 1;
   visibility: visible !important;
-  opacity: 1 !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 20px rgba(67, 56, 202, 0.18);
+  transform: translateZ(0) scale(1);
 }
 
 .mm-card-face--front {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  transform: none !important;
+  background: radial-gradient(
+      circle at 30% 20%,
+      var(--mm-front-tint, rgba(232, 93, 68, 0.14)),
+      var(--surface) 58%
+    );
+  border: 2px solid var(--mm-front-border, var(--border));
+  transform: translateZ(0) scale(1);
   color: var(--ink);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.14);
+  font-size: clamp(1.7rem, 7vw, 2.4rem);
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
 .mm-card--matched .mm-card-face--front {
   border-color: rgba(22, 163, 74, 0.45);
-  background: rgba(22, 163, 74, 0.08);
+  background: radial-gradient(
+      circle at 30% 20%,
+      rgba(22, 163, 74, 0.22),
+      var(--surface) 58%
+    );
   opacity: 1 !important;
   visibility: visible !important;
+  transform: translateZ(0) scale(1.02);
+  box-shadow:
+    0 0 0 2px rgba(22, 163, 74, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 14px 26px rgba(22, 163, 74, 0.12);
 }
 
 .mm-card--flipped .mm-card-face--back {
   opacity: 0 !important;
   visibility: hidden;
+  transform: translateZ(0) scale(0.98);
 }
 
 .mm-card--flipped .mm-card-face--front {
   opacity: 1 !important;
   visibility: visible !important;
+  transform: translateZ(0) scale(1.04);
 }
 
 .mm-card-face--back {

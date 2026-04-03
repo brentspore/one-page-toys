@@ -54,13 +54,14 @@
       .mm-grid{
         display:grid;
         grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:10px;
+        gap:12px;
         width:100%;
-        max-width:28rem;
+        max-width:26rem;
         margin:0 auto;
         perspective:800px;
         position:relative;
         z-index:1;
+        padding:6px 0;
       }
       .mm-card{
         position:relative;
@@ -106,23 +107,29 @@
         z-index:1;
         font-size:clamp(1.5rem,7vw,2rem);
         line-height:1;
+        pointer-events:none;
+        transition: opacity 160ms ease, transform 160ms ease;
       }
       .mm-card-face--back{
-        background:linear-gradient(145deg,#6366f1,#4338ca) !important;
+        background:linear-gradient(145deg,var(--mm-back-a,#6366f1),var(--mm-back-b,#4338ca)) !important;
         color:#fff !important;
         font-weight:800;
-        font-size:1.05rem;
+        font-size:1.1rem;
         letter-spacing:0.06em;
         border:2px solid rgba(45,42,38,0.1);
         opacity:1 !important;
         visibility:visible !important;
         text-shadow:0 1px 0 rgba(0,0,0,0.12);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 10px 20px rgba(67,56,202,0.18);
+        transform: translateZ(0) scale(1);
       }
       .mm-card-face--front{
-        background:#fffef8;
-        border:2px solid #e5dbd0;
-        transform:none !important;
+        background:radial-gradient(circle at 30% 20%, var(--mm-front-tint, rgba(232,93,68,0.14)), #fffef8 58%);
+        border:2px solid var(--mm-front-border, #e5dbd0);
+        transform: translateZ(0) scale(1);
         color:#2d2a26;
+        text-shadow:0 1px 0 rgba(0,0,0,0.14);
+        font-size:clamp(1.7rem, 7vw, 2.4rem);
         opacity:0 !important;
         visibility:hidden !important;
       }
@@ -132,13 +139,22 @@
       }
       .mm-card--matched .mm-card-face--front{
         border-color:rgba(22,163,74,0.45);
-        background:rgba(22,163,74,0.08);
+        background:radial-gradient(circle at 30% 20%, rgba(22,163,74,0.22), #fffef8 58%);
         opacity:1 !important;
         visibility:visible !important;
+        transform: translateZ(0) scale(1.02);
+        box-shadow: 0 0 0 2px rgba(22,163,74,0.22), inset 0 1px 0 rgba(255,255,255,0.2), 0 14px 26px rgba(22,163,74,0.12);
       }
-      .mm-card--flipped .mm-card-face--back{opacity:0 !important; visibility:hidden !important;}
-      .mm-card--flipped .mm-card-face--front{opacity:1 !important; visibility:visible !important;}
-      .mm-card--flipped .mm-card-face--back{visibility:hidden !important;}
+      .mm-card--flipped .mm-card-face--back{
+        opacity:0 !important;
+        visibility:hidden !important;
+        transform: translateZ(0) scale(0.98);
+      }
+      .mm-card--flipped .mm-card-face--front{
+        opacity:1 !important;
+        visibility:visible !important;
+        transform: translateZ(0) scale(1.04);
+      }
       .mm-card--matched .mm-card-face--back{opacity:0 !important; visibility:hidden !important;}
       .mm-card-face--back{visibility:visible;}
     </style>
@@ -207,6 +223,62 @@
     <script>
       (function () {
         var SYMBOLS = ["🌟", "🌙", "🔮", "🎲", "🎯", "🎪", "🦎", "🍀"];
+        var ACCENT_BY_SYMBOL = {
+          "🌟": {
+            backA: "#f0b429",
+            backB: "#e85d44",
+            frontTint: "rgba(240, 180, 41, 0.18)",
+            frontBorder: "rgba(240, 180, 41, 0.35)"
+          },
+          "🌙": {
+            backA: "#6b5cff",
+            backB: "#4338ca",
+            frontTint: "rgba(107, 92, 255, 0.18)",
+            frontBorder: "rgba(107, 92, 255, 0.35)"
+          },
+          "🔮": {
+            backA: "#a78bfa",
+            backB: "#6b5cff",
+            frontTint: "rgba(167, 139, 250, 0.20)",
+            frontBorder: "rgba(167, 139, 250, 0.35)"
+          },
+          "🎲": {
+            backA: "#2eb89e",
+            backB: "#1b9e73",
+            frontTint: "rgba(46, 184, 158, 0.20)",
+            frontBorder: "rgba(46, 184, 158, 0.35)"
+          },
+          "🎯": {
+            backA: "#e85d44",
+            backB: "#f0b429",
+            frontTint: "rgba(232, 93, 68, 0.18)",
+            frontBorder: "rgba(232, 93, 68, 0.35)"
+          },
+          "🎪": {
+            backA: "#6366f1",
+            backB: "#4338ca",
+            frontTint: "rgba(99, 102, 241, 0.18)",
+            frontBorder: "rgba(99, 102, 241, 0.35)"
+          },
+          "🦎": {
+            backA: "#5fd4c0",
+            backB: "#2eb89e",
+            frontTint: "rgba(95, 212, 192, 0.18)",
+            frontBorder: "rgba(95, 212, 192, 0.35)"
+          },
+          "🍀": {
+            backA: "#2eb89e",
+            backB: "#5fd4c0",
+            frontTint: "rgba(95, 212, 192, 0.18)",
+            frontBorder: "rgba(34, 197, 94, 0.35)"
+          }
+        };
+        var DEFAULT_ACCENT = {
+          backA: "#6366f1",
+          backB: "#4338ca",
+          frontTint: "rgba(232, 93, 68, 0.14)",
+          frontBorder: "#e5dbd0"
+        };
         var gridEl = document.getElementById("mmGrid");
         var movesEl = document.getElementById("mmMoves");
         var pairsEl = document.getElementById("mmPairs");
@@ -238,6 +310,11 @@
             btn.type = "button";
             btn.className = "mm-card";
             btn.dataset.index = String(i);
+            var accent = ACCENT_BY_SYMBOL[c.sym] || DEFAULT_ACCENT;
+            btn.style.setProperty("--mm-back-a", accent.backA);
+            btn.style.setProperty("--mm-back-b", accent.backB);
+            btn.style.setProperty("--mm-front-tint", accent.frontTint);
+            btn.style.setProperty("--mm-front-border", accent.frontBorder);
             if (c.matched) btn.classList.add("mm-card--matched");
             else if (c.flipped) btn.classList.add("mm-card--flipped");
             btn.setAttribute("aria-label", c.matched ? "Matched pair" : c.flipped ? "Card showing " + c.sym : "Hidden card");
