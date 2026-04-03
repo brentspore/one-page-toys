@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VBVJ93GL8L");
+    </script>
+    <title>Star click sky — make a constellation</title>
+    <meta name="description" content="Click the night sky to plant twinkling stars—clear the sky when you want a fresh universe." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/star-click-sky/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Star click sky — make a constellation" />
+    <meta property="og:description" content="Click the night sky to plant twinkling stars—clear the sky when you want a fresh universe." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/star-click-sky/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Star click sky",
+        "url": "https://onepagetoys.com/tools/star-click-sky/index.html",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+  </head>
+  <body data-tool-slug="star-click-sky">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Star click sky</h1>
+        <p class="lead">Every click drops a star. Build a sky, then wipe it for a new big bang.</p>
+        <div class="panel">
+          <div class="sky-toolbar">
+            <button type="button" class="btn btn--secondary" id="skyClear">Clear sky</button>
+          </div>
+          <p class="sr-only" id="skyLive" aria-live="polite"></p>
+          <div class="sky-wrap" id="sky" role="application" aria-label="Click to add stars"></div>
+          <p class="sky-hint">Tip: works with touch—tap where you want sparkle.</p>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Gallery</a>
+            <a href="../../all-tools.html">All tools</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        var GLYPHS = ["✦", "✧", "⋆", "★", "☆", "✴"];
+        var sky = document.getElementById("sky");
+        var live = document.getElementById("skyLive");
+        var n = 0;
+
+        function pickGlyph() {
+          var a = new Uint8Array(1);
+          try {
+            crypto.getRandomValues(a);
+          } catch (e) {
+            a[0] = Math.floor(Math.random() * 256);
+          }
+          return GLYPHS[a[0] % GLYPHS.length];
+        }
+
+        sky.addEventListener("click", function (e) {
+          var r = sky.getBoundingClientRect();
+          var x = e.clientX - r.left;
+          var y = e.clientY - r.top;
+          var s = document.createElement("span");
+          s.className = "sky-star";
+          s.textContent = pickGlyph();
+          s.style.left = x + "px";
+          s.style.top = y + "px";
+          s.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+          sky.appendChild(s);
+          n++;
+          live.textContent = n + " stars";
+        });
+
+        document.getElementById("skyClear").addEventListener("click", function () {
+          sky.querySelectorAll(".sky-star").forEach(function (el) {
+            el.remove();
+          });
+          n = 0;
+          live.textContent = "Sky cleared.";
+        });
+      })();
+    </script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

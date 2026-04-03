@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VBVJ93GL8L");
+    </script>
+    <title>Breathing pacer — gentle inhale / exhale</title>
+    <meta name="description" content="Follow the expanding circle—four seconds in, four seconds out. A tiny visual breath guide in the browser." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/breathing-pacer/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Breathing pacer — gentle inhale / exhale" />
+    <meta property="og:description" content="Follow the expanding circle—four seconds in, four seconds out. A tiny visual breath guide in the browser." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/breathing-pacer/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Breathing pacer",
+        "url": "https://onepagetoys.com/tools/breathing-pacer/index.html",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+  </head>
+  <body data-tool-slug="breathing-pacer">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Breathing pacer</h1>
+        <p class="lead">Not medical advice—just a slow circle. Inhale while it grows, exhale while it shrinks.</p>
+        <div class="panel">
+          <div class="bp-layout">
+            <div class="bp-circle-wrap">
+              <div class="bp-circle" aria-hidden="true"></div>
+            </div>
+            <p class="bp-label" id="bpLabel" aria-live="polite">Breathe in…</p>
+            <p class="bp-hint">Cycle is ~8 seconds total (4s in, 4s out). Look away from the screen if you need a break.</p>
+          </div>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Gallery</a>
+            <a href="../../all-tools.html">All tools</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        var el = document.getElementById("bpLabel");
+        var inhale = true;
+        function tick() {
+          el.textContent = inhale ? "Breathe in…" : "Breathe out…";
+          inhale = !inhale;
+        }
+        tick();
+        setInterval(tick, 4000);
+      })();
+    </script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+.bnm-panel {
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.bnm-slider {
+  width: 100%;
+  accent-color: #eab308;
+  margin: 0.5rem 0 1rem;
+}
+
+.bnm-readout {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.65), rgba(253, 224, 71, 0.25));
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  font-size: 1.05rem;
+  font-weight: 750;
+  line-height: 1.45;
+  color: var(--text);
+  min-height: 4.5em;
+}
+
+.bnm-val {
+  font-variant-numeric: tabular-nums;
+  color: #a16207;
+}

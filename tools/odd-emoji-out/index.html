@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VBVJ93GL8L");
+    </script>
+    <title>Odd emoji out — spot the impostor</title>
+    <meta name="description" content="Four emoji, three match—tap the odd one. New round each time you’re right (or wrong)." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/odd-emoji-out/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#8b5cf6" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Odd emoji out — spot the impostor" />
+    <meta property="og:description" content="Four emoji, three match—tap the odd one. New round each time you’re right (or wrong)." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/odd-emoji-out/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="../../assets/tool-shell.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Odd emoji out",
+        "url": "https://onepagetoys.com/tools/odd-emoji-out/index.html",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+  </head>
+  <body data-tool-slug="odd-emoji-out">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="../../index.html">One Page Toys</a>
+      </div>
+    </header>
+    <main class="container">
+      <section class="tool">
+        <h1>Odd emoji out</h1>
+        <p class="lead">Three twins, one stranger. Find the impostor before your pattern brain melts.</p>
+        <div class="panel">
+          <div class="odd-panel">
+            <p class="odd-meta" id="oddScore" aria-live="polite">Score: 0 — Tap the odd emoji.</p>
+            <div class="odd-grid" id="oddGrid" role="group" aria-label="Pick the emoji that does not match"></div>
+            <button type="button" class="btn btn--secondary" id="oddNext">New round</button>
+          </div>
+        </div>
+      </section>
+      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__top">
+          <div class="site-footer__intro">
+            <strong class="site-footer__name">One Page Toys</strong>
+            <p class="site-footer__tagline">Small tools and playful experiments—each built to stay focused, simple, and easy to open.</p>
+          </div>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="../../index.html">Gallery</a>
+            <a href="../../all-tools.html">All tools</a>
+          </nav>
+        </div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
+          <div class="site-footer__bottom-right">
+            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__madeby-label muted">Made by</span>
+              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        var POOL = ["🐸", "🦊", "🐙", "🦄", "🐧", "🦉", "🍄", "🌵", "🎸", "🛸", "🧲", "🎪", "🍉", "🥑", "🧊", "🔮"];
+        var grid = document.getElementById("oddGrid");
+        var scoreEl = document.getElementById("oddScore");
+        var score = 0;
+        var oddIndex = 0;
+        var locked = false;
+
+        function rand(n) {
+          var a = new Uint32Array(1);
+          try {
+            crypto.getRandomValues(a);
+          } catch (e) {
+            a[0] = Math.floor(Math.random() * 0xffffffff);
+          }
+          return a[0] % n;
+        }
+
+        function shuffle(arr) {
+          for (var i = arr.length - 1; i > 0; i--) {
+            var j = rand(i + 1);
+            var t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+          }
+          return arr;
+        }
+
+        function round() {
+          locked = false;
+          scoreEl.textContent = "Score: " + score + " — Tap the odd emoji.";
+          grid.innerHTML = "";
+          var i = rand(POOL.length);
+          var j = i;
+          while (j === i) j = rand(POOL.length);
+          var common = POOL[i];
+          var odd = POOL[j];
+          var em = [common, common, common, odd];
+          shuffle(em);
+          oddIndex = em.indexOf(odd);
+          for (var k = 0; k < 4; k++) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "odd-cell";
+            b.textContent = em[k];
+            b.setAttribute("aria-label", "Choice " + (k + 1));
+            (function (idx) {
+              b.addEventListener("click", function () {
+                if (locked) return;
+                if (idx === oddIndex) {
+                  locked = true;
+                  score++;
+                  scoreEl.textContent = "Score: " + score + " — Nice catch.";
+                  this.classList.add("odd-cell--right");
+                } else {
+                  this.classList.add("odd-cell--wrong");
+                  setTimeout(
+                    function (el) {
+                      el.classList.remove("odd-cell--wrong");
+                    },
+                    400,
+                    this
+                  );
+                }
+              });
+            })(k);
+            grid.appendChild(b);
+          }
+        }
+
+        document.getElementById("oddNext").addEventListener("click", round);
+        round();
+      })();
+    </script>
+    <script src="../../assets/tool-cross.js" defer></script>
+  </body>
+</html>

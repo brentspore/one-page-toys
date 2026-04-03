@@ -195,6 +195,96 @@
     "tags": ["game", "experiment"],
     "status": "experimental",
     "path": "tools/compliment-cannon/index.html",
-    "related": ["void-oracle", "emoji-slots", "coin-flipper"]
+    "related": ["void-oracle", "emoji-slots", "late-excuse-generator"]
+  },
+  {
+    "slug": "magic-eight-ball",
+    "name": "Magic 8 ball",
+    "shortDescription": "Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/magic-eight-ball/index.html",
+    "related": ["void-oracle", "three-doors", "dice-roller"]
+  },
+  {
+    "slug": "rock-paper-scissors",
+    "name": "Rock paper scissors",
+    "shortDescription": "Play RPS vs crypto-random throws with a running win / loss / tie tally.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/rock-paper-scissors/index.html",
+    "related": ["dice-roller", "coin-flipper", "odd-emoji-out"]
+  },
+  {
+    "slug": "late-excuse-generator",
+    "name": "Late excuse generator",
+    "shortDescription": "Spin up a plausible-ish excuse—blame entropy, not your calendar.",
+    "tags": ["game", "experiment", "writing"],
+    "status": "experimental",
+    "path": "tools/late-excuse-generator/index.html",
+    "related": ["compliment-cannon", "void-oracle", "word-character-counter"]
+  },
+  {
+    "slug": "button-mash-sprint",
+    "name": "Button mash sprint",
+    "shortDescription": "Five seconds on the clock—how many mashes? A tiny thumb workout.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/button-mash-sprint/index.html",
+    "related": ["reflex-challenge", "emoji-slots", "rock-paper-scissors"]
+  },
+  {
+    "slug": "pixel-doodle",
+    "name": "Pixel doodle",
+    "shortDescription": "12×12 toggle pixels—doodle glyphs, noise, or alien flags; clear or randomize.",
+    "tags": ["visual", "experiment"],
+    "status": "experimental",
+    "path": "tools/pixel-doodle/index.html",
+    "related": ["mesh-gradient-studio", "random-palette-explorer", "weird-generative-canvas"]
+  },
+  {
+    "slug": "star-click-sky",
+    "name": "Star click sky",
+    "shortDescription": "Click the night sky to drop twinkling stars—clear for a fresh universe.",
+    "tags": ["visual", "experiment"],
+    "status": "experimental",
+    "path": "tools/star-click-sky/index.html",
+    "related": ["weird-generative-canvas", "void-oracle", "pixel-doodle"]
+  },
+  {
+    "slug": "banana-meter",
+    "name": "Banana meter",
+    "shortDescription": "Slide from ‘not banana’ to ‘maximum banana’—purely scientific (no).",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/banana-meter/index.html",
+    "related": ["compliment-cannon", "void-oracle", "emoji-slots"]
+  },
+  {
+    "slug": "odd-emoji-out",
+    "name": "Odd emoji out",
+    "shortDescription": "Four emoji, three match—tap the impostor; score streaks on success.",
+    "tags": ["game", "experiment", "visual"],
+    "status": "experimental",
+    "path": "tools/odd-emoji-out/index.html",
+    "related": ["emoji-slots", "memory-match", "rock-paper-scissors"]
+  },
+  {
+    "slug": "breathing-pacer",
+    "name": "Breathing pacer",
+    "shortDescription": "Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice.",
+    "tags": ["experiment", "wellness"],
+    "status": "experimental",
+    "path": "tools/breathing-pacer/index.html",
+    "related": ["reflex-challenge", "meeting-cost-timer", "void-oracle"]
+  },
+  {
+    "slug": "three-doors",
+    "name": "Three doors",
+    "shortDescription": "Pick a door: one star, two goats (friendly). Play again with a new hiding spot.",
+    "tags": ["game", "experiment"],
+    "status": "experimental",
+    "path": "tools/three-doors/index.html",
+    "related": ["magic-eight-ball", "coin-flipper", "void-oracle"]
   }
 ]
