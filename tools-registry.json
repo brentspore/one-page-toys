@@ -8,7 +8,7 @@
       "a11y-tool"
     ],
     "status": "beta",
-    "path": "a11y-quick-checklist/index.html",
+    "path": "toys/a11y-quick-checklist/index.html",
     "related": [
       "breathing-pacer"
     ]
@@ -22,7 +22,7 @@
       "novelty-meter"
     ],
     "status": "experimental",
-    "path": "banana-meter/index.html",
+    "path": "toys/banana-meter/index.html",
     "related": [
       "compliment-cannon",
       "void-oracle",
@@ -38,7 +38,7 @@
       "encoder-tool"
     ],
     "status": "beta",
-    "path": "base64-url-encoder/index.html",
+    "path": "toys/base64-url-encoder/index.html",
     "related": [
       "markdown-previewer",
       "clipboard-stack",
@@ -54,7 +54,7 @@
       "synth-toy"
     ],
     "status": "experimental",
-    "path": "blob-choir/index.html",
+    "path": "toys/blob-choir/index.html",
     "related": [
       "weird-generative-canvas",
       "void-oracle",
@@ -70,7 +70,7 @@
       "breathing-guide"
     ],
     "status": "experimental",
-    "path": "breathing-pacer/index.html",
+    "path": "toys/breathing-pacer/index.html",
     "related": [
       "blob-choir",
       "void-oracle",
@@ -86,7 +86,7 @@
       "tap-challenge"
     ],
     "status": "experimental",
-    "path": "button-mash-sprint/index.html",
+    "path": "toys/button-mash-sprint/index.html",
     "related": [
       "reflex-challenge",
       "emoji-slots",
@@ -102,7 +102,7 @@
       "clipboard-tool"
     ],
     "status": "beta",
-    "path": "clipboard-stack/index.html",
+    "path": "toys/clipboard-stack/index.html",
     "related": [
       "og-meta-builder",
       "regex-tester",
@@ -118,7 +118,7 @@
       "coin-simulator"
     ],
     "status": "beta",
-    "path": "coin-flipper/index.html",
+    "path": "toys/coin-flipper/index.html",
     "related": [
       "dice-roller",
       "magic-eight-ball",
@@ -134,7 +134,7 @@
       "phrase-generator"
     ],
     "status": "experimental",
-    "path": "compliment-cannon/index.html",
+    "path": "toys/compliment-cannon/index.html",
     "related": [
       "void-oracle",
       "late-excuse-generator",
@@ -150,7 +150,7 @@
       "data-converter"
     ],
     "status": "experimental",
-    "path": "csv-json-converter/index.html",
+    "path": "toys/csv-json-converter/index.html",
     "related": [
       "og-meta-builder",
       "diff-two-texts",
@@ -166,7 +166,7 @@
       "prompt-toy"
     ],
     "status": "experimental",
-    "path": "daily-doodle-prompt/index.html",
+    "path": "toys/daily-doodle-prompt/index.html",
     "related": [
       "weird-generative-canvas",
       "mood-meteor",
@@ -182,7 +182,7 @@
       "dice-roller"
     ],
     "status": "experimental",
-    "path": "dice-roller/index.html",
+    "path": "toys/dice-roller/index.html",
     "related": [
       "coin-flipper",
       "emoji-slots",
@@ -198,7 +198,7 @@
       "diff-tool"
     ],
     "status": "experimental",
-    "path": "diff-two-texts/index.html",
+    "path": "toys/diff-two-texts/index.html",
     "related": [
       "unit-converter",
       "uuid-nanoid-generator",
@@ -214,7 +214,7 @@
       "slot-machine"
     ],
     "status": "experimental",
-    "path": "emoji-slots/index.html",
+    "path": "toys/emoji-slots/index.html",
     "related": [
       "dice-roller",
       "odd-emoji-out",
@@ -230,7 +230,7 @@
       "icon-tool"
     ],
     "status": "experimental",
-    "path": "favicon-generator/index.html",
+    "path": "toys/favicon-generator/index.html",
     "related": [
       "pixel-doodle",
       "weird-generative-canvas",
@@ -246,7 +246,7 @@
       "hash-tool"
     ],
     "status": "beta",
-    "path": "file-hash-tool/index.html",
+    "path": "toys/file-hash-tool/index.html",
     "related": [
       "meeting-notes-timer",
       "timestamp-converter",
@@ -262,7 +262,7 @@
       "gradient-tool"
     ],
     "status": "beta",
-    "path": "gradient-generator/index.html",
+    "path": "toys/gradient-generator/index.html",
     "related": [
       "star-click-sky",
       "mesh-gradient-studio",
@@ -278,7 +278,7 @@
       "image-tool"
     ],
     "status": "beta",
-    "path": "image-compressor/index.html",
+    "path": "toys/image-compressor/index.html",
     "related": [
       "clipboard-stack",
       "jwt-inspector",
@@ -294,7 +294,7 @@
       "json-tool"
     ],
     "status": "experimental",
-    "path": "json-schema-quickcheck/index.html",
+    "path": "toys/json-schema-quickcheck/index.html",
     "related": [
       "diff-two-texts",
       "image-compressor",
@@ -310,7 +310,7 @@
       "jwt-tool"
     ],
     "status": "beta",
-    "path": "jwt-inspector/index.html",
+    "path": "toys/jwt-inspector/index.html",
     "related": [
       "diff-two-texts",
       "markdown-previewer",
@@ -326,7 +326,7 @@
       "excuse-generator"
     ],
     "status": "experimental",
-    "path": "late-excuse-generator/index.html",
+    "path": "toys/late-excuse-generator/index.html",
     "related": [
       "compliment-cannon",
       "void-oracle",
@@ -342,7 +342,7 @@
       "fortune-toy"
     ],
     "status": "experimental",
-    "path": "magic-eight-ball/index.html",
+    "path": "toys/magic-eight-ball/index.html",
     "related": [
       "void-oracle",
       "three-doors",
@@ -358,7 +358,7 @@
       "markdown-tool"
     ],
     "status": "experimental",
-    "path": "markdown-previewer/index.html",
+    "path": "toys/markdown-previewer/index.html",
     "related": [
       "timestamp-converter",
       "meeting-notes-timer",
@@ -374,7 +374,7 @@
       "notes-tool"
     ],
     "status": "experimental",
-    "path": "meeting-notes-timer/index.html",
+    "path": "toys/meeting-notes-timer/index.html",
     "related": [
       "timestamp-converter",
       "unit-converter",
@@ -390,7 +390,7 @@
       "memory-game"
     ],
     "status": "experimental",
-    "path": "memory-match/index.html",
+    "path": "toys/memory-match/index.html",
     "related": [
       "odd-emoji-out",
       "tic-tac-toe",
@@ -406,7 +406,7 @@
       "mesh-gradient-builder"
     ],
     "status": "beta",
-    "path": "mesh-gradient-studio/index.html",
+    "path": "toys/mesh-gradient-studio/index.html",
     "related": [
       "random-palette-explorer",
       "weird-generative-canvas",
@@ -422,7 +422,7 @@
       "rhythm-toy"
     ],
     "status": "experimental",
-    "path": "micro-rhythm-tapper/index.html",
+    "path": "toys/micro-rhythm-tapper/index.html",
     "related": [
       "blob-choir"
     ]
@@ -436,7 +436,7 @@
       "snake-game"
     ],
     "status": "experimental",
-    "path": "snake-mini/index.html",
+    "path": "toys/snake-mini/index.html",
     "related": [
       "reflex-challenge",
       "memory-match",
@@ -452,7 +452,7 @@
       "mood-toy"
     ],
     "status": "experimental",
-    "path": "mood-meteor/index.html",
+    "path": "toys/mood-meteor/index.html",
     "related": [
       "weird-generative-canvas",
       "daily-doodle-prompt",
@@ -468,7 +468,7 @@
       "odd-one-out"
     ],
     "status": "experimental",
-    "path": "odd-emoji-out/index.html",
+    "path": "toys/odd-emoji-out/index.html",
     "related": [
       "emoji-slots",
       "memory-match",
@@ -484,7 +484,7 @@
       "seo-tool"
     ],
     "status": "beta",
-    "path": "og-meta-builder/index.html",
+    "path": "toys/og-meta-builder/index.html",
     "related": [
       "base64-url-encoder",
       "file-hash-tool",
@@ -500,7 +500,7 @@
       "palette-extractor"
     ],
     "status": "beta",
-    "path": "palette-from-image/index.html",
+    "path": "toys/palette-from-image/index.html",
     "related": [
       "star-click-sky",
       "mesh-gradient-studio",
@@ -516,7 +516,7 @@
       "pixel-editor"
     ],
     "status": "experimental",
-    "path": "pixel-doodle/index.html",
+    "path": "toys/pixel-doodle/index.html",
     "related": [
       "mesh-gradient-studio",
       "random-palette-explorer",
@@ -532,7 +532,7 @@
       "palette-browser"
     ],
     "status": "beta",
-    "path": "random-palette-explorer/index.html",
+    "path": "toys/random-palette-explorer/index.html",
     "related": [
       "mesh-gradient-studio",
       "weird-generative-canvas",
@@ -548,7 +548,7 @@
       "reaction-game"
     ],
     "status": "experimental",
-    "path": "reaction-ladder/index.html",
+    "path": "toys/reaction-ladder/index.html",
     "related": [
       "void-oracle",
       "button-mash-sprint",
@@ -564,7 +564,7 @@
       "reaction-game"
     ],
     "status": "experimental",
-    "path": "reflex-challenge/index.html",
+    "path": "toys/reflex-challenge/index.html",
     "related": [
       "button-mash-sprint",
       "snake-mini",
@@ -580,7 +580,7 @@
       "regex-tool"
     ],
     "status": "beta",
-    "path": "regex-tester/index.html",
+    "path": "toys/regex-tester/index.html",
     "related": [
       "og-meta-builder",
       "diff-two-texts",
@@ -596,7 +596,7 @@
       "gesture-game"
     ],
     "status": "experimental",
-    "path": "rock-paper-scissors/index.html",
+    "path": "toys/rock-paper-scissors/index.html",
     "related": [
       "tic-tac-toe",
       "dice-roller",
@@ -612,7 +612,7 @@
       "starfield-toy"
     ],
     "status": "experimental",
-    "path": "star-click-sky/index.html",
+    "path": "toys/star-click-sky/index.html",
     "related": [
       "pixel-doodle",
       "weird-generative-canvas",
@@ -628,7 +628,7 @@
       "door-game"
     ],
     "status": "experimental",
-    "path": "three-doors/index.html",
+    "path": "toys/three-doors/index.html",
     "related": [
       "magic-eight-ball",
       "coin-flipper",
@@ -645,7 +645,7 @@
       "unbeatable-ai"
     ],
     "status": "experimental",
-    "path": "tic-tac-toe/index.html",
+    "path": "toys/tic-tac-toe/index.html",
     "related": [
       "memory-match",
       "rock-paper-scissors",
@@ -661,7 +661,7 @@
       "time-tool"
     ],
     "status": "beta",
-    "path": "timestamp-converter/index.html",
+    "path": "toys/timestamp-converter/index.html",
     "related": [
       "meeting-notes-timer",
       "uuid-nanoid-generator",
@@ -677,7 +677,7 @@
       "idle-toy"
     ],
     "status": "experimental",
-    "path": "tiny-idle-garden/index.html",
+    "path": "toys/tiny-idle-garden/index.html",
     "related": [
       "emoji-slots",
       "odd-emoji-out",
@@ -693,7 +693,7 @@
       "typing-test"
     ],
     "status": "beta",
-    "path": "typing-speed-sprint/index.html",
+    "path": "toys/typing-speed-sprint/index.html",
     "related": [
       "reflex-challenge",
       "snake-mini",
@@ -709,7 +709,7 @@
       "unit-tool"
     ],
     "status": "beta",
-    "path": "unit-converter/index.html",
+    "path": "toys/unit-converter/index.html",
     "related": [
       "ux-copy-generator",
       "timestamp-converter",
@@ -725,7 +725,7 @@
       "id-generator"
     ],
     "status": "beta",
-    "path": "uuid-nanoid-generator/index.html",
+    "path": "toys/uuid-nanoid-generator/index.html",
     "related": [
       "ux-copy-generator",
       "csv-json-converter",
@@ -741,7 +741,7 @@
       "copy-tool"
     ],
     "status": "experimental",
-    "path": "ux-copy-generator/index.html",
+    "path": "toys/ux-copy-generator/index.html",
     "related": [
       "meeting-notes-timer",
       "timestamp-converter",
@@ -757,7 +757,7 @@
       "oracle-toy"
     ],
     "status": "experimental",
-    "path": "void-oracle/index.html",
+    "path": "toys/void-oracle/index.html",
     "related": [
       "magic-eight-ball",
       "compliment-cannon",
@@ -773,7 +773,7 @@
       "generative-art"
     ],
     "status": "experimental",
-    "path": "weird-generative-canvas/index.html",
+    "path": "toys/weird-generative-canvas/index.html",
     "related": [
       "random-palette-explorer",
       "mesh-gradient-studio",

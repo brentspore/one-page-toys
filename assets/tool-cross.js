@@ -14,7 +14,7 @@
     var slug = document.body && document.body.getAttribute("data-tool-slug");
     if (!root || !slug) return;
 
-    fetch("../tools-registry.json", { cache: "no-store" })
+    fetch("../../tools-registry.json", { cache: "no-store" })
       .then(function (r) {
         if (!r.ok) throw new Error("registry");
         return r.json();
@@ -78,14 +78,14 @@
         var cat = current.category && String(current.category).toLowerCase();
         if (cat && CATEGORY_LABELS[cat]) {
           var catA = document.createElement("a");
-          catA.href = "../all-tools.html?cat=" + encodeURIComponent(cat);
+          catA.href = "../../all-tools.html?cat=" + encodeURIComponent(cat);
           catA.textContent = "More in " + CATEGORY_LABELS[cat];
           more.appendChild(catA);
           more.appendChild(document.createTextNode(" · "));
         }
 
         var ga = document.createElement("a");
-        ga.href = "../all-tools.html";
+        ga.href = "../../all-tools.html";
         ga.textContent = "Browse all tools";
         more.appendChild(ga);
 
