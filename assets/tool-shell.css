@@ -269,3 +269,16 @@
     transform: none;
   }
 }
+
+/*
+ * Shared UX baseline: keyboard focus ring across tool controls.
+ * Tool pages frequently use custom button/input classes; this keeps focus styling consistent.
+ */
+.tool button:focus-visible,
+.tool a:focus-visible,
+.tool input:focus-visible,
+.tool select:focus-visible,
+.tool textarea:focus-visible{
+  outline: none;
+  box-shadow: var(--ring-offset), var(--ring);
+}

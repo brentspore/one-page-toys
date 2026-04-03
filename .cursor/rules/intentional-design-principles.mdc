@@ -1,0 +1,28 @@
+---
+description: Intentional design consistency across gallery + tool pages
+alwaysApply: true
+---
+
+# Intentional Design Principles
+
+- Use the existing design tokens and components from `assets/styles.css` / `assets/tool-shell.css` (CSS vars like `--accent`, `--shadow-md`, `--radius`, focus rings, etc.); avoid introducing one-off colors/shadows unless they map to a token.
+- Keep global gallery styling in the gallery shell only: do not add tool-specific selectors or behavior into `assets/styles.css` or `assets/main.js`. Put tool visuals in `tools/<slug>/styles.css` (or a small inline fallback inside the tool page if needed).
+- Tool-level extension, but within reason:
+  - Tools may add their own visuals (e.g. game-specific widgets, canvases, special controls) as long as they *inherit the shared language* (tokens, radii, shadows, focus rings, typography).
+  - New visual rules must be scoped to the tool page (prefer `tools/<slug>/styles.css` selectors, or a tool-specific wrapper class/ID) so they don’t leak into the gallery or other tools.
+  - Maintain UX invariants: keyboard focus visibility, readable contrast, and correct click/tap layering (`pointer-events`, `z-index`) for interactive regions.
+  - Avoid redefining shared primitives (don’t restyle `.btn`, `.tool`, `.panel`, etc. from inside tool CSS).
+- Tool page structure consistency:
+  - After `../../assets/styles.css`, link `../../assets/tool-shell.css`, then `styles.css` (tool-local).
+  - Place interactive primary UI before secondary details.
+  - Ensure `.tool-directions` sits after the main panel/controls (so the interaction surface reads first).
+  - Ensure outbound “related/ext links” styling uses the shared `.tool-ext-link` patterns and appears after the main panel.
+- Interaction layering safety:
+  - For any clickable canvas/grid/button surface inside a panel, verify `pointer-events` and stacking context (`z-index`) so overlays don’t swallow clicks.
+  - Always preserve a visible `:focus-visible` state for keyboard users.
+- Gallery visual rhythm:
+  - Keep category chip ordering stable (from `assets/main.js`).
+  - Prefer warm palette + chunky shadows consistently; don’t make one tool “feel different” via ad-hoc styling.
+- Natural-language coherence:
+  - When updating tool filters/search terms, adjust synonyms in `assets/main.js` (`TYPE_NL_PHRASES`) to match new `tools-registry.json` tags so the UX stays “intentful,” not accidental.
+
