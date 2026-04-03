@@ -25,7 +25,8 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
-  max-width: 22rem;
+  width: 100%;
+  max-width: 28rem;
   margin: 0 auto;
   perspective: 800px;
   position: relative;
@@ -69,7 +70,8 @@
 
 .mm-card--flipped .mm-card-inner,
 .mm-card--matched .mm-card-inner {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) !important;
+  -webkit-transform: rotateY(180deg) !important;
 }
 
 .mm-card-face {
@@ -99,6 +101,7 @@
   background: var(--surface);
   border: 2px solid var(--border);
   transform: rotateY(180deg);
+  color: var(--ink);
 }
 
 .mm-card--matched .mm-card-face--front {
