@@ -4,11 +4,13 @@ description: Durable project-specific context for AI tools
 type: project
 ---
 
-**What it is:** One Page Toys (OnePageToys.com) — a small "one page per tool" site, but more importantly a **consistency-first UI framework** intended as a reusable architecture starting point for future apps.
+**What it is:** One Page Toys (onepagetoys.com) — a growing collection of small browser-based toys, generators, and utilities Synergy ships for fun. Each one is a self-contained static page (currently ~60+ across `/toys/` and `/tools/`). Nothing is monetized directly; no sales CTAs; no affiliate links. **Secondary purpose: top-of-funnel traffic for the rest of the Synergy portfolio** — utility tools and small toys are search-rich, and any visitor who lands on a toy is gently discoverable to the affiliate-feeder family (SE / BI / BOK) once cross-linking is added. **It is NOT an affiliate feeder** — the "feeding" is passive: spread the net wider, some traffic finds the other sites. Don't add affiliate CTAs or sales surfaces; that would break what the site is for.
 
-**Audience/user:** General public for the toys/tools. For the framework consumer: future-Brent and anyone using this as a base for a new app.
+The codebase happens to embody a **consistency-first UI framework** (static HTML/CSS/JS, token-driven CSS, no SPA, no build pipeline beyond a few node scripts). That framework is a portable side-benefit — patterns may eventually get lifted into other Synergy projects — but the framework is a property of the code, not the purpose of the site.
 
-**Core product direction:** Consistency-first, not style-policing. Three-layer architecture:
+**Audience/user:** General public; people who land on a specific toy from search or word-of-mouth. The "framework consumer" audience (future-Synergy, AI tools studying the patterns) is secondary.
+
+**Core product direction:** Ship small things, keep them self-contained, don't overthink. The consistency framework is the discipline that keeps shipping painless. Three-layer architecture:
 1. **Invariants** — semantics, accessibility, interaction contracts (focus visible, hit targets, reduced motion), scoping rules. Non-negotiable.
 2. **Shared primitives + patterns** — `.panel`, `.btn`, tool shell layout, chips/segmented controls, "choice" grids, common empty/error blocks. Token-driven, not hardcoded.
 3. **Theme** — swappable CSS variables. A full re-skin is a theme swap, not a rewrite.
@@ -31,4 +33,4 @@ Tools/toys must read semantic tokens (not hardcoded colors/radii/shadows) so re-
 
 **Builder/import notes:** Hand-coded HTML/CSS/JS. PUBLIC repo, not Lovable-generated.
 
-**Current-state checkpoint:** TODO: Fill on next session.
+**Current-state checkpoint (2026-05-25):** Live at https://onepagetoys.com (GitHub Pages via CNAME). ~60+ toys + tools shipped. Google Analytics + structured data (JSON-LD WebSite) in place. No cross-links to the affiliate-feeder family yet — adding a sister-sites footer linking SE / BI / BOK is in BACKLOG to realize the latent traffic-feeding potential.
