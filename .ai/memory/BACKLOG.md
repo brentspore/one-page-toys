@@ -6,6 +6,8 @@ Not loaded into context every session — pull from here when picking up new wor
 
 ## Entry format
 
+Items in this file follow the structure below so that any AI tool or human editing the file directly produces entries Backlog Viewer can parse, display, and manage. Keep this section intact — it is the in-file format reference that prevents format drift. Backlog Viewer hides it from the app display and treats the example item as a template, not a real entry.
+
 ### Item title
 
 **Why it matters:** What value this delivers or what risk it avoids.
