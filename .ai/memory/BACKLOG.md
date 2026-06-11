@@ -1,20 +1,18 @@
-# Project Backlog
+# Context
 
-Ideas and follow-ups for this project that are worth preserving but are not ready to act on yet.
+One Page Toys is a collection of self-contained browser-based web toys and mini-games — lightweight single-HTML-file tools that drive top-of-funnel discovery for the Synergy portfolio.
 
-Use this for parked feature ideas, audit candidates, cleanup tasks, product experiments, and future improvements. Backlog items are not approval to implement; surface them when choosing next work.
-
-If a backlog item is reusable across projects, belongs to a shared workflow, or should become a portfolio-level standard, propose moving or copying it to `~/.ai/memory/BACKLOG.md`. If an item conflicts with global memory or duplicates another backlog item, ask before merging or deleting it.
+Not loaded into context every session — pull from here when picking up new work or reviewing project scope. If an item belongs across multiple projects, move it to `~/.ai/memory/BACKLOG.md` instead.
 
 ## Entry format
 
-### Idea title
+### Item title
 
-**Why it matters:** The value or risk.
+**Why it matters:** What value this delivers or what risk it avoids.
 
-**When to revisit:** The trigger that makes it worth doing.
+**When to revisit:** The specific trigger or condition that makes this worth acting on.
 
-**Notes:** Any useful context, files, or constraints.
+**Notes:** Context, constraints, related files, or prior decisions.
 
 ---
 
