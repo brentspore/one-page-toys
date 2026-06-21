@@ -20,9 +20,9 @@
       name="description"
       content="Browse every One Page Toy—tools, games, and experiments. Search by name, filter by category or type, and open anything in a click."
     />
-    <link rel="canonical" href="https://onepagetoys.com/all-tools.html" />
+    <link rel="canonical" href="https://onepagetoys.com/all-toys.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#e85d44" />
+    <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
     <meta property="og:title" content="All toys — One Page Toys" />
@@ -30,7 +30,7 @@
       property="og:description"
       content="Browse every One Page Toy—tools, games, and experiments. Search by name, filter by category or type, and open anything in a click."
     />
-    <meta property="og:url" content="https://onepagetoys.com/all-tools.html" />
+    <meta property="og:url" content="https://onepagetoys.com/all-toys.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -48,11 +48,23 @@
         "@context": "https://schema.org",
         "@type": "WebPage",
         "name": "All toys — One Page Toys",
-        "url": "https://onepagetoys.com/all-tools.html",
+        "url": "https://onepagetoys.com/all-toys.html",
         "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
       }
     </script>
-    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/styles.css?v=20" />
   </head>
   <body data-gallery-mode="all">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -62,21 +74,26 @@
           <a class="brand" href="index.html">One Page Toys</a>
           <nav class="topbar__nav" aria-label="Site sections">
             <a class="topbar__link" href="index.html">Home</a>
-            <a class="topbar__link" href="all-tools.html" aria-current="page">All toys</a>
+            <a class="topbar__link" href="all-toys.html" aria-current="page">All toys</a>
           </nav>
         </div>
         <div class="topbar__actions" aria-label="Quick actions">
+          <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+            <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+            <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+            <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+          </button>
           <button id="randomToolBtn" class="btn btn--primary" type="button">Surprise me</button>
         </div>
       </div>
     </header>
 
     <main id="main-content" class="container">
-      <section class="hero hero--tool-focus" style="padding-bottom: 0">
-        <p class="hero__eyebrow">Gallery</p>
-        <h1>All toys</h1>
-        <p class="hero__lede">
-          Tools, games, and experiments. <strong>Search</strong> first—then category chips or open <strong>Types</strong> only if you need the full list.
+      <section class="pagehead">
+        <p class="pagehead__eyebrow">The Index</p>
+        <h1>All Toys</h1>
+        <p class="pagehead__lede">
+          Every toy in the collection. <strong>Search</strong> first—then filter by category, or open <strong>Types</strong> for the full breakdown. Each one launches in its own tab.
         </p>
       </section>
 
@@ -149,7 +166,13 @@
           </div>
           <nav class="site-footer__nav" aria-label="Site">
             <a href="index.html">Home</a>
-            <a href="all-tools.html">All toys</a>
+            <a href="all-toys.html">All toys</a>
+            <a
+              href="https://www.paypal.com/donate?business=brent%40mightyarmy.com&item_name=One+Page+Toys+%E2%80%94+tip+jar&currency_code=USD"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Buy us a coffee ☕"
+            >Tip Jar</a>
           </nav>
         </div>
         <div class="site-footer__bottom">
@@ -164,7 +187,9 @@
       </div>
     </footer>
 
-    <script src="assets/main.js" defer></script>
+    <script src="assets/main.js?v=18" defer></script>
+    <script src="assets/theme.js?v=8" defer></script>
+    <script src="assets/tip-jar.js?v=9" defer></script>
   </body>
 </html>
 

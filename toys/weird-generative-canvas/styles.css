@@ -1,86 +1,86 @@
-/*
- * Weird Generative Canvas — tool-specific styles.
- * Loads after ../../assets/styles.css so rules here override or extend globals.
- */
+/* Weird Generative Canvas — full-bleed canvas + floating control panel. */
 
-main.wgc-main.container {
-  max-width: 960px;
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap");
+
+:root{ --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --accent: #9a8cff; }
+
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html, body{ height: 100%; }
+
+body{
+  margin: 0; font-family: var(--font); color: #eef0ff;
+  background: #07070e; overflow: hidden; overscroll-behavior: none;
 }
 
-.wgc-title {
-  text-align: center;
-  margin-bottom: 0.35rem;
-}
+.canvas{ position: fixed; inset: 0; z-index: 1; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
 
-.wgc-lead {
-  text-align: center;
-  max-width: 36rem;
-  margin: 0 auto 1.25rem;
+/* ---------- Control panel ---------- */
+.panel{
+  position: fixed;
+  left: 50%; bottom: clamp(16px, 3vh, 30px);
+  transform: translateX(-50%);
+  z-index: 4;
+  width: min(880px, 94vw);
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(16, 14, 30, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  transition: opacity 400ms ease;
 }
+.row{ display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: center; }
 
-.wgc-toolbar {
-  margin-top: 1rem;
-  margin-bottom: 0;
+.seg{ display: inline-flex; flex-wrap: wrap; padding: 4px; gap: 4px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+.seg__btn{
+  appearance: none; border: 0; background: transparent; color: rgba(238,240,255,0.6);
+  font-family: var(--font); font-size: 0.78rem; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  transition: color 140ms ease, background 140ms ease;
 }
+.seg__btn:hover{ color: #fff; }
+.seg__btn.is-on{ color: #fff; background: rgba(154, 140, 255, 0.28); }
+.seg__btn:focus-visible{ outline: none; box-shadow: 0 0 0 2px #07070e, 0 0 0 4px rgba(154,140,255,0.7); }
 
-.wgc-toolbar-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 0.65rem;
-  justify-content: center;
+.swatches{ display: inline-flex; gap: 6px; }
+.swatch{
+  width: 30px; height: 24px; border-radius: 7px; cursor: pointer;
+  border: 2px solid transparent; padding: 0;
 }
+.swatch.is-on{ border-color: #fff; }
+.swatch:focus-visible{ outline: none; box-shadow: 0 0 0 2px #07070e, 0 0 0 4px rgba(255,255,255,0.6); }
 
-.wgc-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
+.slider{ display: inline-flex; align-items: center; gap: 8px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(238,240,255,0.55); }
+.slider input[type="range"]{ width: 86px; accent-color: var(--accent); }
 
-.wgc-label {
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
+.btns{ display: inline-flex; gap: 6px; }
+.cbtn{
+  appearance: none; font-family: var(--font); font-size: 0.76rem; font-weight: 600;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05); color: #eef0ff; cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
 }
+.cbtn:hover{ border-color: rgba(255,255,255,0.34); }
+.cbtn:focus-visible{ outline: none; box-shadow: 0 0 0 2px #07070e, 0 0 0 4px rgba(154,140,255,0.7); }
+.cbtn--accent{ background: rgba(154,140,255,0.24); border-color: rgba(154,140,255,0.5); color: #fff; }
 
-.wgc-select {
-  padding: 0.55rem 0.65rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 0.9rem;
-  min-width: 8rem;
+/* ---------- Frame / hint ---------- */
+.frame{ position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.frame__corner{
+  position: absolute; font-size: clamp(0.56rem, 1.2vw, 0.7rem); font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase; color: rgba(238, 240, 255, 0.42); white-space: nowrap;
 }
+.frame__corner--tl{ top: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--tr{ top: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner a{ color: inherit; text-decoration: none; pointer-events: auto; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
+.frame__corner a:hover{ color: #fff; border-bottom-color: var(--accent); }
 
-.wgc-mode {
-  text-align: center;
-  margin: 0.75rem 0 0;
-  font-size: 0.88rem;
+.hint{
+  position: fixed; left: 50%; top: clamp(40px, 8vh, 76px); transform: translateX(-50%);
+  margin: 0; z-index: 4; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.22em;
+  text-transform: uppercase; color: rgba(238, 240, 255, 0.4); pointer-events: none; transition: opacity 500ms ease; text-align: center;
 }
-
-.wgc-canvas-wrap {
-  padding: 0.5rem;
-  overflow: hidden;
-}
-
-.wgc-canvas-wrap--dark {
-  background: #0f172a;
-  border-color: rgba(148, 163, 184, 0.35);
-}
-
-.wgc-canvas-wrap--dark .wgc-canvas {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
-}
-
-.wgc-canvas {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  border-radius: var(--radius-sm);
-  vertical-align: middle;
-  box-shadow: var(--shadow);
-}
+.hint.is-hidden{ opacity: 0; }

@@ -1,55 +1,145 @@
-.doors-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-  margin-bottom: 1rem;
+/* Three Doors (Monty Hall) — game-show gold doors on a crimson stage. */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap");
+
+:root{
+  --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gold: #f4c430;
+  --gold-dk: #b8860b;
+  --ink: #fbeede;
+  --dim: rgba(251, 238, 222, 0.6);
+  --line: rgba(251, 238, 222, 0.16);
 }
 
-.door {
-  width: 5.5rem;
-  min-height: 8rem;
-  border-radius: var(--radius-sm);
-  border: 2px solid var(--border);
-  background: linear-gradient(180deg, #64748b 0%, #334155 40%, #1e293b 100%);
-  color: #f8fafc;
-  font-weight: 800;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0.75rem;
-  box-shadow: var(--shadow-md);
-  transition: transform 0.15s ease, border-color 0.15s ease;
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+[hidden]{ display: none !important; }
+
+html, body{ height: 100%; }
+
+body{
+  margin: 0; font-family: var(--font); color: var(--ink);
+  background: #1a0a0e; overflow: hidden; overscroll-behavior: none;
 }
 
-.door:hover:not(:disabled) {
-  transform: translateY(-3px);
-  border-color: rgba(37, 99, 235, 0.45);
+.bg{
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(70% 60% at 50% 18%, #4a1118 0%, #2a0c12 48%, #160709 100%),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 22px, transparent 22px 44px);
 }
 
-.door:disabled {
-  cursor: default;
-  opacity: 0.95;
+.stage{
+  position: fixed; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(16px, 3vh, 28px); padding: 7vh 20px;
 }
 
-.door--open {
-  background: linear-gradient(180deg, #fef3c7 0%, #fcd34d 50%, #f59e0b 100%);
-  color: #422006;
-  border-color: rgba(245, 158, 11, 0.6);
+.status{ margin: 0; min-height: 1.4em; font-size: clamp(1rem, 3.2vw, 1.4rem); font-weight: 600; text-align: center; max-width: 30ch; }
+.status .win{ color: var(--gold); font-weight: 800; }
+
+/* ---------- Doors ---------- */
+.doors{ display: flex; gap: clamp(12px, 3vw, 28px); perspective: 1100px; }
+.door{
+  appearance: none; border: 0; padding: 0; background: transparent; cursor: pointer;
+  position: relative;
+  width: clamp(84px, 22vw, 150px);
+  height: clamp(140px, 36vh, 260px);
+  border-radius: 10px 10px 4px 4px;
+  transform-style: preserve-3d;
+}
+.door__inside{
+  position: absolute; inset: 0;
+  border-radius: 10px 10px 4px 4px;
+  display: grid; place-items: center;
+  font-size: clamp(2.4rem, 9vw, 4rem);
+  background: radial-gradient(circle at 50% 40%, #2a2030, #140d18);
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+}
+.door__panel{
+  position: absolute; inset: 0;
+  border-radius: 10px 10px 4px 4px;
+  display: grid; place-items: center;
+  background:
+    linear-gradient(160deg, #ffe79a 0%, var(--gold) 38%, var(--gold-dk) 100%);
+  box-shadow: inset 0 0 0 3px rgba(120, 86, 18, 0.5), inset 0 -16px 30px rgba(120,86,18,0.4), 0 14px 30px -10px rgba(0,0,0,0.7);
+  transform-origin: left center;
+  transition: transform 620ms cubic-bezier(0.5, 0, 0.2, 1);
+  backface-visibility: hidden;
+}
+.door.open .door__panel{ transform: rotateY(-115deg); }
+.door__num{
+  font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 900; color: #6e4e0e;
+  text-shadow: 0 1px 0 rgba(255,248,214,0.6);
+}
+.door__knob{
+  position: absolute; right: 12%; top: 50%; transform: translateY(-50%);
+  width: 11px; height: 11px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff7d6, #8a6410);
+}
+.door:not([disabled]):hover .door__panel{ filter: brightness(1.06); }
+.door:not([disabled]):hover{ transform: translateY(-4px); }
+.door{ transition: transform 200ms cubic-bezier(0.2, 1.3, 0.4, 1); }
+.door.picked{ outline: 3px solid var(--gold); outline-offset: 4px; border-radius: 12px; }
+.door.win{ transform: translateY(-8px); }
+.door.win .door__inside{
+  box-shadow: inset 0 0 44px rgba(244, 196, 48, 0.7), 0 0 60px rgba(244, 196, 48, 0.45);
+  animation: prizeGlow 1.1s ease infinite alternate;
+}
+.door.win .door__inside{ font-size: clamp(2.8rem, 11vw, 4.6rem); }
+@keyframes prizeGlow{ 0%{ filter: brightness(1); } 100%{ filter: brightness(1.25); } }
+.door:focus-visible{ outline: 3px solid #fff; outline-offset: 4px; border-radius: 12px; }
+
+/* spotlight pools beneath the doors */
+.doors{ position: relative; }
+.doors::after{
+  content: "";
+  position: absolute; left: -6%; right: -6%; bottom: -22px; height: 50px;
+  background: radial-gradient(50% 120% at 50% 0%, rgba(244, 196, 48, 0.16), transparent 72%);
+  filter: blur(8px); pointer-events: none;
 }
 
-.door--goat {
-  background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%);
-  color: #0f172a;
-}
+/* confetti */
+.confetti{ position: fixed; width: 9px; height: 9px; border-radius: 2px; z-index: 6; pointer-events: none; animation: conf 1100ms cubic-bezier(0.2,0.7,0.3,1) forwards; }
+@keyframes conf{ to{ transform: translate(var(--dx), var(--dy)) rotate(540deg); opacity: 0; } }
 
-.door-reveal {
-  margin: 0;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: 650;
-  color: var(--text);
-  min-height: 3em;
+/* ---------- Choice / again ---------- */
+.choice{ display: flex; gap: 12px; }
+.btn{
+  appearance: none; font-family: var(--font); font-size: 0.9rem; font-weight: 700;
+  padding: 12px 26px; border-radius: 999px; border: 1px solid var(--line);
+  background: rgba(255,255,255,0.05); color: var(--ink); cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, filter 140ms ease;
+}
+.btn:hover{ transform: translateY(-1px); border-color: rgba(251,238,222,0.4); }
+.btn:focus-visible{ outline: none; box-shadow: 0 0 0 2px #1a0a0e, 0 0 0 4px rgba(244,196,48,0.7); }
+.btn--primary{ background: linear-gradient(160deg, #ffe79a, var(--gold) 45%, var(--gold-dk)); border-color: transparent; color: #5a410a; font-weight: 800; }
+.btn--primary:hover{ filter: brightness(1.05); }
+
+/* ---------- Stats ---------- */
+.stats{ display: flex; gap: 24px; }
+.stat{ display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 70px; }
+.stat__label{ font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.stat__label.win{ color: var(--gold); }
+.stat__val{ font-size: 1.2rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.lesson{ margin: 0; font-size: 0.78rem; color: var(--dim); text-align: center; }
+.lesson strong{ color: var(--gold); }
+
+/* ---------- Frame ---------- */
+.frame{ position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.frame__corner{
+  position: absolute; font-size: clamp(0.56rem, 1.2vw, 0.7rem); font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase; color: rgba(251, 238, 222, 0.42); white-space: nowrap;
+}
+.frame__corner--tl{ top: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--tr{ top: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner--bl{ bottom: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--br{ bottom: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner a{ color: inherit; text-decoration: none; pointer-events: auto; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
+.frame__corner a:hover{ color: var(--ink); border-bottom-color: var(--gold); }
+
+@media (prefers-reduced-motion: reduce){
+  .door__panel{ transition: transform 200ms ease; }
 }

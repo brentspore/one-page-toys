@@ -1,45 +1,68 @@
-.sky-wrap {
-  position: relative;
-  min-height: 280px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: radial-gradient(ellipse 120% 80% at 50% 100%, #1e3a5f 0%, #0f172a 55%, #020617 100%);
-  overflow: hidden;
-  cursor: crosshair;
-  touch-action: manipulation;
+/* Star Click Sky — immersive cosmos. Nebula (CSS) behind a canvas starfield. */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap");
+
+:root{ --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html, body{ height: 100%; }
+
+body{
+  margin: 0; font-family: var(--font); color: #eaf0ff;
+  overflow: hidden; overscroll-behavior: none;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #0a1030 0%, #060a1e 42%, #03040f 100%);
 }
 
-.sky-star {
-  position: absolute;
-  font-size: 1.25rem;
-  line-height: 1;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  animation: sky-twinkle 2.5s ease-in-out infinite;
-}
+/* ---------- Nebula (drifting CSS blobs) ---------- */
+.nebula{ position: fixed; inset: -20%; z-index: 0; filter: blur(70px) saturate(1.3); pointer-events: none; }
+.neb{ position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; mix-blend-mode: screen; opacity: 0.35; will-change: transform; }
+.neb--1{ background: radial-gradient(circle, #3b2a8f 0%, transparent 62%); top: -12%; left: -10%; animation: drift1 40s ease-in-out infinite; }
+.neb--2{ background: radial-gradient(circle, #0e5a7a 0%, transparent 62%); bottom: -14%; right: -8%; animation: drift2 52s ease-in-out infinite; }
+.neb--3{ background: radial-gradient(circle, #6a1f6e 0%, transparent 60%); top: 28%; right: 16%; animation: drift1 60s ease-in-out infinite reverse; }
+@keyframes drift1{ 0%,100%{ transform: translate(0,0) scale(1);} 50%{ transform: translate(6vw,5vh) scale(1.14);} }
+@keyframes drift2{ 0%,100%{ transform: translate(0,0) scale(1.08);} 50%{ transform: translate(-6vw,-4vh) scale(0.92);} }
 
-@keyframes sky-twinkle {
-  0%,
-  100% {
-    opacity: 0.85;
-    filter: drop-shadow(0 0 4px rgba(250, 250, 250, 0.5));
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 10px rgba(250, 250, 250, 0.9));
-  }
-}
+.sky{ position: fixed; inset: 0; z-index: 1; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
 
-.sky-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
+/* ---------- Controls ---------- */
+.controls{
+  position: fixed; left: 50%; bottom: clamp(20px, 4vh, 36px); transform: translateX(-50%);
+  z-index: 4; display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 16px; border-radius: 999px;
+  background: rgba(10, 14, 34, 0.5); border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
 }
+.counter{ font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(234,240,255,0.7); }
+.cbtn{
+  appearance: none; font-family: var(--font); font-size: 0.76rem; font-weight: 600;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05); color: #eaf0ff; cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+.cbtn:hover{ border-color: rgba(140, 180, 255, 0.5); background: rgba(140,180,255,0.12); }
+.cbtn:focus-visible{ outline: none; box-shadow: 0 0 0 2px #03040f, 0 0 0 4px rgba(140,180,255,0.7); }
 
-.sky-hint {
-  margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  color: var(--muted);
-  text-align: center;
+/* ---------- Frame / hint ---------- */
+.frame{ position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.frame__corner{
+  position: absolute; font-size: clamp(0.56rem, 1.2vw, 0.7rem); font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase; color: rgba(234, 240, 255, 0.42); white-space: nowrap;
 }
+.frame__corner--tl{ top: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--tr{ top: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner--bl{ bottom: clamp(74px, 12vh, 110px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner a{ color: inherit; text-decoration: none; pointer-events: auto; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
+.frame__corner a:hover{ color: #fff; border-bottom-color: #8ab4ff; }
+
+.hint{
+  position: fixed; left: 50%; top: clamp(40px, 8vh, 76px); transform: translateX(-50%);
+  margin: 0; z-index: 4; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(234, 240, 255, 0.4); pointer-events: none; transition: opacity 600ms ease; text-align: center;
+}
+.hint.is-hidden{ opacity: 0; }
+
+@media (prefers-reduced-motion: reduce){ .neb{ animation: none; } }

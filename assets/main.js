@@ -27,6 +27,28 @@ function badgeClassForStatus(status) {
   return "badge";
 }
 
+/** Safe GA4 event helper. */
+function track(name, params) {
+  try {
+    if (typeof window.gtag === "function") window.gtag("event", name, params || {});
+  } catch (e) {
+    /* analytics is best-effort */
+  }
+}
+
+/* Outbound-link analytics: partner badges, footer links, etc. (Tip jar tracks itself.) */
+document.addEventListener("click", function (e) {
+  const a = e.target.closest ? e.target.closest("a[href]") : null;
+  if (!a || a.classList.contains("opt-tipjar")) return;
+  const href = a.getAttribute("href") || "";
+  if (/^https?:\/\//i.test(href) && a.host && a.host !== location.host) {
+    track("outbound_click", {
+      link_url: href,
+      link_text: (a.textContent || "").trim().slice(0, 60)
+    });
+  }
+});
+
 /** Stable ordering for category chips and “sort by category”. */
 const CATEGORY_ORDER = ["utility", "game", "visual", "audio", "wellness"];
 
@@ -43,6 +65,32 @@ const CATEGORY_LABELS = {
  * (“check my colors”, “pretty print json”, “meeting cost”) without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "star-sky":
+    "star click sky stars night sky cosmos space constellation twinkle shooting star nebula galaxy relaxing ambient draw stargazing universe",
+  "tic-tac-toe":
+    "tic tac toe noughts and crosses xs and os x o board game two player vs computer ai minimax unbeatable strategy grid",
+  "gesture-game":
+    "rock paper scissors roshambo hand game vs computer throw win lose tie streak best of decide",
+  "monty-hall":
+    "monty hall problem three doors game show goat prize switch or stay probability statistics 2/3 puzzle brain teaser",
+  "memory-game":
+    "memory match concentration pairs matching cards flip remember brain game emoji grid focus",
+  "snake-game":
+    "snake game classic arcade nokia eat grow apple high score arrows wasd retro grid neon",
+  "generative-art":
+    "generative art procedural creative coding flow field harmonograph particle swarm kaleidoscope canvas screensaver abstract pattern palette make art save png",
+  "dice-roller":
+    "dice roller roll die d4 d6 d8 d10 d12 d20 polyhedral rpg tabletop dnd dungeons dragons board game random number pool sum total fair",
+  "fortune-toy":
+    "magic 8 ball eight ball fortune teller yes no question shake answer oracle prophecy decision predict future ask",
+  "synth-toy":
+    "blob choir synth synthesizer ambient music sound instrument tap drag pad drone generative noise relax play tones voices",
+  "coin-flip":
+    "coin flip flipper toss heads or tails 50 50 fifty fifty decide decision random chance fair odds streak gold coin spin call it",
+  "breathing-tool":
+    "breathing pacer breath guide box breathing 4-7-8 478 inhale exhale calm relax relaxation meditation mindfulness anxiety stress focus pranayama slow deep breaths timer wellness",
+  "cost-calculator":
+    "meeting cost calculator timer money burn rate how much does this meeting cost salary hourly per person dollars wage expensive standup live counter ticker",
   "reaction-game":
     "reaction reflex timing wait green click milliseconds ms latency benchmark test skill speed measure",
   "snake-game":
@@ -603,6 +651,13 @@ function renderCards(tools) {
     card.className = "card";
     card.href = tool.path || "#";
 
+    // Static preview thumbnail — a still glimpse of the toy (CSS-rendered per slug).
+    const preview = document.createElement("div");
+    preview.className = "card__preview";
+    preview.setAttribute("aria-hidden", "true");
+    if (tool.slug) preview.dataset.slug = tool.slug;
+    card.appendChild(preview);
+
     const cardTop = document.createElement("div");
     cardTop.className = "card__top";
 
@@ -642,15 +697,28 @@ function renderCards(tools) {
 
     const cta = document.createElement("span");
     cta.className = "card__cta";
-    cta.textContent = "Open";
+    cta.textContent = "Launch";
 
     card.appendChild(cardTop);
     card.appendChild(desc);
     card.appendChild(tagsEl);
     card.appendChild(cta);
 
-    if (!tool.path) card.href = "#";
-    if (tool.path) card.rel = "noopener";
+    if (!tool.path) {
+      card.href = "#";
+    } else {
+      // Each toy launches into its own standalone experience in a new tab.
+      card.target = "_blank";
+      card.rel = "noopener noreferrer";
+      card.addEventListener("click", function () {
+        track("toy_launch", {
+          toy_slug: tool.slug || "",
+          toy_name: tool.name || "",
+          toy_category: tool.category || "",
+          source: "gallery"
+        });
+      });
+    }
 
     grid.appendChild(card);
   }
@@ -700,7 +768,13 @@ function wireRandomButton() {
     });
     if (!pool.length) return;
     const pick = pool[Math.floor(Math.random() * pool.length)];
-    window.location.href = pick.path;
+    track("toy_launch", {
+      toy_slug: pick.slug || "",
+      toy_name: pick.name || "",
+      toy_category: pick.category || "",
+      source: "surprise_me"
+    });
+    window.open(pick.path, "_blank", "noopener");
   });
 }
 

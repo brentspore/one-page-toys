@@ -1,87 +1,215 @@
-.me8-layout {
+/* Magic 8-Ball — a glossy sphere; shake it and the blue triangle surfaces. */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap");
+
+:root{
+  --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ink: #e9eef7;
+  --dim: rgba(233, 238, 247, 0.5);
+  --glow: #2f6bff;
+}
+
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html, body{ height: 100%; }
+
+body{
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: #05070d;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.bg{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 55% at 50% 42%, #0e1426 0%, #080b14 55%, #05070d 100%);
+  transition: background 600ms ease;
+}
+body.is-revealing .bg{ background: radial-gradient(58% 52% at 50% 46%, #112048 0%, #0a1024 55%, #05070d 100%); }
+
+.stage{
+  position: fixed;
+  inset: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  justify-content: center;
+  gap: clamp(20px, 4vh, 38px);
+  padding: 8vh 20px;
 }
 
-.me8-ball-wrap {
-  perspective: 400px;
+.question{
+  width: min(420px, 86vw);
+  text-align: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line, rgba(233,238,247,0.16));
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  font-weight: 500;
+  padding: 10px 8px;
+  outline: none;
+  transition: border-color 160ms ease;
 }
+.question::placeholder{ color: var(--dim); }
+.question:focus{ border-bottom-color: var(--glow); }
 
-.me8-ball {
-  width: min(220px, 70vw);
-  height: min(220px, 70vw);
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
+/* ---------- The ball ---------- */
+.ball{
+  appearance: none;
+  border: 0;
   padding: 0;
-  background: radial-gradient(circle at 35% 30%, #4c1d95 0%, #1e1b4b 45%, #0f172a 100%);
-  box-shadow:
-    0 12px 40px rgba(15, 23, 42, 0.35),
-    inset 0 -8px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
   position: relative;
-  transition: transform 0.35s ease;
+  width: clamp(220px, 56vmin, 400px);
+  height: clamp(220px, 56vmin, 400px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 30%, #5a5a5a 0%, #2a2a2a 16%, #141414 36%, #000 72%);
+  box-shadow:
+    inset 0 -26px 60px rgba(0, 0, 0, 0.85),
+    inset 0 18px 40px rgba(255, 255, 255, 0.06),
+    0 40px 90px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  animation: bob 6s ease-in-out infinite;
+  transition: transform 120ms ease;
+}
+.ball:focus-visible{ outline: none; box-shadow: inset 0 -26px 60px rgba(0,0,0,0.85), 0 0 0 4px rgba(47,107,255,0.6); }
+
+/* bright specular highlight */
+.ball__gloss{
+  position: absolute;
+  top: 12%;
+  left: 17%;
+  width: 34%;
+  height: 26%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.9), rgba(255,255,255,0) 70%);
+  filter: blur(2px);
+  pointer-events: none;
 }
 
-.me8-ball:hover {
-  transform: scale(1.02);
+@keyframes bob{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-10px); } }
+
+.ball.shake{ animation: shake 600ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+@keyframes shake{
+  0%,100%{ transform: translate(0,0) rotate(0); }
+  15%{ transform: translate(-9px, 5px) rotate(-4deg); }
+  30%{ transform: translate(8px, -6px) rotate(4deg); }
+  45%{ transform: translate(-7px, 6px) rotate(-3deg); }
+  60%{ transform: translate(7px, -4px) rotate(3deg); }
+  75%{ transform: translate(-4px, 3px) rotate(-2deg); }
 }
 
-.me8-ball--shake {
-  animation: me8-shake 0.65s ease;
+/* ---------- Window + triangle ---------- */
+.window{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 46%;
+  height: 46%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 38%, #10204a 0%, #0a1430 55%, #050a1c 100%);
+  box-shadow:
+    inset 0 6px 16px rgba(0, 0, 0, 0.8),
+    inset 0 -4px 10px rgba(80, 120, 255, 0.18),
+    0 0 0 6px #000,
+    0 0 30px rgba(47, 107, 255, 0.25);
 }
 
-@keyframes me8-shake {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  20% {
-    transform: rotate(-8deg);
-  }
-  40% {
-    transform: rotate(8deg);
-  }
-  60% {
-    transform: rotate(-5deg);
-  }
-  80% {
-    transform: rotate(4deg);
-  }
+.murk{
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(10,20,50,0.2), rgba(2,5,14,0.96) 75%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  z-index: 2;
 }
+body.is-clouding .murk{ opacity: 1; }
 
-.me8-window {
+.triangle{
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  height: 80%;
+  opacity: 0;
+  transform: scale(0.55) translateY(14%) rotate(var(--rot, 0deg));
+  filter: blur(5px) drop-shadow(0 0 16px rgba(47, 107, 255, 0.5));
+  transition: opacity 520ms ease, transform 620ms cubic-bezier(0.2, 0.9, 0.2, 1), filter 520ms ease;
+}
+/* The blue triangle is a pseudo-element so the answer text it sits over is NOT clipped. */
+.triangle::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(50% 5%, 95% 90%, 5% 90%);
+  background: linear-gradient(160deg, #4f86ff 0%, #2f6bff 45%, #1740c0 100%);
+}
+body.is-revealing .triangle{ opacity: 1; transform: scale(1) translateY(0) rotate(var(--rot, 0deg)); filter: blur(0) drop-shadow(0 0 16px rgba(47, 107, 255, 0.5)); }
+
+.answer{
   position: absolute;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 38%;
-  height: 38%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #1e293b 0%, #020617 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.35rem;
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
-}
-
-.me8-answer {
-  margin: 0;
-  font-size: clamp(0.55rem, 2.8vw, 0.72rem);
-  font-weight: 800;
+  bottom: 17%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: 56%;
   text-align: center;
-  line-height: 1.25;
-  color: #38bdf8;
+  font-size: 0.8rem; /* base — JS shrinks to fit the triangle */
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.06;
+  color: #eaf1ff;
+  text-shadow: 0 1px 4px rgba(0, 10, 40, 0.7);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
-.me8-hint {
+/* ---------- Status / frame / hint ---------- */
+.status{
   margin: 0;
-  font-size: 0.875rem;
-  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--dim);
+  min-height: 1.3em;
   text-align: center;
-  max-width: 28rem;
+}
+
+.frame{ position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.frame__corner{
+  position: absolute; font-size: clamp(0.56rem, 1.2vw, 0.7rem); font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase; color: rgba(233, 238, 247, 0.4); white-space: nowrap;
+}
+.frame__corner--tl{ top: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--tr{ top: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner--bl{ bottom: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--br{ bottom: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner a{ color: inherit; text-decoration: none; pointer-events: auto; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
+.frame__corner a:hover{ color: var(--ink); border-bottom-color: var(--glow); }
+
+.hint{
+  position: fixed; left: 50%; top: clamp(40px, 8vh, 76px); transform: translateX(-50%);
+  margin: 0; z-index: 4; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.24em;
+  text-transform: uppercase; color: rgba(233, 238, 247, 0.38); pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.hint.is-hidden{ opacity: 0; }
+
+@media (prefers-reduced-motion: reduce){
+  .ball{ animation: none; }
+  .ball.shake{ animation: none; }
+  .triangle{ transition: opacity 200ms ease; transform: rotate(var(--rot, 0deg)); filter: none; }
 }

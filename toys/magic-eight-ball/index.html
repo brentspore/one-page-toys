@@ -2,154 +2,90 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-VBVJ93GL8L");
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Magic 8 ball — browser oracle</title>
-    <meta name="description" content="Ask the void. Click the 8 ball for a classic-style answer—crypto random, zero mystic fees." />
+    <title>Magic 8-Ball — One Page Toys</title>
+    <meta name="description" content="Ask a yes/no question and shake the magic 8-ball. The glossy sphere shakes, the window clouds over, and the blue triangle surfaces with your answer. Free, no sign-up." />
     <link rel="canonical" href="https://onepagetoys.com/toys/magic-eight-ball/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#4c1d95" />
+    <meta name="theme-color" content="#05070d" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Magic 8 ball — browser oracle" />
-    <meta property="og:description" content="Ask the void. Click the 8 ball for a classic-style answer—crypto random, zero mystic fees." />
+    <meta property="og:title" content="Magic 8-Ball — One Page Toys" />
+    <meta property="og:description" content="Ask a yes/no question and shake the glossy magic 8-ball. The blue triangle surfaces with your answer." />
     <meta property="og:url" content="https://onepagetoys.com/toys/magic-eight-ball/index.html" />
-    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/magic-eight-ball.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="stylesheet" href="../../assets/styles.css" />
-    <link rel="stylesheet" href="../../assets/tool-shell.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="twitter:title" content="Magic 8-Ball — One Page Toys" />
+    <meta name="twitter:description" content="Ask a question, shake the glossy 8-ball, and the blue triangle surfaces with your answer." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/magic-eight-ball.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Magic 8 ball",
+        "name": "Magic 8-Ball",
         "url": "https://onepagetoys.com/toys/magic-eight-ball/index.html",
+        "description": "Ask a yes/no question and shake the glossy magic 8-ball; the blue triangle surfaces with your answer.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
       }
     </script>
+    <link rel="stylesheet" href="styles.css?v=5" />
   </head>
-  <body data-tool-slug="magic-eight-ball">
-    <header class="topbar">
-      <div class="topbar__inner">
-        <a class="brand" href="../../index.html">One Page Toys</a>
-      </div>
-    </header>
-    <main class="container">
-      <section class="tool">
-        <h1>Magic 8 ball</h1>
-        <p class="lead">Hold a question in mind—or don’t. Tap the ball; the triangle has opinions.</p>
-        <div class="panel">
-          <div class="me8-layout">
-            <div class="me8-ball-wrap">
-              <button type="button" class="me8-ball" id="me8Btn" aria-label="Shake magic 8 ball">
-                <span class="me8-window">
-                  <span class="me8-answer" id="me8Text">ASK</span>
-                </span>
-              </button>
-            </div>
-            <p class="me8-hint ui-live" id="me8Hint" aria-live="polite">Click the ball for an answer.</p>
-          </div>
-          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>How to use.</strong> Optional: think of a yes/no question. Click or tap the <strong>ball</strong>—it shakes, then the triangle shows a random answer. Ask again whenever you want.
-          </p>
-        </div>
-      </section>
-      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <main class="stage">
+      <input
+        id="question"
+        class="question"
+        type="text"
+        maxlength="80"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Ask a yes / no question…"
+        aria-label="Your question"
+      />
+
+      <button type="button" class="ball" id="ball" aria-label="Shake the magic 8-ball">
+        <span class="ball__gloss" aria-hidden="true"></span>
+        <span class="window" id="window">
+          <span class="murk" aria-hidden="true"></span>
+          <span class="triangle" id="triangle">
+            <span class="answer" id="answer">8</span>
+          </span>
+        </span>
+      </button>
+
+      <p class="status" id="status" aria-live="polite">Think of a question, then shake.</p>
     </main>
-    <footer class="site-footer" role="contentinfo">
-      <div class="site-footer__inner">
-        <div class="site-footer__top">
-          <div class="site-footer__intro">
-            <strong class="site-footer__name">One Page Toys</strong>
-            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
-          </div>
-          <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Home</a>
-            <a href="../../all-tools.html">All toys</a>
-          </nav>
-        </div>
-        <div class="site-footer__bottom">
-          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
-          <div class="site-footer__bottom-right">
-            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
-              <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <script>
-      (function () {
-        var ANS = [
-          "It is certain",
-          "Without a doubt",
-          "Yes definitely",
-          "Reply hazy",
-          "Ask again",
-          "Better not tell you now",
-          "Cannot predict now",
-          "Concentrate and ask again",
-          "Don't count on it",
-          "My reply is no",
-          "Outlook not so good",
-          "Very doubtful",
-          "Signs point to yes",
-          "Yes",
-          "No",
-          "Absolutely not… maybe",
-          "Try snacks first",
-          "The Wi-Fi knows",
-          "Ship it",
-          "Sleep on it"
-        ];
-        var btn = document.getElementById("me8Btn");
-        var text = document.getElementById("me8Text");
-        var hint = document.getElementById("me8Hint");
-        var busy = false;
-        function pick() {
-          var a = new Uint32Array(1);
-          try {
-            crypto.getRandomValues(a);
-          } catch (e) {
-            a[0] = Math.floor(Math.random() * 0xffffffff);
-          }
-          return ANS[a[0] % ANS.length];
-        }
-        btn.addEventListener("click", function () {
-          if (busy) return;
-          busy = true;
-          text.textContent = "…";
-          hint.textContent = "Shaking…";
-          btn.classList.add("me8-ball--shake");
-          setTimeout(function () {
-            btn.classList.remove("me8-ball--shake");
-            text.textContent = pick();
-            hint.textContent = "Ask again anytime.";
-            busy = false;
-          }, 650);
-        });
-      })();
-    </script>
-    <script src="../../assets/site-chrome.js" defer></script>
-    <script src="../../assets/tool-cross.js" defer></script>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 006</span>
+      <span class="frame__corner frame__corner--tr">Magic 8-Ball</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
+      <span class="frame__corner frame__corner--br">For entertainment only</span>
+    </div>
+
+    <p class="hint" id="hint">tap the ball · or press space</p>
+
+    <script src="script.js?v=3" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
   </body>
 </html>

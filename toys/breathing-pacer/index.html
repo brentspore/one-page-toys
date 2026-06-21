@@ -2,110 +2,97 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-VBVJ93GL8L");
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Breathing pacer — gentle inhale / exhale</title>
-    <meta name="description" content="Follow the expanding circle—four seconds in, four seconds out. A tiny visual breath guide in the browser." />
+    <title>Breathing Pacer — One Page Toys</title>
+    <meta name="description" content="A calm visual breath guide: follow the glowing orb as it expands and contracts. Choose Calm, Box, or 4·7·8 breathing, with an optional ambient tone. Not medical advice." />
     <link rel="canonical" href="https://onepagetoys.com/toys/breathing-pacer/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="theme-color" content="#0b1326" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Breathing pacer — gentle inhale / exhale" />
-    <meta property="og:description" content="Follow the expanding circle—four seconds in, four seconds out. A tiny visual breath guide in the browser." />
+    <meta property="og:title" content="Breathing Pacer — One Page Toys" />
+    <meta property="og:description" content="A calm visual breath guide: follow the glowing orb as it expands and contracts. Calm, Box, or 4·7·8 breathing." />
     <meta property="og:url" content="https://onepagetoys.com/toys/breathing-pacer/index.html" />
-    <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/breathing-pacer.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <link rel="stylesheet" href="../../assets/styles.css" />
-    <link rel="stylesheet" href="../../assets/tool-shell.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Breathing Pacer — One Page Toys" />
+    <meta name="twitter:description" content="A calm visual breath guide. Follow the orb; choose Calm, Box, or 4·7·8." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/breathing-pacer.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Breathing pacer",
+        "name": "Breathing Pacer",
         "url": "https://onepagetoys.com/toys/breathing-pacer/index.html",
+        "description": "A calm visual breath guide: follow the glowing orb as it expands and contracts. Calm, Box, or 4·7·8 breathing.",
         "applicationCategory": "HealthApplication",
         "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
       }
     </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
   </head>
-  <body data-tool-slug="breathing-pacer">
-    <header class="topbar">
-      <div class="topbar__inner">
-        <a class="brand" href="../../index.html">One Page Toys</a>
-      </div>
-    </header>
-    <main class="container">
-      <section class="tool">
-        <h1>Breathing pacer</h1>
-        <p class="lead">Not medical advice—just a slow circle. Inhale while it grows, exhale while it shrinks.</p>
-        <div class="panel">
-          <div class="bp-layout">
-            <div class="bp-circle-wrap">
-              <div class="bp-circle" aria-hidden="true"></div>
-            </div>
-            <p class="bp-label ui-live" id="bpLabel" aria-live="polite">Breathe in…</p>
-            <p class="bp-hint">Cycle is ~8 seconds total (4s in, 4s out). Look away from the screen if you need a break.</p>
-          </div>
-          <p class="tool-directions" style="margin-bottom: 0; margin-top: 12px;">
-            <strong>How to use.</strong> Match your breath to the circle: it <strong>grows ~4s</strong> (inhale) then <strong>shrinks ~4s</strong> (exhale). Follow the label under it. Not medical advice. If your device uses
-            <strong>reduced motion</strong>, the circle stays still—still use the text cues.
-          </p>
+  <body>
+    <div class="scene" id="scene" aria-hidden="true">
+      <span class="aura aura--1"></span>
+      <span class="aura aura--2"></span>
+      <span class="aura aura--3"></span>
+    </div>
+    <canvas class="motes" id="motes" aria-hidden="true"></canvas>
+
+    <main class="stage">
+      <div class="breath" id="breath" role="img" aria-label="Breathing guide. Follow the orb as it expands to inhale and contracts to exhale.">
+        <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="ring__track" cx="50" cy="50" r="47" />
+          <circle class="ring__fill" id="ringFill" cx="50" cy="50" r="47" />
+        </svg>
+        <div class="orb" id="orb"></div>
+        <div class="readout">
+          <span class="phase" id="phase">Breathe in</span>
+          <span class="count" id="count">4</span>
         </div>
-      </section>
-      <div id="toolCrossRoot" class="tool-cross-mount"></div>
+      </div>
     </main>
-    <footer class="site-footer" role="contentinfo">
-      <div class="site-footer__inner">
-        <div class="site-footer__top">
-          <div class="site-footer__intro">
-            <strong class="site-footer__name">One Page Toys</strong>
-            <p class="site-footer__tagline">Small web toys—tools, games, and experiments—each built to stay focused, simple, and easy to open.</p>
-          </div>
-          <nav class="site-footer__nav" aria-label="Site">
-            <a href="../../index.html">Home</a>
-            <a href="../../all-tools.html">All toys</a>
-          </nav>
-        </div>
-        <div class="site-footer__bottom">
-          <p class="site-footer__copyright muted">© 2026 One Page Toys</p>
-          <div class="site-footer__bottom-right">
-            <a class="site-footer__madeby" href="https://synergyprod.com/" target="_blank" rel="noopener noreferrer">
-              <span class="site-footer__madeby-label muted">Made by</span>
-              <img class="site-footer__synergy-logo" src="../../assets/synergy-logo.svg" alt="Synergy" width="51" height="13" />
-            </a>
-          </div>
-        </div>
+
+    <div class="controls" id="controls">
+      <div class="patterns" role="group" aria-label="Breathing pattern">
+        <button type="button" class="pat" data-pat="calm" aria-pressed="true">Calm</button>
+        <button type="button" class="pat" data-pat="box">Box</button>
+        <button type="button" class="pat" data-pat="478">4·7·8</button>
       </div>
-    </footer>
-    <script>
-      (function () {
-        var el = document.getElementById("bpLabel");
-        var inhale = true;
-        function tick() {
-          el.textContent = inhale ? "Breathe in…" : "Breathe out…";
-          inhale = !inhale;
-        }
-        tick();
-        setInterval(tick, 4000);
-      })();
-    </script>
-    <script src="../../assets/site-chrome.js" defer></script>
-    <script src="../../assets/tool-cross.js" defer></script>
+      <div class="ctl-row">
+        <button type="button" id="playPause" class="ctl-btn ctl-btn--play" aria-pressed="true">Pause</button>
+        <button type="button" id="soundBtn" class="ctl-btn" aria-pressed="false">Sound off</button>
+      </div>
+      <p class="breaths" aria-live="off"><span id="breaths">0</span> breaths · <span id="patHint">4 in · 6 out</span></p>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 003</span>
+      <span class="frame__corner frame__corner--tr">Breathing Pacer</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
+      <span class="frame__corner frame__corner--br">Not medical advice</span>
+    </div>
+
+    <p class="sr-only" id="live" aria-live="polite"></p>
+
+    <script src="script.js?v=3" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
   </body>
 </html>

@@ -1,911 +1,170 @@
 [
   {
-    "slug": "a11y-quick-checklist",
-    "name": "A11y quick checklist",
-    "shortDescription": "A focused accessibility checklist you can tick through and save per session.",
-    "category": "wellness",
-    "tags": [
-      "a11y-tool"
-    ],
-    "status": "beta",
-    "path": "toys/a11y-quick-checklist/index.html",
-    "related": [
-      "breathing-pacer"
-    ]
-  },
-  {
-    "slug": "banana-meter",
-    "name": "Banana meter",
-    "shortDescription": "Slide from ‘not banana’ to ‘maximum banana’—purely scientific (no).",
-    "category": "game",
-    "tags": [
-      "novelty-meter"
-    ],
-    "status": "experimental",
-    "path": "toys/banana-meter/index.html",
-    "related": [
-      "compliment-cannon",
-      "void-oracle",
-      "emoji-slots"
-    ]
-  },
-  {
-    "slug": "base64-url-encoder",
-    "name": "Base64 & URL encoder",
-    "shortDescription": "Encode/decode Base64 and URL components—fast and offline.",
-    "category": "utility",
-    "tags": [
-      "encoder-tool"
-    ],
-    "status": "beta",
-    "path": "tools/base64-url-encoder/index.html",
-    "related": [
-      "markdown-previewer",
-      "clipboard-stack",
-      "image-compressor"
-    ]
-  },
-  {
-    "slug": "blob-choir",
-    "name": "Blob Choir",
-    "shortDescription": "Eight wobbly blobs; each tap triggers detuned Web Audio bleeps and hums.",
-    "category": "audio",
-    "tags": [
-      "synth-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/blob-choir/index.html",
-    "related": [
-      "weird-generative-canvas",
-      "void-oracle",
-      "emoji-slots"
-    ]
-  },
-  {
-    "slug": "breathing-pacer",
-    "name": "Breathing pacer",
-    "shortDescription": "Follow a gentle circle—4s in, 4s out. Visual guide only, not medical advice.",
-    "category": "wellness",
-    "tags": [
-      "breathing-guide"
-    ],
-    "status": "experimental",
-    "path": "toys/breathing-pacer/index.html",
-    "related": [
-      "blob-choir",
-      "void-oracle",
-      "banana-meter"
-    ]
-  },
-  {
-    "slug": "button-mash-sprint",
-    "name": "Button mash sprint",
-    "shortDescription": "Five seconds on the clock—how many mashes? A tiny thumb workout.",
-    "category": "game",
-    "tags": [
-      "tap-challenge"
-    ],
-    "status": "experimental",
-    "path": "toys/button-mash-sprint/index.html",
-    "related": [
-      "reflex-challenge",
-      "emoji-slots",
-      "typing-speed-sprint"
-    ]
-  },
-  {
-    "slug": "clipboard-stack",
-    "name": "Clipboard stack",
-    "shortDescription": "Save, label, and copy multiple snippets—your clipboard, but with memory.",
-    "category": "utility",
-    "tags": [
-      "clipboard-tool"
-    ],
-    "status": "beta",
-    "path": "tools/clipboard-stack/index.html",
-    "related": [
-      "og-meta-builder",
-      "regex-tester",
-      "markdown-previewer"
-    ]
-  },
-  {
-    "slug": "coin-flipper",
-    "name": "Coin Flip",
-    "shortDescription": "Fair virtual coin with crypto randomness, heads/tails tallies, and a streak counter.",
-    "category": "game",
-    "tags": [
-      "coin-simulator"
-    ],
-    "status": "beta",
-    "path": "toys/coin-flipper/index.html",
-    "related": [
-      "dice-roller",
-      "magic-eight-ball",
-      "void-oracle"
-    ]
-  },
-  {
-    "slug": "compliment-cannon",
-    "name": "Compliment cannon",
-    "shortDescription": "Fire a random absurd compliment; F or Space for rapid deployment.",
-    "category": "game",
-    "tags": [
-      "phrase-generator"
-    ],
-    "status": "experimental",
-    "path": "toys/compliment-cannon/index.html",
-    "related": [
-      "void-oracle",
-      "late-excuse-generator",
-      "banana-meter"
-    ]
-  },
-  {
-    "slug": "csv-json-converter",
-    "name": "CSV ↔ JSON converter",
-    "shortDescription": "Convert CSV to JSON (and back) with delimiter and header options.",
-    "category": "utility",
-    "tags": [
-      "data-converter"
-    ],
-    "status": "experimental",
-    "path": "tools/csv-json-converter/index.html",
-    "related": [
-      "og-meta-builder",
-      "diff-two-texts",
-      "markdown-previewer"
-    ]
-  },
-  {
-    "slug": "daily-doodle-prompt",
-    "name": "Daily doodle prompt",
-    "shortDescription": "A daily doodle prompt with streak tracking and a shareable summary.",
+    "slug": "star-click-sky",
+    "name": "Star Click Sky",
+    "shortDescription": "Click to burst stars into a drifting cosmos of nebulae and shooting stars—your stars connect into glowing constellations.",
     "category": "visual",
     "tags": [
-      "prompt-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/daily-doodle-prompt/index.html",
-    "related": [
-      "weird-generative-canvas",
-      "mood-meteor",
-      "gradient-generator"
-    ]
-  },
-  {
-    "slug": "dice-roller",
-    "name": "Dice roller",
-    "shortDescription": "Roll d4–d20 with crypto randomness, a poppy result, and a short roll history.",
-    "category": "game",
-    "tags": [
-      "dice-roller"
-    ],
-    "status": "experimental",
-    "path": "toys/dice-roller/index.html",
-    "related": [
-      "coin-flipper",
-      "emoji-slots",
-      "rock-paper-scissors"
-    ]
-  },
-  {
-    "slug": "diff-two-texts",
-    "name": "Diff two texts",
-    "shortDescription": "Paste two texts and get a clean, readable line diff with highlights.",
-    "category": "utility",
-    "tags": [
-      "diff-tool"
-    ],
-    "status": "experimental",
-    "path": "tools/diff-two-texts/index.html",
-    "related": [
-      "unit-converter",
-      "uuid-nanoid-generator",
-      "og-meta-builder"
-    ]
-  },
-  {
-    "slug": "emoji-slots",
-    "name": "Emoji slots",
-    "shortDescription": "Spin three emoji reels—jackpot on three of a kind, bragging rights included.",
-    "category": "game",
-    "tags": [
-      "slot-machine"
-    ],
-    "status": "experimental",
-    "path": "toys/emoji-slots/index.html",
-    "related": [
-      "dice-roller",
-      "odd-emoji-out",
-      "memory-match"
-    ]
-  },
-  {
-    "slug": "favicon-generator",
-    "name": "Favicon generator",
-    "shortDescription": "Upload an image and export common favicon sizes as PNGs.",
-    "category": "visual",
-    "tags": [
-      "icon-tool"
-    ],
-    "status": "experimental",
-    "path": "toys/favicon-generator/index.html",
-    "related": [
-      "pixel-doodle",
-      "weird-generative-canvas",
-      "mood-meteor"
-    ]
-  },
-  {
-    "slug": "file-hash-tool",
-    "name": "File hash tool",
-    "shortDescription": "Compute SHA-256 hashes for text or files—copy the digest instantly.",
-    "category": "utility",
-    "tags": [
-      "hash-tool"
-    ],
-    "status": "beta",
-    "path": "tools/file-hash-tool/index.html",
-    "related": [
-      "meeting-notes-timer",
-      "timestamp-converter",
-      "unit-converter"
-    ]
-  },
-  {
-    "slug": "gradient-generator",
-    "name": "Gradient generator",
-    "shortDescription": "Build linear gradients with stops and angles—copy-ready CSS.",
-    "category": "visual",
-    "tags": [
-      "gradient-tool"
-    ],
-    "status": "beta",
-    "path": "toys/gradient-generator/index.html",
-    "related": [
-      "star-click-sky",
-      "mesh-gradient-studio",
-      "random-palette-explorer"
-    ]
-  },
-  {
-    "slug": "image-compressor",
-    "name": "Image compressor",
-    "shortDescription": "Compress images in-browser with quality controls and download results.",
-    "category": "utility",
-    "tags": [
-      "image-tool"
-    ],
-    "status": "beta",
-    "path": "tools/image-compressor/index.html",
-    "related": [
-      "clipboard-stack",
-      "jwt-inspector",
-      "json-schema-quickcheck"
-    ]
-  },
-  {
-    "slug": "image-converter",
-    "name": "Quick image converter",
-    "shortDescription": "Drag and drop an image and convert to PNG, JPEG, or WebP in the browser.",
-    "category": "utility",
-    "tags": [
-      "image-tool"
-    ],
-    "status": "beta",
-    "path": "tools/image-converter/index.html",
-    "related": [
-      "image-compressor",
-      "palette-from-image",
-      "favicon-generator"
-    ]
-  },
-  {
-    "slug": "json-pretty-print-validate-minify",
-    "name": "JSON format & validate",
-    "shortDescription": "Pretty-print, minify, and validate JSON in your browser. Errors show line and column.",
-    "category": "utility",
-    "tags": [
-      "json-tool"
-    ],
-    "status": "beta",
-    "path": "tools/json-pretty-print-validate-minify/index.html",
-    "related": [
-      "json-schema-quickcheck",
-      "csv-json-converter",
-      "jwt-inspector"
-    ]
-  },
-  {
-    "slug": "json-schema-quickcheck",
-    "name": "JSON schema quickcheck",
-    "shortDescription": "Validate JSON against a schema and get readable error output.",
-    "category": "utility",
-    "tags": [
-      "json-tool"
-    ],
-    "status": "experimental",
-    "path": "tools/json-schema-quickcheck/index.html",
-    "related": [
-      "diff-two-texts",
-      "image-compressor",
-      "clipboard-stack"
-    ]
-  },
-  {
-    "slug": "jwt-inspector",
-    "name": "JWT inspector",
-    "shortDescription": "Decode JWT header/payload safely and check expiry times locally.",
-    "category": "utility",
-    "tags": [
-      "jwt-tool"
-    ],
-    "status": "beta",
-    "path": "tools/jwt-inspector/index.html",
-    "related": [
-      "diff-two-texts",
-      "markdown-previewer",
-      "clipboard-stack"
-    ]
-  },
-  {
-    "slug": "late-excuse-generator",
-    "name": "Late excuse generator",
-    "shortDescription": "Spin up a plausible-ish excuse—blame entropy, not your calendar.",
-    "category": "game",
-    "tags": [
-      "excuse-generator"
-    ],
-    "status": "experimental",
-    "path": "toys/late-excuse-generator/index.html",
-    "related": [
-      "compliment-cannon",
-      "void-oracle",
-      "magic-eight-ball"
-    ]
-  },
-  {
-    "slug": "magic-eight-ball",
-    "name": "Magic 8 ball",
-    "shortDescription": "Tap the purple ball for a shake and a cryptic answer—browser RNG, not destiny.",
-    "category": "game",
-    "tags": [
-      "fortune-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/magic-eight-ball/index.html",
-    "related": [
-      "void-oracle",
-      "three-doors",
-      "coin-flipper"
-    ]
-  },
-  {
-    "slug": "markdown-previewer",
-    "name": "Markdown previewer",
-    "shortDescription": "Write Markdown and preview it instantly—copy HTML or plain text.",
-    "category": "utility",
-    "tags": [
-      "markdown-tool"
-    ],
-    "status": "experimental",
-    "path": "tools/markdown-previewer/index.html",
-    "related": [
-      "timestamp-converter",
-      "meeting-notes-timer",
-      "uuid-nanoid-generator"
-    ]
-  },
-  {
-    "slug": "meeting-cost-timer",
-    "name": "Meeting cost timer",
-    "shortDescription": "See a live dollar counter for how much this meeting costs as time passes.",
-    "category": "utility",
-    "tags": [
-      "notes-tool"
-    ],
-    "status": "beta",
-    "path": "tools/meeting-cost-timer/index.html",
-    "related": [
-      "meeting-notes-timer",
-      "timestamp-converter",
-      "unit-converter"
-    ]
-  },
-  {
-    "slug": "meeting-notes-timer",
-    "name": "Meeting notes timer",
-    "shortDescription": "Timestamped notes + running timer, then export to Markdown.",
-    "category": "utility",
-    "tags": [
-      "notes-tool"
-    ],
-    "status": "experimental",
-    "path": "tools/meeting-notes-timer/index.html",
-    "related": [
-      "timestamp-converter",
-      "unit-converter",
-      "uuid-nanoid-generator"
-    ]
-  },
-  {
-    "slug": "memory-match",
-    "name": "Memory Match",
-    "shortDescription": "Flip cards on a 4×4 grid and find eight emoji pairs—track your move count.",
-    "category": "game",
-    "tags": [
-      "memory-game"
-    ],
-    "status": "experimental",
-    "path": "toys/memory-match/index.html",
-    "related": [
-      "odd-emoji-out",
-      "tic-tac-toe",
-      "emoji-slots"
-    ]
-  },
-  {
-    "slug": "mesh-gradient-studio",
-    "name": "Mesh gradient studio",
-    "shortDescription": "Hero-style mesh gradients: presets, four blob colors, shape/bias sliders, grain, motion, and copy-ready CSS.",
-    "category": "visual",
-    "tags": [
-      "mesh-gradient-builder"
-    ],
-    "status": "beta",
-    "path": "toys/mesh-gradient-studio/index.html",
-    "related": [
-      "random-palette-explorer",
-      "weird-generative-canvas",
-      "pixel-doodle"
-    ]
-  },
-  {
-    "slug": "micro-rhythm-tapper",
-    "name": "Micro rhythm tapper",
-    "shortDescription": "Tap the beat, get accuracy, and keep a tiny run history.",
-    "category": "audio",
-    "tags": [
-      "rhythm-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/micro-rhythm-tapper/index.html",
-    "related": [
-      "blob-choir"
-    ]
-  },
-  {
-    "slug": "mood-meteor",
-    "name": "Mood meteor",
-    "shortDescription": "Pick a mood and generate an animated sky; log today’s vibe.",
-    "category": "visual",
-    "tags": [
-      "mood-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/mood-meteor/index.html",
-    "related": [
-      "weird-generative-canvas",
-      "daily-doodle-prompt",
-      "gradient-generator"
-    ]
-  },
-  {
-    "slug": "odd-emoji-out",
-    "name": "Odd emoji out",
-    "shortDescription": "Four emoji, three match—tap the impostor; score streaks on success.",
-    "category": "game",
-    "tags": [
-      "odd-one-out"
-    ],
-    "status": "experimental",
-    "path": "toys/odd-emoji-out/index.html",
-    "related": [
-      "emoji-slots",
-      "memory-match",
-      "rock-paper-scissors"
-    ]
-  },
-  {
-    "slug": "og-meta-builder",
-    "name": "Open Graph meta builder",
-    "shortDescription": "Fill in title/description/image and copy the meta tags for your page.",
-    "category": "utility",
-    "tags": [
-      "seo-tool"
-    ],
-    "status": "beta",
-    "path": "tools/og-meta-builder/index.html",
-    "related": [
-      "base64-url-encoder",
-      "file-hash-tool",
-      "csv-json-converter"
-    ]
-  },
-  {
-    "slug": "palette-from-image",
-    "name": "Palette from image",
-    "shortDescription": "Drop an image and extract a tidy color palette—export CSS variables.",
-    "category": "visual",
-    "tags": [
-      "palette-extractor"
-    ],
-    "status": "beta",
-    "path": "toys/palette-from-image/index.html",
-    "related": [
-      "star-click-sky",
-      "mesh-gradient-studio",
-      "random-palette-explorer"
-    ]
-  },
-  {
-    "slug": "passphrase-generator",
-    "name": "Passphrase & password generator",
-    "shortDescription": "Generate strong random passwords or memorable multi-word passphrases with Web Crypto.",
-    "category": "utility",
-    "tags": [
-      "id-generator"
-    ],
-    "status": "beta",
-    "path": "tools/passphrase-generator/index.html",
-    "related": [
-      "uuid-nanoid-generator",
-      "base64-url-encoder",
-      "regex-tester"
-    ]
-  },
-  {
-    "slug": "percentage-calculator",
-    "name": "Percentage calculator",
-    "shortDescription": "Find a percentage of a number, or what percent one number is of another.",
-    "category": "utility",
-    "tags": [
-      "math-tool"
+      "star-sky"
     ],
     "status": "live",
-    "path": "tools/percentage-calculator/index.html",
-    "related": [
-      "unit-converter",
-      "timestamp-converter",
-      "csv-json-converter"
-    ]
+    "path": "toys/star-click-sky/index.html",
+    "related": []
   },
   {
-    "slug": "pixel-doodle",
-    "name": "Pixel doodle",
-    "shortDescription": "12×12 toggle pixels—doodle glyphs, noise, or alien flags; clear or randomize.",
-    "category": "visual",
-    "tags": [
-      "pixel-editor"
-    ],
-    "status": "experimental",
-    "path": "toys/pixel-doodle/index.html",
-    "related": [
-      "mesh-gradient-studio",
-      "random-palette-explorer",
-      "weird-generative-canvas"
-    ]
-  },
-  {
-    "slug": "qr-code-generator",
-    "name": "QR code generator",
-    "shortDescription": "Turn any text or URL into a QR code in your browser. Download a PNG when you are done.",
-    "category": "utility",
-    "tags": [
-      "qr-tool"
-    ],
-    "status": "beta",
-    "path": "tools/qr-code-generator/index.html",
-    "related": [
-      "og-meta-builder",
-      "favicon-generator",
-      "markdown-previewer"
-    ]
-  },
-  {
-    "slug": "random-palette-explorer",
-    "name": "Random Palette Explorer",
-    "shortDescription": "Explore color palettes by clicking the vibe you like until one set remains.",
-    "category": "visual",
-    "tags": [
-      "palette-browser"
-    ],
-    "status": "beta",
-    "path": "toys/random-palette-explorer/index.html",
-    "related": [
-      "mesh-gradient-studio",
-      "weird-generative-canvas",
-      "pixel-doodle"
-    ]
-  },
-  {
-    "slug": "reaction-ladder",
-    "name": "Reaction ladder",
-    "shortDescription": "Ten quick reaction rounds—track best, average, and recent runs.",
+    "slug": "tic-tac-toe",
+    "name": "Tic-Tac-Toe",
+    "shortDescription": "Classic noughts and crosses vs the computer—Chill mode is winnable, Ruthless is an unbeatable minimax AI. Neon board, instant rematch.",
     "category": "game",
     "tags": [
-      "reaction-game"
+      "tic-tac-toe"
     ],
-    "status": "experimental",
-    "path": "toys/reaction-ladder/index.html",
-    "related": [
-      "void-oracle",
-      "button-mash-sprint",
-      "coin-flipper"
-    ]
-  },
-  {
-    "slug": "reflex-challenge",
-    "name": "Reflex Challenge",
-    "shortDescription": "Wait for green, then click—see your reaction time in milliseconds.",
-    "category": "game",
-    "tags": [
-      "reaction-game"
-    ],
-    "status": "experimental",
-    "path": "toys/reflex-challenge/index.html",
-    "related": [
-      "button-mash-sprint",
-      "snake-mini",
-      "typing-speed-sprint"
-    ]
-  },
-  {
-    "slug": "regex-tester",
-    "name": "Regex tester",
-    "shortDescription": "Test patterns live: matches, groups, replace preview, and saved snippets.",
-    "category": "utility",
-    "tags": [
-      "regex-tool"
-    ],
-    "status": "beta",
-    "path": "tools/regex-tester/index.html",
-    "related": [
-      "og-meta-builder",
-      "diff-two-texts",
-      "markdown-previewer"
-    ]
+    "status": "live",
+    "path": "toys/tic-tac-toe/index.html",
+    "related": []
   },
   {
     "slug": "rock-paper-scissors",
-    "name": "Rock paper scissors",
-    "shortDescription": "Play RPS vs crypto-random throws with a running win / loss / tie tally.",
+    "name": "Rock Paper Scissors",
+    "shortDescription": "Throw rock, paper, or scissors against the computer, watch the clash, and chase a winning streak.",
     "category": "game",
     "tags": [
       "gesture-game"
     ],
-    "status": "experimental",
+    "status": "live",
     "path": "toys/rock-paper-scissors/index.html",
-    "related": [
-      "tic-tac-toe",
-      "dice-roller",
-      "odd-emoji-out"
-    ]
+    "related": []
+  },
+  {
+    "slug": "three-doors",
+    "name": "Three Doors",
+    "shortDescription": "The Monty Hall problem as a game show—pick a door, the host reveals a goat, then switch or stay. Watch the 2/3 vs 1/3 win rates emerge.",
+    "category": "game",
+    "tags": [
+      "monty-hall"
+    ],
+    "status": "live",
+    "path": "toys/three-doors/index.html",
+    "related": []
+  },
+  {
+    "slug": "memory-match",
+    "name": "Memory Match",
+    "shortDescription": "Flip cards two at a time and find every pair from memory. Three grid sizes, a move counter, and a timer.",
+    "category": "game",
+    "tags": [
+      "memory-game"
+    ],
+    "status": "live",
+    "path": "toys/memory-match/index.html",
+    "related": []
   },
   {
     "slug": "snake-mini",
-    "name": "Mini Snake",
-    "shortDescription": "Classic grid snake with keyboard, WASD, and on-screen arrows.",
+    "name": "Snake",
+    "shortDescription": "Classic neon snake—eat, grow, and chase a high score with arrow keys, WASD, swipe, or the on-screen pad. Best score saved locally.",
     "category": "game",
     "tags": [
       "snake-game"
     ],
-    "status": "experimental",
+    "status": "live",
     "path": "toys/snake-mini/index.html",
-    "related": [
-      "reflex-challenge",
-      "memory-match",
-      "typing-speed-sprint"
-    ]
-  },
-  {
-    "slug": "star-click-sky",
-    "name": "Star click sky",
-    "shortDescription": "Click the night sky to drop twinkling stars—clear for a fresh universe.",
-    "category": "visual",
-    "tags": [
-      "starfield-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/star-click-sky/index.html",
-    "related": [
-      "pixel-doodle",
-      "weird-generative-canvas",
-      "random-palette-explorer"
-    ]
-  },
-  {
-    "slug": "three-doors",
-    "name": "Three doors",
-    "shortDescription": "Pick a door: one star, two goats (friendly). Play again with a new hiding spot.",
-    "category": "game",
-    "tags": [
-      "door-game"
-    ],
-    "status": "experimental",
-    "path": "toys/three-doors/index.html",
-    "related": [
-      "magic-eight-ball",
-      "coin-flipper",
-      "void-oracle"
-    ]
-  },
-  {
-    "slug": "tic-tac-toe",
-    "name": "Tic-Tac-Toe vs Computer",
-    "shortDescription": "You’re X versus an O that plays perfectly with minimax—draws are a solid outcome.",
-    "category": "game",
-    "tags": [
-      "tic-tac-toe",
-      "unbeatable-ai"
-    ],
-    "status": "experimental",
-    "path": "toys/tic-tac-toe/index.html",
-    "related": [
-      "memory-match",
-      "rock-paper-scissors",
-      "snake-mini"
-    ]
-  },
-  {
-    "slug": "timestamp-converter",
-    "name": "Timestamp converter",
-    "shortDescription": "Unix ↔ ISO ↔ local time with timezones, “now”, and copy buttons.",
-    "category": "utility",
-    "tags": [
-      "time-tool"
-    ],
-    "status": "beta",
-    "path": "tools/timestamp-converter/index.html",
-    "related": [
-      "meeting-notes-timer",
-      "uuid-nanoid-generator",
-      "unit-converter"
-    ]
-  },
-  {
-    "slug": "tiny-idle-garden",
-    "name": "Tiny idle garden",
-    "shortDescription": "A tiny garden that grows with clicks and time—saved in this browser.",
-    "category": "game",
-    "tags": [
-      "idle-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/tiny-idle-garden/index.html",
-    "related": [
-      "emoji-slots",
-      "odd-emoji-out",
-      "memory-match"
-    ]
-  },
-  {
-    "slug": "typing-speed-sprint",
-    "name": "Typing Speed Sprint",
-    "shortDescription": "Thirty-second word sprint in the browser—see your WPM when time is up.",
-    "category": "game",
-    "tags": [
-      "typing-test"
-    ],
-    "status": "beta",
-    "path": "toys/typing-speed-sprint/index.html",
-    "related": [
-      "reflex-challenge",
-      "snake-mini",
-      "memory-match"
-    ]
-  },
-  {
-    "slug": "unit-converter",
-    "name": "Unit converter",
-    "shortDescription": "Quick convert px↔rem, spacing scales, and common UI units.",
-    "category": "utility",
-    "tags": [
-      "unit-tool"
-    ],
-    "status": "beta",
-    "path": "tools/unit-converter/index.html",
-    "related": [
-      "ux-copy-generator",
-      "timestamp-converter",
-      "meeting-notes-timer"
-    ]
-  },
-  {
-    "slug": "uuid-nanoid-generator",
-    "name": "UUID & nanoid generator",
-    "shortDescription": "Generate UUIDs or short IDs in bulk—copy in one click.",
-    "category": "utility",
-    "tags": [
-      "id-generator"
-    ],
-    "status": "beta",
-    "path": "tools/uuid-nanoid-generator/index.html",
-    "related": [
-      "ux-copy-generator",
-      "csv-json-converter",
-      "meeting-notes-timer"
-    ]
-  },
-  {
-    "slug": "ux-copy-generator",
-    "name": "UX copy generator",
-    "shortDescription": "Generate button labels, empty states, and error messages with tone sliders.",
-    "category": "utility",
-    "tags": [
-      "copy-tool"
-    ],
-    "status": "experimental",
-    "path": "tools/ux-copy-generator/index.html",
-    "related": [
-      "meeting-notes-timer",
-      "timestamp-converter",
-      "unit-converter"
-    ]
-  },
-  {
-    "slug": "void-oracle",
-    "name": "Void Oracle",
-    "shortDescription": "Consult a purple orb for surreal prophecies—nonsense wisdom, cosmic vibes, zero stakes.",
-    "category": "game",
-    "tags": [
-      "oracle-toy"
-    ],
-    "status": "experimental",
-    "path": "toys/void-oracle/index.html",
-    "related": [
-      "magic-eight-ball",
-      "compliment-cannon",
-      "late-excuse-generator"
-    ]
-  },
-  {
-    "slug": "wcag-contrast-checker",
-    "name": "WCAG contrast checker",
-    "shortDescription": "Check two colors for WCAG 2.1 contrast ratio and AA / AAA pass for text sizes.",
-    "category": "utility",
-    "tags": [
-      "a11y-tool"
-    ],
-    "status": "beta",
-    "path": "tools/wcag-contrast-checker/index.html",
-    "related": [
-      "a11y-quick-checklist",
-      "palette-from-image",
-      "gradient-generator"
-    ]
+    "related": []
   },
   {
     "slug": "weird-generative-canvas",
     "name": "Weird Generative Canvas",
-    "shortDescription": "A random algorithm with a random color scheme that animates on your screen.",
+    "shortDescription": "A generative-art playground: flow fields, harmonographs, swarms, and kaleidoscopes. Switch modes and palettes, drag to steer, and save a PNG.",
     "category": "visual",
     "tags": [
       "generative-art"
     ],
-    "status": "experimental",
+    "status": "live",
     "path": "toys/weird-generative-canvas/index.html",
-    "related": [
-      "random-palette-explorer",
-      "mesh-gradient-studio",
-      "pixel-doodle"
-    ]
+    "related": []
   },
   {
-    "slug": "word-character-counter",
-    "name": "Word & character counter",
-    "shortDescription": "Count words, characters, sentences, and paragraphs from pasted text—runs locally.",
+    "slug": "dice-roller",
+    "name": "Dice Roller",
+    "shortDescription": "Roll faceted 3D dice—d4 through d20, solo or a whole pool at once. They tumble and settle fair, with a running total and history.",
+    "category": "game",
+    "tags": [
+      "dice-roller"
+    ],
+    "status": "live",
+    "path": "toys/dice-roller/index.html",
+    "related": []
+  },
+  {
+    "slug": "magic-eight-ball",
+    "name": "Magic 8-Ball",
+    "shortDescription": "Ask a yes/no question and shake the glossy 8-ball—the window clouds over and the blue triangle surfaces with your answer.",
+    "category": "game",
+    "tags": [
+      "fortune-toy"
+    ],
+    "status": "live",
+    "path": "toys/magic-eight-ball/index.html",
+    "related": []
+  },
+  {
+    "slug": "blob-choir",
+    "name": "Blob Choir",
+    "shortDescription": "A cluster of glowing gooey blobs that sing warm synth voices. Tap or drag to play; hit Shimmer for generative ambient.",
+    "category": "audio",
+    "tags": [
+      "synth-toy"
+    ],
+    "status": "live",
+    "path": "toys/blob-choir/index.html",
+    "related": []
+  },
+  {
+    "slug": "coin-flipper",
+    "name": "Coin Flip",
+    "shortDescription": "Toss a real 3D gold coin—it arcs, tumbles, and lands heads or tails with cryptographically fair odds. Tracks streaks and your run.",
+    "category": "game",
+    "tags": [
+      "coin-flip"
+    ],
+    "status": "live",
+    "path": "toys/coin-flipper/index.html",
+    "related": []
+  },
+  {
+    "slug": "breathing-pacer",
+    "name": "Breathing Pacer",
+    "shortDescription": "A calm glowing orb that expands and contracts to pace your breath—Calm, Box, or 4·7·8, with an optional ambient tone.",
+    "category": "wellness",
+    "tags": [
+      "breathing-tool"
+    ],
+    "status": "live",
+    "path": "toys/breathing-pacer/index.html",
+    "related": []
+  },
+  {
+    "slug": "meeting-cost-meter",
+    "name": "Meeting Cost Meter",
+    "shortDescription": "Set the hourly rate and headcount, hit start, and watch a live dollar counter climb as the meeting drags on.",
     "category": "utility",
     "tags": [
-      "word-count-tool"
+      "cost-calculator"
     ],
-    "status": "beta",
-    "path": "tools/word-character-counter/index.html",
-    "related": [
-      "diff-two-texts",
-      "markdown-previewer",
-      "ux-copy-generator"
-    ]
+    "status": "live",
+    "path": "tools/meeting-cost-meter/index.html",
+    "related": []
+  },
+  {
+    "slug": "goo-cursor",
+    "name": "Goo Cursor",
+    "shortDescription": "Chrome-and-lava metaballs that trail your cursor and merge like living ferrofluid. Tap to splat.",
+    "category": "visual",
+    "tags": [
+      "generative-art"
+    ],
+    "status": "live",
+    "path": "toys/goo-cursor/index.html",
+    "related": []
   }
 ]

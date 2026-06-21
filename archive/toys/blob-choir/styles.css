@@ -1,0 +1,91 @@
+/* Blob Choir — local only */
+
+.bc-layout {
+  margin-top: 0.35rem;
+}
+
+.bc-stage {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 1rem;
+  padding: 0.25rem 0;
+  max-width: 28rem;
+  margin: 0 auto 1.25rem;
+}
+
+.bc-blob {
+  aspect-ratio: 1;
+  border-radius: 63% 37% 58% 42% / 44% 53% 47% 56%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 160ms cubic-bezier(0.34, 1.4, 0.64, 1), filter 160ms ease;
+  box-shadow: 0 8px 24px rgba(12, 18, 34, 0.12);
+}
+
+.bc-blob:hover {
+  transform: scale(1.06) rotate(-3deg);
+  filter: brightness(1.08);
+}
+
+.bc-blob:active {
+  transform: scale(0.94);
+}
+
+.bc-blob:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--ring-offset, 0 0 0 2px var(--surface)),
+    var(--ring, 0 0 0 3px rgba(37, 99, 235, 0.35)),
+    0 8px 24px rgba(12, 18, 34, 0.15);
+}
+
+.bc-blob--1 {
+  background: linear-gradient(145deg, #f472b6, #db2777);
+}
+.bc-blob--2 {
+  background: linear-gradient(145deg, #34d399, #059669);
+}
+.bc-blob--3 {
+  background: linear-gradient(145deg, #60a5fa, #2563eb);
+}
+.bc-blob--4 {
+  background: linear-gradient(145deg, #fbbf24, #d97706);
+}
+.bc-blob--5 {
+  background: linear-gradient(145deg, #a78bfa, #6d28d9);
+}
+.bc-blob--6 {
+  background: linear-gradient(145deg, #2dd4bf, #0d9488);
+}
+.bc-blob--7 {
+  background: linear-gradient(145deg, #fb923c, #ea580c);
+}
+.bc-blob--8 {
+  background: linear-gradient(145deg, #e879f9, #c026d3);
+}
+
+.bc-status {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0 0 0.75rem;
+  min-height: 1.35em;
+}
+
+.bc-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  text-align: center;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+.bc-toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}

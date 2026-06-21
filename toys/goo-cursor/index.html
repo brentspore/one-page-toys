@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Goo Cursor — One Page Toys</title>
+    <meta name="description" content="Iridescent liquid-metal metaballs that trail your cursor, hue-shift like an oil slick, and merge like living ferrofluid. Move to flow, tap to splat." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/goo-cursor/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#05060a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Goo Cursor — One Page Toys" />
+    <meta property="og:description" content="Iridescent liquid-metal metaballs that trail your cursor and merge like living ferrofluid. Move to flow, tap to splat." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/goo-cursor/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/goo-cursor.png" />
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+  <body>
+    <!-- Living aurora behind the metal -->
+    <div class="aurora" aria-hidden="true">
+      <span class="aurora__blob aurora__blob--1"></span>
+      <span class="aurora__blob aurora__blob--2"></span>
+      <span class="aurora__blob aurora__blob--3"></span>
+      <span class="aurora__blob aurora__blob--4"></span>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- Gooey metaball filter: blur → threshold → turbulence displacement → blend. -->
+    <svg class="goo-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="goo">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 28 -13"
+            result="goo"
+          />
+          <feTurbulence type="fractalNoise" baseFrequency="0.011 0.014" numOctaves="2" seed="7" result="noise" />
+          <feDisplacementMap in="goo" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G" result="wob" />
+          <feBlend in="SourceGraphic" in2="wob" />
+        </filter>
+      </defs>
+    </svg>
+
+    <main class="stage" id="stage" aria-label="Goo Cursor. Move your pointer to flow the liquid metal; tap to splat.">
+      <div class="goo-layer" id="gooLayer" aria-hidden="true"></div>
+    </main>
+
+    <div class="ripples" id="ripples" aria-hidden="true"></div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 001</span>
+      <span class="frame__corner frame__corner--tr">Goo Cursor</span>
+      <span class="frame__corner frame__corner--bl">
+        <a href="../../index.html">← onepagetoys.com</a>
+      </span>
+    </div>
+
+    <p class="hint" id="hint">move · tap to splat</p>
+
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+  </body>
+</html>

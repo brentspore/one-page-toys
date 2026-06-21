@@ -1,60 +1,246 @@
-.bp-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
+/* Breathing Pacer — a serene, immersive breath guide. Self-contained. */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap");
+
+:root{
+  --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --aqua: #7fe3df;
+  --indigo: #6f8bff;
+  --ink: #eaf3ff;
+  --dim: rgba(234, 243, 255, 0.55);
 }
 
-.bp-circle-wrap {
-  width: min(220px, 70vw);
-  height: min(220px, 70vw);
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html, body{ height: 100%; }
+
+body{
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: #070b16;
+  overflow: hidden;
+  overscroll-behavior: none;
+  /* whole scene gently brightens on inhale via --breath (0..1), set by JS */
+  --breath: 0.4;
+}
+
+/* ---------- Ambient scene ---------- */
+.scene{
+  position: fixed;
+  inset: -25%;
+  z-index: 0;
+  filter: blur(70px) saturate(1.2);
+  opacity: calc(0.5 + var(--breath) * 0.5);
+  transition: opacity 120ms linear;
+  pointer-events: none;
+}
+.aura{
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  width: 58vmax;
+  height: 58vmax;
+  will-change: transform;
+}
+.aura--1{ background: radial-gradient(circle, #14708a 0%, transparent 62%); top: -8%; left: -6%; animation: float1 26s ease-in-out infinite; }
+.aura--2{ background: radial-gradient(circle, #3a4f9f 0%, transparent 62%); bottom: -12%; right: -8%; animation: float2 32s ease-in-out infinite; }
+.aura--3{ background: radial-gradient(circle, #5b3f8f 0%, transparent 60%); top: 30%; right: 18%; animation: float1 38s ease-in-out infinite reverse; }
+
+@keyframes float1{ 0%,100%{ transform: translate(0,0) scale(1);} 50%{ transform: translate(6vw,5vh) scale(1.12);} }
+@keyframes float2{ 0%,100%{ transform: translate(0,0) scale(1.08);} 50%{ transform: translate(-6vw,-4vh) scale(0.94);} }
+
+.motes{ position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+/* ---------- Breath piece ---------- */
+.stage{
+  position: fixed;
+  inset: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.bp-circle {
-  width: 55%;
-  height: 55%;
+.breath{
+  position: relative;
+  width: min(74vmin, 460px);
+  height: min(74vmin, 460px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* progress ring */
+.ring{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+.ring__track{
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 0.7;
+}
+.ring__fill{
+  fill: none;
+  stroke: var(--aqua);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-dasharray: 295.31; /* 2πr, r=47 */
+  stroke-dashoffset: 295.31;
+  filter: drop-shadow(0 0 6px rgba(127, 227, 223, 0.6));
+  transition: stroke 600ms ease;
+}
+
+/* the glowing orb (scaled by JS via --s) */
+.orb{
+  position: absolute;
+  width: 64%;
+  height: 64%;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, rgba(125, 211, 252, 0.9), rgba(14, 165, 233, 0.55) 45%, rgba(2, 132, 199, 0.85));
+  transform: scale(var(--s, 0.55));
+  background:
+    radial-gradient(circle at 38% 32%, #f4fbff 0%, #b8f0ec 16%, #62c3d6 44%, #3566b0 74%, #20337a 100%);
   box-shadow:
-    0 12px 40px rgba(14, 116, 144, 0.25),
-    inset 0 0 24px rgba(255, 255, 255, 0.35);
-  animation: bp-breathe 8s ease-in-out infinite;
+    0 0 70px rgba(120, 200, 220, 0.45),
+    0 0 150px rgba(90, 120, 230, 0.32),
+    inset 0 0 60px rgba(255, 255, 255, 0.18);
+  will-change: transform;
+}
+.orb::after{
+  /* soft halo that breathes with the orb */
+  content: "";
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(127, 227, 223, 0.22), transparent 66%);
 }
 
-@keyframes bp-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.92;
-  }
-  50% {
-    transform: scale(1.18);
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bp-circle {
-    animation: none;
-  }
-}
-
-.bp-label {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  min-height: 1.4em;
-}
-
-.bp-hint {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--muted);
+.readout{
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
   text-align: center;
-  max-width: 26rem;
+  pointer-events: none;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+.phase{
+  font-size: clamp(1.1rem, 3.4vw, 1.7rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.count{
+  font-size: clamp(2.2rem, 8vw, 3.4rem);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  color: rgba(234, 243, 255, 0.82);
+  line-height: 1;
+}
+
+/* ---------- Controls ---------- */
+.controls{
+  position: fixed;
+  left: 50%;
+  bottom: clamp(64px, 12vh, 110px);
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  transition: opacity 500ms ease;
+}
+
+.patterns{
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+.pat{
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--dim);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease;
+}
+.pat:hover{ color: var(--ink); }
+.pat[aria-pressed="true"]{ background: rgba(127, 227, 223, 0.16); color: #d6fffb; }
+.pat:focus-visible{ outline: none; box-shadow: 0 0 0 2px #070b16, 0 0 0 4px rgba(127,227,223,0.6); }
+
+.ctl-row{ display: inline-flex; gap: 10px; }
+.ctl-btn{
+  appearance: none;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--dim);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.ctl-btn:hover{ color: var(--ink); border-color: rgba(255, 255, 255, 0.28); }
+.ctl-btn:focus-visible{ outline: none; box-shadow: 0 0 0 2px #070b16, 0 0 0 4px rgba(127,227,223,0.6); }
+.ctl-btn--play[aria-pressed="false"]{ color: #d6fffb; border-color: rgba(127, 227, 223, 0.4); }
+
+.breaths{
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.4);
+}
+
+/* ---------- Brand frame ---------- */
+.frame{ position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.frame__corner{
+  position: absolute;
+  font-size: clamp(0.56rem, 1.2vw, 0.7rem);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.42);
+  white-space: nowrap;
+}
+.frame__corner--tl{ top: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--tr{ top: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner--bl{ bottom: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--br{ bottom: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner a{ color: inherit; text-decoration: none; pointer-events: auto; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
+.frame__corner a:hover{ color: var(--ink); border-bottom-color: var(--aqua); }
+
+.sr-only{
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .aura{ animation: none; }
+  .orb{ transition: none; }
 }
