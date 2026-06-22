@@ -1,6 +1,7 @@
 # MEMORY.md
 
-- [Project overview](project.md) — purpose, architecture, working rules, and source layout
+- [Handoff — resume here](HANDOFF.md) — **read first.** Cross-device current state + how to continue (in-repo so it travels via `git pull`). Supersedes `project.md` where they conflict.
+- [Project overview](project.md) — purpose & architecture — **NOTE: pre-2026-06 era (old ~60-toy tool-shell framework); see HANDOFF.md for the current launcher-hub + 19 standalone toys**
 - [Project reference](reference.md) — commands, repo pointers, external systems, and operational notes
 - [Project decisions](DECISIONS.md) — project-specific decisions that should not be relitigated
 - [Project backlog](BACKLOG.md) — deferred ideas and follow-ups for this project

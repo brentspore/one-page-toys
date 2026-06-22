@@ -1,0 +1,46 @@
+---
+name: Cross-device handoff
+description: Resume-here state + how-to-continue, kept IN the repo so it travels via git pull between machines
+type: project
+---
+
+# Handoff — resume here
+
+This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git pull`.
+It is the authoritative current-state bridge. (A richer running log lives in the *global*
+`~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
+this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
+
+**Last updated:** 2026-06-22 · **Latest pushed commit:** `ad8e3c8` on `main`.
+
+## To continue on another machine
+1. `git pull` (the remote is authoritative; everything below is committed/pushed).
+2. Run locally — **no build, no deps needed**: from the repo root, `python3 -m http.server 8000`, then open `http://localhost:8000`.
+3. Only if you need the headless verify / screenshot / OG-render workflow (Playwright): `npm install` then `npx playwright install chromium`. **`node_modules` is gitignored on purpose** (it once bloated pushes), so it won't come down with the pull — reinstall it.
+
+## What this site is now (post-pivot, 2026-06)
+A branded **launcher hub** + **19 standalone, full-bleed toys**, each in its own `toys/<slug>/` (or `tools/<slug>/` for the lone utility), opening in a NEW TAB. Geist design system (Geist Sans/Mono, neutral grays, restrained red `#941e1e`, 3-way System/Light/Dark theme). The old ~57 toys were archived to `/archive/`. **Direction: FUN / playful / experiential — NOT dev tools** (dev tools belong on the separate BuildUtilities site). Static site, GitHub Pages from `main` → onepagetoys.com.
+
+**The 19 toys:** Goo Cursor, Meeting Cost Meter (the one utility), Breathing Pacer, Coin Flip, Dice Roller, Magic 8-Ball, Blob Choir, Tic-Tac-Toe, Rock Paper Scissors, Three Doors, Memory Match, Snake, Weird Generative Canvas, Star Click Sky, Tiny Idle Garden (015), Echo (016), Chimp Test (017), Beat Maker (018), Falling Sand (019).
+
+## Key files
+- `tools-registry.json` — drives the gallery. Prepend new toys (newest first). slug/name/shortDescription/category/tags/status/path.
+- `assets/main.js` — gallery render + search; `TYPE_NL_PHRASES` map (natural-language search terms per tag); home shows a RANDOM 9; GA4 events (`toy_launch`, `outbound_click`, `tip_jar_click`). Cache-bust `?v=N`.
+- `assets/styles.css` — hub styles + per-slug `.card__preview[data-slug="…"]` thumbnails (+ a `:not()` default-exclusion list). Cache-bust `?v=N`.
+- `assets/theme.js` — 3-way theme toggle. `assets/tip-jar.js` — Mighty Army shield badge → PayPal `brent@mightyarmy.com`.
+- `sitemap.xml`, `assets/og/<slug>.png` (per-toy share images), `assets/cards/<slug>.png` (only Falling Sand uses a real rendered card image; others are CSS motifs).
+- **`scripts/og-gen.html`** — parameterized 1200×630 template for per-toy OG share images (and the Falling Sand card thumbnail). Open `file://…/scripts/og-gen.html#<slug>` and screenshot at 1200×630. (Was historically in `/tmp` — now committed here.)
+
+## Conventions / how to add a toy
+- New `toys/<slug>/` = self-contained `index.html` + `styles.css` + `script.js`, full-bleed, frame corners (`No. NNN`, name, back-link), a hint line, includes `assets/tip-jar.js?v=9`. Full SEO meta + JSON-LD + GA snippet + no-flash theme init (copy any recent toy as a template — e.g. `toys/echo/` or `toys/falling-sand/`).
+- Register: add to `tools-registry.json` (top) + `sitemap.xml` + `TYPE_NL_PHRASES` in `main.js` + a `.card__preview[data-slug]` rule in `assets/styles.css` (and add the slug to the default `:not()` chain) + a per-toy OG image via `scripts/og-gen.html`.
+- **Cache-busting:** bump `?v=N` on any shared asset you change (`assets/styles.css`, `assets/main.js`, `assets/theme.js`, `assets/tip-jar.js`) across `index.html` + `all-toys.html`, and on a toy's own `script.js`/`styles.css` in its `index.html`. Browsers cache aggressively.
+- **Audio toys (LEARNED):** always add the iOS silent-buffer unlock + `resume()` inside the first user gesture, or Web Audio can stay silent on iOS Safari — `var b=actx.createBuffer(1,1,22050); var s=actx.createBufferSource(); s.buffer=b; s.connect(actx.destination); s.start(0);`. Tune tones to be consonant + calm (pentatonic / major-6, lower octaves, sine + lowpass).
+- **3D-transformed elements (LEARNED):** on a `transform-style: preserve-3d` element, `box-shadow` rings render with a clipped edge — use `outline` for focus/selection rings instead (bit Three Doors' picked door).
+- Verify each toy headless before committing (Playwright): no console errors, no horizontal overflow at 375px, interactions work. Screenshot to eyeball visuals.
+
+## Open ideas / next candidates (fun-aligned)
+Build-next toys: **lava-lamp / plasma**, **bubble-wrap ASMR**, **Newton's cradle**, **spirograph / string-art**; archive options: **Mood Meteor**, **Void Oracle**, **Emoji Slots**. Genre gaps: more audio, more cozy/idle. Skip as too-simple: the reflex cluster + one-shot gag generators in `/archive/`.
+
+## Other repos (separate)
+- **BuildUtilities** (`~/Personal Projects/buildutilities` = GitHub `brentspore/buildutilities` = Lovable project "BuildUtilities.com") — the dev-tools site; git push syncs into Lovable, then Publish in Lovable to deploy. Different repo entirely.
