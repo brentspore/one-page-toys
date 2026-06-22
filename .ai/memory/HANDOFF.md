@@ -11,7 +11,7 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-22 · **Latest pushed commit:** `main aadf7cb` (23 toys live; 020–023 redesigned to standard + real card/OG images; Newton's Cradle has drag-any-balls + diminishing damping + Auto-swing toggle; Spirograph has live gear sliders).
+**Last updated:** 2026-06-22 · **Latest pushed commit:** `main 23c8e2f` (24 toys live). Newton's Cradle: drag direction picks the end so you pull 1–5 balls + diminishing damping (settles ~30s) + Auto-swing toggle. Spirograph: live gear sliders + faster (no shadowBlur, capped resolution). Lava Lamp: full-viewport metaballs (vessel removed). Plasma Ball (024) built on desktop and met the quality bar (real toy + real card + OG) — the bar is working.
 
 ## ⚠ Design quality bar — READ BEFORE BUILDING ANY TOY
 The owner is a **designer** and holds a high visual bar. A toy is NOT done when it merely "works" — it must look *intentional, polished, and richly itself*. The first desktop pass at toys 020–023 was rejected for being flat/crude with unrepresentative cards; this is the standard that pass missed:
@@ -29,7 +29,7 @@ The owner is a **designer** and holds a high visual bar. A toy is NOT done when 
 ## What this site is now (post-pivot, 2026-06)
 A branded **launcher hub** + **19 standalone, full-bleed toys**, each in its own `toys/<slug>/` (or `tools/<slug>/` for the lone utility), opening in a NEW TAB. Geist design system (Geist Sans/Mono, neutral grays, restrained red `#941e1e`, 3-way System/Light/Dark theme). The old ~57 toys were archived to `/archive/`. **Direction: FUN / playful / experiential — NOT dev tools** (dev tools belong on the separate BuildUtilities site). Static site, GitHub Pages from `main` → onepagetoys.com.
 
-**The 23 toys:** Goo Cursor, Meeting Cost Meter (the one utility), Breathing Pacer, Coin Flip, Dice Roller, Magic 8-Ball, Blob Choir, Tic-Tac-Toe, Rock Paper Scissors, Three Doors, Memory Match, Snake, Weird Generative Canvas, Star Click Sky, Tiny Idle Garden (015), Echo (016), Chimp Test (017), Beat Maker (018), Falling Sand (019), Lava Lamp (020), Bubble Wrap (021), Newton's Cradle (022), Spirograph (023).
+**The 24 toys:** Goo Cursor, Meeting Cost Meter (the one utility), Breathing Pacer, Coin Flip, Dice Roller, Magic 8-Ball, Blob Choir, Tic-Tac-Toe, Rock Paper Scissors, Three Doors, Memory Match, Snake, Weird Generative Canvas, Star Click Sky, Tiny Idle Garden (015), Echo (016), Chimp Test (017), Beat Maker (018), Falling Sand (019), Lava Lamp (020), Bubble Wrap (021), Newton's Cradle (022), Spirograph (023), Plasma Ball (024).
 
 ## Key files
 - `tools-registry.json` — drives the gallery. Prepend new toys (newest first). slug/name/shortDescription/category/tags/status/path.
