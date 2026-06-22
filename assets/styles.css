@@ -749,70 +749,11 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 }
 
 /* Lava Lamp — deep warm amber blobs, no yellow */
-.card__preview[data-slug="lava-lamp"]{
-  background:
-    radial-gradient(ellipse 45% 58% at 30% 72%, rgba(230,75,12,0.82) 0%, rgba(200,50,5,0.3) 55%, transparent 70%),
-    radial-gradient(ellipse 35% 40% at 68% 28%, rgba(220,90,15,0.75) 0%, rgba(180,55,5,0.3) 50%, transparent 65%),
-    radial-gradient(ellipse 28% 32% at 50% 54%, rgba(200,42,4,0.65) 0%, transparent 60%),
-    radial-gradient(ellipse 22% 26% at 18% 38%, rgba(215,68,10,0.55) 0%, transparent 55%),
-    #080207;
-}
-
-/* Bubble Wrap — large 3-D bubbles with top-left specular highlight */
-.card__preview[data-slug="bubble-wrap"]{
-  background:
-    radial-gradient(circle at 36% 34%, rgba(240,250,255,0.92) 0%, rgba(130,190,245,0.55) 32%, rgba(50,120,210,0.18) 58%, transparent 70%) 18% 30% / 36% 52% no-repeat,
-    radial-gradient(circle at 36% 34%, rgba(240,250,255,0.88) 0%, rgba(130,190,245,0.50) 32%, rgba(50,120,210,0.16) 58%, transparent 70%) 54% 26% / 34% 48% no-repeat,
-    radial-gradient(circle at 36% 34%, rgba(240,250,255,0.82) 0%, rgba(130,190,245,0.44) 32%, rgba(50,120,210,0.14) 58%, transparent 70%) 82% 42% / 30% 44% no-repeat,
-    radial-gradient(circle at 36% 34%, rgba(240,250,255,0.84) 0%, rgba(130,190,245,0.46) 32%, rgba(50,120,210,0.15) 58%, transparent 70%) 34% 68% / 32% 46% no-repeat,
-    radial-gradient(circle at 36% 34%, rgba(240,250,255,0.78) 0%, rgba(130,190,245,0.40) 32%, rgba(50,120,210,0.12) 58%, transparent 70%) 66% 70% / 28% 42% no-repeat,
-    #0d1520;
-}
-
-/* Newton's Cradle — top bar + five metallic balls */
-.card__preview[data-slug="newtons-cradle"]{
-  background: radial-gradient(ellipse 90% 70% at 50% 35%, #161b26 0%, #0b0c10 80%);
-  position: relative;
-  flex-direction: column;
-  gap: 4px;
-}
-.card__preview[data-slug="newtons-cradle"]::after{
-  content: "";
-  position: absolute;
-  top: 22%;
-  left: 15%;
-  width: 70%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, rgba(130,160,200,0.55), rgba(160,190,225,0.85), rgba(130,160,200,0.55), transparent);
-  border-radius: 2px;
-}
-.card__preview[data-slug="newtons-cradle"]::before{
-  content: "⬤ ⬤ ⬤ ⬤ ⬤";
-  position: absolute;
-  bottom: 24%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.25rem;
-  letter-spacing: 5px;
-  color: #7a90b0;
-  text-shadow: 0 0 12px rgba(130,170,220,0.45), 2px 3px 6px rgba(0,0,0,0.6);
-  white-space: nowrap;
-}
-
-/* Spirograph — conic rainbow that reads as spinning petals */
-.card__preview[data-slug="spirograph"]{
-  background:
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(6,6,15,0.9) 0%, rgba(6,6,15,0.3) 55%, transparent 80%),
-    conic-gradient(from 15deg at 50% 50%,
-      hsla(280,75%,60%,0.75),
-      hsla(210,85%,62%,0.75) 72deg,
-      hsla(150,80%,55%,0.75) 144deg,
-      hsla(55,90%,60%,0.75) 216deg,
-      hsla(15,90%,60%,0.75) 288deg,
-      hsla(280,75%,60%,0.75) 360deg
-    ),
-    #06060f;
-}
+/* Real rendered thumbnails of each toy (authentic representation) */
+.card__preview[data-slug="lava-lamp"]{ background: #080207 url("cards/lava-lamp.png") center / cover no-repeat; }
+.card__preview[data-slug="bubble-wrap"]{ background: #0c1a28 url("cards/bubble-wrap.png") center / cover no-repeat; }
+.card__preview[data-slug="newtons-cradle"]{ background: #0b0c10 url("cards/newtons-cradle.png") center / cover no-repeat; }
+.card__preview[data-slug="spirograph"]{ background: #06060f url("cards/spirograph.png") center / cover no-repeat; }
 
 /* Default — clean neutral preview for any future toy */
 .card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]):not([data-slug="lava-lamp"]):not([data-slug="bubble-wrap"]):not([data-slug="newtons-cradle"]):not([data-slug="spirograph"]){

@@ -84,7 +84,9 @@
       "Bash(ls -la .ai/memory/)",
       "Bash(ls -la AI.md)",
       "Bash(cat package.json)",
-      "Bash(find . -name \"og-gen*\" -not -path \"*/node_modules/*\")"
+      "Bash(find . -name \"og-gen*\" -not -path \"*/node_modules/*\")",
+      "Bash(grep -iE \"claude|agent|cursor|ai\\\\.md|\\\\.md$\")",
+      "Bash(git stash *)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",

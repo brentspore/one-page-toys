@@ -71,8 +71,10 @@
     bubbles = [];
     popped = 0;
 
-    var cols = Math.floor(window.innerWidth / BUBBLE_SIZE);
-    var rows = Math.floor(window.innerHeight / BUBBLE_SIZE) + 1;
+    var sw = sheet.clientWidth || window.innerWidth;
+    var sh = sheet.clientHeight || window.innerHeight;
+    var cols = Math.max(3, Math.floor(sw / BUBBLE_SIZE));
+    var rows = Math.max(3, Math.floor(sh / BUBBLE_SIZE));
     var total = cols * rows;
 
     totalEl.textContent = total;

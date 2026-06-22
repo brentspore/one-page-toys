@@ -11,7 +11,15 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-22 · **Latest pushed commit:** pending push — 4 new toys built (not yet committed).
+**Last updated:** 2026-06-22 · **Latest pushed commit:** `main` HEAD (23 toys live; 020–023 redesigned to standard + real card/OG images).
+
+## ⚠ Design quality bar — READ BEFORE BUILDING ANY TOY
+The owner is a **designer** and holds a high visual bar. A toy is NOT done when it merely "works" — it must look *intentional, polished, and richly itself*. The first desktop pass at toys 020–023 was rejected for being flat/crude with unrepresentative cards; this is the standard that pass missed:
+- **Each toy is its own curated little world** — a deliberate palette, lighting, depth, motion. No flat primitives on flat backgrounds. Study the strongest live toys before building and match that level: **Goo Cursor, Star Click Sky, Tiny Idle Garden, Falling Sand, Three Doors, Lava Lamp**.
+- **Render real-world toys *as the real object*** — vessel, material, lighting, shadow, glow. (A lava lamp needs a glass vessel + glowing wax + bulb glow, not flat red blobs. Newton's cradle needs a grounded frame + chrome balls, not flat dots. A spirograph needs dense layered glowing rosettes, not one thin loop.)
+- **Card images MUST clearly represent the toy.** Strongly prefer a **real rendered thumbnail** captured from the finished toy (`assets/cards/<slug>.png`, overlays hidden, square-ish crop) over abstract CSS gradients — abstract blobs that don't read as the toy are NOT acceptable. The card CSS is then `background:#<bg> url("cards/<slug>.png") center/cover`.
+- **Never ship without an OG image.** Generate one for every toy via `scripts/og-gen.html` (you can reuse the rendered card thumbnail as the motif — see the `img()` helper + toy entries already in that file). A missing `assets/og/<slug>.png` = a broken share link.
+- **Always SCREENSHOT and look at it** (toy, card, and OG) before committing — "no console errors" is not the bar; *how it looks* is. Note: headless Chromium throttles `requestAnimationFrame`, so animated toys may not finish drawing in a normal screenshot — drive frames with `await page.evaluate(()=>new Promise(r=>requestAnimationFrame(r)))` in a loop, or the toy will look unfinished when it's actually fine.
 
 ## To continue on another machine
 1. `git pull` (the remote is authoritative; everything below is committed/pushed).
@@ -28,7 +36,7 @@ A branded **launcher hub** + **19 standalone, full-bleed toys**, each in its own
 - `assets/main.js` — gallery render + search; `TYPE_NL_PHRASES` map (natural-language search terms per tag); home shows a RANDOM 9; GA4 events (`toy_launch`, `outbound_click`, `tip_jar_click`). Cache-bust `?v=N`.
 - `assets/styles.css` — hub styles + per-slug `.card__preview[data-slug="…"]` thumbnails (+ a `:not()` default-exclusion list). Cache-bust `?v=N`.
 - `assets/theme.js` — 3-way theme toggle. `assets/tip-jar.js` — Mighty Army shield badge → PayPal `brent@mightyarmy.com`.
-- `sitemap.xml`, `assets/og/<slug>.png` (per-toy share images), `assets/cards/<slug>.png` (only Falling Sand uses a real rendered card image; others are CSS motifs).
+- `sitemap.xml`, `assets/og/<slug>.png` (per-toy share images — every toy has one), `assets/cards/<slug>.png` (real rendered card thumbnails — used by Falling Sand + Lava Lamp + Bubble Wrap + Newton's Cradle + Spirograph; the rest use CSS motifs, but new toys should prefer a rendered thumbnail per the quality bar above).
 - **`scripts/og-gen.html`** — parameterized 1200×630 template for per-toy OG share images (and the Falling Sand card thumbnail). Open `file://…/scripts/og-gen.html#<slug>` and screenshot at 1200×630. (Was historically in `/tmp` — now committed here.)
 
 ## Conventions / how to add a toy
@@ -40,7 +48,7 @@ A branded **launcher hub** + **19 standalone, full-bleed toys**, each in its own
 - Verify each toy headless before committing (Playwright): no console errors, no horizontal overflow at 375px, interactions work. Screenshot to eyeball visuals.
 
 ## Open ideas / next candidates (fun-aligned)
-All four backlog items built (020–023). Next candidates: archive options **Mood Meteor**, **Void Oracle**, **Emoji Slots**; genre gaps: more audio, more cozy/idle. Skip as too-simple: the reflex cluster + one-shot gag generators in `/archive/`. Still need: OG images for the 4 new toys (use `scripts/og-gen.html#<slug>` → screenshot 1200×630).
+Toys 020–023 built, redesigned to the quality bar, and given real card + OG images. Next candidates: archive options **Mood Meteor**, **Void Oracle**, **Emoji Slots**; genre gaps: more audio, more cozy/idle. Skip as too-simple: the reflex cluster + one-shot gag generators in `/archive/`.
 
 ## Other repos (separate)
 - **BuildUtilities** (`~/Personal Projects/buildutilities` = GitHub `brentspore/buildutilities` = Lovable project "BuildUtilities.com") — the dev-tools site; git push syncs into Lovable, then Publish in Lovable to deploy. Different repo entirely.

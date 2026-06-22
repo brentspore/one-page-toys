@@ -1,66 +1,55 @@
+/* Lava Lamp — warm metaball blobs that rise, merge, and sink inside a glass
+ * vessel. The blur+contrast on the .goo layer fuses neighbouring blobs; motion
+ * is a slow vertical convection loop (heat at the base, cool at the top).
+ */
 (function () {
   "use strict";
 
-  var wrap = document.getElementById("blobs");
-  var N = 14;
+  var blobsEl = document.getElementById("blobs");
+  var W = 0, H = 0;
+  function size() { var r = blobsEl.getBoundingClientRect(); W = r.width; H = r.height; }
+  size();
+  window.addEventListener("resize", size);
+
+  // warm wax palette — orange → amber → coral (kept saturated so contrast stays vivid)
+  var HUES = [16, 22, 12, 28, 18, 24, 14];
   var items = [];
-  var W = window.innerWidth;
-  var H = window.innerHeight;
-
-  window.addEventListener("resize", function () {
-    W = window.innerWidth;
-    H = window.innerHeight;
-  });
-
-  /* hsl components — tight orange-red range, no yellows */
-  var palette = [
-    [18, 92, 50],
-    [14, 95, 46],
-    [22, 88, 48],
-    [10, 96, 44],
-    [20, 90, 52],
-    [16, 94, 47],
-    [24, 86, 49],
-  ];
-
+  var N = 8;
   for (var i = 0; i < N; i++) {
+    var big = i < 2;                       // a couple of big slow globs + smaller ones
     var el = document.createElement("div");
     el.className = "blob";
-    var r = 48 + Math.random() * 100;
-    var c = palette[i % palette.length];
-    el.style.cssText =
-      "width:" + (r * 2) + "px;" +
-      "height:" + (r * 2) + "px;" +
-      "background:hsl(" + c[0] + "," + c[1] + "%," + c[2] + "%)";
-    wrap.appendChild(el);
-
-    /* Each blob has two superimposed sine waves per axis for organic drift */
+    var rFrac = big ? (0.30 + Math.random() * 0.10) : (0.15 + Math.random() * 0.12);
+    var h = HUES[i % HUES.length];
+    el.style.background = "radial-gradient(circle at 38% 34%, hsl(" + (h + 14) + ",100%,66%), hsl(" + h + ",95%,52%) 70%)";
+    blobsEl.appendChild(el);
     items.push({
-      el: el,
-      r: r,
-      bx: 0.08 + Math.random() * 0.84,   /* base x, normalized */
-      by: 0.10 + Math.random() * 0.80,   /* base y, normalized */
-      ox: [                               /* [amplitude_norm, freq, phase] */
-        [0.08 + Math.random() * 0.09, 2.0e-4 + Math.random() * 2.8e-4, Math.random() * 6.28],
-        [0.03 + Math.random() * 0.04, 5.5e-4 + Math.random() * 5.0e-4, Math.random() * 6.28],
-      ],
-      oy: [
-        [0.14 + Math.random() * 0.14, 1.7e-4 + Math.random() * 2.0e-4, Math.random() * 6.28],
-        [0.05 + Math.random() * 0.05, 4.8e-4 + Math.random() * 4.0e-4, Math.random() * 6.28],
-      ],
+      el: el, rFrac: rFrac,
+      x: 0.26 + Math.random() * 0.48,             // kept toward the middle (vessel tapers)
+      xamp: 0.04 + Math.random() * 0.06,
+      xfreq: 0.00018 + Math.random() * 0.0003,
+      xph: Math.random() * 6.28,
+      period: (big ? 19000 : 12000) + Math.random() * 9000,
+      vph: Math.random(),                          // vertical phase offset (0..1)
+      lo: 0.06 + Math.random() * 0.06,             // travel bounds (fraction of H)
+      hi: 0.06 + Math.random() * 0.08
     });
   }
 
   function frame(t) {
-    var w = W, h = H;
     for (var i = 0; i < items.length; i++) {
       var b = items[i];
-      var dx = b.ox[0][0] * w * Math.sin(t * b.ox[0][1] + b.ox[0][2])
-             + b.ox[1][0] * w * Math.sin(t * b.ox[1][1] + b.ox[1][2]);
-      var dy = b.oy[0][0] * h * Math.sin(t * b.oy[0][1] + b.oy[0][2])
-             + b.oy[1][0] * h * Math.sin(t * b.oy[1][1] + b.oy[1][2]);
-      b.el.style.transform =
-        "translate(" + (b.bx * w + dx - b.r) + "px," + (b.by * h + dy - b.r) + "px)";
+      var r = b.rFrac * W;
+      // vertical convection: smooth rise then sink, eased with a cosine
+      var p = (t / b.period + b.vph) % 1;
+      var yf = b.lo + (1 - b.lo - b.hi) * (0.5 - 0.5 * Math.cos(p * 6.28318));
+      // blobs swell a touch at the warm bottom, slim at the cool top
+      var stretch = 1 + 0.12 * Math.cos(p * 6.28318);
+      var x = b.x * W + Math.sin(t * b.xfreq + b.xph) * b.xamp * W;
+      var y = yf * H;
+      b.el.style.width = (r * 2) + "px";
+      b.el.style.height = (r * 2 * stretch) + "px";
+      b.el.style.transform = "translate(" + (x - r) + "px," + (y - r * stretch) + "px)";
     }
     requestAnimationFrame(frame);
   }

@@ -46,11 +46,23 @@
         "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
       }
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
-    <div class="blobs" id="blobs" aria-hidden="true"></div>
-    <div class="overlay" aria-hidden="true"></div>
+    <div class="ambient" aria-hidden="true"></div>
+
+    <main class="stage">
+      <div class="lamp" aria-hidden="true">
+        <span class="cap"></span>
+        <span class="neck"></span>
+        <div class="glass">
+          <div class="goo"><div class="blobs" id="blobs"></div></div>
+          <span class="bulb"></span>
+          <span class="shine"></span>
+        </div>
+        <span class="base"></span>
+      </div>
+    </main>
 
     <div class="frame" aria-hidden="true">
       <span class="frame__corner frame__corner--tl">No. 020</span>
@@ -58,9 +70,9 @@
       <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
     </div>
 
-    <p class="hint">blobs rise · blobs merge · blobs drift</p>
+    <p class="hint">warm blobs rise, merge &amp; sink · just watch</p>
 
-    <script src="script.js?v=1" defer></script>
+    <script src="script.js?v=2" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
   </body>
 </html>

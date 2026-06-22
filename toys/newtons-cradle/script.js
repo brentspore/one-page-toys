@@ -119,57 +119,57 @@
   }
 
   /* drawing */
+  function rrect(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  /* a proper rectangular cradle: top bar (strings attach here), side posts down
+     to a grounded base platform below the balls */
   function drawFrame() {
-    var frameW = (N - 1) * spacing + R * 3.0;
+    var frameW = (N - 1) * spacing + R * 3.2;
     var frameX = W / 2 - frameW / 2;
-    var barThick = 5;
-    var postThick = 4;
-    var topBarY = H * 0.08;
-    var postH = pivotY - topBarY - barThick;
+    var bar = Math.max(7, R * 0.36);
+    var post = Math.max(6, R * 0.28);
+    var baseY = pivotY + L_px + R * 1.7;
+    var topY = pivotY - bar;                  // bar underside sits at the string pivot
 
-    /* horizontal top bar */
-    var barGrad = ctx.createLinearGradient(frameX, 0, frameX + frameW, 0);
-    barGrad.addColorStop(0, "#3a4252");
-    barGrad.addColorStop(0.25, "#7a8ca8");
-    barGrad.addColorStop(0.5, "#9aaabb");
-    barGrad.addColorStop(0.75, "#7a8ca8");
-    barGrad.addColorStop(1, "#3a4252");
-    ctx.fillStyle = barGrad;
-    ctx.fillRect(frameX - barThick, topBarY, frameW + barThick * 2, barThick);
+    // side posts (cylindrical metal)
+    var postXs = [frameX + post / 2, frameX + frameW - post / 2];
+    for (var s = 0; s < 2; s++) {
+      var px = postXs[s];
+      var pg = ctx.createLinearGradient(px - post / 2, 0, px + post / 2, 0);
+      pg.addColorStop(0, "#39424f"); pg.addColorStop(0.5, "#8a98a8"); pg.addColorStop(1, "#39424f");
+      ctx.fillStyle = pg;
+      rrect(px - post / 2, topY, post, baseY - topY, post * 0.4); ctx.fill();
+    }
 
-    /* two slim vertical posts — no bottom bar */
-    var postGrad = ctx.createLinearGradient(0, topBarY, 0, topBarY + postH);
-    postGrad.addColorStop(0, "#7a8ca8");
-    postGrad.addColorStop(0.5, "#5a6878");
-    postGrad.addColorStop(1, "#3a4858");
-    ctx.fillStyle = postGrad;
-    ctx.fillRect(frameX - barThick, topBarY, postThick, postH);
-    ctx.fillRect(frameX + frameW + barThick - postThick, topBarY, postThick, postH);
+    // base platform (sits on the floor) + floor shadow
+    var baseThick = Math.max(12, R * 0.55);
+    var baseW = frameW + R * 1.6;
+    var baseX = W / 2 - baseW / 2;
+    var fsh = ctx.createRadialGradient(W / 2, baseY + baseThick, 0, W / 2, baseY + baseThick, baseW * 0.62);
+    fsh.addColorStop(0, "rgba(0,0,0,0.5)"); fsh.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = fsh;
+    ctx.beginPath(); ctx.ellipse(W / 2, baseY + baseThick, baseW * 0.6, baseThick * 0.8, 0, 0, Math.PI * 2); ctx.fill();
+    var bgrad = ctx.createLinearGradient(0, baseY, 0, baseY + baseThick);
+    bgrad.addColorStop(0, "#aeb9c7"); bgrad.addColorStop(0.18, "#7c8a9a"); bgrad.addColorStop(1, "#2c343f");
+    ctx.fillStyle = bgrad;
+    rrect(baseX, baseY, baseW, baseThick, 5); ctx.fill();
 
-    /* small angled feet */
-    var footLen = Math.min(R * 2.5, 30);
-    ctx.strokeStyle = "#4a5868";
-    ctx.lineWidth = postThick - 1;
-    ctx.lineCap = "round";
-    var leftPost = frameX - barThick + postThick / 2;
-    var rightPost = frameX + frameW + barThick - postThick / 2;
-    var footY = topBarY + postH;
-    ctx.beginPath();
-    ctx.moveTo(leftPost, footY - 4);
-    ctx.lineTo(leftPost - footLen, footY + footLen * 0.5);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(leftPost, footY - 4);
-    ctx.lineTo(leftPost + footLen * 0.6, footY + footLen * 0.5);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(rightPost, footY - 4);
-    ctx.lineTo(rightPost + footLen, footY + footLen * 0.5);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(rightPost, footY - 4);
-    ctx.lineTo(rightPost - footLen * 0.6, footY + footLen * 0.5);
-    ctx.stroke();
+    // top bar (cylindrical, light on top)
+    var tg = ctx.createLinearGradient(0, topY, 0, topY + bar);
+    tg.addColorStop(0, "#c2cdda"); tg.addColorStop(0.45, "#7d8b9c"); tg.addColorStop(1, "#3a4451");
+    ctx.fillStyle = tg;
+    rrect(frameX, topY, frameW, bar, bar * 0.45); ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(frameX + bar, topY + 1.5); ctx.lineTo(frameX + frameW - bar, topY + 1.5); ctx.stroke();
   }
 
   function drawBalls() {
@@ -197,26 +197,34 @@
       ctx.ellipse(p.x, p.y + R * 0.72, R * 1.1, R * 0.35, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      /* ball body */
-      var ballGrad = ctx.createRadialGradient(p.x - R * 0.3, p.y - R * 0.3, R * 0.05, p.x, p.y, R);
-      ballGrad.addColorStop(0, "#ccd6e8");
-      ballGrad.addColorStop(0.35, "#8a9eb8");
-      ballGrad.addColorStop(0.75, "#445870");
-      ballGrad.addColorStop(1, "#1a2535");
+      /* chrome ball body — neutral polished steel */
+      var ballGrad = ctx.createRadialGradient(p.x - R * 0.34, p.y - R * 0.38, R * 0.05, p.x, p.y, R * 1.05);
+      ballGrad.addColorStop(0, "#f4f7fb");
+      ballGrad.addColorStop(0.26, "#cbd3de");
+      ballGrad.addColorStop(0.58, "#737f8d");
+      ballGrad.addColorStop(0.84, "#39414c");
+      ballGrad.addColorStop(1, "#1d232b");
       ctx.fillStyle = ballGrad;
       ctx.beginPath();
       ctx.arc(p.x, p.y, R, 0, Math.PI * 2);
       ctx.fill();
 
-      /* specular highlight */
-      var shine = ctx.createRadialGradient(p.x - R * 0.28, p.y - R * 0.32, 0, p.x - R * 0.28, p.y - R * 0.32, R * 0.42);
-      shine.addColorStop(0, "rgba(255,255,255,0.82)");
-      shine.addColorStop(0.5, "rgba(255,255,255,0.25)");
+      /* floor-bounce rim light near the bottom edge (sells the chrome) */
+      var rim = ctx.createRadialGradient(p.x, p.y + R * 0.55, 0, p.x, p.y + R * 0.55, R * 0.7);
+      rim.addColorStop(0, "rgba(150,170,200,0.5)");
+      rim.addColorStop(1, "rgba(150,170,200,0)");
+      ctx.fillStyle = rim;
+      ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, Math.PI * 2); ctx.fill();
+
+      /* soft + sharp specular highlights */
+      var shine = ctx.createRadialGradient(p.x - R * 0.3, p.y - R * 0.34, 0, p.x - R * 0.3, p.y - R * 0.34, R * 0.5);
+      shine.addColorStop(0, "rgba(255,255,255,0.7)");
+      shine.addColorStop(0.6, "rgba(255,255,255,0.12)");
       shine.addColorStop(1, "rgba(255,255,255,0)");
       ctx.fillStyle = shine;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, R, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,0.92)";
+      ctx.beginPath(); ctx.arc(p.x - R * 0.32, p.y - R * 0.36, R * 0.12, 0, Math.PI * 2); ctx.fill();
     }
   }
 

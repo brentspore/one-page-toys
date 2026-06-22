@@ -5,147 +5,111 @@
   var ctx = canvas.getContext("2d");
   var hintEl = document.getElementById("hint");
 
-  var W, H, CX, CY, SCALE;
+  var W, H, CX, CY, SCALE, DPR;
 
   function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    CX = W / 2;
-    CY = H / 2;
-    SCALE = Math.min(W, H) * 0.44;
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    CX = W / 2; CY = H / 2;
+    SCALE = Math.min(W, H) * 0.40;
   }
   resize();
-  window.addEventListener("resize", function () { resize(); nextPattern(true); });
+  window.addEventListener("resize", function () { resize(); ctx.clearRect(0, 0, W, H); startPattern(patIdx, false); });
 
-  /* Hypotrochoid: inner circle (radius r) rolls inside outer circle (radius R).
-   * Pen offset d from center of inner circle.
-   * x(t) = (R-r)*cos(t) + d*cos((R-r)*t/r)
-   * y(t) = (R-r)*sin(t) - d*sin((R-r)*t/r)
-   * Full period: 2π * r/gcd(R,r) — with integer R, r, gcd=1 → period = 2π*r
-   */
-
-  /* Curated list: [R, r, d_fraction_of_R] */
+  /* Hypotrochoid: inner circle (r) rolls inside outer (R), pen offset d.
+   * Coprime R,r with R large → many petals. We draw several pen-offsets (holes)
+   * per pattern, sharing one scale so they nest into a layered rosette. */
   var PATTERNS = [
-    [8,  3, 0.92],
-    [7,  4, 0.80],
-    [11, 4, 0.72],
-    [13, 5, 0.68],
-    [7,  2, 0.90],
-    [9,  4, 0.78],
-    [5,  3, 0.88],
-    [11, 7, 0.60],
-    [10, 3, 0.82],
-    [12, 5, 0.74],
-    [7,  3, 0.85],
-    [9,  2, 0.88],
-    [6,  5, 0.55],
-    [13, 8, 0.65],
+    [11, 4], [13, 5], [9, 4], [13, 6], [11, 3], [12, 5],
+    [13, 4], [11, 5], [14, 5], [16, 5], [9, 2], [15, 4], [13, 7], [17, 6]
   ];
+  var LAYERS = [0.95, 0.72, 0.5, 0.3];     /* pen holes, fraction of r (must be ≤ r) */
 
-  var STEPS_PER_FRAME = 50;  /* segments drawn per rAF — ~2 sec per pattern at 60fps */
-  var TOTAL_STEPS = 6000;    /* total steps per pattern */
-  var PAUSE_FRAMES = 70;     /* frames (~1.2 sec) to fade between patterns */
+  var STEPS_PER_FRAME = 52;
+  var TOTAL_STEPS = 4600;
+  var HOLD_FRAMES = 130;     /* admire the finished rosette before it fades */
+  var FADE_FRAMES = 70;
 
-  var patIdx = 0;
-  var hueBase = 0;
-  var t = 0;
-  var stepsDone = 0;
-  var pauseCount = 0;
-  var pausing = false;
-  var prevX = null, prevY = null;
+  var patIdx = 0, hueBase = 0, t = 0, stepsDone = 0;
+  var phase = "draw", waitCount = 0, prev = [];
 
   function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
 
-  function point(R, r, d, angle) {
+  function point(R, r, d, angle, maxR) {
     var k = (R - r) / r;
     var x = (R - r) * Math.cos(angle) + d * Math.cos(k * angle);
     var y = (R - r) * Math.sin(angle) - d * Math.sin(k * angle);
-    /* Normalize: max extent = (R-r) + d */
-    var maxR = (R - r) + d;
     return { x: CX + (x / maxR) * SCALE, y: CY + (y / maxR) * SCALE };
   }
 
   function startPattern(idx, keepCanvas) {
     var p = PATTERNS[idx % PATTERNS.length];
     var R = p[0], r = p[1];
-    var period = 2 * Math.PI * (r / gcd(R, r));
-    /* dt step so we complete the pattern in TOTAL_STEPS */
-    canvas._R = R; canvas._r = r; canvas._d = p[2] * R;
-    canvas._period = period;
-    canvas._dt = period / TOTAL_STEPS;
-    t = 0; stepsDone = 0; prevX = null; prevY = null;
+    var dmax = 0.95 * r;
+    canvas._R = R; canvas._r = r;
+    canvas._ds = LAYERS.map(function (f) { return f * r; });
+    canvas._maxR = (R - r) + dmax;
+    canvas._period = 2 * Math.PI * (r / gcd(R, r));
+    canvas._dt = canvas._period / TOTAL_STEPS;
+    t = 0; stepsDone = 0; prev = [];
     if (!keepCanvas) ctx.clearRect(0, 0, W, H);
   }
 
-  function nextPattern(keepCanvas) {
+  function nextPattern() {
     patIdx = (patIdx + 1) % PATTERNS.length;
-    hueBase = (hueBase + 47) % 360;
-    pausing = false;
-    startPattern(patIdx, keepCanvas || false);
+    hueBase = (hueBase + 67) % 360;
+    phase = "draw";
+    startPattern(patIdx, false);
+    if (hintEl) hintEl.classList.add("is-hidden");
   }
 
   function drawSteps() {
-    var R = canvas._R, r = canvas._r, d = canvas._d, dt = canvas._dt;
-
-    ctx.save();
+    var R = canvas._R, r = canvas._r, ds = canvas._ds, maxR = canvas._maxR, dt = canvas._dt;
     ctx.globalCompositeOperation = "lighter";
-
+    ctx.lineCap = "round";
     for (var i = 0; i < STEPS_PER_FRAME && stepsDone < TOTAL_STEPS; i++) {
-      var p = point(R, r, d, t);
-
-      if (prevX !== null) {
-        /* Hue progresses through the pattern's period */
-        var progress = stepsDone / TOTAL_STEPS;
-        var hue = (hueBase + progress * 300) % 360;
-        var alpha = 0.55 + 0.35 * Math.sin(progress * Math.PI);
-
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = "hsla(" + hue + ",90%,65%,0.4)";
-        ctx.strokeStyle = "hsla(" + hue + ",85%,66%," + alpha + ")";
-        ctx.lineWidth = 1.4;
-        ctx.lineCap = "round";
-
-        ctx.beginPath();
-        ctx.moveTo(prevX, prevY);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
+      var progress = stepsDone / TOTAL_STEPS;
+      for (var j = 0; j < ds.length; j++) {
+        var p = point(R, r, ds[j], t, maxR);
+        var pr = prev[j];
+        if (pr) {
+          var hue = (hueBase + j * 42 + progress * 220) % 360;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = "hsla(" + hue + ",95%,62%,0.5)";
+          ctx.strokeStyle = "hsla(" + hue + ",90%,64%,0.7)";
+          ctx.lineWidth = 1.7 - j * 0.18;
+          ctx.beginPath();
+          ctx.moveTo(pr.x, pr.y);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+        }
+        prev[j] = p;
       }
-
-      prevX = p.x; prevY = p.y;
-      t += dt;
-      stepsDone++;
+      t += dt; stepsDone++;
     }
-
-    ctx.restore();
+    ctx.shadowBlur = 0;
   }
 
   function frame() {
-    if (pausing) {
-      pauseCount++;
-      /* gradual fade — at 0.065 per frame, 70 frames ≈ 99% gone */
-      ctx.fillStyle = "rgba(6,6,15,0.065)";
-      ctx.fillRect(0, 0, W, H);
-      if (pauseCount >= PAUSE_FRAMES) {
-        nextPattern(false);
-      }
-    } else {
+    if (phase === "draw") {
       drawSteps();
-      if (stepsDone >= TOTAL_STEPS) {
-        pausing = true;
-        pauseCount = 0;
-        if (hintEl) hintEl.classList.add("is-hidden");
-      }
+      if (stepsDone >= TOTAL_STEPS) { phase = "hold"; waitCount = 0; }
+    } else if (phase === "hold") {
+      if (++waitCount >= HOLD_FRAMES) { phase = "fade"; waitCount = 0; }
+    } else { // fade
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(6,6,15,0.06)";
+      ctx.fillRect(0, 0, W, H);
+      if (++waitCount >= FADE_FRAMES) nextPattern();
     }
     requestAnimationFrame(frame);
   }
 
-  /* click/tap skips to next */
-  canvas.addEventListener("pointerdown", function (e) {
-    e.preventDefault();
-    nextPattern(false);
-  });
+  canvas.addEventListener("pointerdown", function (e) { e.preventDefault(); nextPattern(); });
 
-  /* kick off */
   hueBase = Math.random() * 360 | 0;
   startPattern(patIdx, false);
   requestAnimationFrame(frame);
