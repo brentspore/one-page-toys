@@ -9,13 +9,17 @@
   var pen = document.getElementById("pen");
   var randomBtn = document.getElementById("randomBtn");
 
-  var W, H, CX, CY, SCALE, DPR;
+  var W, H, CX, CY, SCALE, scale;
   function resize() {
-    DPR = Math.min(2, window.devicePixelRatio || 1);
     W = window.innerWidth; H = window.innerHeight;
-    canvas.width = W * DPR; canvas.height = H * DPR;
+    // cap the backing-store resolution so huge / 4K displays stay fast
+    scale = Math.min(2, window.devicePixelRatio || 1);
+    var MAXDIM = 2200;
+    if (W * scale > MAXDIM) scale = MAXDIM / W;
+    if (H * scale > MAXDIM) scale = Math.min(scale, MAXDIM / H);
+    canvas.width = Math.round(W * scale); canvas.height = Math.round(H * scale);
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
     CX = W / 2; CY = H * 0.46; SCALE = Math.min(W, H) * 0.40;
   }
   resize();
@@ -61,17 +65,18 @@
         var pr = prev[j];
         if (pr) {
           var hue = (hueBase + j * 42 + progress * 220) % 360;
-          ctx.shadowBlur = 8;
-          ctx.shadowColor = "hsla(" + hue + ",95%,62%,0.5)";
-          ctx.strokeStyle = "hsla(" + hue + ",90%,64%,0.7)";
-          ctx.lineWidth = 1.7 - j * 0.18;
+          // cheap neon glow without shadowBlur: a wide faint halo + a bright core (additive)
+          ctx.strokeStyle = "hsla(" + hue + ",95%,66%,0.14)";
+          ctx.lineWidth = 5 - j * 0.7;
+          ctx.beginPath(); ctx.moveTo(pr.x, pr.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+          ctx.strokeStyle = "hsla(" + hue + ",92%,66%,0.85)";
+          ctx.lineWidth = 1.5 - j * 0.16;
           ctx.beginPath(); ctx.moveTo(pr.x, pr.y); ctx.lineTo(p.x, p.y); ctx.stroke();
         }
         prev[j] = p;
       }
       t += dt; stepsDone++;
     }
-    ctx.shadowBlur = 0;
   }
 
   function frame() {

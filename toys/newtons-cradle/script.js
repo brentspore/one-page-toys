@@ -21,7 +21,8 @@
   var leftTheta = 0,  leftOmega = 0;
   var rightTheta = 0, rightOmega = 0;
   var lastTs = null;
-  var dragSide = null;   /* 'left' | 'right' while a ball is being pulled */
+  var dragging = false;  /* a ball is being pulled */
+  var dragIndex = 0;     /* which ball was grabbed */
   var dragPivotX = 0;    /* pivot x of the grabbed ball */
   var loop = false;      /* endless auto-swing (damping off) */
 
@@ -240,7 +241,7 @@
 
   /* render loop */
   function render(ts) {
-    if (lastTs !== null && !dragSide) step((ts - lastTs) / 1000);
+    if (lastTs !== null && !dragging) step((ts - lastTs) / 1000);
     lastTs = ts;
 
     ctx.clearRect(0, 0, W, H);
@@ -261,15 +262,21 @@
 
   /* drag a ball to pull it back, release to swing */
   function ptr(e) { var r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  /* Drag direction decides which end you're pulling toward: grab a ball and pull
+     LEFT to lift balls 0..grabbed, or RIGHT to lift grabbed..last (so you can pull 1–5). */
   function updateDrag(m) {
     var th = Math.atan2(m.x - dragPivotX, Math.max(8, m.y - pivotY));
-    if (dragSide === "left") { leftTheta = Math.max(-1.45, Math.min(0, th)); leftOmega = 0; }
-    else if (dragSide === "right") { rightTheta = Math.min(1.45, Math.max(0, th)); rightOmega = 0; }
+    if (th <= 0) {
+      leftCount = dragIndex + 1; rightCount = 0; rightTheta = 0; rightOmega = 0;
+      leftTheta = Math.max(-1.45, th); leftOmega = 0;
+    } else {
+      rightCount = N - dragIndex; leftCount = 0; leftTheta = 0; leftOmega = 0;
+      rightTheta = Math.min(1.45, th); rightOmega = 0;
+    }
   }
   canvas.addEventListener("pointerdown", function (e) {
     ensureAudio();
     var m = ptr(e);
-    // grab the nearest ball; the group is that ball through its near end (pull as many as you reach)
     var best = -1, bd = R * 2.4;
     for (var i = 0; i < N; i++) {
       var p = ballPos(i), d = Math.hypot(m.x - p.x, m.y - p.y);
@@ -277,16 +284,14 @@
     }
     if (best < 0) return;
     toRest();
-    if (best <= (N - 1) / 2) { dragSide = "left"; leftCount = best + 1; }
-    else { dragSide = "right"; rightCount = N - best; }
-    dragPivotX = firstPivotX + best * spacing;
+    dragging = true; dragIndex = best; dragPivotX = firstPivotX + best * spacing;
     if (hintEl) hintEl.classList.add("is-hidden");
     try { canvas.setPointerCapture(e.pointerId); } catch (er) {}
     updateDrag(m); e.preventDefault();
   });
-  canvas.addEventListener("pointermove", function (e) { if (dragSide) { updateDrag(ptr(e)); e.preventDefault(); } });
-  window.addEventListener("pointerup", function () { dragSide = null; });
-  window.addEventListener("pointercancel", function () { dragSide = null; });
+  canvas.addEventListener("pointermove", function (e) { if (dragging) { updateDrag(ptr(e)); e.preventDefault(); } });
+  window.addEventListener("pointerup", function () { dragging = false; });
+  window.addEventListener("pointercancel", function () { dragging = false; });
 
   /* endless auto-swing toggle */
   loopBtn.addEventListener("click", function () {
