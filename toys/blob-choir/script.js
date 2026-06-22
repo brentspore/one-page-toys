@@ -16,7 +16,8 @@
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // pentatonic-ish voices (everything sounds good together)
-  var NOTES = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33, 659.25];
+  // C major-6 (C E G A) across two low octaves — every combination is consonant, warm, and calm.
+  var NOTES = [130.81, 164.81, 196.0, 220.0, 261.63, 329.63, 392.0, 440.0];
   var POS = [
     { x: 26, y: 40 }, { x: 50, y: 30 }, { x: 73, y: 40 }, { x: 38, y: 62 },
     { x: 62, y: 62 }, { x: 18, y: 64 }, { x: 82, y: 64 }, { x: 50, y: 50 }
@@ -112,22 +113,23 @@
     var voice = actx.createGain();
     var filt = actx.createBiquadFilter();
     filt.type = "lowpass";
-    filt.frequency.setValueAtTime(Math.min(7000, b.freq * 6), now);
-    filt.Q.value = 0.6;
+    // darker, with a presence floor so low blobs aren't muffled — removes the harsh top end
+    filt.frequency.setValueAtTime(Math.min(2800, Math.max(1100, b.freq * 4)), now);
+    filt.Q.value = 0.4;
     var o1 = actx.createOscillator(), o2 = actx.createOscillator();
-    o1.type = "triangle"; o2.type = "sine";
+    o1.type = "sine"; o2.type = "sine";          // pure, soft voices
     o1.frequency.value = b.freq; o2.frequency.value = b.freq;
-    o2.detune.value = 7;
-    var peak = 0.2;
+    o2.detune.value = 5;                           // gentle chorus shimmer
+    var peak = 0.17;
     voice.gain.setValueAtTime(0.0001, now);
-    voice.gain.exponentialRampToValueAtTime(peak, now + 0.02);
-    voice.gain.exponentialRampToValueAtTime(0.0001, now + 1.3);
+    voice.gain.exponentialRampToValueAtTime(peak, now + 0.06); // soft attack
+    voice.gain.exponentialRampToValueAtTime(0.0001, now + 1.7); // long, mellow tail
     o1.connect(voice); o2.connect(voice);
     voice.connect(filt);
     filt.connect(master);
     filt.connect(actx._wet);
     o1.start(now); o2.start(now);
-    o1.stop(now + 1.4); o2.stop(now + 1.4);
+    o1.stop(now + 1.8); o2.stop(now + 1.8);
 
     b.sungAt = performance.now();
     b.el.classList.add("sing");
