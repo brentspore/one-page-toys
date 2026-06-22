@@ -220,8 +220,8 @@
     // --- hills (parallax) ---
     var farHill = mix([120, 150, 120], [26, 40, 70], dark);
     var nearHill = mix([86, 138, 86], [18, 46, 40], dark);
-    drawHill(groundY - H * 0.10, H * 0.05, 0.9, farHill, now * 0.004);
-    drawHill(groundY - H * 0.02, H * 0.07, 1.5, nearHill, now * 0.007);
+    drawHill(groundY - H * 0.10, H * 0.05, 0.9, farHill, 0.6);
+    drawHill(groundY - H * 0.02, H * 0.07, 1.5, nearHill, 2.3);
 
     // --- ground ---
     var gg = ctx.createLinearGradient(0, groundY - 10, 0, H);
