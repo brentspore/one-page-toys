@@ -11,7 +11,7 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-22 · **Latest pushed commit:** `main ee7c33c` (23 toys live; 020–023 redesigned to standard + real card/OG images; Newton's Cradle + Spirograph are interactive).
+**Last updated:** 2026-06-22 · **Latest pushed commit:** `main aadf7cb` (23 toys live; 020–023 redesigned to standard + real card/OG images; Newton's Cradle has drag-any-balls + diminishing damping + Auto-swing toggle; Spirograph has live gear sliders).
 
 ## ⚠ Design quality bar — READ BEFORE BUILDING ANY TOY
 The owner is a **designer** and holds a high visual bar. A toy is NOT done when it merely "works" — it must look *intentional, polished, and richly itself*. The first desktop pass at toys 020–023 was rejected for being flat/crude with unrepresentative cards; this is the standard that pass missed:
