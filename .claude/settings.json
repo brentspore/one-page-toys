@@ -76,7 +76,11 @@
       "Bash(sed -i '' 's#assets/styles\\\\.css?v=21#assets/styles.css?v=22#; s#assets/main\\\\.js?v=19#assets/main.js?v=20#' index.html all-toys.html)",
       "Bash(node --check toys/echo/script.js)",
       "Bash(sed -i '' 's#script\\\\.js?v=1#script.js?v=2#' toys/echo/index.html)",
-      "Bash(node --check toys/breathing-pacer/script.js)"
+      "Bash(node --check toys/breathing-pacer/script.js)",
+      "Bash(awk '/Swarm = \\\\\\(function|var Swarm|function Swarm|Swarm = function|Swarm=\\\\{|var Swarm =/{f=1} f&&/^  \\\\}/{print NR\": \"$0; if\\(++c>0 && /^  \\\\};?$/\\){} } f{print NR\": \"$0}' toys/weird-generative-canvas/script.js)",
+      "Bash(node --check toys/weird-generative-canvas/script.js)",
+      "Bash(node --check toys/falling-sand/script.js)",
+      "Bash(sed -i '' 's#script\\\\.js?v=1#script.js?v=2#' toys/falling-sand/index.html)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",

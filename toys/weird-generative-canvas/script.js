@@ -119,8 +119,17 @@
     init: function () {
       this.parts = [];
       var n = 40 + density * 36;
-      for (var i = 0; i < n; i++) this.parts.push({ x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0, ci: Math.floor(Math.random() * pal.length) });
+      for (var i = 0; i < n; i++) this.parts.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2, ci: Math.floor(Math.random() * pal.length) });
       this.tt = 0;
+    },
+    // tap to scatter — shove particles outward from the tap; they swirl their way home
+    burst: function (bx, by) {
+      var ps = this.parts;
+      for (var i = 0; i < ps.length; i++) {
+        var p = ps[i], dx = p.x - bx, dy = p.y - by, d = Math.hypot(dx, dy) + 1;
+        var f = Math.min(24, 2800 / d);
+        p.vx += (dx / d) * f; p.vy += (dy / d) * f;
+      }
     },
     step: function () {
       fade(0.06);
@@ -128,13 +137,29 @@
       var tx = ptr.down ? ptr.x : W / 2 + Math.cos(this.tt) * W * 0.3 + Math.cos(this.tt * 2.3) * 60;
       var ty = ptr.down ? ptr.y : H / 2 + Math.sin(this.tt * 1.3) * H * 0.28 + Math.sin(this.tt * 1.9) * 60;
       var sp = 0.4 + speed * 0.16;
+      var ps = this.parts, n = ps.length;
+      var sepR = 26, sepR2 = sepR * sepR;
+      // separation — neighbours repel at close range, so the flock stays a
+      // living, breathing cloud instead of collapsing into a single dot.
+      for (var i = 0; i < n; i++) {
+        var a = ps[i];
+        for (var j = i + 1; j < n; j++) {
+          var b = ps[j], ddx = b.x - a.x, ddy = b.y - a.y, d2 = ddx * ddx + ddy * ddy;
+          if (d2 < sepR2 && d2 > 0.0001) {
+            var dd = Math.sqrt(d2), sf = (sepR - dd) / sepR * 0.7, nx = ddx / dd, ny = ddy / dd;
+            a.vx -= nx * sf; a.vy -= ny * sf; b.vx += nx * sf; b.vy += ny * sf;
+          }
+        }
+      }
       ctx.globalCompositeOperation = "lighter";
       ctx.lineWidth = 1.4;
-      for (var i = 0; i < this.parts.length; i++) {
-        var p = this.parts[i];
+      for (i = 0; i < n; i++) {
+        var p = ps[i];
         var dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy) + 1;
-        p.vx += (dx / d) * sp + (Math.random() - 0.5) * 0.3;
-        p.vy += (dy / d) * sp + (Math.random() - 0.5) * 0.3;
+        var pull = sp * Math.min(1, d / 130);              // attraction eases off near the centre
+        p.vx += (dx / d) * pull + (-dy / d) * sp * 0.34;    // pull toward target + perpendicular swirl
+        p.vy += (dy / d) * pull + (dx / d) * sp * 0.34;
+        p.vx += (Math.random() - 0.5) * 0.3; p.vy += (Math.random() - 0.5) * 0.3;
         p.vx *= 0.94; p.vy *= 0.94;
         var ox = p.x, oy = p.y; p.x += p.vx; p.y += p.vy;
         ctx.strokeStyle = col(p.ci, 0.4);
@@ -225,11 +250,22 @@
     } catch (e) { /* ignore */ }
   });
 
-  // pointer steer
+  // pointer: drag steers; a quick tap fires the active mode's burst (swarm scatter)
   function pos(e) { ptr.x = e.clientX; ptr.y = e.clientY; }
-  canvas.addEventListener("pointerdown", function (e) { ptr.down = true; pos(e); if (hint && !hint.classList.contains("is-hidden")) hint.classList.add("is-hidden"); });
-  canvas.addEventListener("pointermove", function (e) { if (ptr.down) pos(e); }, { passive: true });
-  window.addEventListener("pointerup", function () { ptr.down = false; });
+  canvas.addEventListener("pointerdown", function (e) {
+    ptr.down = true; pos(e);
+    ptr.downX = e.clientX; ptr.downY = e.clientY; ptr.downT = performance.now(); ptr.moved = false;
+    if (hint && !hint.classList.contains("is-hidden")) hint.classList.add("is-hidden");
+  });
+  canvas.addEventListener("pointermove", function (e) {
+    if (!ptr.down) return;
+    if (Math.hypot(e.clientX - ptr.downX, e.clientY - ptr.downY) > 8) ptr.moved = true;
+    pos(e);
+  }, { passive: true });
+  window.addEventListener("pointerup", function () {
+    if (ptr.down && !ptr.moved && performance.now() - ptr.downT < 350 && mode && mode.burst) mode.burst(ptr.x, ptr.y);
+    ptr.down = false;
+  });
   window.addEventListener("resize", resize);
 
   resize();

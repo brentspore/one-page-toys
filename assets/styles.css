@@ -744,16 +744,8 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
     radial-gradient(circle, #ff9b4a 60%, transparent) 86% 82% / 11% 22% no-repeat;
 }
 .card__preview[data-slug="falling-sand"]{
-  background:
-    linear-gradient(#d8b25a, #c79a3f) 50% 100% / 60% 22% no-repeat,
-    radial-gradient(50% 70% at 78% 100%, #3f86e0 0 60%, transparent 62%),
-    radial-gradient(20% 40% at 30% 64%, #ff8a3c 0 50%, transparent 60%),
-    #0c0a07;
-}
-.card__preview[data-slug="falling-sand"]::after{
-  content: ""; position: absolute; inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1.4px);
-  background-size: 7px 7px; opacity: 0.5;
+  background: #0c0a07 url("cards/falling-sand.png") center / cover no-repeat;
+  image-rendering: pixelated;
 }
 
 /* Default — clean neutral preview for any future toy */

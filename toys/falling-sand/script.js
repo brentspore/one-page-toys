@@ -49,27 +49,43 @@
   }
   window.addEventListener("resize", function () { resize(); });
 
-  // ---- palette (RGB) ----
+  // ---- palette (RGB) ----  (Uint8ClampedArray clamps, so over/underflow is safe)
   var BG = [14, 12, 10];
+  var tick = 0;
   function colorOf(i, m) {
-    var v = (((i * 2654435761) >>> 0) % 22) - 11; // subtle deterministic grain
+    var h = (i * 2654435761) >>> 0;        // per-cell hash for stable grain
+    var v = (h % 30) - 15;                  // coarse grain
+    var v2 = ((h >>> 5) % 16) - 8;          // fine grain
     switch (m) {
-      case WALL: return [110 + v, 114 + v, 122 + v];
-      case SAND: return [216 + v, 178 + v, 90 + v];
-      case WATER: return [52 + (v >> 1), 124 + (v >> 1), 226 + (v >> 1)];
-      case OIL: return [80 + (v >> 1), 62 + (v >> 1), 38 + (v >> 1)];
-      case PLANT: return [62 + v, 168 + v, 84 + v];
+      case WALL:
+        if (h % 19 === 0) return [72, 76, 84];        // dark cracks
+        var g = 112 + v; return [g, g + 6, g + 16];   // cool speckled stone
+      case SAND:
+        if (h % 9 === 0) return [196 + v2, 158, 72];  // darker grains
+        if (h % 6 === 0) return [234, 198 + v2, 112];  // bright grains
+        return [216 + v, 178 + v, 88 + v2];
+      case WATER:
+        if (h % 31 === 0) return [150, 200, 255];      // occasional glint
+        return [42 + v2, 112 + v2, 214 + (v >> 1)];
+      case OIL:
+        if (h % 13 === 0) return [98, 80, 54];         // faint sheen
+        return [72 + (v2 >> 1), 56 + (v2 >> 1), 38 + (v2 >> 1)];
+      case PLANT:
+        if (h % 6 === 0) return [40, 138, 62];         // leafy depth
+        return [60 + v, 166 + v, 82 + v2];
       case FIRE: {
-        var l = life[i] / 60; // 1 hot .. 0 cool
-        return [255, Math.round(90 + 150 * l), Math.round(20 + 40 * l)];
+        var l = life[i] / 64;                          // 1 hot .. 0 cool
+        var fl = ((tick + i * 3) % 7) - 3;             // live flicker
+        return [255, 70 + 168 * l + fl * 7, 16 + 44 * l];
       }
-      case SMOKE: { var s = life[i] / 70; return [80 + 30 * s, 80 + 30 * s, 88 + 30 * s]; }
-      case STEAM: { var t = life[i] / 70; return [180 + 40 * t, 190 + 40 * t, 205 + 40 * t]; }
+      case SMOKE: { var s = life[i] / 70; var sg = 76 + 30 * s + v2; return [sg, sg, sg + 9]; }
+      case STEAM: { var t = life[i] / 70; var tg = 178 + 42 * t + v2; return [tg, tg + 4, tg + 14]; }
       default: return BG;
     }
   }
 
   function render() {
+    tick++;
     var d = img.data;
     for (var i = 0; i < n; i++) {
       var c = colorOf(i, grid[i]);
