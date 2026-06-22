@@ -94,7 +94,7 @@
         if (!loop && leftOmega < REST_OMEGA) { toRest(); return; }
         rightCount = leftCount; rightTheta = 0.001; rightOmega = leftOmega;
         leftCount = 0; leftTheta = 0; leftOmega = 0;
-        clack(rightOmega);
+        if (rightCount < N) clack(rightOmega); // silent when all balls swing together (no collision)
       }
     }
 
@@ -108,7 +108,7 @@
         if (!loop && -rightOmega < REST_OMEGA) { toRest(); return; }
         leftCount = rightCount; leftTheta = -0.001; leftOmega = rightOmega;
         rightCount = 0; rightTheta = 0; rightOmega = 0;
-        clack(leftOmega);
+        if (leftCount < N) clack(leftOmega); // silent when all balls swing together (no collision)
       }
     }
   }
