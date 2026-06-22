@@ -1,5 +1,17 @@
 [
   {
+    "slug": "tiny-idle-garden",
+    "name": "Tiny Idle Garden",
+    "shortDescription": "Plant seeds and watch flowers grow and bloom in real time under a drifting day–night sky—it keeps growing while you're away.",
+    "category": "game",
+    "tags": [
+      "idle-garden"
+    ],
+    "status": "live",
+    "path": "toys/tiny-idle-garden/index.html",
+    "related": []
+  },
+  {
     "slug": "star-click-sky",
     "name": "Star Click Sky",
     "shortDescription": "Click to burst stars into a drifting cosmos of nebulae and shooting stars—your stars connect into glowing constellations.",

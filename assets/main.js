@@ -65,6 +65,8 @@ const CATEGORY_LABELS = {
  * (“check my colors”, “pretty print json”, “meeting cost”) without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "idle-garden":
+    "tiny idle garden gardening grow flowers plant seeds bloom cozy clicker incremental idle game zen relaxing day night cycle fireflies water plants nature calm passive offline grows while away farm",
   "star-sky":
     "star click sky stars night sky cosmos space constellation twinkle shooting star nebula galaxy relaxing ambient draw stargazing universe",
   "tic-tac-toe":

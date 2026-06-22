@@ -1,0 +1,105 @@
+/* Tiny Idle Garden — a living canvas scene with a glass HUD over it. */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap");
+
+:root{ --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --leaf: #8fe388; }
+
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html, body{ height: 100%; }
+
+body{
+  margin: 0; font-family: var(--font); color: #f1fff4;
+  overflow: hidden; overscroll-behavior: none;
+  background: #9ad0ea;
+}
+
+.garden{
+  position: fixed; inset: 0; z-index: 1; width: 100%; height: 100%;
+  touch-action: none; cursor: pointer; display: block;
+}
+
+/* ---------- Controls (frosted garden bar) ---------- */
+.controls{
+  position: fixed; left: 50%; bottom: clamp(18px, 4vh, 34px); transform: translateX(-50%);
+  z-index: 4; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  justify-content: center; max-width: min(94vw, 620px);
+  padding: 8px 10px; border-radius: 20px;
+  background: rgba(18, 38, 26, 0.46); border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 10px 34px rgba(12, 30, 18, 0.34);
+  backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.dew{
+  display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px;
+  border-radius: 14px; background: rgba(255,255,255,0.08); white-space: nowrap;
+}
+.dew__drop{
+  width: 12px; height: 12px; flex: 0 0 auto;
+  background: linear-gradient(135deg, #bff0ff, #56b6e6 58%, #2e86c9);
+  border-radius: 50% 50% 50% 0; transform: rotate(45deg);
+  box-shadow: inset -1px -1px 2px rgba(0,0,0,0.18), 0 0 8px rgba(120,210,255,0.5);
+}
+.dew__amt{ font-size: 0.98rem; font-weight: 700; letter-spacing: 0.01em; font-variant-numeric: tabular-nums; }
+.dew__rate{ font-size: 0.66rem; font-weight: 600; letter-spacing: 0.06em; color: rgba(220,255,228,0.62); font-variant-numeric: tabular-nums; }
+
+.cbtn{
+  appearance: none; font-family: var(--font); font-size: 0.8rem; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 13px; border-radius: 13px; border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.07); color: #f1fff4; cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, transform 120ms ease, opacity 140ms ease;
+}
+.cbtn:hover{ border-color: rgba(150, 240, 170, 0.6); background: rgba(120, 230, 150, 0.16); }
+.cbtn:active{ transform: translateY(1px) scale(0.98); }
+.cbtn:focus-visible{ outline: none; box-shadow: 0 0 0 2px rgba(10,40,20,0.7), 0 0 0 4px rgba(150,240,170,0.8); }
+.cbtn--primary{ background: linear-gradient(180deg, #57c97a, #3da862); border-color: rgba(255,255,255,0.28); color: #06210f; font-weight: 700; }
+.cbtn--primary:hover{ background: linear-gradient(180deg, #65d888, #45b56c); border-color: #fff; }
+.cbtn[disabled]{ opacity: 0.4; cursor: default; pointer-events: none; }
+.cbtn__cost{
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 0.72rem; font-weight: 700; font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 999px; background: rgba(0,0,0,0.18);
+}
+.cbtn__cost::before{ content: "💧"; font-size: 0.66rem; }
+.cbtn--primary .cbtn__cost{ background: rgba(6,33,15,0.22); }
+
+/* ---------- Frame / hint / toast ---------- */
+.frame{ position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.frame__corner{
+  position: absolute; font-size: clamp(0.56rem, 1.2vw, 0.7rem); font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap; text-shadow: 0 1px 4px rgba(20, 40, 25, 0.55);
+}
+.frame__corner--tl{ top: clamp(18px, 3.5vw, 34px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner--tr{ top: clamp(18px, 3.5vw, 34px); right: clamp(18px, 3.5vw, 34px); }
+.frame__corner--bl{ bottom: clamp(78px, 13vh, 116px); left: clamp(18px, 3.5vw, 34px); }
+.frame__corner a{ color: inherit; text-decoration: none; pointer-events: auto; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
+.frame__corner a:hover{ color: #fff; border-bottom-color: rgba(255,255,255,0.8); }
+
+.hint{
+  position: fixed; left: 50%; top: clamp(40px, 8vh, 76px); transform: translateX(-50%);
+  margin: 0; z-index: 4; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: rgba(255, 255, 255, 0.86); pointer-events: none;
+  transition: opacity 700ms ease; text-align: center; text-shadow: 0 1px 4px rgba(20, 40, 25, 0.5);
+}
+.hint.is-hidden{ opacity: 0; }
+
+.toast{
+  position: fixed; left: 50%; top: clamp(58px, 12vh, 104px); transform: translateX(-50%) translateY(-8px);
+  z-index: 6; max-width: min(90vw, 360px); text-align: center;
+  padding: 11px 18px; border-radius: 14px; font-size: 0.82rem; font-weight: 600; line-height: 1.4;
+  color: #ecffef; background: rgba(18, 40, 26, 0.66);
+  border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 12px 34px rgba(10,28,16,0.4);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  opacity: 0; pointer-events: none; transition: opacity 400ms ease, transform 400ms ease;
+}
+.toast.is-show{ opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast b{ color: #aef5c0; }
+
+@media (max-width: 460px){
+  .cbtn{ font-size: 0.74rem; padding: 8px 10px; }
+  .dew__rate{ display: none; }
+}

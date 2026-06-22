@@ -57,11 +57,23 @@
       "Bash(cp /tmp/bc-test.js \"/Users/brentspore/Personal Projects/one-page-toys/bc-test.js\")",
       "Bash(node bc-test.js)",
       "Bash(rm -f bc-test.js)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(gh repo *)",
+      "Bash(python3 -c \"import sys,json; [print\\(r['name'],'\\\\t',r['pushedAt']\\) for r in json.load\\(sys.stdin\\)]\")",
+      "mcp__claude_ai_Lovable__list_workspaces",
+      "mcp__claude_ai_Lovable__list_projects",
+      "mcp__claude_ai_Lovable__get_project",
+      "Bash(grep -n \"Next step:\\\\*\\\\* Nothing pending — all pushed \\(\\\\`one-page-toys\" \"/Users/brentspore/.ai/memory/PULSE.md\")",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('tools-registry.json'\\)\\);[print\\(json.dumps\\(t,indent=2\\)\\) for t in \\(d if isinstance\\(d,list\\) else d.get\\('tools',d.get\\('items',[]\\)\\)\\) if t.get\\('slug'\\)=='star-click-sky']\")",
+      "Bash(ls -la /tmp/og-gen.html)",
+      "Bash(node --check toys/tiny-idle-garden/script.js)",
+      "Bash(curl -s -o /dev/null -w \"server:%{http_code}\\\\n\" http://localhost:8000/toys/tiny-idle-garden/)",
+      "Bash(npx playwright *)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",
-      "/Users/brentspore/Personal Projects/one-page-toys/toys/*"
+      "/Users/brentspore/Personal Projects/one-page-toys/toys/*",
+      "/Users/brentspore/Personal Projects/buildutilities/src/components"
     ]
   }
 }

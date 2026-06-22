@@ -673,8 +673,32 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
     radial-gradient(120% 90% at 50% 0%, #0a1030 0%, #03040f 80%);
 }
 
+.card__preview[data-slug="tiny-idle-garden"]{
+  background:
+    radial-gradient(2px 2px at 22% 30%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 68% 24%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(circle at 80% 26%, rgba(255,238,180,0.95) 0 4%, rgba(255,224,150,0) 18%),
+    linear-gradient(180deg, #7fc1e6 0%, #aedcf0 46%, #6fb86a 46%, #4f9a52 100%);
+  overflow: hidden;
+}
+.card__preview[data-slug="tiny-idle-garden"]::before{
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 42%;
+  background:
+    radial-gradient(circle at 26% 100%, #ec6f9b 0 5%, transparent 6%),
+    radial-gradient(circle at 50% 100%, #ffd24d 0 5%, transparent 6%),
+    radial-gradient(circle at 74% 100%, #7aa6ff 0 5%, transparent 6%);
+  background-repeat: no-repeat;
+}
+.card__preview[data-slug="tiny-idle-garden"]::after{
+  content: ""; position: absolute; left: 18%; right: 18%; bottom: 38%; height: 30%;
+  background:
+    linear-gradient(#3f8a45, #3f8a45) 26% 100% / 2px 60% no-repeat,
+    linear-gradient(#3f8a45, #3f8a45) 50% 100% / 2px 78% no-repeat,
+    linear-gradient(#3f8a45, #3f8a45) 74% 100% / 2px 66% no-repeat;
+}
+
 /* Default — clean neutral preview for any future toy */
-.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]){
+.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]){
   background:
     radial-gradient(120% 120% at 50% 130%, var(--accent-soft), transparent 60%),
     var(--surface-2);

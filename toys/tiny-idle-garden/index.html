@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Tiny Idle Garden — One Page Toys</title>
+    <meta name="description" content="Plant a tiny garden and watch it grow in real time. Flowers sprout, bud, and bloom under a drifting day–night sky with clouds, fireflies, and gentle rain—and it keeps growing while you're away. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/tiny-idle-garden/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#9ad0ea" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Tiny Idle Garden — One Page Toys" />
+    <meta property="og:description" content="Plant seeds and watch flowers bloom in real time under a drifting day–night sky—it keeps growing while you're away." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/tiny-idle-garden/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/tiny-idle-garden.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tiny Idle Garden — One Page Toys" />
+    <meta name="twitter:description" content="Plant seeds and watch flowers bloom in real time—your garden keeps growing while you're away." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/tiny-idle-garden.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Tiny Idle Garden",
+        "url": "https://onepagetoys.com/toys/tiny-idle-garden/index.html",
+        "description": "A cozy idle garden: plant seeds and watch flowers grow and bloom in real time under a drifting day–night sky, with offline growth.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="garden" class="garden" aria-label="A tiny garden. Tap the soil to plant a seed; tap a plant to water it."></canvas>
+
+    <div class="controls" id="controls">
+      <span class="dew" id="dew" title="Dew — your garden's currency">
+        <span class="dew__drop" aria-hidden="true"></span>
+        <span class="dew__amt" id="dewAmt">0</span>
+        <span class="dew__rate" id="dewRate">+0/min</span>
+      </span>
+      <button type="button" class="cbtn cbtn--primary" id="plantBtn">
+        <span aria-hidden="true">🌱</span><span class="cbtn__label" id="plantLabel">Plant</span><span class="cbtn__cost" id="plantCost">8</span>
+      </button>
+      <button type="button" class="cbtn" id="soilBtn">
+        <span aria-hidden="true">🌿</span><span class="cbtn__label">Tend soil</span><span class="cbtn__cost" id="soilCost">40</span>
+      </button>
+      <button type="button" class="cbtn" id="rainBtn">
+        <span aria-hidden="true">🌧️</span><span class="cbtn__label" id="rainLabel">Rain</span>
+      </button>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 015</span>
+      <span class="frame__corner frame__corner--tr">Tiny Idle Garden</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">tap the soil to plant · tap a plant to water it · it grows while you're away</p>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+  </body>
+</html>
