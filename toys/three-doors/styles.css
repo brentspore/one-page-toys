@@ -27,8 +27,19 @@ body{
 .bg{
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(70% 60% at 50% 18%, #4a1118 0%, #2a0c12 48%, #160709 100%),
-    repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 22px, transparent 22px 44px);
+    /* three spotlight beams, one over each door */
+    radial-gradient(30% 62% at 27% -10%, rgba(255,232,150,0.13), transparent 68%),
+    radial-gradient(30% 64% at 50% -10%, rgba(255,236,160,0.16), transparent 68%),
+    radial-gradient(30% 62% at 73% -10%, rgba(255,232,150,0.13), transparent 68%),
+    /* glossy stage floor glow */
+    linear-gradient(0deg, rgba(255,210,140,0.08) 0%, transparent 26%),
+    /* warm stage wash + vignette */
+    radial-gradient(80% 72% at 50% 14%, #5c1722 0%, #330e16 52%, #150608 100%);
+}
+/* soft side-curtain shadows for a theatre feel */
+.bg::after{
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(10,3,5,0.55), transparent 16%, transparent 84%, rgba(10,3,5,0.55));
 }
 
 .stage{
@@ -50,46 +61,82 @@ body{
   border-radius: 10px 10px 4px 4px;
   transform-style: preserve-3d;
 }
+/* the lit alcove revealed behind the door */
 .door__inside{
   position: absolute; inset: 0;
   border-radius: 10px 10px 4px 4px;
   display: grid; place-items: center;
   font-size: clamp(2.4rem, 9vw, 4rem);
-  background: radial-gradient(circle at 50% 40%, #2a2030, #140d18);
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+  background:
+    radial-gradient(circle at 50% 36%, #36293f 0%, #1c1426 46%, #100b18 100%);
+  box-shadow: inset 0 0 34px rgba(0,0,0,0.82), inset 0 4px 10px rgba(0,0,0,0.7);
+  overflow: hidden; isolation: isolate;
 }
 .door__panel{
   position: absolute; inset: 0;
-  border-radius: 10px 10px 4px 4px;
+  border-radius: 9px 9px 3px 3px;
   display: grid; place-items: center;
-  background:
-    linear-gradient(160deg, #ffe79a 0%, var(--gold) 38%, var(--gold-dk) 100%);
-  box-shadow: inset 0 0 0 3px rgba(120, 86, 18, 0.5), inset 0 -16px 30px rgba(120,86,18,0.4), 0 14px 30px -10px rgba(0,0,0,0.7);
+  background: linear-gradient(158deg, #fff1bd 0%, var(--gold) 42%, var(--gold-dk) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,252,232,0.75),
+    inset 0 0 0 3px rgba(120,86,18,0.45),
+    inset 0 -20px 32px rgba(120,86,18,0.45),
+    0 18px 34px -12px rgba(0,0,0,0.78);
   transform-origin: left center;
-  transition: transform 620ms cubic-bezier(0.5, 0, 0.2, 1);
-  backface-visibility: hidden;
+  transition: transform 640ms cubic-bezier(0.5, 0, 0.2, 1);
+  backface-visibility: hidden; overflow: hidden;
 }
-.door.open .door__panel{ transform: rotateY(-115deg); }
+/* two recessed door panels */
+.door__panel::before,
+.door__panel::after{
+  content: ""; position: absolute; left: 15%; right: 15%; border-radius: 5px;
+  background: linear-gradient(158deg, rgba(110,78,16,0.32), rgba(255,242,190,0.22));
+  box-shadow: inset 0 2px 5px rgba(86,58,10,0.6), inset 0 -2px 4px rgba(255,248,214,0.55);
+}
+.door__panel::before{ top: 8%; height: 33%; }
+.door__panel::after{ top: 59%; height: 33%; }
+.door.open .door__panel{ transform: rotateY(-118deg); }
+.door.open .door__panel{ box-shadow: inset 0 2px 0 rgba(255,252,232,0.75), inset 0 0 0 3px rgba(120,86,18,0.45), 0 0 40px rgba(0,0,0,0.6); }
+/* brass number plaque on the centre rail */
 .door__num{
-  font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 900; color: #6e4e0e;
-  text-shadow: 0 1px 0 rgba(255,248,214,0.6);
+  position: relative; z-index: 1;
+  width: 2.05em; height: 2.05em; display: grid; place-items: center; border-radius: 50%;
+  font-size: clamp(1rem, 3.6vw, 1.6rem); font-weight: 900; color: #5a3e08;
+  background: radial-gradient(circle at 38% 32%, #fff6d4 0%, #e9bb44 58%, #a9760f 100%);
+  box-shadow: inset 0 1px 2px rgba(255,250,230,0.85), inset 0 -2px 5px rgba(110,74,10,0.6), 0 2px 5px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 0 rgba(255,250,230,0.6);
 }
+/* metallic doorknob on the opening edge */
 .door__knob{
-  position: absolute; right: 12%; top: 50%; transform: translateY(-50%);
-  width: 11px; height: 11px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff7d6, #8a6410);
+  position: absolute; right: 9%; top: 50%; transform: translateY(-50%);
+  width: clamp(9px, 2.4vw, 15px); height: clamp(9px, 2.4vw, 15px); border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff7d6 0%, #dcab3c 0%, #d6a93a 46%, #7a5410 100%);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.55), inset 0 -1px 2px rgba(86,58,10,0.7), inset 0 1px 1px rgba(255,250,220,0.7);
 }
 .door:not([disabled]):hover .door__panel{ filter: brightness(1.06); }
 .door:not([disabled]):hover{ transform: translateY(-4px); }
 .door{ transition: transform 200ms cubic-bezier(0.2, 1.3, 0.4, 1); }
-.door.picked{ outline: 3px solid var(--gold); outline-offset: 4px; border-radius: 12px; }
-.door.win{ transform: translateY(-8px); }
+/* outline (not box-shadow) — renders reliably on the preserve-3d door, no clipped edge */
+.door.picked{ outline: 3px solid var(--gold); outline-offset: 5px; border-radius: 12px; }
+.door.win{ transform: translateY(-10px); }
 .door.win .door__inside{
-  box-shadow: inset 0 0 44px rgba(244, 196, 48, 0.7), 0 0 60px rgba(244, 196, 48, 0.45);
+  box-shadow: inset 0 0 46px rgba(244, 196, 48, 0.75), 0 0 64px rgba(244, 196, 48, 0.5);
   animation: prizeGlow 1.1s ease infinite alternate;
+  font-size: clamp(2.8rem, 11vw, 4.6rem);
 }
-.door.win .door__inside{ font-size: clamp(2.8rem, 11vw, 4.6rem); }
-@keyframes prizeGlow{ 0%{ filter: brightness(1); } 100%{ filter: brightness(1.25); } }
+/* rotating spotlight rays behind the trophy */
+.door.win .door__inside::before{
+  content: ""; position: absolute; inset: -30%; z-index: -1; /* behind the trophy */
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255,228,130,0.45), transparent 42%),
+    conic-gradient(from 0deg at 50% 46%,
+      rgba(255,226,140,0.30) 0 7deg, transparent 7deg 22deg,
+      rgba(255,226,140,0.30) 22deg 29deg, transparent 29deg 45deg);
+  animation: rays 14s linear infinite;
+}
+@keyframes prizeGlow{ 0%{ filter: brightness(1); } 100%{ filter: brightness(1.28); } }
+@keyframes rays{ to{ transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce){ .door.win .door__inside::before{ animation: none; } }
 .door:focus-visible{ outline: 3px solid #fff; outline-offset: 4px; border-radius: 12px; }
 
 /* spotlight pools beneath the doors */
