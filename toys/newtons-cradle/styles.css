@@ -6,7 +6,8 @@
 html, body { height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; }
 body { font-family: var(--font); background: #0b0c10; }
 
-canvas { display: block; position: fixed; inset: 0; width: 100%; height: 100%; }
+canvas { display: block; position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+canvas:active { cursor: grabbing; }
 
 .controls {
   position: fixed;

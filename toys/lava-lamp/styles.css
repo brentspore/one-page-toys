@@ -6,12 +6,18 @@
 html, body { height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; }
 body { font-family: var(--font); background: radial-gradient(120% 90% at 50% 30%, #1a0f12 0%, #0b0609 55%, #060305 100%); }
 
-/* warm light the lamp casts into the room */
+/* warm light the lamp casts into the room — fills the viewport so the lamp doesn't float in a void */
 .ambient {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(38% 52% at 50% 56%, rgba(255,120,40,0.20), transparent 70%),
-    radial-gradient(60% 40% at 50% 100%, rgba(255,90,30,0.16), transparent 75%);
+    radial-gradient(70% 80% at 50% 52%, rgba(255,120,40,0.26), transparent 72%),
+    radial-gradient(120% 55% at 50% 104%, rgba(255,95,30,0.28), transparent 78%),
+    radial-gradient(100% 40% at 50% -6%, rgba(255,150,60,0.12), transparent 70%);
+}
+/* floor the lamp stands on, with a warm pooled reflection */
+.floor {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 16vh; z-index: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(255,110,40,0.10) 60%, rgba(255,130,50,0.16));
 }
 
 .stage { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; }
@@ -19,24 +25,24 @@ body { font-family: var(--font); background: radial-gradient(120% 90% at 50% 30%
 /* ---- the lamp ---- */
 .lamp {
   position: relative;
-  height: min(82vh, 660px);
+  height: min(94vh, 880px);
   display: flex; flex-direction: column; align-items: center;
-  filter: drop-shadow(0 30px 50px rgba(0,0,0,0.55));
+  filter: drop-shadow(0 36px 60px rgba(0,0,0,0.6));
 }
 .cap {
-  width: clamp(54px, 9vw, 84px); height: clamp(20px, 3.4vh, 30px);
+  width: clamp(62px, 10vw, 98px); height: clamp(22px, 3.6vh, 34px);
   background: linear-gradient(180deg, #d9b15a, #9c7a2e 45%, #6f5320);
   box-shadow: inset 0 2px 0 rgba(255,244,210,0.55), inset 0 -6px 10px rgba(60,40,8,0.6);
   clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%);
 }
 .neck {
-  width: clamp(40px, 7vw, 62px); height: clamp(10px, 1.6vh, 16px);
+  width: clamp(46px, 8vw, 72px); height: clamp(11px, 1.7vh, 18px);
   background: linear-gradient(180deg, #b89240, #7a5c22);
   clip-path: polygon(0 0, 100% 0, 78% 100%, 22% 100%);
 }
 .glass {
   position: relative;
-  width: clamp(150px, 26vw, 250px);
+  width: clamp(176px, 30vw, 320px);
   flex: 1 1 auto;
   clip-path: polygon(31% 0, 69% 0, 83% 100%, 17% 100%);  /* gently tapered bottle */
   overflow: hidden;
@@ -64,7 +70,7 @@ body { font-family: var(--font); background: radial-gradient(120% 90% at 50% 30%
   filter: blur(3px);
 }
 .base {
-  width: clamp(120px, 21vw, 200px); height: clamp(40px, 7vh, 64px);
+  width: clamp(144px, 25vw, 264px); height: clamp(44px, 7.5vh, 72px);
   margin-top: -1px;
   background: linear-gradient(180deg, #c99a44 0%, #8a6a28 40%, #5c4519 100%);
   clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);

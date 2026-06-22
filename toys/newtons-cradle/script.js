@@ -20,6 +20,7 @@
   var leftTheta = 0,  leftOmega = 0;
   var rightTheta = 0, rightOmega = 0;
   var lastTs = null;
+  var dragSide = null;   /* 'left' | 'right' while a ball is being pulled */
 
   /* audio */
   var actx = null;
@@ -230,7 +231,7 @@
 
   /* render loop */
   function render(ts) {
-    if (lastTs !== null) step((ts - lastTs) / 1000);
+    if (lastTs !== null && !dragSide) step((ts - lastTs) / 1000);
     lastTs = ts;
 
     ctx.clearRect(0, 0, W, H);
@@ -248,6 +249,37 @@
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
+
+  /* drag a ball to pull it back, release to swing */
+  function ptr(e) { var r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  function updateDrag(m) {
+    if (dragSide === "left") {
+      var px = firstPivotX;
+      leftTheta = Math.max(-1.45, Math.min(0, Math.atan2(m.x - px, Math.max(8, m.y - pivotY))));
+      leftOmega = 0;
+    } else if (dragSide === "right") {
+      var px2 = firstPivotX + (N - 1) * spacing;
+      rightTheta = Math.min(1.45, Math.max(0, Math.atan2(m.x - px2, Math.max(8, m.y - pivotY))));
+      rightOmega = 0;
+    }
+  }
+  canvas.addEventListener("pointerdown", function (e) {
+    ensureAudio();
+    var m = ptr(e);
+    var l = ballPos(0), rr = ballPos(N - 1), grab = R * 2.4;
+    if (Math.hypot(m.x - l.x, m.y - l.y) < grab) {
+      dragSide = "left"; leftCount = 1; rightCount = 0; rightTheta = 0; rightOmega = 0; leftOmega = 0;
+    } else if (Math.hypot(m.x - rr.x, m.y - rr.y) < grab) {
+      dragSide = "right"; rightCount = 1; leftCount = 0; leftTheta = 0; leftOmega = 0; rightOmega = 0;
+    } else { return; }
+    if (hintEl) hintEl.classList.add("is-hidden");
+    buttons.forEach(function (b) { b.classList.remove("is-active"); });
+    try { canvas.setPointerCapture(e.pointerId); } catch (er) {}
+    updateDrag(m); e.preventDefault();
+  });
+  canvas.addEventListener("pointermove", function (e) { if (dragSide) { updateDrag(ptr(e)); e.preventDefault(); } });
+  window.addEventListener("pointerup", function () { dragSide = null; });
+  window.addEventListener("pointercancel", function () { dragSide = null; });
 
   /* controls */
   buttons.forEach(function (btn) {

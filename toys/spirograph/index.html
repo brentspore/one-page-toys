@@ -46,10 +46,17 @@
         "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
       }
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
-    <canvas id="canvas" aria-label="Self-drawing spirograph patterns"></canvas>
+    <canvas id="canvas" aria-label="Interactive spirograph"></canvas>
+
+    <div class="controls" id="controls">
+      <label class="ctl"><span class="ctl__k">Outer</span><input type="range" id="outer" min="7" max="26" step="1" value="11" aria-label="Outer gear" /></label>
+      <label class="ctl"><span class="ctl__k">Inner</span><input type="range" id="inner" min="2" max="14" step="1" value="4" aria-label="Inner gear" /></label>
+      <label class="ctl"><span class="ctl__k">Pen</span><input type="range" id="pen" min="30" max="98" step="1" value="92" aria-label="Pen position" /></label>
+      <button type="button" class="cbtn" id="randomBtn">Surprise me</button>
+    </div>
 
     <div class="frame" aria-hidden="true">
       <span class="frame__corner frame__corner--tl">No. 023</span>
@@ -57,9 +64,9 @@
       <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
     </div>
 
-    <p class="hint" id="hint">tap to skip to next pattern</p>
+    <p class="hint" id="hint">drag the gears to design your own · or surprise me</p>
 
-    <script src="script.js?v=2" defer></script>
+    <script src="script.js?v=3" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
   </body>
 </html>
