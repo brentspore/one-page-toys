@@ -126,25 +126,35 @@
 
   // ---- ambient sound: a continuous breathing drone (optional) ----------
   var soundOn = false;
-  var actx = null, osc = null, osc2 = null, masterGain = null;
+  var actx = null, osc = null, osc2 = null, oscSub = null, masterGain = null;
+
+  // Low, warm drone register (A2-ish), gentle movement — see audioPhase.
+  var BASE = 110.0; // A2
 
   function initAudio() {
     actx = new (window.AudioContext || window.webkitAudioContext)();
     masterGain = actx.createGain();
     masterGain.gain.value = 0.0001;
     masterGain.connect(actx.destination);
+    // warm lowpass so it reads as a soft drone, not a tone
+    var lp = actx.createBiquadFilter();
+    lp.type = "lowpass"; lp.frequency.value = 480; lp.Q.value = 0.3;
+    lp.connect(masterGain);
     osc = actx.createOscillator();
     osc2 = actx.createOscillator();
-    osc.type = "sine";
-    osc2.type = "sine";
-    osc.frequency.value = 294;
-    osc2.frequency.value = 294 * 1.006; // gentle detune for warmth
-    var blend = actx.createGain();
-    blend.gain.value = 0.5;
-    osc2.connect(blend).connect(masterGain);
-    osc.connect(masterGain);
+    oscSub = actx.createOscillator();
+    osc.type = "sine"; osc2.type = "sine"; oscSub.type = "sine";
+    osc.frequency.value = BASE;
+    osc2.frequency.value = BASE * 1.005;  // gentle detune for warmth
+    oscSub.frequency.value = BASE * 0.5;  // octave-down body
+    var blend = actx.createGain(); blend.gain.value = 0.45;
+    var subg = actx.createGain(); subg.gain.value = 0.4;
+    osc.connect(lp);
+    osc2.connect(blend).connect(lp);
+    oscSub.connect(subg).connect(lp);
     osc.start();
     osc2.start();
+    oscSub.start();
     // iOS unlock: resume + play a 1-sample silent buffer inside the gesture, or
     // a continuous Web Audio drone can stay silent on iOS Safari even when running.
     if (actx.state === "suspended") actx.resume();
@@ -160,15 +170,19 @@
     if (!soundOn || !actx) return;
     var now = actx.currentTime;
     var d = Math.max(0.4, durSec || 4);
-    var f = type === "in" ? 392 : type === "out" ? 196 : osc.frequency.value;
-    var vol = type === "in" ? 0.3 : type === "out" ? 0.12 : 0.2;
-    var attack = Math.min(1.8, d * 0.7);
-    [osc, osc2].forEach(function (o, i) {
-      var tgt = f * (i ? 1.006 : 1);
-      o.frequency.cancelScheduledValues(now);
-      o.frequency.setValueAtTime(o.frequency.value, now);
-      o.frequency.linearRampToValueAtTime(tgt, now + d);
-    });
+    // gentle low movement (a small step, not a sweep): rise on inhale, settle on exhale
+    var f = type === "in" ? 130.81 : type === "out" ? 98.0 : BASE; // C3 / G2 / A2
+    var vol = type === "in" ? 0.2 : type === "out" ? 0.09 : 0.14;
+    var attack = Math.min(2.2, d * 0.8);
+    osc.frequency.cancelScheduledValues(now);
+    osc.frequency.setValueAtTime(osc.frequency.value, now);
+    osc.frequency.linearRampToValueAtTime(f, now + d);
+    osc2.frequency.cancelScheduledValues(now);
+    osc2.frequency.setValueAtTime(osc2.frequency.value, now);
+    osc2.frequency.linearRampToValueAtTime(f * 1.005, now + d);
+    oscSub.frequency.cancelScheduledValues(now);
+    oscSub.frequency.setValueAtTime(oscSub.frequency.value, now);
+    oscSub.frequency.linearRampToValueAtTime(f * 0.5, now + d);
     masterGain.gain.cancelScheduledValues(now);
     masterGain.gain.setValueAtTime(Math.max(0.0001, masterGain.gain.value), now);
     masterGain.gain.linearRampToValueAtTime(vol, now + attack);
