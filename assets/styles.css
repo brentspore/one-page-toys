@@ -729,8 +729,35 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
   border-radius: 8px; opacity: 0.9;
 }
 
+.card__preview[data-slug="beat-maker"]{
+  background:
+    repeating-linear-gradient(90deg, transparent 0 11.4%, rgba(255,255,255,0.07) 11.4% 12.5%),
+    radial-gradient(120% 100% at 50% -10%, #141838 0%, #07080f 82%);
+}
+.card__preview[data-slug="beat-maker"]::after{
+  content: ""; position: absolute; inset: 22% 14%;
+  background:
+    radial-gradient(circle, #b06bf0 60%, transparent) 8% 18% / 11% 22% no-repeat,
+    radial-gradient(circle, #6b7bff 60%, transparent) 30% 50% / 11% 22% no-repeat,
+    radial-gradient(circle, #2fd0e0 60%, transparent) 52% 30% / 11% 22% no-repeat,
+    radial-gradient(circle, #3fd17a 60%, transparent) 64% 74% / 11% 22% no-repeat,
+    radial-gradient(circle, #ff9b4a 60%, transparent) 86% 82% / 11% 22% no-repeat;
+}
+.card__preview[data-slug="falling-sand"]{
+  background:
+    linear-gradient(#d8b25a, #c79a3f) 50% 100% / 60% 22% no-repeat,
+    radial-gradient(50% 70% at 78% 100%, #3f86e0 0 60%, transparent 62%),
+    radial-gradient(20% 40% at 30% 64%, #ff8a3c 0 50%, transparent 60%),
+    #0c0a07;
+}
+.card__preview[data-slug="falling-sand"]::after{
+  content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1.4px);
+  background-size: 7px 7px; opacity: 0.5;
+}
+
 /* Default — clean neutral preview for any future toy */
-.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]){
+.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]){
   background:
     radial-gradient(120% 120% at 50% 130%, var(--accent-soft), transparent 60%),
     var(--surface-2);

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Beat Maker — One Page Toys</title>
+    <meta name="description" content="A glowing step sequencer—tap the grid to build a looping beat as the playhead sweeps across. Tuned so every pattern sounds good, with drums, tempo, and a randomizer. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/beat-maker/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0c18" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Beat Maker — One Page Toys" />
+    <meta property="og:description" content="A glowing step sequencer—tap the grid to build a looping beat as the playhead sweeps. Tuned so every pattern sounds good." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/beat-maker/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/beat-maker.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Beat Maker — One Page Toys" />
+    <meta name="twitter:description" content="A glowing step sequencer—tap the grid to build a looping beat. Tuned so every pattern sounds good." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/beat-maker.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Beat Maker",
+        "url": "https://onepagetoys.com/toys/beat-maker/index.html",
+        "description": "A step-sequencer music toy: tap a glowing grid to build a looping beat with drums and a pentatonic melody, set the tempo, and randomize.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5. Requires Web Audio.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <main class="stage">
+      <div class="seq" id="seq" aria-label="Step sequencer grid"></div>
+
+      <div class="controls" id="controls">
+        <button type="button" class="cbtn cbtn--play" id="playBtn" aria-label="Play">
+          <span class="ico-play" aria-hidden="true">▶</span><span class="lbl">Play</span>
+        </button>
+        <label class="tempo">
+          <span class="tempo__k">Tempo</span>
+          <input type="range" id="tempo" min="70" max="170" value="110" step="1" aria-label="Tempo (BPM)" />
+          <b id="bpm">110</b>
+        </label>
+        <button type="button" class="cbtn" id="randBtn">Random</button>
+        <button type="button" class="cbtn" id="clearBtn">Clear</button>
+      </div>
+    </main>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 018</span>
+      <span class="frame__corner frame__corner--tr">Beat Maker</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">tap the grid to add notes · hit play · every pattern sounds good</p>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+  </body>
+</html>

@@ -65,6 +65,10 @@ const CATEGORY_LABELS = {
  * (“check my colors”, “pretty print json”, “meeting cost”) without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "falling-sand":
+    "falling sand game powder toy cellular automaton sandbox simulation physics sand water fire plant oil stone draw elements materials burn flow melt pixel zen satisfying noita powder game",
+  "beat-maker":
+    "beat maker step sequencer drum machine make music loop rhythm beats grid tap groove melody synth tempo bpm pattern create song producer audio play instrument",
   "chimp-test":
     "chimp test chimpanzee memory working memory number sequence grid brain training cognitive human benchmark ayumu numbers order recall concentration mental focus iq test smarter than a chimp",
   "sequence-memory":

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Falling Sand — One Page Toys</title>
+    <meta name="description" content="A material sandbox—draw with sand, water, fire, plant, oil, and stone and watch them fall, flow, burn, and grow. Water douses fire, fire eats plants, sand sinks. Endlessly hypnotic. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/falling-sand/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0c0a07" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Falling Sand — One Page Toys" />
+    <meta property="og:description" content="A material sandbox—draw with sand, water, fire, plant, oil, and stone and watch them fall, flow, burn, and grow." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/falling-sand/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/falling-sand.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Falling Sand — One Page Toys" />
+    <meta name="twitter:description" content="A material sandbox—draw with sand, water, fire, plant, oil, and stone and watch them interact." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/falling-sand.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Falling Sand",
+        "url": "https://onepagetoys.com/toys/falling-sand/index.html",
+        "description": "A falling-sand cellular-automaton sandbox: draw with sand, water, fire, plant, oil, and stone and watch the materials fall, flow, burn, and grow.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="sand" class="sand" aria-label="Falling-sand sandbox. Draw to place the selected material."></canvas>
+
+    <div class="toolbar" id="toolbar">
+      <div class="mats" id="mats" role="group" aria-label="Materials"></div>
+      <label class="size">
+        <span class="size__k">Brush</span>
+        <input type="range" id="brush" min="1" max="12" value="4" step="1" aria-label="Brush size" />
+      </label>
+      <button type="button" class="tbtn" id="clearBtn">Clear</button>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 019</span>
+      <span class="frame__corner frame__corner--tr">Falling Sand</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">draw to pour · water douses fire · fire eats plant &amp; oil · sand sinks</p>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+  </body>
+</html>

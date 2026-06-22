@@ -1,5 +1,29 @@
 [
   {
+    "slug": "falling-sand",
+    "name": "Falling Sand",
+    "shortDescription": "A material sandbox—draw with sand, water, fire, plant, oil, and stone and watch them fall, flow, burn, and grow. Water douses fire, sand sinks, fire eats plants.",
+    "category": "visual",
+    "tags": [
+      "falling-sand"
+    ],
+    "status": "live",
+    "path": "toys/falling-sand/index.html",
+    "related": []
+  },
+  {
+    "slug": "beat-maker",
+    "name": "Beat Maker",
+    "shortDescription": "A glowing step sequencer—tap the grid to build a looping beat with drums and a pentatonic melody as the playhead sweeps. Tuned so every pattern sounds good.",
+    "category": "audio",
+    "tags": [
+      "beat-maker"
+    ],
+    "status": "live",
+    "path": "toys/beat-maker/index.html",
+    "related": []
+  },
+  {
     "slug": "chimp-test",
     "name": "Chimp Test",
     "shortDescription": "The famous working-memory challenge—numbers flash on a grid then hide; click them in order from memory, one more each round. Can you beat a chimp?",

@@ -73,7 +73,10 @@
       "Bash(python3 -c \"import json; d=json.load\\(open\\('tools-registry.json'\\)\\); print\\('registry valid,', len\\(d\\), 'toys'\\)\")",
       "Bash(python3 -c \"import xml.dom.minidom as m; m.parse\\('sitemap.xml'\\); print\\('sitemap valid'\\)\")",
       "Bash(node --check assets/main.js)",
-      "Bash(sed -i '' 's#assets/styles\\\\.css?v=21#assets/styles.css?v=22#; s#assets/main\\\\.js?v=19#assets/main.js?v=20#' index.html all-toys.html)"
+      "Bash(sed -i '' 's#assets/styles\\\\.css?v=21#assets/styles.css?v=22#; s#assets/main\\\\.js?v=19#assets/main.js?v=20#' index.html all-toys.html)",
+      "Bash(node --check toys/echo/script.js)",
+      "Bash(sed -i '' 's#script\\\\.js?v=1#script.js?v=2#' toys/echo/index.html)",
+      "Bash(node --check toys/breathing-pacer/script.js)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",
