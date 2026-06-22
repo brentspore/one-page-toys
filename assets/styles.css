@@ -697,8 +697,40 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
     linear-gradient(#3f8a45, #3f8a45) 74% 100% / 2px 66% no-repeat;
 }
 
+.card__preview[data-slug="echo"]{
+  background:
+    radial-gradient(40% 40% at 30% 30%, rgba(60,240,170,0.7) 0 22%, transparent 60%),
+    radial-gradient(40% 40% at 70% 30%, rgba(245,190,60,0.45) 0 22%, transparent 60%),
+    radial-gradient(40% 40% at 30% 70%, rgba(90,150,255,0.45) 0 22%, transparent 60%),
+    radial-gradient(40% 40% at 70% 70%, rgba(255,90,170,0.45) 0 22%, transparent 60%),
+    radial-gradient(120% 100% at 50% -10%, #131a33 0%, #07080f 80%);
+}
+.card__preview[data-slug="echo"]::after{
+  content: ""; width: 26%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 50% 36%, #1a2138, #0c1020 72%); border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: 0 0 0 6px rgba(10,14,30,0.5);
+}
+.card__preview[data-slug="chimp-test"]{
+  background:
+    radial-gradient(120% 100% at 50% -10%, #211a12 0%, #0a0807 82%);
+  gap: 8px; padding: 16px;
+}
+.card__preview[data-slug="chimp-test"]::after{
+  content: "3   1   4"; font-family: var(--font-mono, "Geist Mono", monospace);
+  font-size: 1.35rem; font-weight: 700; letter-spacing: 0.5em; color: #f4b740;
+  text-shadow: 0 0 18px rgba(244,183,64,0.55);
+}
+.card__preview[data-slug="chimp-test"]::before{
+  content: ""; position: absolute; inset: 22% 18%;
+  background:
+    linear-gradient(#f4b740, #d9971f) 8% 70% / 20% 30% no-repeat,
+    linear-gradient(#3a2c18, #241a10) 46% 26% / 20% 30% no-repeat,
+    linear-gradient(#3a2c18, #241a10) 82% 64% / 20% 30% no-repeat;
+  border-radius: 8px; opacity: 0.9;
+}
+
 /* Default — clean neutral preview for any future toy */
-.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]){
+.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]){
   background:
     radial-gradient(120% 120% at 50% 130%, var(--accent-soft), transparent 60%),
     var(--surface-2);

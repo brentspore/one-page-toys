@@ -1,5 +1,29 @@
 [
   {
+    "slug": "chimp-test",
+    "name": "Chimp Test",
+    "shortDescription": "The famous working-memory challenge—numbers flash on a grid then hide; click them in order from memory, one more each round. Can you beat a chimp?",
+    "category": "game",
+    "tags": [
+      "chimp-test"
+    ],
+    "status": "live",
+    "path": "toys/chimp-test/index.html",
+    "related": []
+  },
+  {
+    "slug": "echo",
+    "name": "Echo",
+    "shortDescription": "A glowing Simon-style memory game—watch the growing pattern of light and sound, then echo it back. How long a sequence can you hold?",
+    "category": "game",
+    "tags": [
+      "sequence-memory"
+    ],
+    "status": "live",
+    "path": "toys/echo/index.html",
+    "related": []
+  },
+  {
     "slug": "tiny-idle-garden",
     "name": "Tiny Idle Garden",
     "shortDescription": "Plant seeds and watch flowers grow and bloom in real time under a drifting day–night sky—it keeps growing while you're away.",

@@ -65,6 +65,10 @@ const CATEGORY_LABELS = {
  * (“check my colors”, “pretty print json”, “meeting cost”) without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "chimp-test":
+    "chimp test chimpanzee memory working memory number sequence grid brain training cognitive human benchmark ayumu numbers order recall concentration mental focus iq test smarter than a chimp",
+  "sequence-memory":
+    "echo simon says sequence memory pattern game lights sounds tones repeat the pattern brain training memory game concentration audio visual recall colors pads how far can you remember",
   "idle-garden":
     "tiny idle garden gardening grow flowers plant seeds bloom cozy clicker incremental idle game zen relaxing day night cycle fireflies water plants nature calm passive offline grows while away farm",
   "star-sky":

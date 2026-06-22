@@ -68,7 +68,12 @@
       "Bash(ls -la /tmp/og-gen.html)",
       "Bash(node --check toys/tiny-idle-garden/script.js)",
       "Bash(curl -s -o /dev/null -w \"server:%{http_code}\\\\n\" http://localhost:8000/toys/tiny-idle-garden/)",
-      "Bash(npx playwright *)"
+      "Bash(npx playwright *)",
+      "Bash(grep -n \"Next step:\\\\*\\\\* Nothing pending — all pushed \\(\\\\`one-page-toys\" ~/.ai/memory/PULSE.md)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('tools-registry.json'\\)\\); print\\('registry valid,', len\\(d\\), 'toys'\\)\")",
+      "Bash(python3 -c \"import xml.dom.minidom as m; m.parse\\('sitemap.xml'\\); print\\('sitemap valid'\\)\")",
+      "Bash(node --check assets/main.js)",
+      "Bash(sed -i '' 's#assets/styles\\\\.css?v=21#assets/styles.css?v=22#; s#assets/main\\\\.js?v=19#assets/main.js?v=20#' index.html all-toys.html)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",

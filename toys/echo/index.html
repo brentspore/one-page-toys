@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Echo — One Page Toys</title>
+    <meta name="description" content="A glowing sequence-memory game in the spirit of Simon. Watch the pads light up and play their tones, then repeat the pattern back—one step longer every round. How far can your memory stretch? Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/echo/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0e1a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Echo — One Page Toys" />
+    <meta property="og:description" content="A glowing Simon-style sequence-memory game—watch the pattern of light and sound, then echo it back, one step longer each round." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/echo/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/echo.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Echo — One Page Toys" />
+    <meta name="twitter:description" content="Watch the glowing pattern of light and sound, then echo it back—one step longer each round." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/echo.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Echo",
+        "url": "https://onepagetoys.com/toys/echo/index.html",
+        "description": "A Simon-style sequence-memory brain game: watch a growing pattern of light and sound, then repeat it back.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <main class="stage">
+      <div class="simon" id="simon" aria-label="Echo memory game">
+        <button type="button" class="pad pad--0" data-i="0" aria-label="Pad 1"></button>
+        <button type="button" class="pad pad--1" data-i="1" aria-label="Pad 2"></button>
+        <button type="button" class="pad pad--2" data-i="2" aria-label="Pad 3"></button>
+        <button type="button" class="pad pad--3" data-i="3" aria-label="Pad 4"></button>
+        <div class="hub" id="hub">
+          <span class="hub__num" id="hubNum">▶</span>
+          <span class="hub__label" id="hubLabel">Start</span>
+          <span class="hub__best" id="hubBest">Best 0</span>
+        </div>
+      </div>
+      <p class="status" id="status" aria-live="polite">Watch the pattern, then echo it back</p>
+    </main>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 016</span>
+      <span class="frame__corner frame__corner--tr">Echo</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">memory game · repeat the growing pattern of light &amp; sound</p>
+
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+  </body>
+</html>
