@@ -1,5 +1,15 @@
 [
   {
+    "slug": "plasma-ball",
+    "name": "Plasma Ball",
+    "shortDescription": "A glowing plasma ball—electric arcs branch and crackle from the central electrode, and chase your finger when you touch the glass.",
+    "category": "visual",
+    "tags": ["plasma-ball"],
+    "status": "live",
+    "path": "toys/plasma-ball/index.html",
+    "related": []
+  },
+  {
     "slug": "spirograph",
     "name": "Spirograph",
     "shortDescription": "A self-drawing digital spirograph—watch geometric petal patterns bloom and shift through color as each curve completes and the next begins. Tap to skip.",

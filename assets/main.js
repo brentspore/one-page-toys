@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "plasma-ball":
+    "plasma ball plasma globe plasma lamp electric arcs lightning ball tesla coil neon discharge glass sphere electrode glowing tentacles touch finger interactive electric dark room science sci-fi zap crackle lightning plasma electric blue purple",
   "spirograph":
     "spirograph string art hypotrochoid epitrochoid geometric pattern petals rose curves mathematical art generative drawing bloom kaleidoscope spirals flowers mandala mesmerizing watch",
   "newtons-cradle":
