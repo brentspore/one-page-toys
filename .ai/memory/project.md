@@ -31,6 +31,22 @@ Tools/toys must read semantic tokens (not hardcoded colors/radii/shadows) so re-
 - Shared components depend on tokens, not hardcoded one-off values.
 - Predictable structure: tool pages follow the same layout hierarchy.
 
-**Builder/import notes:** Hand-coded HTML/CSS/JS. PUBLIC repo, not Lovable-generated.
+**Tool page contract (every page must follow):**
+1. Three CSS imports in order: `../../assets/styles.css` → `../../assets/tool-shell.css` → `styles.css` (tool-local)
+2. `data-tool-slug="my-slug"` on `<body>`
+3. Semantic header / main / footer structure
+4. `.panel` wrapping the primary interactive area
+5. `.tool-directions` help text placed *after* controls, not before
+6. `<div id="toolCrossRoot" class="tool-cross-mount"></div>` before `</main>` (related tools injection point)
+7. Deferred `../../assets/site-chrome.js` and `../../assets/tool-cross.js` script imports at end of body
+8. Tool-local CSS must use a slug-prefixed BEM namespace (e.g. `.qrg-`, `.sm-`) — never extend or duplicate global selectors (`.btn`, `.panel`) in tool-local files
+
+**How to add a new tool/toy:**
+1. Create `/tools/my-slug/` (utility) or `/toys/my-slug/` (game/visual/audio/wellness) with `index.html` + `styles.css`
+2. Follow the tool page contract above
+3. Add entry to `tools-registry.json`: slug, name, shortDescription, category, tags, status, related (path auto-filled by script)
+4. Run `node scripts/sync-registry-paths.cjs` then `node scripts/build-sitemap.cjs`
+
+**Builder/import notes:** Hand-coded HTML/CSS/JS. PUBLIC repo, not Lovable-generated. Built with Gemini AI assistance.
 
 **Current-state checkpoint (2026-05-25):** Live at https://onepagetoys.com (GitHub Pages via CNAME). ~60+ toys + tools shipped. Google Analytics + structured data (JSON-LD WebSite) in place. No cross-links to the affiliate-feeder family yet — adding a sister-sites footer linking SE / BI / BOK is in BACKLOG to realize the latent traffic-feeding potential.

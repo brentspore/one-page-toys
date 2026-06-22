@@ -49,22 +49,31 @@ document.addEventListener("click", function (e) {
   }
 });
 
-/** Stable ordering for category chips and “sort by category”. */
-const CATEGORY_ORDER = ["utility", "game", "visual", "audio", "wellness"];
+/** Stable ordering for category chips and "sort by category". */
+const CATEGORY_ORDER = ["utility", "game", "visual", "audio", "simulation", "wellness"];
 
 const CATEGORY_LABELS = {
   utility: "Tools",
   game: "Games & play",
   visual: "Visual & color",
   audio: "Audio",
+  simulation: "Physics & sim",
   wellness: "Wellness"
 };
 
 /**
  * Extra plain-language tokens for each tool-type tag so search matches how people type
- * (“check my colors”, “pretty print json”, “meeting cost”) without stuffing the visible chips.
+ * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "spirograph":
+    "spirograph string art hypotrochoid epitrochoid geometric pattern petals rose curves mathematical art generative drawing bloom kaleidoscope spirals flowers mandala mesmerizing watch",
+  "newtons-cradle":
+    "newtons cradle newton cradle balls pendulum physics momentum transfer clack kinetic energy elastic collision stress wave desk toy swing tick tock satisfying hypnotic",
+  "bubble-wrap":
+    "bubble wrap pop bubbles popping asmr satisfying stress relief pop it fidget sensory tap click drag sheet reset calm anxiety zen tactile",
+  "lava-lamp":
+    "lava lamp metaballs blobs ambient relaxing hypnotic chill retro fluid simulation rise drift float merge wave slow satisfying screensaver 70s groovy warm orange",
   "falling-sand":
     "falling sand game powder toy cellular automaton sandbox simulation physics sand water fire plant oil stone draw elements materials burn flow melt pixel zen satisfying noita powder game",
   "beat-maker":
@@ -366,7 +375,7 @@ function splitHayWords(hay) {
   });
 }
 
-/** Substring match, or prefix match on any word (e.g. “typ” → typing). */
+/** Substring match, or prefix match on any word (e.g. "typ" → typing). */
 function tokenMatchesHaystack(tok, hay) {
   if (!tok.length) return true;
   if (hay.indexOf(tok) !== -1) return true;

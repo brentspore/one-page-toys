@@ -4,10 +4,19 @@ description: Commands, repo pointers, external systems, and operational notes
 type: reference
 ---
 
-- **Local repo:** `~/Personal Projects/one-page-toys`
+- **Local repo:** /Users/bspore/Personal Projects/one-page-toys
 - **Remote repo:** https://github.com/brentspore/one-page-toys
-- **Commands:** Static site, no build step. **Dev:** `python3 -m http.server 8000` (serve from repo root → http://localhost:8000/). **Verify changes:** Playwright is a devDependency — drive headless Chromium with `NODE_PATH="$(pwd)/node_modules" node <script>` to screenshot pages (the goo-cursor toy and the gallery render correctly this way). No test/lint/build.
-- **External systems:** TODO: hosting, database, analytics, email, APIs.
-- **Secrets/env:** TODO: Where secrets live. Do not paste secret values here.
-- **Deployment notes:** TODO: What deploys automatically and what needs manual action.
-- **Builder/sync notes:** TODO: If applicable, note how Lovable or another builder syncs with GitHub, what it may regenerate, and what requires manual redeploy or review.
+- **Commands:**
+  - Dev server: `python3 -m http.server 3000` (no build pipeline; serve static files)
+  - Sync registry paths: `node scripts/sync-registry-paths.cjs` (auto-sets `path` field in tools-registry.json from category)
+  - Rebuild sitemap: `node scripts/build-sitemap.cjs` (regenerates sitemap.xml from registry)
+  - Scaffold new tool: `node scripts/implement-new-25.js` (references new25-impls-{a,b}.cjs templates)
+  - Verify changes: Playwright is a devDependency — drive headless Chromium with `NODE_PATH="$(pwd)/node_modules" node <script>` to screenshot pages
+- **External systems:**
+  - Hosting: GitHub Pages (CNAME → onepagetoys.com); no CI — push to main deploys automatically
+  - Analytics: Google Analytics GA-4 (G-VBVJ93GL8L) on every page
+  - Fonts: Google Fonts (Outfit, Plus Jakarta Sans)
+  - No database, no backend, no auth, no email, no API keys in codebase
+- **Secrets/env:** None. No .env file, no server-side secrets.
+- **Deployment notes:** Push to main branch → GitHub Pages deploys automatically. No build step required.
+- **Builder/sync notes:** Hand-coded HTML/CSS/JS. Not Lovable-generated. Built with Gemini AI assistance. No builder sync.

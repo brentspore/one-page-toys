@@ -11,7 +11,7 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-22 · **Latest pushed commit:** `ad8e3c8` on `main`.
+**Last updated:** 2026-06-22 · **Latest pushed commit:** pending push — 4 new toys built (not yet committed).
 
 ## To continue on another machine
 1. `git pull` (the remote is authoritative; everything below is committed/pushed).
@@ -21,7 +21,7 @@ this file when they disagree, and note `project.md` here is from the pre-2026-06
 ## What this site is now (post-pivot, 2026-06)
 A branded **launcher hub** + **19 standalone, full-bleed toys**, each in its own `toys/<slug>/` (or `tools/<slug>/` for the lone utility), opening in a NEW TAB. Geist design system (Geist Sans/Mono, neutral grays, restrained red `#941e1e`, 3-way System/Light/Dark theme). The old ~57 toys were archived to `/archive/`. **Direction: FUN / playful / experiential — NOT dev tools** (dev tools belong on the separate BuildUtilities site). Static site, GitHub Pages from `main` → onepagetoys.com.
 
-**The 19 toys:** Goo Cursor, Meeting Cost Meter (the one utility), Breathing Pacer, Coin Flip, Dice Roller, Magic 8-Ball, Blob Choir, Tic-Tac-Toe, Rock Paper Scissors, Three Doors, Memory Match, Snake, Weird Generative Canvas, Star Click Sky, Tiny Idle Garden (015), Echo (016), Chimp Test (017), Beat Maker (018), Falling Sand (019).
+**The 23 toys:** Goo Cursor, Meeting Cost Meter (the one utility), Breathing Pacer, Coin Flip, Dice Roller, Magic 8-Ball, Blob Choir, Tic-Tac-Toe, Rock Paper Scissors, Three Doors, Memory Match, Snake, Weird Generative Canvas, Star Click Sky, Tiny Idle Garden (015), Echo (016), Chimp Test (017), Beat Maker (018), Falling Sand (019), Lava Lamp (020), Bubble Wrap (021), Newton's Cradle (022), Spirograph (023).
 
 ## Key files
 - `tools-registry.json` — drives the gallery. Prepend new toys (newest first). slug/name/shortDescription/category/tags/status/path.
@@ -40,7 +40,7 @@ A branded **launcher hub** + **19 standalone, full-bleed toys**, each in its own
 - Verify each toy headless before committing (Playwright): no console errors, no horizontal overflow at 375px, interactions work. Screenshot to eyeball visuals.
 
 ## Open ideas / next candidates (fun-aligned)
-Build-next toys: **lava-lamp / plasma**, **bubble-wrap ASMR**, **Newton's cradle**, **spirograph / string-art**; archive options: **Mood Meteor**, **Void Oracle**, **Emoji Slots**. Genre gaps: more audio, more cozy/idle. Skip as too-simple: the reflex cluster + one-shot gag generators in `/archive/`.
+All four backlog items built (020–023). Next candidates: archive options **Mood Meteor**, **Void Oracle**, **Emoji Slots**; genre gaps: more audio, more cozy/idle. Skip as too-simple: the reflex cluster + one-shot gag generators in `/archive/`. Still need: OG images for the 4 new toys (use `scripts/og-gen.html#<slug>` → screenshot 1200×630).
 
 ## Other repos (separate)
 - **BuildUtilities** (`~/Personal Projects/buildutilities` = GitHub `brentspore/buildutilities` = Lovable project "BuildUtilities.com") — the dev-tools site; git push syncs into Lovable, then Publish in Lovable to deploy. Different repo entirely.

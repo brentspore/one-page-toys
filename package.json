@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/brentspore/one-page-toys#readme",
   "devDependencies": {
-    "playwright": "^1.59.1"
+    "playwright": "^1.61.0"
   }
 }

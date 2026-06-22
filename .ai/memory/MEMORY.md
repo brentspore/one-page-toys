@@ -5,6 +5,8 @@
 - [Project reference](reference.md) — commands, repo pointers, external systems, and operational notes
 - [Project decisions](DECISIONS.md) — project-specific decisions that should not be relitigated
 - [Project backlog](BACKLOG.md) — deferred ideas and follow-ups for this project
+- [Design principles](design-principles.md) — CSS scoping rules, architecture vs. style, tool page structure, interaction safety
+- [New tool strategy](new-tool-strategy.md) — SEO-first approach and implementation checklist for adding tools/toys
 
 ## How to use this memory
 

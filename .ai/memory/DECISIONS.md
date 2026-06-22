@@ -18,6 +18,28 @@ If a decision should apply across multiple projects, record it in `~/.ai/memory/
 
 **Revisit if:** What would make this worth reconsidering.
 
+### 2026-06-11 — AI-tool agnostic repo (no tool-specific config files)
+
+**Context:** Claude Code suggested adding a `CLAUDE.md` to persist project context across environments.
+
+**Decision:** No tool-specific config files (no `.claude/`, no `CLAUDE.md`, no `.cursor/`, etc.) committed to the repo. Use `.ai/memory/` as the canonical portable memory layer instead.
+
+**Rationale:** Keeps the repo agnostic to whichever AI assistant is in use. `.ai/memory/` travels with the code and works with any tool that follows the AI.md convention.
+
+**Revisit if:** A specific tool offers capabilities that genuinely require its own config and there's no agnostic equivalent.
+
+---
+
+### 2026-06-11 — No affiliate CTAs or sales surfaces on the site
+
+**Context:** The site's secondary purpose is top-of-funnel traffic for the Synergy portfolio, which could be misread as "add CTAs."
+
+**Decision:** No affiliate links, no sales CTAs, no promoted content on any page. Cross-linking to sister sites is passive (footer only, text links, no tracking params).
+
+**Rationale:** Adding sales surfaces would break the site's character and trust with users who found a toy via search. Passive discovery is the intent.
+
+**Revisit if:** Synergy explicitly decides to change the monetization model for this property.
+
 ---
 
 ### 2026-06-21 — New-toy conventions (carried over from removed `.cursor/` rules)

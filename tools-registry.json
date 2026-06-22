@@ -1,5 +1,45 @@
 [
   {
+    "slug": "spirograph",
+    "name": "Spirograph",
+    "shortDescription": "A self-drawing digital spirograph—watch geometric petal patterns bloom and shift through color as each curve completes and the next begins. Tap to skip.",
+    "category": "visual",
+    "tags": ["spirograph"],
+    "status": "live",
+    "path": "toys/spirograph/index.html",
+    "related": []
+  },
+  {
+    "slug": "newtons-cradle",
+    "name": "Newton's Cradle",
+    "shortDescription": "A satisfying Newton's Cradle simulation—swing 1, 2, or 3 balls and watch momentum transfer in perfect clacking loops. Mesmerizing physics.",
+    "category": "simulation",
+    "tags": ["newtons-cradle"],
+    "status": "live",
+    "path": "toys/newtons-cradle/index.html",
+    "related": []
+  },
+  {
+    "slug": "bubble-wrap",
+    "name": "Bubble Wrap",
+    "shortDescription": "A full sheet of virtual bubble wrap—tap or drag to pop satisfying bubbles with a crisp audio crack. Reset for a fresh sheet. Endlessly satisfying.",
+    "category": "game",
+    "tags": ["bubble-wrap"],
+    "status": "live",
+    "path": "toys/bubble-wrap/index.html",
+    "related": []
+  },
+  {
+    "slug": "lava-lamp",
+    "name": "Lava Lamp",
+    "shortDescription": "A full-screen digital lava lamp—warm amber blobs slowly rise, merge, and drift apart in hypnotic metaball loops. Just watch.",
+    "category": "visual",
+    "tags": ["lava-lamp"],
+    "status": "live",
+    "path": "toys/lava-lamp/index.html",
+    "related": []
+  },
+  {
     "slug": "falling-sand",
     "name": "Falling Sand",
     "shortDescription": "A material sandbox—draw with sand, water, fire, plant, oil, and stone and watch them fall, flow, burn, and grow. Water douses fire, sand sinks, fire eats plants.",
