@@ -53,104 +53,80 @@
     "rgba(88,200,255,0.30)",    // light cyan
   ];
 
-  // Arc state
-  var N = 7;
+  // Arc state — each filament holds an angle that re-strikes (jumps) at random
+  // intervals; the jagged path is regenerated every frame so it crackles.
+  var N = 8;
   var arcs = [];
   for (var i = 0; i < N; i++) {
     arcs.push({
       isTouch: i === 0,
-      angle: (i / N) * Math.PI * 2 + (Math.random() - 0.5) * 0.3,
-      angleVel: (Math.random() - 0.5) * 0.007,
-      // 3 waypoints: {t (fractional position), p (perp offset), v (velocity)}
-      wp: [
-        { t: 0.24, p: 0, v: (Math.random() - 0.5) * 0.5 },
-        { t: 0.52, p: 0, v: (Math.random() - 0.5) * 0.7 },
-        { t: 0.76, p: 0, v: (Math.random() - 0.5) * 0.5 },
-      ],
-      // Branch from wp[1]
-      bOff: (Math.random() - 0.5) * 1.1,   // angle offset from arc direction
-      bLen: 0.22 + Math.random() * 0.18,    // length as fraction of CR
-      bMidP: 0,
-      bMidV: (Math.random() - 0.5) * 0.4,
-      midColor: MID_COLORS[i],
-      energy: 0.75 + Math.random() * 0.25,
-      touchBoost: 0,
+      angle: (i / N) * Math.PI * 2,
+      restrikeIn: Math.random() * 0.6,
+      midColor: MID_COLORS[i % MID_COLORS.length],
+      energy: 0.85,
+      flick: 1
     });
   }
 
   function updateArcs(dt) {
     var f = dt * 60;
-    var mx = CR * 0.32;
     for (var i = 0; i < N; i++) {
       var a = arcs[i];
-      var isTch = a.isTouch && mIn;
-
-      if (isTch) {
+      a.restrikeIn -= dt;
+      if (a.isTouch && mIn) {
+        // track the finger tightly (no slow clock-hand sweep)
         var tAngle = Math.atan2(mY - CY, mX - CX);
         var da = tAngle - a.angle;
         while (da > Math.PI) da -= Math.PI * 2;
         while (da < -Math.PI) da += Math.PI * 2;
-        a.angle += da * Math.min(0.16 * f, 0.9);
-        // Arc straightens toward finger
-        for (var j = 0; j < a.wp.length; j++) a.wp[j].p *= Math.pow(0.80, f);
-        a.touchBoost = Math.min(0.55, a.touchBoost + 0.07 * f);
-        a.energy = 0.85 + Math.random() * 0.15;
+        a.angle += da * Math.min(1, 0.55 * f);
+        a.energy = 1.05;
       } else {
-        a.angle += a.angleVel * f + (Math.random() - 0.5) * 0.004 * f;
-        a.touchBoost = Math.max(0, a.touchBoost - 0.05 * f);
-        a.energy = 0.68 + Math.random() * 0.40;
+        if (a.restrikeIn <= 0) {        // re-strike: the filament jumps to a new spot
+          a.angle += (Math.random() - 0.5) * 1.5;
+          a.restrikeIn = 0.16 + Math.random() * 0.7;
+        }
+        a.angle += (Math.random() - 0.5) * 0.03 * f;  // subtle crackle wander
+        a.energy = 0.8;
       }
-
-      // Jitter waypoints
-      for (var k = 0; k < a.wp.length; k++) {
-        var wp = a.wp[k];
-        wp.v += (Math.random() - 0.5) * 0.28 * f;
-        wp.v *= Math.pow(0.86, f);
-        wp.p += wp.v * f;
-        if (wp.p > mx) { wp.p = mx; wp.v = -Math.abs(wp.v) * 0.4; }
-        if (wp.p < -mx) { wp.p = -mx; wp.v = Math.abs(wp.v) * 0.4; }
-      }
-
-      // Jitter branch midpoint
-      a.bMidV += (Math.random() - 0.5) * 0.24 * f;
-      a.bMidV *= Math.pow(0.83, f);
-      a.bMidP += a.bMidV * f;
-      a.bMidP = Math.max(-CR * 0.22, Math.min(CR * 0.22, a.bMidP));
+      a.flick = 0.7 + Math.random() * 0.45;            // per-frame brightness flicker
     }
   }
 
-  // Returns arc point array from electrode center to sphere surface
+  // Fractal lightning via midpoint displacement (regenerated each frame → crackle)
+  function bolt(x0, y0, x1, y1, disp, out) {
+    if (disp < 3.5) { out.push({ x: x1, y: y1 }); return; }
+    var dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy) || 1;
+    var mx = (x0 + x1) / 2 + (-dy / L) * (Math.random() - 0.5) * disp;
+    var my = (y0 + y1) / 2 + (dx / L) * (Math.random() - 0.5) * disp;
+    bolt(x0, y0, mx, my, disp * 0.55, out);
+    bolt(mx, my, x1, y1, disp * 0.55, out);
+  }
+  function makeBolt(x0, y0, x1, y1, disp) {
+    var out = [{ x: x0, y: y0 }];
+    bolt(x0, y0, x1, y1, disp, out);
+    return out;
+  }
+
+  // jagged filament from the electrode to the surface (or to the finger when touching)
   function getArcPts(a) {
-    var ex = CX + Math.cos(a.angle) * CR * 0.95;
-    var ey = CY + Math.sin(a.angle) * CR * 0.95;
-    var dx = ex - CX, dy = ey - CY;
-    var len = Math.hypot(dx, dy);
-    var nx = -dy / len, ny = dx / len; // unit perpendicular
-
-    var pts = [{ x: CX, y: CY }];
-    for (var j = 0; j < a.wp.length; j++) {
-      var wp = a.wp[j];
-      pts.push({ x: CX + dx * wp.t + nx * wp.p, y: CY + dy * wp.t + ny * wp.p });
+    var R = CR * 0.97, ex, ey;
+    if (a.isTouch && mIn) {
+      var d = Math.hypot(mX - CX, mY - CY) || 1, rr = Math.min(d, R);
+      ex = CX + (mX - CX) / d * rr; ey = CY + (mY - CY) / d * rr;
+    } else {
+      ex = CX + Math.cos(a.angle) * R; ey = CY + Math.sin(a.angle) * R;
     }
-    pts.push({ x: ex, y: ey });
-    return pts;
+    return makeBolt(CX, CY, ex, ey, Math.hypot(ex - CX, ey - CY) * 0.16);
   }
 
-  // Branch from the mid-arc waypoint (pts[2])
+  // a shorter jagged branch off the middle of the main filament
   function getBranchPts(a, pts) {
-    var s = pts[2];
-    var bAngle = a.angle + a.bOff;
-    var bLen = CR * a.bLen;
-    var ex = s.x + Math.cos(bAngle) * bLen;
-    var ey = s.y + Math.sin(bAngle) * bLen;
-    var dx = ex - s.x, dy = ey - s.y;
-    var len = Math.hypot(dx, dy) || 1;
-    var nx = -dy / len, ny = dx / len;
-    return [
-      s,
-      { x: s.x + dx * 0.52 + nx * a.bMidP, y: s.y + dy * 0.52 + ny * a.bMidP },
-      { x: ex, y: ey },
-    ];
+    var s = pts[(pts.length * 0.5) | 0];
+    var bAng = Math.atan2(s.y - CY, s.x - CX) + (Math.random() - 0.5) * 1.3;
+    var bLen = CR * (0.16 + Math.random() * 0.2);
+    var ex = s.x + Math.cos(bAng) * bLen, ey = s.y + Math.sin(bAng) * bLen;
+    return makeBolt(s.x, s.y, ex, ey, bLen * 0.5);
   }
 
   function polyline(pts) {
@@ -179,7 +155,7 @@
 
     for (var i = 0; i < N; i++) {
       var a = arcs[i];
-      var e = a.energy + a.touchBoost;
+      var e = a.energy * a.flick;
       var pts = getArcPts(a);
       var bpts = getBranchPts(a, pts);
       var isTch = a.isTouch && mIn;

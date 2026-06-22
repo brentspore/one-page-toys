@@ -86,7 +86,8 @@
       "Bash(cat package.json)",
       "Bash(find . -name \"og-gen*\" -not -path \"*/node_modules/*\")",
       "Bash(grep -iE \"claude|agent|cursor|ai\\\\.md|\\\\.md$\")",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(perl -0pi -e 's{\\(<script src=\"\\\\.\\\\./\\\\.\\\\./assets/tip-jar\\\\.js[^\"]*\" defer></script>\\)}{$1\\\\n    <script src=\"../../assets/fullscreen.js?v=1\" defer></script>} unless /fullscreen\\\\.js/' toys/*/index.html tools/*/index.html)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",
