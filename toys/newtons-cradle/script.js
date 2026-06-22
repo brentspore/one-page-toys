@@ -4,13 +4,14 @@
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
   var hintEl = document.getElementById("hint");
-  var buttons = [].slice.call(document.querySelectorAll(".btn"));
+  var loopBtn = document.getElementById("loopBtn");
 
   var N = 5;           /* number of balls */
   var G = 9.81;        /* gravity m/s² */
   var L_METERS = 0.32; /* string length in meters */
   var LAUNCH_ANGLE = Math.PI * 0.40; /* ~72° pull */
-  var DAMP = 0.00055;  /* per-second energy fraction lost */
+  var DAMP = 0.12;     /* energy lost per second — it rings, then settles (~30s) */
+  var REST_OMEGA = 0.14; /* below this speed at a crossing, snap to full rest */
 
   /* layout (set in resize) */
   var W, H, L_px, R, spacing, pivotY, firstPivotX;
@@ -21,6 +22,8 @@
   var rightTheta = 0, rightOmega = 0;
   var lastTs = null;
   var dragSide = null;   /* 'left' | 'right' while a ball is being pulled */
+  var dragPivotX = 0;    /* pivot x of the grabbed ball */
+  var loop = false;      /* endless auto-swing (damping off) */
 
   /* audio */
   var actx = null;
@@ -32,8 +35,10 @@
     try { var b = actx.createBuffer(1,1,22050); var s = actx.createBufferSource(); s.buffer=b; s.connect(actx.destination); s.start(0); } catch(e){}
     if (actx.state === "suspended") actx.resume();
   }
-  function clack() {
+  function clack(speed) {
     if (!actx) return;
+    var vol = Math.min(0.45, Math.abs(speed) * 0.11);  // quieter as the swing fades
+    if (vol < 0.012) return;
     var now = actx.currentTime;
     var o = actx.createOscillator();
     var g = actx.createGain();
@@ -41,7 +46,7 @@
     o.frequency.setValueAtTime(1100, now);
     o.frequency.exponentialRampToValueAtTime(600, now + 0.045);
     g.gain.setValueAtTime(0.0001, now);
-    g.gain.linearRampToValueAtTime(0.38, now + 0.003);
+    g.gain.linearRampToValueAtTime(vol, now + 0.003);
     g.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
     o.connect(g); g.connect(actx.destination);
     o.start(now); o.stop(now + 0.06);
@@ -60,45 +65,49 @@
   resize();
   window.addEventListener("resize", resize);
 
-  /* launch */
+  function toRest() {
+    leftCount = 0; rightCount = 0; leftTheta = 0; rightTheta = 0; leftOmega = 0; rightOmega = 0;
+  }
+
+  /* launch n balls from the left (used by the endless auto-swing) */
   function launch(n) {
     ensureAudio();
     leftCount = n; leftTheta = -LAUNCH_ANGLE; leftOmega = 0;
     rightCount = 0; rightTheta = 0; rightOmega = 0;
     if (hintEl) hintEl.classList.add("is-hidden");
-    buttons.forEach(function (b) {
-      b.classList.toggle("is-active", +b.dataset.n === n);
-    });
   }
 
   /* physics step */
   function step(dt) {
     dt = Math.min(dt, 0.05); /* clamp to avoid explosions on tab-switch */
     var GL = G / L_METERS;
+    var damp = loop ? 1 : Math.pow(1 - DAMP, dt);  // endless mode keeps all its energy
 
     if (leftCount > 0) {
       leftOmega += -GL * Math.sin(leftTheta) * dt;
-      leftOmega *= Math.pow(1 - DAMP, dt);
+      leftOmega *= damp;
       leftTheta += leftOmega * dt;
 
       /* collision: left group crosses bottom moving right */
       if (leftTheta >= -0.001 && leftOmega > 0) {
+        if (!loop && leftOmega < REST_OMEGA) { toRest(); return; }
         rightCount = leftCount; rightTheta = 0.001; rightOmega = leftOmega;
         leftCount = 0; leftTheta = 0; leftOmega = 0;
-        clack();
+        clack(rightOmega);
       }
     }
 
     if (rightCount > 0) {
       rightOmega += -GL * Math.sin(rightTheta) * dt;
-      rightOmega *= Math.pow(1 - DAMP, dt);
+      rightOmega *= damp;
       rightTheta += rightOmega * dt;
 
       /* collision: right group crosses bottom moving left */
       if (rightTheta <= 0.001 && rightOmega < 0) {
+        if (!loop && -rightOmega < REST_OMEGA) { toRest(); return; }
         leftCount = rightCount; leftTheta = -0.001; leftOmega = rightOmega;
         rightCount = 0; rightTheta = 0; rightOmega = 0;
-        clack();
+        clack(leftOmega);
       }
     }
   }
@@ -253,27 +262,25 @@
   /* drag a ball to pull it back, release to swing */
   function ptr(e) { var r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
   function updateDrag(m) {
-    if (dragSide === "left") {
-      var px = firstPivotX;
-      leftTheta = Math.max(-1.45, Math.min(0, Math.atan2(m.x - px, Math.max(8, m.y - pivotY))));
-      leftOmega = 0;
-    } else if (dragSide === "right") {
-      var px2 = firstPivotX + (N - 1) * spacing;
-      rightTheta = Math.min(1.45, Math.max(0, Math.atan2(m.x - px2, Math.max(8, m.y - pivotY))));
-      rightOmega = 0;
-    }
+    var th = Math.atan2(m.x - dragPivotX, Math.max(8, m.y - pivotY));
+    if (dragSide === "left") { leftTheta = Math.max(-1.45, Math.min(0, th)); leftOmega = 0; }
+    else if (dragSide === "right") { rightTheta = Math.min(1.45, Math.max(0, th)); rightOmega = 0; }
   }
   canvas.addEventListener("pointerdown", function (e) {
     ensureAudio();
     var m = ptr(e);
-    var l = ballPos(0), rr = ballPos(N - 1), grab = R * 2.4;
-    if (Math.hypot(m.x - l.x, m.y - l.y) < grab) {
-      dragSide = "left"; leftCount = 1; rightCount = 0; rightTheta = 0; rightOmega = 0; leftOmega = 0;
-    } else if (Math.hypot(m.x - rr.x, m.y - rr.y) < grab) {
-      dragSide = "right"; rightCount = 1; leftCount = 0; leftTheta = 0; leftOmega = 0; rightOmega = 0;
-    } else { return; }
+    // grab the nearest ball; the group is that ball through its near end (pull as many as you reach)
+    var best = -1, bd = R * 2.4;
+    for (var i = 0; i < N; i++) {
+      var p = ballPos(i), d = Math.hypot(m.x - p.x, m.y - p.y);
+      if (d < bd) { bd = d; best = i; }
+    }
+    if (best < 0) return;
+    toRest();
+    if (best <= (N - 1) / 2) { dragSide = "left"; leftCount = best + 1; }
+    else { dragSide = "right"; rightCount = N - best; }
+    dragPivotX = firstPivotX + best * spacing;
     if (hintEl) hintEl.classList.add("is-hidden");
-    buttons.forEach(function (b) { b.classList.remove("is-active"); });
     try { canvas.setPointerCapture(e.pointerId); } catch (er) {}
     updateDrag(m); e.preventDefault();
   });
@@ -281,11 +288,12 @@
   window.addEventListener("pointerup", function () { dragSide = null; });
   window.addEventListener("pointercancel", function () { dragSide = null; });
 
-  /* controls */
-  buttons.forEach(function (btn) {
-    btn.addEventListener("click", function () { launch(+btn.dataset.n); });
+  /* endless auto-swing toggle */
+  loopBtn.addEventListener("click", function () {
+    loop = !loop;
+    loopBtn.classList.toggle("is-active", loop);
+    loopBtn.setAttribute("aria-pressed", loop ? "true" : "false");
+    loopBtn.textContent = loop ? "Stop" : "Auto-swing";
+    if (loop) { ensureAudio(); if (leftCount === 0 && rightCount === 0) launch(2); }
   });
-
-  /* auto-start with 1 ball */
-  launch(1);
 })();

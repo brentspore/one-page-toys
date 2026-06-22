@@ -51,10 +51,8 @@
   <body>
     <canvas id="canvas" aria-label="Newton's Cradle physics simulation"></canvas>
 
-    <div class="controls" id="controls" aria-label="Launch controls">
-      <button class="btn" data-n="1" type="button">1 ball</button>
-      <button class="btn" data-n="2" type="button">2 balls</button>
-      <button class="btn" data-n="3" type="button">3 balls</button>
+    <div class="controls" id="controls">
+      <button class="btn" id="loopBtn" type="button" aria-pressed="false">Auto-swing</button>
     </div>
 
     <div class="frame" aria-hidden="true">
@@ -63,9 +61,9 @@
       <span class="frame__corner frame__corner--bl"><a href="../../index.html">← onepagetoys.com</a></span>
     </div>
 
-    <p class="hint" id="hint">drag a ball back &amp; release · or tap a button</p>
+    <p class="hint" id="hint">drag any balls back &amp; release to swing · settles on its own</p>
 
-    <script src="script.js?v=3" defer></script>
+    <script src="script.js?v=4" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
   </body>
 </html>
