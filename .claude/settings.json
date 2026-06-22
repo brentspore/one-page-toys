@@ -87,7 +87,10 @@
       "Bash(find . -name \"og-gen*\" -not -path \"*/node_modules/*\")",
       "Bash(grep -iE \"claude|agent|cursor|ai\\\\.md|\\\\.md$\")",
       "Bash(git stash *)",
-      "Bash(perl -0pi -e 's{\\(<script src=\"\\\\.\\\\./\\\\.\\\\./assets/tip-jar\\\\.js[^\"]*\" defer></script>\\)}{$1\\\\n    <script src=\"../../assets/fullscreen.js?v=1\" defer></script>} unless /fullscreen\\\\.js/' toys/*/index.html tools/*/index.html)"
+      "Bash(perl -0pi -e 's{\\(<script src=\"\\\\.\\\\./\\\\.\\\\./assets/tip-jar\\\\.js[^\"]*\" defer></script>\\)}{$1\\\\n    <script src=\"../../assets/fullscreen.js?v=1\" defer></script>} unless /fullscreen\\\\.js/' toys/*/index.html tools/*/index.html)",
+      "Bash(sed -i '' 's#`main aadf7cb` \\(24 toys live\\)#`main 44eae56` \\(24 toys live; every toy has a full-screen toggle\\)#' .ai/memory/HANDOFF.md)",
+      "Bash(grep -o \"Latest pushed commit:\\\\*\\\\* \\\\`main [0-9a-f]*\\\\`\" .ai/memory/HANDOFF.md)",
+      "Bash(sed -i '' 's#`main 23c8e2f` \\(24 toys live\\)#`main 44eae56` \\(24 toys live; every toy has a full-screen toggle\\)#' .ai/memory/HANDOFF.md)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",
