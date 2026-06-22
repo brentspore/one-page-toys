@@ -145,6 +145,14 @@
     osc.connect(masterGain);
     osc.start();
     osc2.start();
+    // iOS unlock: resume + play a 1-sample silent buffer inside the gesture, or
+    // a continuous Web Audio drone can stay silent on iOS Safari even when running.
+    if (actx.state === "suspended") actx.resume();
+    try {
+      var ub = actx.createBuffer(1, 1, 22050);
+      var us = actx.createBufferSource();
+      us.buffer = ub; us.connect(actx.destination); us.start(0);
+    } catch (e) { /* ignore */ }
   }
 
   // Glide pitch + swell volume across a phase (audible, breath-tracking).
