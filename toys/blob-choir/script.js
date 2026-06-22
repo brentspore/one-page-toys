@@ -96,6 +96,13 @@
     wet.gain.value = 0.5;
     delay.connect(fb); fb.connect(delay); delay.connect(wet); wet.connect(master);
     actx._wet = delay; // send target
+    // iOS unlock: resume + play a 1-sample silent buffer inside the gesture.
+    if (actx.state === "suspended") actx.resume();
+    try {
+      var buf = actx.createBuffer(1, 1, 22050);
+      var src = actx.createBufferSource();
+      src.buffer = buf; src.connect(actx.destination); src.start(0);
+    } catch (e) { /* ignore */ }
   }
 
   function play(b) {
@@ -138,9 +145,13 @@
     play(b);
     if (hint && !hint.classList.contains("is-hidden")) hint.classList.add("is-hidden");
   }
+  // Geometric hit-test from stage coords — robust on touch / behind the goo filter.
   function blobAt(x, y) {
-    var el = document.elementFromPoint(x, y);
-    if (el && el.classList && el.classList.contains("blob")) return blobs[+el.dataset.i];
+    for (var i = 0; i < blobs.length; i++) {
+      var r = blobs[i].el.getBoundingClientRect();
+      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      if (Math.hypot(x - cx, y - cy) <= r.width / 2) return blobs[i];
+    }
     return null;
   }
 
@@ -148,6 +159,7 @@
   stage.addEventListener("pointerdown", function (e) {
     down = true;
     lastPlayed = -1;
+    ensureAudio();
     trigger(blobAt(e.clientX, e.clientY));
   });
   stage.addEventListener("pointermove", function (e) {

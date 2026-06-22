@@ -49,7 +49,15 @@
       "Bash(sed -i '' -E 's/tip-jar\\\\.js\\\\?v=[0-9]+/tip-jar.js?v=8/' index.html all-toys.html toys/*/index.html tools/*/index.html)",
       "Bash(sed -i '' 's/styles\\\\.css?v=19/styles.css?v=20/; s/theme\\\\.js?v=7/theme.js?v=8/' index.html all-toys.html)",
       "Bash(sed -i '' 's/styles\\\\.css?v=4/styles.css?v=5/; s#assets/theme\\\\.js\"#assets/theme.js?v=8\"#' tools/meeting-cost-meter/index.html)",
-      "Bash(sed -i '' -E 's/tip-jar\\\\.js\\\\?v=[0-9]+/tip-jar.js?v=9/' index.html all-toys.html toys/*/index.html tools/*/index.html)"
+      "Bash(sed -i '' -E 's/tip-jar\\\\.js\\\\?v=[0-9]+/tip-jar.js?v=9/' index.html all-toys.html toys/*/index.html tools/*/index.html)",
+      "Bash(git ls-tree *)",
+      "Bash(sort -k4 -n)",
+      "Bash(git config *)",
+      "Bash(node --check toys/blob-choir/script.js)",
+      "Bash(cp /tmp/bc-test.js \"/Users/brentspore/Personal Projects/one-page-toys/bc-test.js\")",
+      "Bash(node bc-test.js)",
+      "Bash(rm -f bc-test.js)",
+      "Bash(git rm *)"
     ],
     "additionalDirectories": [
       "/Users/brentspore/Personal Projects/one-page-toys/.claude",
