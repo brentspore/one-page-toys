@@ -11,7 +11,7 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-22 · **Latest pushed commit:** `main 44eae56` (24 toys live; every toy has a full-screen toggle). Newton's Cradle: drag direction picks the end so you pull 1–5 balls + diminishing damping (settles ~30s) + Auto-swing toggle. Spirograph: live gear sliders + faster (no shadowBlur, capped resolution). Lava Lamp: full-viewport metaballs (vessel removed). Plasma Ball (024) built on desktop and met the quality bar (real toy + real card + OG) — the bar is working.
+**Last updated:** 2026-06-22 · **Latest pushed commit:** `main 94a631c` (24 toys live; every toy has a full-screen toggle + is interactive). Newton's Cradle: drag direction picks the end so you pull 1–5 balls + diminishing damping (settles ~30s) + Auto-swing toggle. Spirograph: live gear sliders + faster (no shadowBlur, capped resolution). Lava Lamp: full-viewport metaballs (vessel removed). Plasma Ball (024) built on desktop and met the quality bar (real toy + real card + OG) — the bar is working.
 
 ## ⚠ Design quality bar — READ BEFORE BUILDING ANY TOY
 The owner is a **designer** and holds a high visual bar. A toy is NOT done when it merely "works" — it must look *intentional, polished, and richly itself*. The first desktop pass at toys 020–023 was rejected for being flat/crude with unrepresentative cards; this is the standard that pass missed:
