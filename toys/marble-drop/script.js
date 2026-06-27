@@ -105,6 +105,10 @@
     // a marble balanced on top of a peg/cap must roll off, never rest there
     if (nudge && ny < -0.5 && Math.abs(m.vx) < 55) {
       var side = nx > 0.02 ? 1 : nx < -0.02 ? -1 : (((px + py) | 0) % 2 ? 1 : -1);
+      // near a side rail, always roll toward open center — never into the wall
+      // (rolling into the wall is exactly what pins marbles in the corners)
+      if (m.x < leftX + m.r * 2.5) side = 1;
+      else if (m.x > rightX - m.r * 2.5) side = -1;
       m.vx += side * 70;
     }
   }
