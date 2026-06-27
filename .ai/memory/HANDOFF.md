@@ -11,7 +11,7 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-26 · **Latest pushed commit:** `main 067a42e` + the 029/030 commit that follows this update (**30 toys live**). Recent rounds: Chimp Test (017) "Full fun pass" (`067a42e` — modes Classic/Flash/Lightning each with own best, 🐵 reacting mascot, blip/spark/banana/shake juice, rank titles vs Ayumu ~9); two new **wellness** toys (029/030, this round); toys 025–028 (`b78fab1`); baseline `94a631c` (24 toys).
+**Last updated:** 2026-06-26 · **Latest pushed commit:** `main 77fc8a6` (**30 toys live**). Recent rounds: Chimp Test (017) "Full fun pass" (`067a42e` — modes Classic/Flash/Lightning each with own best, 🐵 reacting mascot, blip/spark/banana/shake juice, rank titles vs Ayumu ~9); two new **wellness** toys (029/030, this round); toys 025–028 (`b78fab1`); baseline `94a631c` (24 toys).
 
 ### New this round (029–030, wellness)
 - **029 Zen Sand Garden** (`toys/zen-sand-garden/`, wellness) — drag rakes lit, combed furrows into a **persistent offscreen sand layer** (per-tine: shadow valley + highlight ridge offset toward a top-left light); tap sets a smooth lit pebble (irregular blob outline, radial gradient, contact shadow) with concentric rings raked around it. "Smooth sand" (clears furrows, keeps stones) / "Clear stones" controls. Audio = speed-driven continuous raking noise (bandpassed brown noise) + wooden "tock" (sine thunk + click) on placement. Tap-vs-drag: a near-stationary quick press (<8px, <360ms) places a stone; movement rakes.
