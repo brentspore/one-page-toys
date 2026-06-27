@@ -11,7 +11,7 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-26 · **Latest pushed commit:** `main <pending>` (**28 toys live**). This round added 4 toys (025–028) + two all-toys.html features. Earlier baseline (`94a631c`, 24 toys): every toy has a full-screen toggle + is interactive; Newton's Cradle drag-direction grab + Auto-swing; Spirograph gear sliders; Lava Lamp full-viewport metaballs; Plasma Ball (024) met the bar.
+**Last updated:** 2026-06-26 · **Latest pushed commit:** `main b78fab1` (**28 toys live**). This round added 4 toys (025–028) + two all-toys.html features. Earlier baseline (`94a631c`, 24 toys): every toy has a full-screen toggle + is interactive; Newton's Cradle drag-direction grab + Auto-swing; Spirograph gear sliders; Lava Lamp full-viewport metaballs; Plasma Ball (024) met the bar.
 
 ### New this session (025–028)
 - **025 Kaleidoscope** (`toys/kaleidoscope/`, visual) — drag to stir glowing jewel shards into 12-fold mirrored symmetry, tap to drop a gem. Offscreen "object cell" reflected through dihedral wedges.
