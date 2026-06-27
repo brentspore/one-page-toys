@@ -11,7 +11,7 @@ It is the authoritative current-state bridge. (A richer running log lives in the
 `~/.ai/memory/PULSE.md`, but that is machine-local and may NOT exist on every device — trust
 this file when they disagree, and note `project.md` here is from the pre-2026-06 era and is stale.)
 
-**Last updated:** 2026-06-26 · **Latest pushed commit:** see follow-up "Handoff: commit pointer" commit (**32 toys live**). Recent rounds: two new **wellness** toys (031/032, this round); wellness toys 029/030 (`77fc8a6`); Chimp Test (017) "Full fun pass" (`067a42e`); toys 025–028 (`b78fab1`); baseline `94a631c` (24 toys).
+**Last updated:** 2026-06-26 · **Latest pushed commit:** `main 3a0708e` (**32 toys live**). Recent rounds: two new **wellness** toys (031/032, this round); wellness toys 029/030 (`77fc8a6`); Chimp Test (017) "Full fun pass" (`067a42e`); toys 025–028 (`b78fab1`); baseline `94a631c` (24 toys).
 
 ### New this round (031–032, wellness)
 - **031 Aurora Drift** (`toys/aurora-drift/`, wellness) — drag paints soft draped **aurora curtains** (green/teal/violet ray particles on a travelling-wave sway, additive `lighter`, fade in/out; `MAX_RAYS=150`, `sat=78`) over 2 layered near-black snowy-peak silhouettes (`#0a1020`/`#02040a`) with faint rim light + starfield; a gentle self-running ambient aurora keeps it alive on arrival. Audio = very soft evolving sine pad (A2/E3/A3/B3 + low LFOs) + breathy bandpass air that opens while painting + sparse pentatonic `shimmer()`. ⚠ Tuning history: first pass was far too intense (neon flames, blown to white, peaks invisible) — fixed by dropping ray count/alpha/sat, calming amp, and making peaks solid near-black silhouettes w/ rim light.
