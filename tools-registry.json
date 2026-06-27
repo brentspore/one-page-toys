@@ -1,5 +1,45 @@
 [
   {
+    "slug": "marble-drop",
+    "name": "Marble Drop",
+    "shortDescription": "Drop glossy glass marbles onto a brass pegboard and watch them bounce, clack, and pile up in the bins below. Tap anywhere up top to drop one.",
+    "category": "game",
+    "tags": ["marble-drop"],
+    "status": "live",
+    "path": "toys/marble-drop/index.html",
+    "related": []
+  },
+  {
+    "slug": "wind-chimes",
+    "name": "Wind Chimes",
+    "shortDescription": "A set of hanging metal wind chimes—drag to send a breeze through them or tap a tube to ring it, and hear calm, consonant tones float on the warm evening air.",
+    "category": "audio",
+    "tags": ["wind-chimes"],
+    "status": "live",
+    "path": "toys/wind-chimes/index.html",
+    "related": []
+  },
+  {
+    "slug": "ripple-pond",
+    "name": "Zen Ripple Pond",
+    "shortDescription": "A still moonlit pond—tap or drag the water and watch real ripples spread, collide, and shimmer across the surface while koi drift below the lily pads.",
+    "category": "visual",
+    "tags": ["ripple-pond"],
+    "status": "live",
+    "path": "toys/ripple-pond/index.html",
+    "related": []
+  },
+  {
+    "slug": "kaleidoscope",
+    "name": "Kaleidoscope",
+    "shortDescription": "A living kaleidoscope—drag to stir glowing jewel shards into endless mirrored symmetry, and tap to drop a new gem. Hypnotic and ever-shifting.",
+    "category": "visual",
+    "tags": ["kaleidoscope"],
+    "status": "live",
+    "path": "toys/kaleidoscope/index.html",
+    "related": []
+  },
+  {
     "slug": "plasma-ball",
     "name": "Plasma Ball",
     "shortDescription": "A glowing plasma ball—electric arcs branch and crackle from the central electrode, and chase your finger when you touch the glass.",

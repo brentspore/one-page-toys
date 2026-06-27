@@ -66,6 +66,14 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "marble-drop":
+    "marble drop marbles plinko pachinko galton board bean machine pegboard pegs bounce drop balls glass marbles bins slots physics satisfying clack falling balls probability bell curve gravity arcade pinball tap to drop",
+  "wind-chimes":
+    "wind chimes windchimes chimes hanging tubes bells breeze wind tinkle ring tone pentatonic calm relaxing meditative ambient zen garden patio porch metal bronze tubular bells clapper sail tap to ring soothing peaceful gentle melody music sound",
+  "ripple-pond":
+    "zen ripple pond water ripples raindrops pool tap the water interference waves moonlit moon koi fish lily pads lotus calm relaxing meditative ambient zen garden japanese still pond surface tension drop splash concentric rings reflection night soothing tranquil",
+  "kaleidoscope":
+    "kaleidoscope kaleidescope mirror symmetry mandala jewel gems shards glass chips stained glass mirrored pattern hypnotic mesmerizing spin stir twist colorful symmetrical generative meditative relaxing ambient drag tap interactive shifting snowflake radial",
   "plasma-ball":
     "plasma ball plasma globe plasma lamp electric arcs lightning ball tesla coil neon discharge glass sphere electrode glowing tentacles touch finger interactive electric dark room science sci-fi zap crackle lightning plasma electric blue purple",
   "spirograph":
@@ -647,6 +655,134 @@ function updateMeta(filteredCount, total) {
   }
 }
 
+// ---- card rendering + infinite scroll ------------------------------------
+const PAGE_SIZE = 12;
+let _pageItems = [];
+let _pageShown = 0;
+let _scrollObserver = null;
+
+function createCard(tool) {
+  const card = document.createElement("a");
+  card.className = "card";
+  card.href = tool.path || "#";
+
+  // Static preview thumbnail — a still glimpse of the toy (CSS-rendered per slug).
+  const preview = document.createElement("div");
+  preview.className = "card__preview";
+  preview.setAttribute("aria-hidden", "true");
+  if (tool.slug) preview.dataset.slug = tool.slug;
+  card.appendChild(preview);
+
+  const cardTop = document.createElement("div");
+  cardTop.className = "card__top";
+
+  const h3Wrap = document.createElement("div");
+  h3Wrap.className = "card__title-stack";
+  const h3 = document.createElement("h3");
+  h3.textContent = tool.name || tool.slug || "Untitled";
+  h3Wrap.appendChild(h3);
+
+  const catKey = String(tool.category || "").toLowerCase();
+  if (catKey && CATEGORY_LABELS[catKey]) {
+    const catLine = document.createElement("p");
+    catLine.className = "card__category";
+    catLine.textContent = CATEGORY_LABELS[catKey];
+    h3Wrap.appendChild(catLine);
+  }
+
+  const status = document.createElement("span");
+  status.className = badgeClassForStatus(tool.status);
+  status.textContent = String(tool.status || "experimental");
+
+  cardTop.appendChild(h3Wrap);
+  cardTop.appendChild(status);
+
+  const desc = document.createElement("p");
+  desc.textContent = tool.shortDescription || "";
+
+  const tagsEl = document.createElement("div");
+  tagsEl.className = "tags";
+  const tags = Array.isArray(tool.tags) ? tool.tags : [];
+  for (const tag of tags) {
+    const chip = document.createElement("span");
+    chip.className = "tag";
+    chip.textContent = formatTagLabel(tag);
+    tagsEl.appendChild(chip);
+  }
+
+  const cta = document.createElement("span");
+  cta.className = "card__cta";
+  cta.textContent = "Launch";
+
+  card.appendChild(cardTop);
+  card.appendChild(desc);
+  card.appendChild(tagsEl);
+  card.appendChild(cta);
+
+  if (!tool.path) {
+    card.href = "#";
+  } else {
+    // Each toy launches into its own standalone experience in a new tab.
+    card.target = "_blank";
+    card.rel = "noopener noreferrer";
+    card.addEventListener("click", function () {
+      track("toy_launch", {
+        toy_slug: tool.slug || "",
+        toy_name: tool.name || "",
+        toy_category: tool.category || "",
+        source: "gallery"
+      });
+    });
+  }
+
+  return card;
+}
+
+// A zero-height marker right after the grid; when it scrolls into view we
+// reveal the next page of cards.
+function getScrollSentinel() {
+  let s = document.getElementById("toolsScrollSentinel");
+  if (!s) {
+    const grid = document.getElementById("toolsGrid");
+    if (!grid || !grid.parentNode) return null;
+    s = document.createElement("div");
+    s.id = "toolsScrollSentinel";
+    s.className = "tools-scroll-sentinel";
+    s.setAttribute("aria-hidden", "true");
+    grid.parentNode.insertBefore(s, grid.nextSibling);
+  }
+  return s;
+}
+
+function ensureScrollObserver() {
+  if (_scrollObserver || typeof IntersectionObserver === "undefined") return;
+  const sentinel = getScrollSentinel();
+  if (!sentinel) return;
+  _scrollObserver = new IntersectionObserver(function (entries) {
+    if (entries[0] && entries[0].isIntersecting) renderNextPage();
+  }, { rootMargin: "700px 0px" });
+  _scrollObserver.observe(sentinel);
+}
+
+function renderNextPage() {
+  const grid = document.getElementById("toolsGrid");
+  if (!grid) return;
+  const end = Math.min(_pageShown + PAGE_SIZE, _pageItems.length);
+  const frag = document.createDocumentFragment();
+  for (let i = _pageShown; i < end; i++) frag.appendChild(createCard(_pageItems[i]));
+  grid.appendChild(frag);
+  _pageShown = end;
+
+  const sentinel = document.getElementById("toolsScrollSentinel");
+  const more = _pageShown < _pageItems.length;
+  if (sentinel) sentinel.hidden = !more;
+  // Keep filling until the sentinel is pushed past the preload threshold,
+  // so short pages (few rows) don't strand undisplayed cards off-screen.
+  if (more && sentinel && sentinel.getBoundingClientRect().top < window.innerHeight + 700) {
+    requestAnimationFrame(renderNextPage);
+  }
+}
+
 function renderCards(tools) {
   const grid = document.getElementById("toolsGrid");
   const errorEl = document.getElementById("toolsError");
@@ -662,87 +798,18 @@ function renderCards(tools) {
   const total = allTools.length;
   updateMeta(tools.length, total);
 
+  _pageItems = tools;
+  _pageShown = 0;
+
   if (!tools.length) {
+    const sentinel = document.getElementById("toolsScrollSentinel");
+    if (sentinel) sentinel.hidden = true;
     if (errorEl) errorEl.hidden = true;
     return;
   }
 
-  for (const tool of tools) {
-    const card = document.createElement("a");
-    card.className = "card";
-    card.href = tool.path || "#";
-
-    // Static preview thumbnail — a still glimpse of the toy (CSS-rendered per slug).
-    const preview = document.createElement("div");
-    preview.className = "card__preview";
-    preview.setAttribute("aria-hidden", "true");
-    if (tool.slug) preview.dataset.slug = tool.slug;
-    card.appendChild(preview);
-
-    const cardTop = document.createElement("div");
-    cardTop.className = "card__top";
-
-    const h3Wrap = document.createElement("div");
-    h3Wrap.className = "card__title-stack";
-    const h3 = document.createElement("h3");
-    h3.textContent = tool.name || tool.slug || "Untitled";
-    h3Wrap.appendChild(h3);
-
-    const catKey = String(tool.category || "").toLowerCase();
-    if (catKey && CATEGORY_LABELS[catKey]) {
-      const catLine = document.createElement("p");
-      catLine.className = "card__category";
-      catLine.textContent = CATEGORY_LABELS[catKey];
-      h3Wrap.appendChild(catLine);
-    }
-
-    const status = document.createElement("span");
-    status.className = badgeClassForStatus(tool.status);
-    status.textContent = String(tool.status || "experimental");
-
-    cardTop.appendChild(h3Wrap);
-    cardTop.appendChild(status);
-
-    const desc = document.createElement("p");
-    desc.textContent = tool.shortDescription || "";
-
-    const tagsEl = document.createElement("div");
-    tagsEl.className = "tags";
-    const tags = Array.isArray(tool.tags) ? tool.tags : [];
-    for (const tag of tags) {
-      const chip = document.createElement("span");
-      chip.className = "tag";
-      chip.textContent = formatTagLabel(tag);
-      tagsEl.appendChild(chip);
-    }
-
-    const cta = document.createElement("span");
-    cta.className = "card__cta";
-    cta.textContent = "Launch";
-
-    card.appendChild(cardTop);
-    card.appendChild(desc);
-    card.appendChild(tagsEl);
-    card.appendChild(cta);
-
-    if (!tool.path) {
-      card.href = "#";
-    } else {
-      // Each toy launches into its own standalone experience in a new tab.
-      card.target = "_blank";
-      card.rel = "noopener noreferrer";
-      card.addEventListener("click", function () {
-        track("toy_launch", {
-          toy_slug: tool.slug || "",
-          toy_name: tool.name || "",
-          toy_category: tool.category || "",
-          source: "gallery"
-        });
-      });
-    }
-
-    grid.appendChild(card);
-  }
+  ensureScrollObserver();
+  renderNextPage();
 
   if (errorEl) errorEl.hidden = true;
 }

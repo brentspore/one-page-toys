@@ -75,3 +75,16 @@ If a decision should apply across multiple projects, record it in `~/.ai/memory/
 **Revisit if:** owner asks for restraint/minimalism on a given toy, or perf becomes a problem on low-end devices.
 
 ---
+
+## 2026-06-26 — Realistic sounds across every toy that uses audio (owner pref)
+
+**Decision:** Any toy with sound should use **realistic, physically-grounded synthesis**, not simple beeps/blips. Model the actual sound source and layer transient + body + tail, velocity-scale the volume, and keep tones consonant/calm. Applies retroactively — when touching a toy with sound, upgrade it toward realism.
+
+Reference recipes already shipped:
+- **Water drop / rock-in-pond** (Zen Ripple Pond): deep impact thud (sine 150→58Hz) + rising cavity "bloop" (sine f0→2.4·f0) + bandpassed splash-noise burst. Ambient = layered brown-noise river bed (moving lowpass + sweeping bandpass "burble") + occasional panned trickle runs of soft drips. No pure drone tones.
+- **Metal wind chime** (Wind Chimes): inharmonic tubular-bell partials at ratios ~1, 2.76, 5.40, 8.93 (higher partials louder-attack but faster decay), bright lowpass (~8.5k), plus a short bandpassed mallet "tink" transient. Bright upper-octave pentatonic.
+- **Glass marble clack** (Marble Drop): short triangle + bandpass click, fast decay, throttled, volume scaled by impact speed.
+
+Pattern: `transient (noise/click) + harmonic/inharmonic body + decaying tail`, all through a filter, gain velocity-scaled. iOS: always unlock with a 1-sample silent buffer on first gesture. (Global twin: see `~/.ai/memory/DECISIONS.md` if promoted later; for now project-scoped.)
+
+---
