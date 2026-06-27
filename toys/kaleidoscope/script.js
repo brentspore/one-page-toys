@@ -94,13 +94,17 @@
     }
   }
   function onUp() {
-    if (ptr.down && ptr.moved < 9 && (nowish - ptr.t0) < 0.45) {
+    // A tap is defined purely by not dragging — no time limit (a deliberate,
+    // slightly-held click is still a tap and must drop a gem).
+    if (ptr.down && ptr.moved < 12) {
       var c = toCell(ptr.x, ptr.y);
       // clamp the drop inside the cell so it always reflects into view
       var dcx = c.x - S / 2, dcy = c.y - S / 2, dd = Math.hypot(dcx, dcy), cap = S * 0.42;
       if (dd > cap) { c.x = S / 2 + dcx / dd * cap; c.y = S / 2 + dcy / dd * cap; }
-      shards.push(makeShard(c.x, c.y, HUES[(Math.random() * HUES.length) | 0]));
-      if (shards.length > 18) shards.splice(0, shards.length - 18);
+      var fresh = makeShard(c.x, c.y, HUES[(Math.random() * HUES.length) | 0]);
+      fresh.r *= 1.18;                 // a touch bigger so a new gem reads as "it landed"
+      shards.push(fresh);
+      if (shards.length > 26) shards.splice(0, shards.length - 26);
     }
     ptr.down = false;
   }
