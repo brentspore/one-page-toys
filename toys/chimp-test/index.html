@@ -46,7 +46,7 @@
         "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
       }
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
     <div class="bg" aria-hidden="true"></div>
@@ -62,16 +62,28 @@
 
       <div class="overlay" id="overlay">
         <div class="card">
-          <p class="card__eyebrow">Working memory</p>
+          <p class="card__eyebrow" id="cardEyebrow">Working memory</p>
           <h1 class="card__title" id="cardTitle">Chimp Test</h1>
           <p class="card__body" id="cardBody">
-            Numbers appear on the grid. Click <b>1</b>—the rest turn blank. Then click the squares in
-            order from memory. One more number every round. Can you beat a chimpanzee?
+            Numbers appear on the grid—memorize them, then tap the squares in order from memory.
+            One more number every round. Ayumu the chimp gets to about <b>9</b>. Can you?
           </p>
+          <div class="modes" id="modes" role="group" aria-label="Difficulty">
+            <button type="button" class="mode" data-mode="classic" aria-pressed="true">Classic</button>
+            <button type="button" class="mode" data-mode="flash" aria-pressed="false">Flash</button>
+            <button type="button" class="mode" data-mode="lightning" aria-pressed="false">Lightning</button>
+          </div>
+          <p class="modes__hint">Classic: numbers hide when you click <b>1</b> · Flash: all hide after a beat · Lightning: blink &amp; gone</p>
           <button type="button" class="card__btn" id="startBtn">Start</button>
         </div>
       </div>
     </main>
+
+    <div class="chimp" id="chimp" aria-hidden="true">
+      <span class="chimp__bubble" id="chimpBubble"></span>
+      <span class="chimp__face" id="chimpFace">🐵</span>
+    </div>
+    <div class="fx" id="fx" aria-hidden="true"></div>
 
     <div class="frame" aria-hidden="true">
       <span class="frame__corner frame__corner--tl">No. 017</span>
@@ -81,7 +93,7 @@
 
     <p class="hint" id="hint">memorize the numbers · click them in order once they hide</p>
 
-    <script src="script.js?v=1" defer></script>
+    <script src="script.js?v=2" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
     <script src="../../assets/fullscreen.js?v=2" defer></script>
   </body>
