@@ -68,9 +68,9 @@
       h: h || (H * (0.22 + Math.random() * 0.26)),
       w: 9 + Math.random() * 16,
       hue: pickHue(),
-      inten: 0, maxInten: inten,
-      grow: 2.4 + Math.random() * 2,                      // fade-in speed
-      fade: 0.05 + Math.random() * 0.06,                  // fade-out per sec
+      inten: 0, maxInten: inten, peaked: false,
+      grow: inten / (1.8 + Math.random() * 1.8),          // ease in over ~1.8–3.6s (proportional → no pop)
+      fade: inten / (5 + Math.random() * 4),              // ease out over ~5–9s
       phase: Math.random() * 6.28, amp: 9 + Math.random() * 16, freq: 0.005 + Math.random() * 0.006,
       wob: 0.5 + Math.random() * 0.6
     });
@@ -80,11 +80,15 @@
     var wind = Math.sin(nowish * 0.07) * 7 + 4;
     for (var i = rays.length - 1; i >= 0; i--) {
       var r = rays[i];
-      if (r.inten < r.maxInten) r.inten = Math.min(r.maxInten, r.inten + r.grow * dt);
-      else r.inten -= r.fade * dt;
+      if (!r.peaked) {
+        r.inten += r.grow * dt;                            // ease in (never culled mid-fade-in)
+        if (r.inten >= r.maxInten) { r.inten = r.maxInten; r.peaked = true; }
+      } else {
+        r.inten -= r.fade * dt;                            // ease out
+        if (r.inten <= 0.01) { rays.splice(i, 1); continue; }
+      }
       r.x += wind * dt * r.wob;
       if (r.x < -80) r.x += W + 160; else if (r.x > W + 80) r.x -= W + 160;
-      if (r.inten <= 0.01) rays.splice(i, 1);
     }
   }
 
