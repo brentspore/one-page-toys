@@ -66,6 +66,10 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "floating-lanterns":
+    "floating lanterns sky lantern paper lantern release light festival yi peng loy krathong wishes night lake water moon stars reflection calm relaxing meditative ambient zen peaceful soothing tranquil glow drift float rise tap to release memorial remembrance",
+  "zen-sand-garden":
+    "zen sand garden japanese rock garden karesansui raking rake sand lines patterns stones pebbles rocks meditative mindfulness calm relaxing ambient peaceful soothing tranquil tabletop desk zen drag to rake tap to place stone furrows ripples sandbox",
   "marble-drop":
     "marble drop marbles plinko pachinko galton board bean machine pegboard pegs bounce drop balls glass marbles bins slots physics satisfying clack falling balls probability bell curve gravity arcade pinball tap to drop",
   "wind-chimes":

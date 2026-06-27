@@ -1,5 +1,25 @@
 [
   {
+    "slug": "floating-lanterns",
+    "name": "Floating Lanterns",
+    "shortDescription": "A calm night lake under a full moon—tap the water to release a glowing paper lantern that drifts up into the stars, swaying and flickering, mirrored on the surface below.",
+    "category": "wellness",
+    "tags": ["floating-lanterns"],
+    "status": "live",
+    "path": "toys/floating-lanterns/index.html",
+    "related": []
+  },
+  {
+    "slug": "zen-sand-garden",
+    "name": "Zen Sand Garden",
+    "shortDescription": "A miniature Japanese rock garden—drag to rake calm flowing lines through the sand, tap to set a smooth stone, and watch the furrows ripple out around it.",
+    "category": "wellness",
+    "tags": ["zen-sand-garden"],
+    "status": "live",
+    "path": "toys/zen-sand-garden/index.html",
+    "related": []
+  },
+  {
     "slug": "marble-drop",
     "name": "Marble Drop",
     "shortDescription": "Drop glossy glass marbles onto a brass pegboard and watch them bounce, clack, and pile up in the bins below. Tap anywhere up top to drop one.",
