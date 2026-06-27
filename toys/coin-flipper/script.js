@@ -166,10 +166,20 @@
     if (kind === "launch") {
       ping(520, now, 0.09, 0.12, "triangle");
     } else {
-      // bright metallic ting: two inharmonic partials + soft body
+      // bright metallic ting: inharmonic partials + soft body + a contact clink
       ping(1180, now, 0.5, 0.22, "sine");
       ping(1760, now, 0.42, 0.13, "sine");
+      ping(2730, now, 0.3, 0.07, "sine");          // extra inharmonic shimmer
       ping(620, now, 0.32, 0.14, "triangle");
+      var n = Math.floor(actx.sampleRate * 0.015), buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+      var src = actx.createBufferSource(); src.buffer = buf;
+      var hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 4000;
+      var ng = actx.createGain();
+      ng.gain.setValueAtTime(0.1, now);
+      ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
+      src.connect(hp); hp.connect(ng); ng.connect(actx.destination);
+      src.start(now); src.stop(now + 0.03);
     }
   }
 

@@ -38,19 +38,31 @@
   }
   function clack(speed) {
     if (!actx) return;
-    var vol = Math.min(0.45, Math.abs(speed) * 0.11);  // quieter as the swing fades
+    var vol = Math.min(0.5, Math.abs(speed) * 0.12);   // quieter as the swing fades
     if (vol < 0.012) return;
     var now = actx.currentTime;
-    var o = actx.createOscillator();
-    var g = actx.createGain();
-    o.type = "triangle";
-    o.frequency.setValueAtTime(1100, now);
-    o.frequency.exponentialRampToValueAtTime(600, now + 0.045);
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.linearRampToValueAtTime(vol, now + 0.003);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
-    o.connect(g); g.connect(actx.destination);
-    o.start(now); o.stop(now + 0.06);
+    // metallic "tink": short, bright inharmonic partials (steel-on-steel)
+    var f1 = 2350 + Math.random() * 350;
+    var parts = [[f1, vol], [f1 * 1.83, vol * 0.5], [f1 * 0.5, vol * 0.42]];
+    for (var k = 0; k < parts.length; k++) {
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = "sine"; o.frequency.value = parts[k][0];
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(parts[k][1], now + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+      o.connect(g); g.connect(actx.destination);
+      o.start(now); o.stop(now + 0.08);
+    }
+    // contact transient: a tight highpassed noise click = the actual impact
+    var n = Math.floor(actx.sampleRate * 0.02), buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    var src = actx.createBufferSource(); src.buffer = buf;
+    var hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 3200;
+    var ng = actx.createGain();
+    ng.gain.setValueAtTime(vol * 0.7, now);
+    ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
+    src.connect(hp); hp.connect(ng); ng.connect(actx.destination);
+    src.start(now); src.stop(now + 0.03);
   }
 
   /* layout */

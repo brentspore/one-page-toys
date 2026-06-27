@@ -135,6 +135,11 @@
     bp.type = "bandpass"; bp.frequency.value = 1800; bp.Q.value = 0.7;
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
     src.connect(bp); bp.connect(g); g.connect(master); src.start(t); src.stop(t + 0.2);
+    // tonal body (the drum shell) — two short tones under the noise
+    var bo = actx.createOscillator(), bo2 = actx.createOscillator(), bg = actx.createGain();
+    bo.type = "triangle"; bo2.type = "triangle"; bo.frequency.value = 185; bo2.frequency.value = 278;
+    bg.gain.setValueAtTime(0.0001, t); bg.gain.exponentialRampToValueAtTime(0.28, t + 0.004); bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    bo.connect(bg); bo2.connect(bg); bg.connect(master); bo.start(t); bo2.start(t); bo.stop(t + 0.13); bo2.stop(t + 0.13);
   }
   function hat(t) {
     var src = noiseBurst(t, 0.06), hp = actx.createBiquadFilter(), g = actx.createGain();

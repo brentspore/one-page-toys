@@ -63,6 +63,18 @@
     gain.connect(actx.destination);
     src.start(now);
     src.stop(now + 0.08);
+
+    /* tonal "snap": a fast pitch-dropping pip = the membrane releasing — gives the pop its body */
+    var po = actx.createOscillator(), pg = actx.createGain();
+    po.type = "sine";
+    var pf = 760 + (pitch || 0) * 110;
+    po.frequency.setValueAtTime(pf, now);
+    po.frequency.exponentialRampToValueAtTime(pf * 0.45, now + 0.04);
+    pg.gain.setValueAtTime(0.0001, now);
+    pg.gain.exponentialRampToValueAtTime(0.32, now + 0.004);
+    pg.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+    po.connect(pg); pg.connect(actx.destination);
+    po.start(now); po.stop(now + 0.07);
   }
 
   /* grid */

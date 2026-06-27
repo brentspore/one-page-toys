@@ -44,15 +44,26 @@
       if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
       if (actx.state === "suspended") actx.resume();
       var now = actx.currentTime;
+      // low body — the dull knock of the die surfacing through the liquid
       var o = actx.createOscillator(), g = actx.createGain();
       o.type = "sine";
-      o.frequency.setValueAtTime(140, now);
-      o.frequency.exponentialRampToValueAtTime(70, now + 0.22);
+      o.frequency.setValueAtTime(150, now);
+      o.frequency.exponentialRampToValueAtTime(68, now + 0.22);
       g.gain.setValueAtTime(0.0001, now);
-      g.gain.exponentialRampToValueAtTime(0.16, now + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+      g.gain.exponentialRampToValueAtTime(0.18, now + 0.018);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
       o.connect(g).connect(actx.destination);
-      o.start(now); o.stop(now + 0.33);
+      o.start(now); o.stop(now + 0.34);
+      // soft contact transient — a muffled lowpassed noise thud
+      var n = Math.floor(actx.sampleRate * 0.05), buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+      var src = actx.createBufferSource(); src.buffer = buf;
+      var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 420;
+      var ng = actx.createGain();
+      ng.gain.setValueAtTime(0.16, now);
+      ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+      src.connect(lp); lp.connect(ng); ng.connect(actx.destination);
+      src.start(now); src.stop(now + 0.1);
     } catch (e) { /* ignore */ }
   }
 
