@@ -66,6 +66,10 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "campfire":
+    "campfire camp fire bonfire fire flames crackle crackling logs wood embers sparks cozy warm night relaxing ambient asmr fireplace tend the fire add a log fan the flames glow heat soothing calm meditative wellness sound synthesis generative",
+  "aurora-drift":
+    "aurora drift northern lights aurora borealis polar lights night sky stars curtains ribbons green violet teal shimmer paint drag mountains snowy peaks relaxing ambient meditative calm wellness peaceful soothing hypnotic glow",
   "floating-lanterns":
     "floating lanterns sky lantern paper lantern release light festival yi peng loy krathong wishes night lake water moon stars reflection calm relaxing meditative ambient zen peaceful soothing tranquil glow drift float rise tap to release memorial remembrance",
   "zen-sand-garden":

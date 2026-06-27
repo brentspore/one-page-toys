@@ -12,6 +12,16 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://onepagetoys.com/toys/campfire/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/aurora-drift/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://onepagetoys.com/toys/floating-lanterns/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
