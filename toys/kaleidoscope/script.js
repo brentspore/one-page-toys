@@ -101,12 +101,26 @@
       // clamp the drop inside the cell so it always reflects into view
       var dcx = c.x - S / 2, dcy = c.y - S / 2, dd = Math.hypot(dcx, dcy), cap = S * 0.42;
       if (dd > cap) { c.x = S / 2 + dcx / dd * cap; c.y = S / 2 + dcy / dd * cap; }
-      var fresh = makeShard(c.x, c.y, HUES[(Math.random() * HUES.length) | 0]);
-      fresh.r *= 1.18;                 // a touch bigger so a new gem reads as "it landed"
-      shards.push(fresh);
-      if (shards.length > 26) shards.splice(0, shards.length - 26);
+      dropBurst(c.x, c.y);
     }
     ptr.down = false;
+  }
+
+  // A tap blooms: one bright gem + a ring of sparkles flying outward, so the
+  // drop is unmistakable even against the busy reflected field.
+  function dropBurst(cx, cy) {
+    var main = makeShard(cx, cy, HUES[(Math.random() * HUES.length) | 0]);
+    main.r *= 1.3; main.spin = rand(-0.05, 0.05);
+    shards.push(main);
+    var burst = S * 0.006;
+    for (var k = 0; k < 4; k++) {
+      var a = (k / 4) * Math.PI * 2 + rand(-0.4, 0.4);
+      var sp = makeShard(cx, cy, HUES[(Math.random() * HUES.length) | 0]);
+      sp.r *= 0.72;
+      sp.vx = Math.cos(a) * burst; sp.vy = Math.sin(a) * burst;
+      shards.push(sp);
+    }
+    if (shards.length > 30) shards.splice(0, shards.length - 30);
   }
 
   canvas.addEventListener("mousedown", function (e) { onDown(e.clientX, e.clientY); });
@@ -126,9 +140,10 @@
       s.x += s.vx * f; s.y += s.vy * f;
       s.rot += s.spin * f;
       s.vx *= 0.992; s.vy *= 0.992; s.spin *= 0.99;
-      // gentle perpetual drift so it never goes fully static
-      s.vx += Math.cos(s.rot * 0.7) * 0.0016 * f;
-      s.vy += Math.sin(s.rot * 0.7) * 0.0016 * f;
+      // very gentle perpetual drift so it never goes fully static — kept small
+      // so YOUR stir/tap clearly stands out against the resting motion
+      s.vx += Math.cos(s.rot * 0.7) * 0.0005 * f;
+      s.vy += Math.sin(s.rot * 0.7) * 0.0005 * f;
       // soft circular containment
       var dx = s.x - cx, dy = s.y - cy, d = Math.hypot(dx, dy);
       if (d > bound) {
