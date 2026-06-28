@@ -8,6 +8,23 @@ body { font-family: var(--font); background: #070512; touch-action: none; }
 
 canvas { display: block; position: fixed; inset: 0; cursor: crosshair; }
 
+.controls {
+  position: fixed; top: clamp(16px, 3vw, 30px); left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 10;
+}
+.ctrl-btn {
+  appearance: none; font-family: var(--font); font-size: 0.74rem; font-weight: 600;
+  letter-spacing: 0.02em; cursor: pointer; color: rgba(228, 214, 255, 0.92);
+  padding: 8px 15px; border-radius: 11px;
+  background: rgba(40, 28, 66, 0.5); border: 1px solid rgba(205, 188, 255, 0.26);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(8, 4, 22, 0.34);
+  transition: background .15s, transform .1s, color .15s;
+}
+.ctrl-btn:hover { background: rgba(58, 40, 92, 0.6); }
+.ctrl-btn:active { transform: scale(0.96); }
+.ctrl-btn[aria-pressed="true"] { color: rgba(200, 180, 230, 0.55); }
+
 .frame { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 .frame__corner {
   position: absolute; font-size: clamp(0.56rem, 1.2vw, 0.7rem); font-weight: 500;
