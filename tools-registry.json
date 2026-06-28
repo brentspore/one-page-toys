@@ -1,5 +1,25 @@
 [
   {
+    "slug": "rain-window",
+    "name": "Rain on a Window",
+    "shortDescription": "A cozy rainy night through a foggy pane—drag to wipe the glass and reveal warm bokeh city lights, while raindrops cling, grow, and slide down in clear trails. Ambient rain and distant thunder.",
+    "category": "wellness",
+    "tags": ["rain-window"],
+    "status": "live",
+    "path": "toys/rain-window/index.html",
+    "related": []
+  },
+  {
+    "slug": "fireworks",
+    "name": "Fireworks",
+    "shortDescription": "Tap the night sky to launch fireworks—shells arc up and burst into glowing, crackling sparks that drift down and reflect on the water below, with layered boom-and-crackle sound.",
+    "category": "visual",
+    "tags": ["fireworks"],
+    "status": "live",
+    "path": "toys/fireworks/index.html",
+    "related": []
+  },
+  {
     "slug": "campfire",
     "name": "Campfire",
     "shortDescription": "A crackling fire on a dark night—tap to toss on a log, drag to fan the flames brighter. Embers drift up, the glow warms, and it crackles with fully synthesized fire sound.",

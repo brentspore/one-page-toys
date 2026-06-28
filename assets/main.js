@@ -66,6 +66,10 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "rain-window":
+    "rain on a window foggy glass condensation raindrops drops slide trickle wipe the fog clear the glass bokeh city lights warm cozy rainy night thunder storm ambient asmr relaxing calm meditative soothing lo-fi study chill wellness sound synthesis generative",
+  "fireworks":
+    "fireworks firework shells rockets sparks bursts explosions pyrotechnics night sky tap to launch celebration new year fourth of july july 4th diwali bonfire night boom crackle whistle reflection water lake colorful festive peony willow ring chrysanthemum visual ambient generative sound synthesis",
   "campfire":
     "campfire camp fire bonfire fire flames crackle crackling logs wood embers sparks cozy warm night relaxing ambient asmr fireplace tend the fire add a log fan the flames glow heat soothing calm meditative wellness sound synthesis generative",
   "aurora-drift":
