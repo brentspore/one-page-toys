@@ -18,7 +18,7 @@
     <title>All toys — One Page Toys</title>
     <meta
       name="description"
-      content="Browse every One Page Toy—tools, games, and experiments. Search by name, filter by category or type, and open anything in a click."
+      content="Browse every One Page Toy—tools, games, and experiments. Search by name or vibe, filter by category, and open anything in a click."
     />
     <link rel="canonical" href="https://onepagetoys.com/all-toys.html" />
     <meta name="robots" content="index, follow" />
@@ -28,7 +28,7 @@
     <meta property="og:title" content="All toys — One Page Toys" />
     <meta
       property="og:description"
-      content="Browse every One Page Toy—tools, games, and experiments. Search by name, filter by category or type, and open anything in a click."
+      content="Browse every One Page Toy—tools, games, and experiments. Search by name or vibe, filter by category, and open anything in a click."
     />
     <meta property="og:url" content="https://onepagetoys.com/all-toys.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og-image.png" />
@@ -40,7 +40,7 @@
     <meta name="twitter:title" content="All toys — One Page Toys" />
     <meta
       name="twitter:description"
-      content="Browse every One Page Toy—tools, games, and experiments. Search by name, filter by category or type, and open anything in a click."
+      content="Browse every One Page Toy—tools, games, and experiments. Search by name or vibe, filter by category, and open anything in a click."
     />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og-image.png" />
     <script type="application/ld+json">
@@ -64,7 +64,7 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="assets/styles.css?v=35" />
+    <link rel="stylesheet" href="assets/styles.css?v=36" />
   </head>
   <body data-gallery-mode="all">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -93,29 +93,32 @@
         <p class="pagehead__eyebrow">The Index</p>
         <h1>All Toys</h1>
         <p class="pagehead__lede">
-          Every toy in the collection. <strong>Search</strong> first—then filter by category, or open <strong>Types</strong> for the full breakdown. Each one launches in its own tab.
+          Every toy in the collection. <strong>Search</strong> by name or vibe, or <strong>filter by category</strong>—each one opens in its own tab.
         </p>
       </section>
 
       <section id="tools" class="tools" aria-labelledby="browseHeading">
-        <div class="tools__header">
-          <h2 id="browseHeading">Browse</h2>
-          <div id="toolsMeta" class="tools-meta" aria-live="polite"></div>
-        </div>
+        <h2 id="browseHeading" class="sr-only">Browse toys</h2>
 
         <div class="tools-find" role="search">
-          <label class="tools-find__label" for="toolsSearch">Search toys</label>
-          <div class="tools-find__row">
+          <label class="sr-only" for="toolsSearch">Search toys</label>
+          <div class="tools-find__field">
+            <svg class="tools-find__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+            </svg>
             <input
               type="search"
               id="toolsSearch"
               class="tools-find__input"
-              placeholder="Natural language OK—e.g. memory match, mesh gradient, breathing pacer…"
+              placeholder="Search toys — try “memory”, “relaxing”, “draw a circle”…"
               autocomplete="off"
               autocorrect="off"
               spellcheck="false"
               enterkeyhint="search"
             />
+            <kbd class="tools-find__kbd" aria-hidden="true">/</kbd>
+          </div>
+          <div class="tools-find__aux">
             <div class="tools-find__sort">
               <label class="tools-find__sort-label" for="toolsSort">Sort</label>
               <select id="toolsSort" class="tools-find__select" aria-label="Sort tools">
@@ -130,29 +133,16 @@
         </div>
 
         <div class="tools-cats-wrap">
-          <span class="tools-tags__label" id="toolsCatsLabel">Browse by category</span>
-          <div class="tools-tags" id="toolsCategories" role="group" aria-labelledby="toolsCatsLabel"></div>
+          <span class="sr-only" id="toolsCatsLabel">Browse by category</span>
+          <div class="tools-tags tools-tags--cats" id="toolsCategories" role="group" aria-labelledby="toolsCatsLabel"></div>
         </div>
 
-        <details class="tools-filter-types" id="toolsFilterTypes">
-          <summary class="tools-filter-types__summary">
-            <span class="tools-filter-types__title">Types</span>
-            <span class="tools-filter-types__meta">
-              <span id="toolsTypesHint" class="tools-filter-types__count muted"></span>
-              <strong id="toolsTypesActiveSummary" class="tools-filter-types__picked" hidden></strong>
-            </span>
-          </summary>
-          <div class="tools-filter-types__body">
-            <p class="tools-filter-types__lede muted">
-              Optional—types are also reachable from search. Use this when you want to browse every kind of tool.
-            </p>
-            <span class="sr-only" id="toolsTagsLabel">Pick a tool type filter</span>
-            <div class="tools-tags" id="toolsTags" role="group" aria-labelledby="toolsTagsLabel"></div>
-          </div>
-        </details>
+        <div class="tools-resultbar">
+          <div id="toolsMeta" class="tools-meta" aria-live="polite"></div>
+        </div>
 
         <div id="toolsGrid" class="grid" aria-live="polite"></div>
-        <p id="toolsEmpty" class="tools-empty" hidden>No toys match those filters. Try another search, category, or type.</p>
+        <p id="toolsEmpty" class="tools-empty" hidden>No toys match those filters. Try another search or category.</p>
         <div id="toolsError" class="error" role="alert" hidden></div>
 
         <aside class="tools-partners" aria-labelledby="toolsPartnersHeading">
@@ -286,7 +276,7 @@
       </div>
     </footer>
 
-    <script src="assets/main.js?v=33" defer></script>
+    <script src="assets/main.js?v=34" defer></script>
     <script src="assets/theme.js?v=8" defer></script>
     <script src="assets/tip-jar.js?v=9" defer></script>
   </body>

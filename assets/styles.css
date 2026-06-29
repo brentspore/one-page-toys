@@ -320,32 +320,44 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 /* ============================================================
  * Search / filters (All toys)
  * ============================================================ */
-.tools-find{ margin-bottom: 16px; }
-.tools-find__label{
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--muted);
-  margin-bottom: 8px;
+/* Hero search — the centerpiece of the page */
+.tools-find{
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin-bottom: 16px;
 }
-.tools-find__row{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-
+.tools-find__field{
+  position: relative; flex: 1 1 320px; min-width: 0;
+  display: flex; align-items: center;
+}
+.tools-find__icon{
+  position: absolute; left: 17px; color: var(--muted); pointer-events: none;
+}
 .tools-find__input{
-  flex: 1 1 240px;
-  min-width: 0;
-  height: 40px;
-  padding: 0 14px;
+  width: 100%;
+  height: 54px;
+  padding: 0 46px;
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 1.02rem;
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
+  box-shadow: var(--shadow-sm);
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 .tools-find__input::placeholder{ color: var(--faint); }
-.tools-find__input:focus{ outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-soft); }
+.tools-find__input:focus{ outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.tools-find__field:focus-within .tools-find__icon{ color: var(--accent); }
+.tools-find__kbd{
+  position: absolute; right: 14px;
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.74rem; line-height: 1;
+  color: var(--muted); padding: 4px 8px;
+  border: 1px solid var(--line-strong); border-radius: 7px; background: var(--bg);
+  transition: opacity 120ms ease; pointer-events: none;
+}
+.tools-find__input:focus ~ .tools-find__kbd{ opacity: 0; }
 
+.tools-find__aux{ display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .tools-find__clear{ flex-shrink: 0; }
 
 .tools-find__sort{ display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 0; }
@@ -372,7 +384,24 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 }
 .tools-find__select:focus{ outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-soft); }
 
-.tools-cats-wrap{ margin-bottom: 16px; }
+.tools-cats-wrap{ margin-bottom: 14px; }
+
+/* Category chips — the primary way to browse */
+.tools-tags--cats{ gap: 9px; }
+.tools-tags--cats .tools-tag{
+  font-size: 0.86rem; font-weight: 500;
+  padding: 9px 16px; border-radius: 999px;
+}
+.tools-tag__n{
+  margin-left: 7px; font-variant-numeric: tabular-nums; font-weight: 600;
+  color: var(--muted); font-size: 0.92em;
+}
+.tools-tag[aria-pressed="true"] .tools-tag__n{ color: color-mix(in srgb, var(--bg) 55%, var(--ink)); }
+
+/* Result count bar, right above the grid */
+.tools-resultbar{ display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+
+@media (hover: none) { .tools-find__kbd{ display: none; } }
 
 .tools-filter-types{
   margin-bottom: 24px;

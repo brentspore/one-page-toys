@@ -617,13 +617,24 @@ function renderCategoryChips() {
   if (!wrap) return;
   wrap.innerHTML = "";
 
-  function addChip(label, value, pressed) {
+  // count how many toys sit in each category so each chip shows its size
+  const counts = {};
+  allTools.forEach(function (t) {
+    const c = String(t.category || "").toLowerCase();
+    if (c) counts[c] = (counts[c] || 0) + 1;
+  });
+
+  function addChip(label, value, count, pressed) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "tools-tag tools-tag--category";
-    btn.textContent = label;
     btn.setAttribute("data-category", value);
     btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+    btn.appendChild(document.createTextNode(label));
+    const n = document.createElement("span");
+    n.className = "tools-tag__n";
+    n.textContent = String(count);
+    btn.appendChild(n);
     btn.addEventListener("click", function () {
       activeCategory = value;
       renderCategoryChips();
@@ -632,10 +643,10 @@ function renderCategoryChips() {
     wrap.appendChild(btn);
   }
 
-  addChip("All categories", "", activeCategory === "");
+  addChip("All", "", allTools.length, activeCategory === "");
   knownCategories.forEach(function (c) {
     const label = CATEGORY_LABELS[c] || formatTagLabel(c);
-    addChip(label, c, activeCategory === c);
+    addChip(label, c, counts[c] || 0, activeCategory === c);
   });
 }
 
@@ -891,6 +902,23 @@ function wireSearchAndFilters() {
     searchEl.addEventListener("search", function () {
       applyFilters();
     });
+    // "/" jumps to search (unless already typing somewhere); Esc clears + blurs
+    document.addEventListener("keydown", function (e) {
+      const t = e.target;
+      const typing = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable);
+      if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        searchEl.focus();
+        searchEl.select();
+      } else if (e.key === "Escape" && t === searchEl && searchEl.value) {
+        searchEl.value = "";
+        applyFilters();
+      }
+    });
+    // on a real pointer device (desktop), start with the cursor in search
+    if (window.matchMedia && window.matchMedia("(min-width: 720px) and (hover: hover)").matches) {
+      try { searchEl.focus({ preventScroll: true }); } catch (e) { searchEl.focus(); }
+    }
   }
 
   if (clearBtn) {
