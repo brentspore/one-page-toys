@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "pin-art":
+    "pin art pinscreen pin screen pin board metal pins impression toy 3d pin impression desk toy fidget tactile relief draw drawing sketch sculpt press and drag follow your hand mouse cursor pins rise push erase clear hand mold pin point impression sculpture interactive visual satisfying executive toy office toy classic toy",
   "perfect-circle":
     "perfect circle draw a circle freehand round roundness accuracy score percent percentage how round can you draw test skill precision steady hand challenge addictive viral one stroke beat your best high score leaderboard chase 100 game reflex satisfying heat map deviation neal fun ese",
   "rain-window":

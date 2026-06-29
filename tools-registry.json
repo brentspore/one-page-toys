@@ -1,5 +1,15 @@
 [
   {
+    "slug": "pin-art",
+    "name": "Pin Art",
+    "shortDescription": "A fullscreen digital metal pinscreen—the relief rises under your hand, and you can press and drag to draw a lasting 3D impression in glowing metal pins. Erase or clear to start fresh.",
+    "category": "visual",
+    "tags": ["pin-art"],
+    "status": "live",
+    "path": "toys/pin-art/index.html",
+    "related": []
+  },
+  {
     "slug": "perfect-circle",
     "name": "Perfect Circle",
     "shortDescription": "Draw a circle freehand in one stroke and get scored on how perfectly round it is. A color heat-map shows where you wandered—chase 100%, beat your best, and try just one more time.",
