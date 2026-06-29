@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "perfect-circle":
+    "perfect circle draw a circle freehand round roundness accuracy score percent percentage how round can you draw test skill precision steady hand challenge addictive viral one stroke beat your best high score leaderboard chase 100 game reflex satisfying heat map deviation neal fun ese",
   "rain-window":
     "rain on a window foggy glass condensation raindrops drops slide trickle wipe the fog clear the glass bokeh city lights warm cozy rainy night thunder storm ambient asmr relaxing calm meditative soothing lo-fi study chill wellness sound synthesis generative",
   "fireworks":
