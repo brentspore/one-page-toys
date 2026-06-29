@@ -1,5 +1,15 @@
 [
   {
+    "slug": "chladni-plate",
+    "name": "Chladni Plate",
+    "shortDescription": "A digital cymatics sand plate—thousands of grains shake across a vibrating square and settle onto the nodal lines, drawing intricate standing-wave figures. Press and drag to pour sand anywhere on the plate, change the frequency faster or slower, and pause to watch it settle.",
+    "category": "simulation",
+    "tags": ["chladni-plate"],
+    "status": "live",
+    "path": "toys/chladni-plate/index.html",
+    "related": []
+  },
+  {
     "slug": "pin-art",
     "name": "Pin Art",
     "shortDescription": "A fullscreen digital metal pinscreen—the relief rises under your hand, and you can press and drag to draw a lasting 3D impression in glowing metal pins. Erase or clear to start fresh.",
