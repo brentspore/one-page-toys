@@ -348,6 +348,7 @@ let knownTags = [];
 let knownCategories = [];
 let galleryMode = "all";
 let homeFeatured = null;
+let newestTool = null;
 
 function shuffleInPlace(arr, rand) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -870,25 +871,67 @@ function validateActiveCategory() {
 }
 
 function wireRandomButton() {
-  const randomBtn = document.getElementById("randomToolBtn");
-  if (!randomBtn) return;
-  randomBtn.addEventListener("click", function () {
-    const filtered = getFilteredTools().filter(function (t) {
-      return t && t.path;
+  ["randomToolBtn", "heroSurprise"].forEach(function (id) {
+    const randomBtn = document.getElementById(id);
+    if (!randomBtn) return;
+    randomBtn.addEventListener("click", function () {
+      const filtered = getFilteredTools().filter(function (t) {
+        return t && t.path;
+      });
+      const pool = filtered.length ? filtered : allTools.filter(function (t) {
+        return t && t.path;
+      });
+      if (!pool.length) return;
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      track("toy_launch", {
+        toy_slug: pick.slug || "",
+        toy_name: pick.name || "",
+        toy_category: pick.category || "",
+        source: "surprise_me"
+      });
+      window.open(pick.path, "_blank", "noopener");
     });
-    const pool = filtered.length ? filtered : allTools.filter(function (t) {
-      return t && t.path;
-    });
-    if (!pool.length) return;
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-    track("toy_launch", {
-      toy_slug: pick.slug || "",
-      toy_name: pick.name || "",
-      toy_category: pick.category || "",
-      source: "surprise_me"
-    });
-    window.open(pick.path, "_blank", "noopener");
   });
+}
+
+// Home landing: fill the live toy count + spotlight the newest toy
+function renderHomeHero() {
+  if (galleryMode !== "home") return;
+  const countEl = document.getElementById("heroCount");
+  if (countEl) countEl.textContent = String(allTools.length);
+
+  const sec = document.getElementById("homeFeatured");
+  if (!sec || !newestTool || !newestTool.path) return;
+  const t = newestTool;
+  const nameEl = document.getElementById("featuredName");
+  const catEl = document.getElementById("featuredCat");
+  const descEl = document.getElementById("featuredDesc");
+  const linkEl = document.getElementById("featuredLink");
+  const mediaEl = document.getElementById("featuredMedia");
+  const prev = document.getElementById("featuredPreview");
+
+  if (nameEl) nameEl.textContent = t.name || t.slug || "";
+  const catKey = String(t.category || "").toLowerCase();
+  if (catEl) catEl.textContent = CATEGORY_LABELS[catKey] || "";
+  if (descEl) descEl.textContent = t.shortDescription || "";
+  if (prev && t.slug) prev.dataset.slug = t.slug;
+
+  function go() {
+    track("toy_launch", {
+      toy_slug: t.slug || "",
+      toy_name: t.name || "",
+      toy_category: t.category || "",
+      source: "home_featured"
+    });
+  }
+  if (linkEl) { linkEl.href = t.path; linkEl.addEventListener("click", go); }
+  if (mediaEl) {
+    mediaEl.href = t.path;
+    mediaEl.setAttribute("target", "_blank");
+    mediaEl.setAttribute("rel", "noopener");
+    mediaEl.addEventListener("click", go);
+  }
+  sec.hidden = false;
 }
 
 function wireSearchAndFilters() {
@@ -962,6 +1005,8 @@ async function loadRegistryAndRender() {
       throw new Error("tools-registry.json must export an array of tools");
     }
 
+    // registry is maintained newest-first, so the first toy with a path is the newest
+    newestTool = tools.find(function (t) { return t && t.path; }) || null;
     allTools = tools.slice().sort(function (a, b) {
       return String(a.name || "").localeCompare(String(b.name || ""));
     });
@@ -990,6 +1035,7 @@ async function loadRegistryAndRender() {
     renderCategoryChips();
     wireSearchAndFilters();
     wireRandomButton();
+    renderHomeHero();
     applyFilters();
   } catch (err) {
     if (errorEl) {
