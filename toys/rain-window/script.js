@@ -28,7 +28,8 @@
     bg.width = W * DPR; bg.height = H * DPR; bgx.setTransform(DPR, 0, 0, DPR, 0, 0);
     fog.width = W * DPR; fog.height = H * DPR; fgx.setTransform(DPR, 0, 0, DPR, 0, 0);
     frost.width = W * DPR; frost.height = H * DPR; frx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    paintScene();
+    initBokeh();
+    paintScene(0);
     buildFrost();
     resetFog();
     seedCondensation();
@@ -44,34 +45,15 @@
     frx.filter = "none";
     // thin pale veil so the fogged glass reads a touch cooler & milkier than the
     // sharp world behind it — the wipe then reveals FOCUS, not a brightness jump
-    frx.fillStyle = "rgba(214,225,238,0.2)";
+    frx.fillStyle = "rgba(198,212,233,0.16)";
     frx.fillRect(0, 0, W, H);
   }
 
   // ---- the bokeh world outside -------------------------------------------
   var bokeh = [];
-  function paintScene() {
-    // a glowing rainy dusk — bright enough that clearing the fog ANYWHERE reveals LIGHT
-    var g = bgx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, "#46607f");
-    g.addColorStop(0.5, "#506680");
-    g.addColorStop(0.82, "#5a6b78");
-    g.addColorStop(1, "#636a6e");
-    bgx.fillStyle = g; bgx.fillRect(0, 0, W, H);
-
-    // broad warm city-glow rising from below (light pollution)
-    var wg = bgx.createRadialGradient(W * 0.5, H * 1.04, H * 0.08, W * 0.5, H * 1.04, H * 1.15);
-    wg.addColorStop(0, "rgba(255,170,92,0.40)");
-    wg.addColorStop(0.5, "rgba(255,152,82,0.15)");
-    wg.addColorStop(1, "rgba(255,152,82,0)");
-    bgx.fillStyle = wg; bgx.fillRect(0, 0, W, H);
-    // soft cool sky-glow from above so the top isn't a dead dark band
-    var sg = bgx.createRadialGradient(W * 0.5, -H * 0.1, H * 0.05, W * 0.5, -H * 0.1, H * 0.9);
-    sg.addColorStop(0, "rgba(150,184,224,0.22)");
-    sg.addColorStop(1, "rgba(150,184,224,0)");
-    bgx.fillStyle = sg; bgx.fillRect(0, 0, W, H);
-
-    // dense, luminous out-of-focus bokeh — warm window/street lights, concentrated lower
+  // generate the out-of-focus city lights once (per resize). Each carries a slow
+  // sway + a gentle twinkle so the world outside drifts and shimmers softly.
+  function initBokeh() {
     bokeh.length = 0;
     var warm = ["255,198,124", "255,176,100", "255,154,84", "255,222,156", "255,186,116"];
     var cool = ["156,200,255", "184,224,255", "168,238,236"];
@@ -84,21 +66,54 @@
       var r = minD * (0.045 + Math.random() * 0.11);
       // cover the full pane (so wiping the top reveals light too), with extra density low
       var y = Math.random() < 0.45 ? Math.random() * H : Math.pow(Math.random(), 0.55) * H;
-      bokeh.push({ x: Math.random() * W, y: y, r: r, col: col, a: 0.26 + Math.random() * 0.5 });
+      bokeh.push({
+        x: Math.random() * W, y: y, r: r, col: col, a: 0.22 + Math.random() * 0.40,
+        // slow elliptical drift (period ~13–40s) + a soft twinkle (period ~4–13s)
+        sx: rand(6, 18), sy: rand(4, 13), sxp: rand(0, 6.28), syp: rand(0, 6.28),
+        ss: rand(0.16, 0.48), twp: rand(0, 6.28), tws: rand(0.5, 1.5), twa: rand(0.10, 0.30)
+      });
     }
     bokeh.sort(function (a, b) { return a.r - b.r; });
-    for (i = 0; i < bokeh.length; i++) {
-      var bk = bokeh[i], a = bk.a;
+  }
+
+  function paintScene(time) {
+    // a deep rainy NIGHT — dark enough that the city-light bokeh glows when the fog clears
+    bgx.clearRect(0, 0, W, H);
+    var g = bgx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#070d1a");
+    g.addColorStop(0.5, "#0a1428");
+    g.addColorStop(0.82, "#0e1b32");
+    g.addColorStop(1, "#13233c");
+    bgx.fillStyle = g; bgx.fillRect(0, 0, W, H);
+
+    // broad warm city-glow rising from below (night light pollution against the dark)
+    var wg = bgx.createRadialGradient(W * 0.5, H * 1.04, H * 0.08, W * 0.5, H * 1.04, H * 1.15);
+    wg.addColorStop(0, "rgba(255,150,74,0.34)");
+    wg.addColorStop(0.5, "rgba(255,138,70,0.12)");
+    wg.addColorStop(1, "rgba(255,138,70,0)");
+    bgx.fillStyle = wg; bgx.fillRect(0, 0, W, H);
+    // faint cool moonlit sky-glow from above so the top isn't a dead black band
+    var sg = bgx.createRadialGradient(W * 0.5, -H * 0.1, H * 0.05, W * 0.5, -H * 0.1, H * 0.9);
+    sg.addColorStop(0, "rgba(120,156,206,0.16)");
+    sg.addColorStop(1, "rgba(120,156,206,0)");
+    bgx.fillStyle = sg; bgx.fillRect(0, 0, W, H);
+
+    // draw each disc at its slowly-drifted position with a gently twinkling brightness
+    for (var i = 0; i < bokeh.length; i++) {
+      var bk = bokeh[i];
+      var x = bk.x + Math.sin(time * bk.ss + bk.sxp) * bk.sx;
+      var y = bk.y + Math.cos(time * bk.ss * 0.8 + bk.syp) * bk.sy;
+      var a = bk.a * (1 + Math.sin(time * bk.tws + bk.twp) * bk.twa);
       // a defocused highlight = a fairly EVEN disc of light with a brighter rim
       // and a soft feathered edge (no hard center dot, no plain glow falloff)
-      var rg = bgx.createRadialGradient(bk.x, bk.y, 0, bk.x, bk.y, bk.r);
+      var rg = bgx.createRadialGradient(x, y, 0, x, y, bk.r);
       rg.addColorStop(0, "rgba(" + bk.col + "," + (a * 0.70).toFixed(3) + ")");
       rg.addColorStop(0.55, "rgba(" + bk.col + "," + (a * 0.74).toFixed(3) + ")");
       rg.addColorStop(0.84, "rgba(" + bk.col + "," + Math.min(0.98, a * 1.08).toFixed(3) + ")"); // bright aperture rim
       rg.addColorStop(0.94, "rgba(" + bk.col + "," + (a * 0.52).toFixed(3) + ")");
       rg.addColorStop(1, "rgba(" + bk.col + ",0)");                                              // soft feathered edge
       bgx.fillStyle = rg;
-      bgx.beginPath(); bgx.arc(bk.x, bk.y, bk.r, 0, 6.28); bgx.fill();
+      bgx.beginPath(); bgx.arc(x, y, bk.r, 0, 6.28); bgx.fill();
     }
   }
 
@@ -359,13 +374,22 @@
   canvas.addEventListener("touchend", function (e) { e.preventDefault(); end(); }, { passive: false });
 
   // ---- loop ---------------------------------------------------------------
-  var lastTs = null, nowish = 0, thunderT = rand(7, 14);
+  var lastTs = null, nowish = 0, thunderT = rand(7, 14), sceneAcc = 0;
   function frame(ts) {
     var dt = lastTs !== null ? Math.min((ts - lastTs) / 1000, 0.05) : 0.016;
     lastTs = ts; nowish += dt;
 
     thunderT -= dt;
     if (thunderT <= 0) { thunder(); thunderT = rand(12, 26); }
+
+    // the world outside drifts + twinkles slowly; repaint the scene (and rebuild the
+    // blurred fog from it) on a throttle — the motion is gentle, so ~9fps is plenty
+    sceneAcc += dt;
+    if (sceneAcc >= 0.11) {
+      sceneAcc = 0;
+      paintScene(nowish);
+      buildFrost();
+    }
 
     update(dt);
 
