@@ -1,5 +1,15 @@
 [
   {
+    "slug": "aurebesh-translator",
+    "name": "Aurebesh Translator",
+    "shortDescription": "Type a message in English and watch it transliterate live into Aurebesh—the writing system of the Star Wars galaxy—on a glowing Imperial datapad, glyph by glyph. Hover any character to learn its letter and name, flip on the captions to read along, and copy a link that opens your secret message already decoded. Soft terminal bleeps as you type.",
+    "category": "visual",
+    "tags": ["aurebesh-translator"],
+    "status": "live",
+    "path": "toys/aurebesh-translator/index.html",
+    "related": []
+  },
+  {
     "slug": "pottery-wheel",
     "name": "Pottery Wheel",
     "shortDescription": "A calming digital pottery wheel—a lump of clay spins on the wheel and you drag up and down its side to pull the walls out and in, shaping a vase, bowl, or pot in soft 3D. Then fire it in the kiln to reveal your finished, glazed piece. Soft wheel hum and wet-clay shaping sounds.",

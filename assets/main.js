@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "aurebesh-translator":
+    "aurebesh translator aurebesh aurabesh star wars alphabet galactic basic writing system font glyphs transliterate translate decode decoder cipher secret message jedi sith empire rebel imperial datapad holocron type your name in aurebesh learn aurebesh star wars language sci-fi runes symbols characters letters mandalorian aurek besh decrypt encode share fun nerdy fandom geek",
   "pottery-wheel":
     "pottery wheel ceramics clay throwing throw a pot potter pot vase bowl vessel urn jar shape sculpt mold form spin spinning wheel kiln fire firing glaze glazed celadon cobalt oxblood finished piece reveal studio terracotta earthenware stoneware pull the walls 3d soft 3d surface of revolution calming relaxing meditative satisfying zen wellness ASMR craft make handmade ghost pottery scene drag to shape interactive",
   "chladni-plate":

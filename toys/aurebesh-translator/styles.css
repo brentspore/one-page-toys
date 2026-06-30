@@ -1,0 +1,205 @@
+/* Aurebesh Translator — a glowing Imperial datapad that transliterates Galactic Basic → Aurebesh. */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap");
+
+/* Canonical Aurebesh, rendered from Stephen Crane's definitions.
+   Font: "Aurebesh" by SilvinoR — SIL Open Font License 1.1 (see OFL.txt). */
+@font-face{
+  font-family:"Aurebesh";
+  src:url("aurebesh.ttf") format("truetype");
+  font-weight:normal; font-style:normal; font-display:swap;
+}
+
+:root{
+  --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --accent:#38e1ff;
+  --accent-rgb:56,225,255;
+  --ink:#dfe8f5;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0; font-family:var(--font); color:var(--ink);
+  overflow:hidden; overscroll-behavior:none;
+  background:#05070d;
+}
+
+/* ---------- deep-space backdrop ---------- */
+.bg{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+  background:
+    radial-gradient(1.4px 1.4px at 14% 22%, rgba(220,235,255,.9), transparent 60%),
+    radial-gradient(1.2px 1.2px at 32% 68%, rgba(200,220,255,.7), transparent 60%),
+    radial-gradient(1.6px 1.6px at 58% 16%, rgba(255,255,255,.85), transparent 60%),
+    radial-gradient(1.1px 1.1px at 73% 54%, rgba(190,210,255,.6), transparent 60%),
+    radial-gradient(1.3px 1.3px at 86% 30%, rgba(225,235,255,.8), transparent 60%),
+    radial-gradient(1px 1px at 46% 84%, rgba(200,220,255,.6), transparent 60%),
+    radial-gradient(1.2px 1.2px at 9% 78%, rgba(210,225,255,.6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 64% 88%, rgba(235,240,255,.7), transparent 60%),
+    radial-gradient(130% 100% at 50% -8%, #0a1426 0%, #070b16 46%, #04060d 100%);
+}
+.bg::before,.bg::after{ content:""; position:absolute; border-radius:50%; filter:blur(70px); mix-blend-mode:screen; opacity:.5; }
+.bg::before{ width:60vmax; height:60vmax; left:-14%; top:-18%;
+  background:radial-gradient(circle, rgba(40,120,220,.55), transparent 64%); animation:drift 42s ease-in-out infinite; }
+.bg::after{ width:46vmax; height:46vmax; right:-12%; bottom:-16%;
+  background:radial-gradient(circle, rgba(150,30,30,.42), transparent 64%); animation:drift 52s ease-in-out infinite reverse; }
+@keyframes drift{ 0%,100%{ transform:translate(0,0) scale(1); } 50%{ transform:translate(4vw,3vh) scale(1.12); } }
+
+.stage{ position:fixed; inset:0; z-index:1; display:flex; align-items:center; justify-content:center;
+  padding:clamp(16px,4vw,40px); }
+
+/* ---------- the datapad device ---------- */
+.datapad{
+  position:relative; width:min(92vw, 640px);
+  border-radius:24px; padding:clamp(14px,2.4vw,22px);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 18%),
+    linear-gradient(158deg, #20262f 0%, #161b24 44%, #0e121a 100%);
+  border:1px solid rgba(150,170,195,.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(0,0,0,.5),
+    0 30px 80px rgba(0,0,0,.6),
+    0 2px 0 rgba(0,0,0,.4);
+}
+/* corner screws */
+.datapad::before,.datapad::after{ content:""; position:absolute; width:9px; height:9px; border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, #aeb8c6, #5a626e 55%, #2a2f38);
+  box-shadow:0 1px 1px rgba(0,0,0,.6), inset 0 0 0 1px rgba(0,0,0,.35); }
+.datapad::before{ left:13px; top:13px; }
+.datapad::after{ right:13px; top:13px; }
+
+.datapad__header{ display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:2px 6px 12px; }
+.brand{ display:flex; align-items:center; gap:9px; color:var(--accent); }
+.cog{ display:grid; place-items:center; filter:drop-shadow(0 0 6px rgba(var(--accent-rgb),.55)); }
+.brand__label{ font-family:var(--mono); font-weight:600; font-size:clamp(.62rem,1.7vw,.78rem);
+  letter-spacing:.26em; text-transform:uppercase; color:rgba(223,232,245,.82); }
+.status{ display:flex; align-items:center; gap:12px; font-family:var(--mono); }
+.status__dots{ display:flex; gap:5px; }
+.status__dots i{ width:7px; height:7px; border-radius:50%; background:rgba(150,170,195,.3);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.3); }
+.status__dots i:nth-child(1){ background:var(--accent); box-shadow:0 0 8px rgba(var(--accent-rgb),.8); }
+.status__live{ font-size:.54rem; letter-spacing:.18em; color:rgba(var(--accent-rgb),.9);
+  animation:pulse 2.6s ease-in-out infinite; }
+@keyframes pulse{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
+
+/* ---------- the CRT screen ---------- */
+.screen{ position:relative; border-radius:16px; overflow:hidden;
+  background:radial-gradient(120% 130% at 50% 0%, #08131d 0%, #050b13 55%, #03070d 100%);
+  border:1px solid rgba(var(--accent-rgb),.16);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.6),
+    inset 0 0 60px rgba(0,0,0,.7),
+    inset 0 0 90px rgba(var(--accent-rgb),.06),
+    0 0 0 1px rgba(255,255,255,.03);
+  min-height:clamp(180px,34vh,260px); }
+.screen__glass{ position:absolute; inset:0; pointer-events:none; z-index:3;
+  background:radial-gradient(140% 120% at 50% -20%, rgba(255,255,255,.05), transparent 42%); }
+.screen__scan{ position:absolute; inset:0; pointer-events:none; z-index:4; opacity:.5;
+  background:repeating-linear-gradient(180deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.32) 2px 3px);
+  mix-blend-mode:multiply; }
+.screen__flicker{ position:absolute; inset:0; pointer-events:none; z-index:5;
+  background:rgba(var(--accent-rgb),.04); animation:flick 5.5s steps(1) infinite; }
+@keyframes flick{ 0%,7%,9%,100%{ opacity:0; } 8%{ opacity:.6; } 52%{ opacity:0; } 53%{ opacity:.35; } 54%{ opacity:0; } }
+
+.screen__inner{ position:relative; z-index:2; height:100%; min-height:inherit;
+  display:flex; flex-direction:column; justify-content:center; gap:clamp(10px,2.4vh,18px);
+  padding:clamp(18px,4vw,30px) clamp(16px,4vw,28px); }
+.screen__tag{ margin:0; font-family:var(--mono); font-size:.58rem; letter-spacing:.24em;
+  text-transform:uppercase; color:rgba(var(--accent-rgb),.7); }
+.screen__tag .arrows{ color:rgba(223,232,245,.45); margin:0 4px; }
+
+/* the Aurebesh output */
+.out{ display:block; font-family:"Aurebesh", var(--mono); line-height:1.55;
+  font-size:clamp(1.8rem, 7vw, 3rem); color:var(--accent);
+  text-shadow:0 0 8px rgba(var(--accent-rgb),.5), 0 0 22px rgba(var(--accent-rgb),.28);
+  word-break:break-word; min-height:1.55em; }
+.glyph{ display:inline-block; position:relative; cursor:help;
+  transition:opacity .18s ease, filter .18s ease, transform .18s ease; }
+.glyph.is-fresh{ opacity:0; filter:blur(6px); transform:translateY(2px); }
+.glyph.is-scramble{ color:rgba(var(--accent-rgb),.55); }
+.glyph.sp{ cursor:default; }
+.glyph:hover{ filter:brightness(1.4) drop-shadow(0 0 10px rgba(var(--accent-rgb),.8)); }
+/* reveal-letters mode: latin caption under each glyph */
+.out.is-reveal{ line-height:2.5; }
+.out.is-reveal .glyph::after{ content:attr(data-letter); position:absolute; left:50%; top:100%;
+  transform:translateX(-50%); margin-top:.08em;
+  font-family:var(--mono); font-size:.30em; letter-spacing:.06em; font-weight:500;
+  color:rgba(223,232,245,.5); text-shadow:none; text-transform:uppercase; pointer-events:none; }
+.out.is-reveal .glyph.sp::after{ content:""; }
+
+.echo{ margin:0; font-family:var(--mono); font-size:clamp(.66rem,2.2vw,.82rem);
+  letter-spacing:.12em; color:rgba(223,232,245,.4); text-transform:uppercase;
+  white-space:pre-wrap; word-break:break-word; min-height:1em; }
+
+/* ---------- console input ---------- */
+.console{ display:flex; align-items:center; gap:10px; margin-top:14px;
+  padding:11px 14px; border-radius:12px;
+  background:linear-gradient(180deg, rgba(0,0,0,.36), rgba(0,0,0,.2));
+  border:1px solid rgba(150,170,195,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 22px rgba(0,0,0,.4);
+  transition:border-color .18s ease, box-shadow .18s ease; }
+.console:focus-within{ border-color:rgba(var(--accent-rgb),.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 0 0 1px rgba(var(--accent-rgb),.3), 0 0 26px rgba(var(--accent-rgb),.18); }
+.console__prompt{ font-family:var(--mono); font-weight:600; color:var(--accent);
+  text-shadow:0 0 8px rgba(var(--accent-rgb),.6); }
+.console__input{ flex:1; min-width:0; appearance:none; background:transparent; border:none; outline:none;
+  color:var(--ink); font-family:var(--mono); font-size:clamp(.9rem,2.6vw,1.02rem); letter-spacing:.04em;
+  caret-color:var(--accent); }
+.console__input::placeholder{ color:rgba(223,232,245,.32); }
+
+/* ---------- controls ---------- */
+.controls{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; padding:0 2px; }
+.ctrl{ appearance:none; cursor:pointer; font-family:var(--mono); font-size:.64rem; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase; color:rgba(223,232,245,.7);
+  padding:8px 13px; border-radius:9px;
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+  border:1px solid rgba(150,170,195,.2);
+  transition:color .15s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease; }
+.ctrl b{ color:var(--accent); font-weight:600; }
+.ctrl:hover{ color:#fff; border-color:rgba(var(--accent-rgb),.5);
+  box-shadow:0 0 16px rgba(var(--accent-rgb),.18); }
+.ctrl:active{ transform:translateY(1px); }
+.ctrl[aria-pressed="true"]{ color:#04121a; border-color:transparent;
+  background:linear-gradient(180deg, var(--accent), rgba(var(--accent-rgb),.78));
+  box-shadow:0 0 20px rgba(var(--accent-rgb),.4); }
+.ctrl[aria-pressed="true"] b{ color:#04121a; }
+
+/* ---------- hover tooltip ---------- */
+.tip{ position:fixed; z-index:20; pointer-events:none; opacity:0; transform:translate(-50%,-118%);
+  padding:6px 11px; border-radius:8px; white-space:nowrap;
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.06em; color:var(--ink);
+  background:rgba(8,14,22,.94); border:1px solid rgba(var(--accent-rgb),.45);
+  box-shadow:0 6px 22px rgba(0,0,0,.5), 0 0 18px rgba(var(--accent-rgb),.2);
+  transition:opacity .12s ease; }
+.tip b{ color:var(--accent); }
+.tip.is-on{ opacity:1; }
+
+/* ---------- frame / hint ---------- */
+.frame{ position:fixed; inset:0; z-index:6; pointer-events:none; }
+.frame__corner{ position:absolute; font-family:var(--mono); font-size:clamp(.56rem,1.2vw,.7rem); font-weight:500;
+  letter-spacing:.2em; text-transform:uppercase; color:rgba(223,232,245,.4); white-space:nowrap; }
+.frame__corner--tl{ top:clamp(16px,3.4vw,30px); left:clamp(16px,3.4vw,30px); }
+.frame__corner--tr{ top:clamp(16px,3.4vw,30px); right:clamp(16px,3.4vw,30px); }
+.frame__corner--bl{ bottom:clamp(18px,3.4vw,30px); left:clamp(16px,3.4vw,30px); }
+.frame__corner a{ color:inherit; text-decoration:none; pointer-events:auto;
+  border-bottom:1px solid transparent; transition:color .14s ease, border-color .14s ease; }
+.frame__corner a:hover{ color:#fff; border-bottom-color:var(--accent); }
+
+.hint{ position:fixed; left:50%; bottom:clamp(16px,3.4vw,30px); transform:translateX(-50%); margin:0; z-index:5;
+  font-family:var(--mono); font-size:.62rem; font-weight:500; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(223,232,245,.36); pointer-events:none; transition:opacity .6s ease; text-align:center; white-space:nowrap; }
+.hint.is-hidden{ opacity:0; }
+
+@media (max-width:430px){
+  /* tight screens: the datapad fills most of the viewport, so drop the hint
+     (tap-to-reveal + the "Show letters" button cover discoverability) and keep
+     the back-link in its own bottom-left corner. */
+  .hint{ display:none; }
+}
+@media (prefers-reduced-motion: reduce){
+  .bg::before,.bg::after,.status__live,.screen__flicker{ animation:none; }
+  .glyph.is-fresh{ opacity:1; filter:none; transform:none; }
+}
