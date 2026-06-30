@@ -13,6 +13,8 @@
   var soundBtn  = document.getElementById("soundBtn");
   var copyBtn   = document.getElementById("copyBtn");
   var speakBtn  = document.getElementById("speakBtn");
+  var voiceBtn  = document.getElementById("voiceBtn");
+  var voiceName = document.getElementById("voiceName");
   var screenEl  = document.getElementById("screen");
 
   // Aurebesh letter names — for the hover / tap reveal.
@@ -161,9 +163,10 @@
     osc.start(t); o2.start(t); osc.stop(t+0.15); o2.stop(t+0.15);
   }
 
-  // short radio "key" blip to open / close a transmission
+  // short radio "key" blip to open / close a transmission (plays on the
+  // explicit Transmit action regardless of the ambient Sound toggle)
   function commsBlip(open){
-    if(!soundOn || !actx) return;
+    if(!actx) return;
     var t = actx.currentTime, dur = 0.13;
     var buf = actx.createBuffer(1, Math.floor(actx.sampleRate*dur), actx.sampleRate);
     var d = buf.getChannelData(0);
@@ -175,10 +178,17 @@
     src.start(t);
   }
 
-  // ---------- speech: transmit the message aloud (Web Speech API) ----------
+  // ---------- transmit: "speak" the message in Aurebesh ----------
+  // Aurebesh is a script, not a spoken tongue, so we offer two voices:
+  //   names  — recite each glyph's name (Aurek, Besh…) via Web Speech
+  //   droid  — wordless astromech beeps, one motif per glyph (pure synth)
   var synth = window.speechSynthesis || null;
-  var speaking = false, speakTimer = null, glyphMap = [];
   if(synth && synth.getVoices){ try{ synth.getVoices(); synth.onvoiceschanged = function(){}; }catch(e){} }
+
+  var VOICES = synth ? ["names","droid"] : ["droid"];
+  var VOICE_LABEL = { names:"Letter names", droid:"Droid" };
+  var voiceIx = 0;
+  var speaking = false, speakTimer = null, hopTimer = null;
 
   function pickVoice(){
     if(!synth) return null;
@@ -191,52 +201,100 @@
     return vs[0];
   }
 
-  function buildGlyphMap(){
-    glyphMap = [];
-    var glyphs = out.querySelectorAll(".glyph"); var gi = 0; var text = input.value;
-    for(var i=0;i<text.length;i++){
-      if(text.charAt(i) === " "){ glyphMap[i] = null; }
-      else { glyphMap[i] = glyphs[gi] || null; gi++; }
-    }
-  }
   function clearSpoken(){
     var els = out.querySelectorAll(".glyph.speaking");
     for(var i=0;i<els.length;i++){ els[i].classList.remove("speaking"); }
   }
-  function highlightWord(charIndex){
-    var text = input.value; if(charIndex < 0 || charIndex >= text.length) return;
-    var s = charIndex; while(s > 0 && text.charAt(s-1) !== " ") s--;
-    var e = charIndex; while(e < text.length && text.charAt(e) !== " ") e++;
-    clearSpoken();
-    for(var i=s;i<e;i++){ if(glyphMap[i]) glyphMap[i].classList.add("speaking"); }
+  function lightGlyph(g){ clearSpoken(); if(g) g.classList.add("speaking"); }
+
+  // ordered list of { token, glyph } for each spoken character (skips spaces/unknowns)
+  function tokens(){
+    var list = [], glyphs = out.querySelectorAll(".glyph"), gi = 0, text = input.value;
+    for(var i=0;i<text.length;i++){
+      var ch = text.charAt(i);
+      if(ch === " "){ continue; }
+      var g = glyphs[gi++]; var up = ch.toUpperCase();
+      var name = NAMES[up] || (/[0-9]/.test(ch) ? ch : null);
+      list.push({ ch:ch, name:name, glyph:g });
+    }
+    return list;
   }
+
   function endTransmit(){
     speaking = false;
+    if(synth){ try{ synth.cancel(); }catch(e){} }
+    if(speakTimer){ clearTimeout(speakTimer); speakTimer = null; }
+    if(hopTimer){ clearTimeout(hopTimer); hopTimer = null; }
     screenEl.classList.remove("is-transmitting");
     clearSpoken();
     speakBtn.textContent = "Transmit ►";
-    if(speakTimer){ clearTimeout(speakTimer); speakTimer = null; }
   }
+
+  // VOICE 1 — recite glyph names, one chained utterance each (perfect highlight sync)
+  function speakNames(list){
+    var idx = 0;
+    (function next(){
+      if(!speaking) return;
+      while(idx < list.length && !list[idx].name) idx++;
+      if(idx >= list.length){ commsBlip(false); endTransmit(); return; }
+      var tk = list[idx++];
+      lightGlyph(tk.glyph);
+      var u = new SpeechSynthesisUtterance(tk.name);
+      var v = pickVoice(); if(v){ u.voice = v; u.lang = v.lang || "en-US"; } else { u.lang = "en-US"; }
+      u.rate = 0.95; u.pitch = 0.6; u.volume = 1;
+      u.onend = next; u.onerror = next;
+      try{ synth.speak(u); }catch(e){ next(); }
+    })();
+  }
+
+  // VOICE 2 — wordless astromech chatter, a chirp per glyph
+  function droidBeep(ch){
+    if(!actx) return;
+    var t = actx.currentTime;
+    var code = ch ? ch.toUpperCase().charCodeAt(0) : 65;
+    var base = 320 + (code % 14) * 90;          // ~320..1490 Hz
+    var up = (code % 2) === 0;
+    var dur = 0.10 + (code % 3) * 0.03;
+    var osc = actx.createOscillator(); osc.type = (code % 3 === 0) ? "square" : "sawtooth";
+    osc.frequency.setValueAtTime(base, t);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(150, base * (up ? 1.7 : 0.58)), t + dur);
+    var lfo = actx.createOscillator(); lfo.frequency.value = 22 + (code % 9);
+    var lg = actx.createGain(); lg.gain.value = base * 0.06; lfo.connect(lg); lg.connect(osc.frequency);
+    var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = base * 1.2; bp.Q.value = 2;
+    var g = actx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.09, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.04);
+    osc.connect(bp); bp.connect(g); g.connect(master);
+    osc.start(t); lfo.start(t); osc.stop(t + dur + 0.06); lfo.stop(t + dur + 0.06);
+  }
+  function speakDroid(list){
+    var idx = 0;
+    (function step(){
+      if(!speaking) return;
+      if(idx >= list.length){ commsBlip(false); endTransmit(); return; }
+      var tk = list[idx++];
+      lightGlyph(tk.glyph);
+      droidBeep(tk.ch);
+      hopTimer = setTimeout(step, 150 + (tk.ch.charCodeAt(0) % 4) * 18);
+    })();
+  }
+
   function transmit(){
-    if(!synth) return;
-    if(speaking){ try{ synth.cancel(); }catch(e){} endTransmit(); return; }
-    var text = input.value.trim(); if(!text) return;
+    if(speaking){ endTransmit(); return; }
+    var list = tokens(); if(!list.length) return;
     unlockAudio();
-    try{ synth.cancel(); }catch(e){}
-    var u = new SpeechSynthesisUtterance(input.value);
-    var v = pickVoice(); if(v){ u.voice = v; u.lang = v.lang || "en-US"; } else { u.lang = "en-US"; }
-    u.rate = 0.92; u.pitch = 0.7; u.volume = 1;
-    buildGlyphMap();
-    u.onstart = function(){ commsBlip(true); };
-    u.onboundary = function(ev){ highlightWord(ev.charIndex != null ? ev.charIndex : 0); };
-    u.onend = function(){ commsBlip(false); endTransmit(); };
-    u.onerror = function(){ endTransmit(); };
     speaking = true;
     screenEl.classList.add("is-transmitting");
     speakBtn.textContent = "Transmitting…";
-    try{ synth.speak(u); }catch(e){ endTransmit(); return; }
-    // safety net: if onend never fires (some engines / no installed voices), release the UI
-    speakTimer = setTimeout(endTransmit, Math.max(2600, input.value.length * 95 + 1800));
+    commsBlip(true);
+    var mode = VOICES[voiceIx] || "droid";
+    if(mode === "names" && synth){
+      speakNames(list);
+      speakTimer = setTimeout(endTransmit, list.length * 1500 + 3000); // backstop only
+    } else {
+      speakDroid(list);
+    }
   }
 
   // ---------- accent channels ----------
@@ -274,7 +332,7 @@
   // ---------- input wiring ----------
   var hintHidden = false;
   function onInput(){
-    if(speaking){ try{ synth.cancel(); }catch(e){} endTransmit(); }
+    if(speaking) endTransmit();
     var prevLen = prev.length;
     render(input.value);
     if(soundOn && input.value.length > prevLen){
@@ -304,8 +362,27 @@
     if(soundOn){ unlockAudio(); bleep("A"); }
   });
   copyBtn.addEventListener("click", copyLink);
-  if(synth){ speakBtn.addEventListener("click", transmit); }
-  else if(speakBtn){ speakBtn.style.display = "none"; }
+
+  // Transmit works as long as we have any audio path (Droid is pure synth, so
+  // it runs even without speechSynthesis); only hide it if the browser has none.
+  var hasAudio = !!(window.AudioContext || window.webkitAudioContext);
+  function updateVoiceLabel(){ voiceName.textContent = VOICE_LABEL[VOICES[voiceIx]] || "Droid"; }
+  if(synth || hasAudio){
+    speakBtn.addEventListener("click", transmit);
+    if(VOICES.length > 1){
+      voiceBtn.addEventListener("click", function(){
+        if(speaking) endTransmit();
+        voiceIx = (voiceIx + 1) % VOICES.length;
+        updateVoiceLabel();
+        unlockAudio();
+        if(VOICES[voiceIx] === "droid") droidBeep("A");
+      });
+      updateVoiceLabel();
+    } else { voiceBtn.style.display = "none"; }
+  } else {
+    speakBtn.style.display = "none";
+    voiceBtn.style.display = "none";
+  }
 
   // ---------- init ----------
   applyChannel();
