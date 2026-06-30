@@ -1,5 +1,15 @@
 [
   {
+    "slug": "pottery-wheel",
+    "name": "Pottery Wheel",
+    "shortDescription": "A calming digital pottery wheel—a lump of clay spins on the wheel and you drag up and down its side to pull the walls out and in, shaping a vase, bowl, or pot in soft 3D. Then fire it in the kiln to reveal your finished, glazed piece. Soft wheel hum and wet-clay shaping sounds.",
+    "category": "wellness",
+    "tags": ["pottery-wheel"],
+    "status": "live",
+    "path": "toys/pottery-wheel/index.html",
+    "related": []
+  },
+  {
     "slug": "chladni-plate",
     "name": "Chladni Plate",
     "shortDescription": "A digital cymatics sand plate—thousands of grains shake across a vibrating square and settle onto the nodal lines, drawing intricate standing-wave figures. Press and drag to pour sand anywhere on the plate, change the frequency faster or slower, and pause to watch it settle.",

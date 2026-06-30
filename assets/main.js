@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "pottery-wheel":
+    "pottery wheel ceramics clay throwing throw a pot potter pot vase bowl vessel urn jar shape sculpt mold form spin spinning wheel kiln fire firing glaze glazed celadon cobalt oxblood finished piece reveal studio terracotta earthenware stoneware pull the walls 3d soft 3d surface of revolution calming relaxing meditative satisfying zen wellness ASMR craft make handmade ghost pottery scene drag to shape interactive",
   "chladni-plate":
     "chladni plate cymatics sand vibration resonance standing waves nodal lines nodal pattern frequency modes faster slower pause drop sand control physics simulation vibrating plate sand figures acoustic patterns harmonics sound made visible faraday waves resonant frequencies particles settle science experiment generative mesmerizing satisfying black and white visual",
   "pin-art":
