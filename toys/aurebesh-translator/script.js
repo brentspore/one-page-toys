@@ -12,6 +12,8 @@
   var accentName= document.getElementById("accentName");
   var soundBtn  = document.getElementById("soundBtn");
   var copyBtn   = document.getElementById("copyBtn");
+  var speakBtn  = document.getElementById("speakBtn");
+  var screenEl  = document.getElementById("screen");
 
   // Aurebesh letter names — for the hover / tap reveal.
   var NAMES = {
@@ -159,6 +161,84 @@
     osc.start(t); o2.start(t); osc.stop(t+0.15); o2.stop(t+0.15);
   }
 
+  // short radio "key" blip to open / close a transmission
+  function commsBlip(open){
+    if(!soundOn || !actx) return;
+    var t = actx.currentTime, dur = 0.13;
+    var buf = actx.createBuffer(1, Math.floor(actx.sampleRate*dur), actx.sampleRate);
+    var d = buf.getChannelData(0);
+    for(var i=0;i<d.length;i++){ d[i] = (Math.random()*2-1) * Math.pow(1 - i/d.length, 1.4); }
+    var src = actx.createBufferSource(); src.buffer = buf;
+    var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = open ? 1500 : 950; bp.Q.value = 5;
+    var g = actx.createGain(); g.gain.value = 0.06;
+    src.connect(bp); bp.connect(g); g.connect(master);
+    src.start(t);
+  }
+
+  // ---------- speech: transmit the message aloud (Web Speech API) ----------
+  var synth = window.speechSynthesis || null;
+  var speaking = false, speakTimer = null, glyphMap = [];
+  if(synth && synth.getVoices){ try{ synth.getVoices(); synth.onvoiceschanged = function(){}; }catch(e){} }
+
+  function pickVoice(){
+    if(!synth) return null;
+    var vs = synth.getVoices() || [];
+    if(!vs.length) return null;
+    // nudge toward deeper / synthetic-sounding voices when present, else any English voice
+    var pref = ["Zarvox","Trinoids","Cellos","Eddy","Rocko","Grandpa","Google UK English Male","Daniel","Microsoft David","Alex","Fred"];
+    for(var i=0;i<pref.length;i++){ for(var j=0;j<vs.length;j++){ if(vs[j].name && vs[j].name.indexOf(pref[i])!==-1) return vs[j]; } }
+    for(var k=0;k<vs.length;k++){ if(/^en/i.test(vs[k].lang||"")) return vs[k]; }
+    return vs[0];
+  }
+
+  function buildGlyphMap(){
+    glyphMap = [];
+    var glyphs = out.querySelectorAll(".glyph"); var gi = 0; var text = input.value;
+    for(var i=0;i<text.length;i++){
+      if(text.charAt(i) === " "){ glyphMap[i] = null; }
+      else { glyphMap[i] = glyphs[gi] || null; gi++; }
+    }
+  }
+  function clearSpoken(){
+    var els = out.querySelectorAll(".glyph.speaking");
+    for(var i=0;i<els.length;i++){ els[i].classList.remove("speaking"); }
+  }
+  function highlightWord(charIndex){
+    var text = input.value; if(charIndex < 0 || charIndex >= text.length) return;
+    var s = charIndex; while(s > 0 && text.charAt(s-1) !== " ") s--;
+    var e = charIndex; while(e < text.length && text.charAt(e) !== " ") e++;
+    clearSpoken();
+    for(var i=s;i<e;i++){ if(glyphMap[i]) glyphMap[i].classList.add("speaking"); }
+  }
+  function endTransmit(){
+    speaking = false;
+    screenEl.classList.remove("is-transmitting");
+    clearSpoken();
+    speakBtn.textContent = "Transmit ►";
+    if(speakTimer){ clearTimeout(speakTimer); speakTimer = null; }
+  }
+  function transmit(){
+    if(!synth) return;
+    if(speaking){ try{ synth.cancel(); }catch(e){} endTransmit(); return; }
+    var text = input.value.trim(); if(!text) return;
+    unlockAudio();
+    try{ synth.cancel(); }catch(e){}
+    var u = new SpeechSynthesisUtterance(input.value);
+    var v = pickVoice(); if(v){ u.voice = v; u.lang = v.lang || "en-US"; } else { u.lang = "en-US"; }
+    u.rate = 0.92; u.pitch = 0.7; u.volume = 1;
+    buildGlyphMap();
+    u.onstart = function(){ commsBlip(true); };
+    u.onboundary = function(ev){ highlightWord(ev.charIndex != null ? ev.charIndex : 0); };
+    u.onend = function(){ commsBlip(false); endTransmit(); };
+    u.onerror = function(){ endTransmit(); };
+    speaking = true;
+    screenEl.classList.add("is-transmitting");
+    speakBtn.textContent = "Transmitting…";
+    try{ synth.speak(u); }catch(e){ endTransmit(); return; }
+    // safety net: if onend never fires (some engines / no installed voices), release the UI
+    speakTimer = setTimeout(endTransmit, Math.max(2600, input.value.length * 95 + 1800));
+  }
+
   // ---------- accent channels ----------
   function applyChannel(){
     var c = CHANNELS[channelIx];
@@ -194,6 +274,7 @@
   // ---------- input wiring ----------
   var hintHidden = false;
   function onInput(){
+    if(speaking){ try{ synth.cancel(); }catch(e){} endTransmit(); }
     var prevLen = prev.length;
     render(input.value);
     if(soundOn && input.value.length > prevLen){
@@ -223,6 +304,8 @@
     if(soundOn){ unlockAudio(); bleep("A"); }
   });
   copyBtn.addEventListener("click", copyLink);
+  if(synth){ speakBtn.addEventListener("click", transmit); }
+  else if(speakBtn){ speakBtn.style.display = "none"; }
 
   // ---------- init ----------
   applyChannel();
