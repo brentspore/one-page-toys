@@ -88,3 +88,26 @@ Reference recipes already shipped:
 Pattern: `transient (noise/click) + harmonic/inharmonic body + decaying tail`, all through a filter, gain velocity-scaled. iOS: always unlock with a 1-sample silent buffer on first gesture. (Global twin: see `~/.ai/memory/DECISIONS.md` if promoted later; for now project-scoped.)
 
 ---
+
+## 2026-06-30 — ⚠ AUDIO QUALITY BAR — READ BEFORE BUILDING/TOUCHING ANY TOY WITH SOUND (owner directive)
+
+Owner: *"as you have put guardrails on a quality look and feel here, you can put the same for audio. We always want to continue to push the presentation envelope as much as we dare within reason."* Sound is a **first-class part of the presentation**, held to the same bar as the visuals. A toy's audio is not done when it "makes the right note" — it must sound **rich, spacious, and intentional**, something you *want* to keep hearing. This is the sonic twin of the "Design quality bar" in `HANDOFF.md` — read both before building.
+
+The bar (every audio toy should clear these unless there's a deliberate reason not to):
+1. **Physically-grounded voice, layered.** Model the real source. `transient (mallet/pluck/contact) + body (correct harmonic OR inharmonic partial stack) + decaying tail`. Know the physics: a *clamped-free bar* (kalimba) is INHARMONIC (≈1 : 6.27 : 17.55); a *tuned tongue drum / hang* is largely HARMONIC (strong octave ×2, twelfth ×3) with only a whisper of metallic inharmonicity; a *tube* (chimes) ≈1 : 2.76 : 5.40 : 8.93. Getting the partial ratios right is what separates "real instrument" from "synth beep."
+2. **Space is non-negotiable for instruments/ambient.** A dry note sounds cheap. Give it a **convolver reverb** (generate a smooth impulse — low-pass the noise so the tail isn't grainy; add a highshelf for shimmer, a highpass so lows don't muddy) and, where it fits, a **feedback delay** that also feeds the reverb so repeats bloom into the hall. Lush tails are the difference between "fine" and "amazing."
+3. **Stereo width.** Pan voices by their on-screen position (per tine / per tongue / per pad). Mono instruments feel flat; a spread field feels immersive.
+4. **Dynamics glue + no clipping.** Sum voices through a **bus DynamicsCompressor** (gentle: threshold ≈ −15, ratio ≈ 3) and a master lowpass for silk. This glues the tone and hard-stops clipping when the user strums/spams — essential, since a chord of many voices otherwise distorts.
+5. **Variation, not machine-gun sameness.** Velocity-scale gain + brightness; vary attack/detune slightly; a subtle chorus (a +3–4-cent detuned layer) adds life. Tune to **consonant scales** (pentatonic / Akebono / major-6) so any input sounds musical.
+6. **Envelopes with intent.** Percussive attack (a few ms; softer "mallet" = ~10–14ms, sharper "pluck" = ~4ms), smooth exponential decay, pitch-scaled duration (low notes ring longer). A tiny attack pitch-glide reads as a real released tine.
+7. **iOS unlock always** (1-sample silent buffer on first gesture) + a **Sound on/off** that mutes via one `outGain`.
+
+**Caveat that raises the stakes:** headless/Playwright **cannot audition sound** — it only proves the graph builds without exceptions. So audio is never "verified" by the automated pass; it must be **tuned by ear by the owner**. Build it as well as possible from first principles, say plainly that it needs an ear, and iterate on the owner's feedback.
+
+Reference builds that clear this bar: **Kalimba** (inharmonic bar modes + chorused body + stereo spread + compressor + convolver reverb) and **Steel Tongue Drum** (harmonic octave-rich voice + soft-mallet attack + long bloom + big lush reverb + shimmer highshelf + spacious feedback delay). Copy their audio architecture as the starting point for new instruments.
+
+## 2026-06-30 — Keep pushing the presentation envelope (visual + audio), within reason (owner directive)
+
+Standing principle: **each release should feel a notch more polished than the last** — "we always want to continue to push the presentation envelope as much as we dare within reason." Applies to both look/feel and sound. When touching an existing toy, look for the upgrade (more depth, better material/lighting, richer synthesis, more space) rather than leaving it at "works." "Within reason" = don't break the zero-build vanilla-Canvas/Web-Audio, single-file, hand-tweakable soul of the repo, and don't over-engineer past what a one-page toy warrants — but do dare. This is why e.g. the tongue drum went flat-chrome → premium 3D gunmetal dome and dry → lush hall-with-delay after a first pass that merely "worked."
+
+---

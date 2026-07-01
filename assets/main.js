@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "tongue-drum":
+    "steel tongue drum tank drum hank drum handpan hang drum percussion instrument music play strike mallet pentatonic akebono zen meditation calm relaxing soothing ambient chill mindfulness singing bowl gongs make music melody",
   "kalimba":
     "kalimba thumb piano mbira instrument music play pluck tines pentatonic notes melody song calm relaxing dreamy glowing sky ambient chill zen soothing meditative harp bells celesta glissando make music",
   "jigsaw-puzzle":

@@ -28,7 +28,7 @@
   var bx, boardTopY, boardBottom, bh, bw, bridgeY, Hmax, Hmin, leftX, rightX, spacing;
   var tines = [];
   var rootIdx = 0, labels = false;
-  var motes = [], bgMotes = [], rings = [];
+  var motes = [], bgMotes = [], rings = [], stars = [];
   var glow = 0;                      // scene bloom energy (rises as you play)
   var pointerDown = false, lastTine = -1;
 
@@ -74,6 +74,7 @@
     leftX = cx - bw * 0.40; rightX = cx + bw * 0.40;
     spacing = (rightX - leftX) / (N - 1);
     if (!bgMotes.length) seedBgMotes();
+    seedStars();
   }
   function tineX(i) { return leftX + i * spacing; }
   function tineHeight(i) {
@@ -84,15 +85,41 @@
 
   function seedBgMotes() {
     bgMotes = [];
-    for (var i = 0; i < 30; i++) bgMotes.push({ x: Math.random() * W, y: Math.random() * H, r: 0.6 + Math.random() * 2.2, sp: 6 + Math.random() * 16, ph: Math.random() * 6.28, tw: 0.4 + Math.random() * 0.6 });
+    for (var i = 0; i < 24; i++) bgMotes.push({ x: Math.random() * W, y: Math.random() * H, r: 0.6 + Math.random() * 2.0, sp: 6 + Math.random() * 16, ph: Math.random() * 6.28, tw: 0.4 + Math.random() * 0.6 });
+  }
+  function seedStars() {
+    stars = [];
+    var n = Math.round(W * H / 9000);
+    for (var i = 0; i < n; i++) stars.push({ x: Math.random() * W, y: Math.random() * H * 0.7, r: 0.3 + Math.random() * 1.5, base: 0.3 + Math.random() * 0.6, tw: 0.6 + Math.random() * 2.0, ph: Math.random() * 6.28 });
   }
 
   // ---- render -------------------------------------------------------------
   function render(t) {
-    // dreamy dusk sky
+    // dreamy night sky
     var sky = ctx.createLinearGradient(0, 0, 0, H);
-    sky.addColorStop(0, "#1a1636"); sky.addColorStop(0.42, "#3a2a55"); sky.addColorStop(0.72, "#8a4f5a"); sky.addColorStop(1, "#e0925a");
+    sky.addColorStop(0, "#070818"); sky.addColorStop(0.42, "#12123a"); sky.addColorStop(0.74, "#241d48"); sky.addColorStop(1, "#3a2b55");
     ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+
+    // stars
+    ctx.save(); ctx.globalCompositeOperation = "lighter";
+    for (var si = 0; si < stars.length; si++) {
+      var st = stars[si], sa = st.base * (0.45 + 0.55 * (0.5 + 0.5 * Math.sin(t * st.tw + st.ph)));
+      ctx.fillStyle = "rgba(226,232,255," + sa + ")";
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.283); ctx.fill();
+    }
+    ctx.restore();
+
+    // moon (upper-right) with a soft halo
+    var mx = W * 0.82, my = H * 0.17, mr = Math.min(W, H) * 0.05;
+    ctx.save(); ctx.globalCompositeOperation = "lighter";
+    var halo = ctx.createRadialGradient(mx, my, 0, mx, my, mr * 3.4);
+    halo.addColorStop(0, "rgba(210,220,255,0.22)"); halo.addColorStop(1, "rgba(210,220,255,0)");
+    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(mx, my, mr * 3.4, 0, 6.283); ctx.fill(); ctx.restore();
+    var mg = ctx.createRadialGradient(mx - mr * 0.3, my - mr * 0.3, mr * 0.2, mx, my, mr);
+    mg.addColorStop(0, "#f2f4ff"); mg.addColorStop(0.7, "#d3d8ee"); mg.addColorStop(1, "#aab0cc");
+    ctx.fillStyle = mg; ctx.beginPath(); ctx.arc(mx, my, mr, 0, 6.283); ctx.fill();
+    ctx.fillStyle = "rgba(150,158,190,0.35)"; ctx.beginPath(); ctx.arc(mx + mr * 0.32, my - mr * 0.18, mr * 0.2, 0, 6.283); ctx.fill();
+    ctx.beginPath(); ctx.arc(mx - mr * 0.25, my + mr * 0.3, mr * 0.13, 0, 6.283); ctx.fill();
 
     // warm bloom behind the instrument — intensifies as you play
     var gy = boardTopY + bh * 0.4;
@@ -107,8 +134,8 @@
     // drifting background light motes
     ctx.save(); ctx.globalCompositeOperation = "lighter";
     for (var i = 0; i < bgMotes.length; i++) {
-      var m = bgMotes[i]; var a = (0.18 + 0.5 * (0.5 + 0.5 * Math.sin(t * m.tw + m.ph)));
-      ctx.fillStyle = "rgba(255,236,200," + a * (0.5 + glow * 0.5) + ")";
+      var m = bgMotes[i]; var a = (0.14 + 0.4 * (0.5 + 0.5 * Math.sin(t * m.tw + m.ph)));
+      ctx.fillStyle = "rgba(214,226,255," + a * (0.5 + glow * 0.6) + ")";
       ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, 6.283); ctx.fill();
     }
     ctx.restore();
@@ -145,15 +172,15 @@
     ctx.save(); ctx.shadowColor = "rgba(255,190,130,0.5)"; ctx.shadowBlur = 40;
     roundRect(x, boardTopY, bw, bh, Math.min(46, bw * 0.08));
     var wood = ctx.createLinearGradient(0, boardTopY, 0, boardBottom);
-    wood.addColorStop(0, "#7a4a2c"); wood.addColorStop(0.5, "#5f371f"); wood.addColorStop(1, "#42230f");
+    wood.addColorStop(0, "#4a2d63"); wood.addColorStop(0.5, "#331d47"); wood.addColorStop(1, "#1e1233");
     ctx.fillStyle = wood; ctx.fill(); ctx.restore();
     // top sheen
     ctx.save(); roundRect(x, boardTopY, bw, bh, Math.min(46, bw * 0.08)); ctx.clip();
     var sh = ctx.createLinearGradient(0, boardTopY, 0, boardTopY + bh * 0.5);
-    sh.addColorStop(0, "rgba(255,220,170,0.22)"); sh.addColorStop(1, "rgba(255,220,170,0)");
+    sh.addColorStop(0, "rgba(255,236,210,0.18)"); sh.addColorStop(1, "rgba(255,236,210,0)");
     ctx.fillStyle = sh; ctx.fillRect(x, boardTopY, bw, bh * 0.5);
-    // wood grain
-    ctx.globalAlpha = 0.10; ctx.strokeStyle = "#2a1608"; ctx.lineWidth = 1;
+    // faint figured grain
+    ctx.globalAlpha = 0.10; ctx.strokeStyle = "#180d29"; ctx.lineWidth = 1;
     for (var ggi = 0; ggi < 7; ggi++) { var gy2 = boardTopY + bh * (0.12 + ggi * 0.12); ctx.beginPath(); for (var xx = x; xx <= x + bw; xx += 14) ctx.lineTo(xx, gy2 + Math.sin(xx * 0.03 + ggi) * 3); ctx.stroke(); }
     ctx.restore();
     // rim highlight
@@ -163,7 +190,7 @@
     // soundhole
     var hy = bridgeY + bh * 0.24, hr = bh * 0.10;
     var hg = ctx.createRadialGradient(cx, hy, hr * 0.2, cx, hy, hr);
-    hg.addColorStop(0, "#150a04"); hg.addColorStop(0.8, "#2a1608"); hg.addColorStop(1, "#3a2010");
+    hg.addColorStop(0, "#0e0718"); hg.addColorStop(0.8, "#1a0f2b"); hg.addColorStop(1, "#241638");
     ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(cx, hy, hr, 0, 6.283); ctx.fill();
     ctx.strokeStyle = "rgba(0,0,0,0.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, hy, hr, 0, 6.283); ctx.stroke();
 

@@ -1,5 +1,15 @@
 [
   {
+    "slug": "tongue-drum",
+    "name": "Steel Tongue Drum",
+    "shortDescription": "A warm, meditative steel tongue drum you play top-down. Strike the tongues—or drag across them for a run—for round, blooming, hang-drum tones with long reverberant sustain. Tuned to pentatonic and Akebono scales so anything you play sounds calm and consonant. Fully synthesized, no samples.",
+    "category": "audio",
+    "tags": ["tongue-drum"],
+    "status": "live",
+    "path": "toys/tongue-drum/index.html",
+    "related": []
+  },
+  {
     "slug": "kalimba",
     "name": "Kalimba",
     "shortDescription": "A glowing thumb-piano you can actually play. Pluck the tines for warm, dreamy pentatonic notes—swipe across for a glissando—and every note releases a rising mote of light. It's tuned so anything you play sounds beautiful; cycle the key and toggle note labels. Fully synthesized, no samples.",
