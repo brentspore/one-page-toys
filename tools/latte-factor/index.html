@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>The Latte Factor — One Page Toys</title>
+    <meta name="description" content="Add up a small daily habit — coffee, energy drinks, that subscription — and see the shocking long-term total over 1, 5, 10 and 30 years. Flip on 'invested at 7%' to see what it could have grown into. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/latte-factor/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fbfaf7" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="The Latte Factor — One Page Toys" />
+    <meta property="og:description" content="See what a small daily habit really costs over the years — and what it could have grown into if you'd invested it instead." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/latte-factor/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/latte-factor.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Latte Factor — One Page Toys" />
+    <meta name="twitter:description" content="What a small daily habit really costs over the years — and what it could have grown into invested." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/latte-factor.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "The Latte Factor",
+        "url": "https://onepagetoys.com/tools/latte-factor/index.html",
+        "description": "Turn a small daily habit into its long-term cost over 1, 5, 10, and 30 years — with an option to see what it could have grown into invested at 7%.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <div class="heat" id="heat" aria-hidden="true"></div>
+
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../index.html">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 048 · The Latte Factor</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="meter" aria-label="The latte factor">
+        <div class="tabs" role="tablist" aria-label="Mode">
+          <button type="button" class="tab" id="tabSpent" role="tab" aria-selected="true">Just spent</button>
+          <button type="button" class="tab" id="tabInvest" role="tab" aria-selected="false">Invested at 7%</button>
+        </div>
+
+        <p class="meter__eyebrow" id="eyebrow">Over 10 years, that's</p>
+        <div class="odo" id="odo" role="text" aria-label="$0">$0</div>
+        <p id="sub" class="sub">Pick a daily habit and watch it add up.</p>
+
+        <div class="console">
+          <div class="controls">
+            <div class="field" style="flex:1 1 220px;max-width:300px;">
+              <label class="field__label" for="daily">Cost per day · $</label>
+              <div class="field__box">
+                <button type="button" class="step" data-dir="-1" aria-label="Lower daily cost">–</button>
+                <input id="daily" class="field__input" type="number" inputmode="decimal" min="0" step="0.5" value="5.50" />
+                <button type="button" class="step" data-dir="1" aria-label="Raise daily cost">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="presets" id="habits" role="group" aria-label="Common habits">
+            <button type="button" class="preset" data-cost="5.50" data-name="latte">☕ Coffee</button>
+            <button type="button" class="preset" data-cost="4" data-name="energy drink">⚡ Energy drink</button>
+            <button type="button" class="preset" data-cost="16" data-name="lunch out">🥡 Lunch out</button>
+            <button type="button" class="preset" data-cost="13" data-name="pack">🚬 Cigarettes</button>
+            <button type="button" class="preset" data-cost="0.55" data-name="subscription">📺 A subscription</button>
+            <button type="button" class="preset" data-cost="22" data-name="rideshare">🚕 Rideshare</button>
+          </div>
+
+          <div class="breakdown" id="breakdown">
+            <div class="brk"><div class="brk__val" id="y1">$0</div><div class="brk__label">1 year</div></div>
+            <div class="brk"><div class="brk__val" id="y5">$0</div><div class="brk__label">5 years</div></div>
+            <div class="brk brk--hot"><div class="brk__val" id="y30">$0</div><div class="brk__label">30 years</div></div>
+          </div>
+
+          <p id="status" class="meter__status" aria-live="polite">Small sips, big totals.</p>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../index.html">← onepagetoys.com</a>
+    </main>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+    <script src="../../assets/fullscreen.js?v=2" defer></script>
+  </body>
+</html>

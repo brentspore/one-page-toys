@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Time Is Money — One Page Toys</title>
+    <meta name="description" content="Turn your hourly wage into real time. Watch what you've earned tick upward live since you opened the page — or flip it and see how many hours of work any price really costs you. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/time-is-money/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fbfaf7" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Time Is Money — One Page Toys" />
+    <meta property="og:description" content="Set your hourly wage and watch your earnings tick up live — or flip it to see how many work-hours a purchase really costs." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/time-is-money/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/time-is-money.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Time Is Money — One Page Toys" />
+    <meta name="twitter:description" content="Watch your earnings tick up live, or see what a purchase costs in hours of your life." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/time-is-money.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Time Is Money",
+        "url": "https://onepagetoys.com/tools/time-is-money/index.html",
+        "description": "Turn your hourly wage into live earnings and translate any price into hours of your working life.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <div class="heat" id="heat" aria-hidden="true"></div>
+
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../index.html">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 050 · Time Is Money</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="meter" aria-label="Time is money">
+        <div class="tabs" role="tablist" aria-label="Mode">
+          <button type="button" class="tab" id="tabEarn" role="tab" aria-selected="true">What I'm earning</button>
+          <button type="button" class="tab" id="tabSpend" role="tab" aria-selected="false">What it costs</button>
+        </div>
+
+        <p class="meter__eyebrow" id="eyebrow">Earned since you opened this page</p>
+        <div class="odo" id="odo" role="text" aria-label="$0.00">$0.00</div>
+        <p id="sub" class="sub">Set your wage — the clock's already running.</p>
+
+        <div class="console">
+          <div class="controls">
+            <div class="field">
+              <label class="field__label" for="wage">Your pay · $ / hour</label>
+              <div class="field__box">
+                <button type="button" class="step" data-step="wage" data-dir="-1" aria-label="Lower wage">–</button>
+                <input id="wage" class="field__input" type="number" inputmode="decimal" min="0" step="1" value="35" />
+                <button type="button" class="step" data-step="wage" data-dir="1" aria-label="Raise wage">+</button>
+              </div>
+            </div>
+
+            <div class="field" id="priceField" hidden>
+              <label class="field__label" for="price">Price of the thing · $</label>
+              <div class="field__box">
+                <button type="button" class="step" data-step="price" data-dir="-1" aria-label="Lower price">–</button>
+                <input id="price" class="field__input" type="number" inputmode="decimal" min="0" step="5" value="1200" />
+                <button type="button" class="step" data-step="price" data-dir="1" aria-label="Raise price">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="presets" id="wagePresets" role="group" aria-label="Quick wages">
+            <button type="button" class="preset" data-wage="20">$20</button>
+            <button type="button" class="preset" data-wage="35">$35</button>
+            <button type="button" class="preset" data-wage="60">$60</button>
+            <button type="button" class="preset" data-wage="120">$120</button>
+          </div>
+
+          <div class="actions" id="earnActions">
+            <button id="resetTimer" class="btn btn--ghost" type="button">Reset the clock</button>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <span class="stat__label" id="s1label">Per second</span>
+              <span id="s1" class="stat__value">$0.0000</span>
+            </div>
+            <div class="stat">
+              <span class="stat__label" id="s2label">Per minute</span>
+              <span id="s2" class="stat__value">$0.00</span>
+            </div>
+            <div class="stat">
+              <span class="stat__label" id="s3label">Per 8-hr day</span>
+              <span id="s3" class="stat__value">$0.00</span>
+            </div>
+          </div>
+
+          <p id="status" class="meter__status" aria-live="polite">Tick, tick, tick…</p>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../index.html">← onepagetoys.com</a>
+    </main>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+    <script src="../../assets/fullscreen.js?v=2" defer></script>
+  </body>
+</html>

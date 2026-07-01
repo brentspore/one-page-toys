@@ -577,6 +577,63 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
   filter: drop-shadow(0 4px 18px rgba(214, 50, 50, 0.45));
 }
 
+/* Time Is Money — live earnings odometer (money green) */
+.card__preview[data-slug="time-is-money"]{
+  background: radial-gradient(125% 130% at 50% 138%, #0d3a24 0%, #071e14 58%, #04120b 100%);
+}
+.card__preview[data-slug="time-is-money"]::after{
+  content: "$427.16";
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(176deg, #c9f5d8 0%, #22b866 48%, #0f7a3f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(34, 184, 102, 0.4));
+}
+
+/* Life in Numbers — seconds-alive counter (cosmic violet) */
+.card__preview[data-slug="life-in-numbers"]{
+  background: radial-gradient(125% 130% at 50% 138%, #201b45 0%, #0f0d26 58%, #070613 100%);
+}
+.card__preview[data-slug="life-in-numbers"]::after{
+  content: "1,084,320,000";
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.05rem, 3.6vw, 1.6rem);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(176deg, #e6e2ff 0%, #6c63e0 48%, #3f3aa8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(108, 99, 224, 0.45));
+}
+
+/* The Latte Factor — the shocking long-term total (coffee amber) */
+.card__preview[data-slug="latte-factor"]{
+  background: radial-gradient(125% 130% at 50% 138%, #3a2810 0%, #1e1409 58%, #120b05 100%);
+}
+.card__preview[data-slug="latte-factor"]::after{
+  content: "$20,075";
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(176deg, #f5e2c4 0%, #c98b3a 48%, #7a4f18 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(201, 139, 58, 0.4));
+}
+
 /* Goo Cursor — a still iridescent liquid-metal bead */
 .card__preview[data-slug="goo-cursor"]{
   background: radial-gradient(circle at 50% 62%, #15131f 0%, #08070c 72%);
@@ -862,7 +919,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="slide-puzzle"]{ background: #10131c url("cards/slide-puzzle.png") center / cover no-repeat; }
 
 /* Default — clean neutral preview for any future toy */
-.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]):not([data-slug="lava-lamp"]):not([data-slug="bubble-wrap"]):not([data-slug="newtons-cradle"]):not([data-slug="spirograph"]):not([data-slug="plasma-ball"]):not([data-slug="kaleidoscope"]):not([data-slug="ripple-pond"]):not([data-slug="wind-chimes"]):not([data-slug="marble-drop"]):not([data-slug="zen-sand-garden"]):not([data-slug="floating-lanterns"]):not([data-slug="aurora-drift"]):not([data-slug="campfire"]):not([data-slug="fireworks"]):not([data-slug="rain-window"]):not([data-slug="perfect-circle"]):not([data-slug="pin-art"]):not([data-slug="chladni-plate"]):not([data-slug="pottery-wheel"]):not([data-slug="aurebesh-translator"]):not([data-slug="double-pendulum"]):not([data-slug="cloth"]):not([data-slug="gravity-orbits"]):not([data-slug="wooly-willy"]):not([data-slug="slide-puzzle"]):not([data-slug="jigsaw-puzzle"]):not([data-slug="kalimba"]):not([data-slug="tongue-drum"]){
+.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]):not([data-slug="lava-lamp"]):not([data-slug="bubble-wrap"]):not([data-slug="newtons-cradle"]):not([data-slug="spirograph"]):not([data-slug="plasma-ball"]):not([data-slug="kaleidoscope"]):not([data-slug="ripple-pond"]):not([data-slug="wind-chimes"]):not([data-slug="marble-drop"]):not([data-slug="zen-sand-garden"]):not([data-slug="floating-lanterns"]):not([data-slug="aurora-drift"]):not([data-slug="campfire"]):not([data-slug="fireworks"]):not([data-slug="rain-window"]):not([data-slug="perfect-circle"]):not([data-slug="pin-art"]):not([data-slug="chladni-plate"]):not([data-slug="pottery-wheel"]):not([data-slug="aurebesh-translator"]):not([data-slug="double-pendulum"]):not([data-slug="cloth"]):not([data-slug="gravity-orbits"]):not([data-slug="wooly-willy"]):not([data-slug="slide-puzzle"]):not([data-slug="jigsaw-puzzle"]):not([data-slug="kalimba"]):not([data-slug="tongue-drum"]):not([data-slug="time-is-money"]):not([data-slug="life-in-numbers"]):not([data-slug="latte-factor"]){
   background:
     radial-gradient(120% 120% at 50% 130%, var(--accent-soft), transparent 60%),
     var(--surface-2);

@@ -1,5 +1,35 @@
 [
   {
+    "slug": "time-is-money",
+    "name": "Time Is Money",
+    "shortDescription": "Turn your hourly wage into real time. Watch what you've earned tick upward live since you opened the page—or flip it and see how many hours of your working life any purchase really costs.",
+    "category": "utility",
+    "tags": ["wage-timer"],
+    "status": "live",
+    "path": "tools/time-is-money/index.html",
+    "related": []
+  },
+  {
+    "slug": "life-in-numbers",
+    "name": "Life in Numbers",
+    "shortDescription": "Enter your birthday and watch your life count up in real time—seconds lived, heartbeats, breaths, trips around the Sun, full moons seen, and a countdown to your next birthday.",
+    "category": "utility",
+    "tags": ["age-counter"],
+    "status": "live",
+    "path": "tools/life-in-numbers/index.html",
+    "related": []
+  },
+  {
+    "slug": "latte-factor",
+    "name": "The Latte Factor",
+    "shortDescription": "Add up a small daily habit—coffee, energy drinks, a subscription—and see the eye-opening total over 1, 5, 10, and 30 years. Flip on 'invested at 7%' to see what it could have grown into instead.",
+    "category": "utility",
+    "tags": ["savings-calculator"],
+    "status": "live",
+    "path": "tools/latte-factor/index.html",
+    "related": []
+  },
+  {
     "slug": "tongue-drum",
     "name": "Steel Tongue Drum",
     "shortDescription": "A warm, meditative steel tongue drum you play top-down. Strike the tongues—or drag across them for a run—for round, blooming, hang-drum tones with long reverberant sustain. Tuned to pentatonic and Akebono scales so anything you play sounds calm and consonant. Fully synthesized, no samples.",

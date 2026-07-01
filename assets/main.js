@@ -158,6 +158,12 @@ const TYPE_NL_PHRASES = {
     "breathing pacer breath guide box breathing 4-7-8 478 inhale exhale calm relax relaxation meditation mindfulness anxiety stress focus pranayama slow deep breaths timer wellness",
   "cost-calculator":
     "meeting cost calculator timer money burn rate how much does this meeting cost salary hourly per person dollars wage expensive standup live counter ticker",
+  "wage-timer":
+    "time is money hourly wage salary earnings live counter ticker what am i earning per second minute how many hours of work does this cost purchase price worth it your time paycheck",
+  "age-counter":
+    "life in numbers age calculator birthday how old am i seconds alive heartbeats breaths days lived trips around the sun full moons next birthday countdown live ticker mortality time",
+  "savings-calculator":
+    "latte factor daily habit cost coffee cigarettes subscription savings compound interest invested at 7 percent yearly total how much do i spend money awareness budget quit",
   "reaction-game":
     "reaction reflex timing wait green click milliseconds ms latency benchmark test skill speed measure",
   "snake-game":
