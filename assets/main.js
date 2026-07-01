@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "kalimba":
+    "kalimba thumb piano mbira instrument music play pluck tines pentatonic notes melody song calm relaxing dreamy glowing sky ambient chill zen soothing meditative harp bells celesta glissando make music",
   "jigsaw-puzzle":
     "jigsaw puzzle jigsaw interlocking pieces tab blank drag drop assemble picture puzzle image photo scene 3x3 4x4 5x5 solve reassemble snap together relax casual mind game brain teaser gallery scenes sunset mountains aurora night waves balloons",
   "slide-puzzle":

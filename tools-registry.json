@@ -1,5 +1,15 @@
 [
   {
+    "slug": "kalimba",
+    "name": "Kalimba",
+    "shortDescription": "A glowing thumb-piano you can actually play. Pluck the tines for warm, dreamy pentatonic notes—swipe across for a glissando—and every note releases a rising mote of light. It's tuned so anything you play sounds beautiful; cycle the key and toggle note labels. Fully synthesized, no samples.",
+    "category": "audio",
+    "tags": ["kalimba"],
+    "status": "live",
+    "path": "toys/kalimba/index.html",
+    "related": []
+  },
+  {
     "slug": "jigsaw-puzzle",
     "name": "Jigsaw Puzzle",
     "shortDescription": "A real interlocking jigsaw—cycle a gallery of pretty generated scenes, pick your favourite, then drag the scattered tab-and-blank pieces into the tray, where they snap into place. Choose 3×3, 4×4, or 5×5 for an easier or harder puzzle, and Peek to see the finished picture.",
