@@ -66,6 +66,14 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "wooly-willy":
+    "magnetic face wooly willy woolly willy iron filings magnet magnetic wand drawing toy give him hair beard moustache mustache eyebrows bald cartoon face classic retro toy physics magnetism field lines shavings comb draw doodle silly funny kids nostalgia sketch",
+  "gravity-orbits":
+    "gravity orbits orbit planets star sun solar system space physics simulation n-body newtonian celestial mechanics slingshot elliptical trajectory fling planet asteroid galaxy cosmos astronomy sandbox merge collide trails satellites",
+  "cloth":
+    "cloth tear fabric verlet physics simulation banner flag curtain drape rip shred pull stretch swing wind ripple textile mesh soft body satisfying tactile cut hole sheet",
+  "double-pendulum":
+    "double pendulum chaos chaos theory chaotic physics simulation swing motion trails pendulum arm bob lagrangian nonlinear butterfly effect sensitive dependence hypnotic mesmerizing science math dynamics oscillation",
   "aurebesh-translator":
     "aurebesh translator aurebesh aurabesh star wars alphabet galactic basic writing system font glyphs transliterate translate decode decoder cipher secret message jedi sith empire rebel imperial datapad holocron type your name in aurebesh learn aurebesh star wars language sci-fi runes symbols characters letters mandalorian aurek besh decrypt encode share fun nerdy fandom geek",
   "pottery-wheel":

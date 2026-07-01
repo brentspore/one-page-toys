@@ -1,5 +1,45 @@
 [
   {
+    "slug": "wooly-willy",
+    "name": "Magnetic Face",
+    "shortDescription": "A magnetic drawing toy—drag the wand to sweep a heap of iron filings across a cartoon face and give him a wild hairdo, a bushy beard, thick eyebrows, and a moustache. The filings comb into the magnetic field just like the real thing. Shake it off to start over.",
+    "category": "game",
+    "tags": ["wooly-willy"],
+    "status": "live",
+    "path": "toys/wooly-willy/index.html",
+    "related": []
+  },
+  {
+    "slug": "gravity-orbits",
+    "name": "Gravity Orbits",
+    "shortDescription": "A little gravity sandbox—fling planets around a glowing star and watch them fall into orbit, trace glowing elliptical trails, slingshot past each other, and merge into bigger worlds. Build your own tiny solar system.",
+    "category": "simulation",
+    "tags": ["gravity-orbits"],
+    "status": "live",
+    "path": "toys/gravity-orbits/index.html",
+    "related": []
+  },
+  {
+    "slug": "cloth",
+    "name": "Cloth & Tear",
+    "shortDescription": "A hanging piece of cloth simulated with real verlet physics—drag to swing and stretch the fabric, then yank hard or swipe fast to tear holes right through it. Flip on a breeze to watch it ripple. Soft, tactile, endlessly fiddleable.",
+    "category": "simulation",
+    "tags": ["cloth"],
+    "status": "live",
+    "path": "toys/cloth/index.html",
+    "related": []
+  },
+  {
+    "slug": "double-pendulum",
+    "name": "Double Pendulum",
+    "shortDescription": "A chaotic double pendulum with faithful physics—drag an arm and let go to send it whipping into wild, never-repeating motion that paints glowing rainbow trails across the dark. A hands-on chaos-theory sandbox.",
+    "category": "simulation",
+    "tags": ["double-pendulum"],
+    "status": "live",
+    "path": "toys/double-pendulum/index.html",
+    "related": []
+  },
+  {
     "slug": "aurebesh-translator",
     "name": "Aurebesh Translator",
     "shortDescription": "Type a message in English and watch it transliterate live into Aurebesh—the writing system of the Star Wars galaxy—on a glowing Imperial datapad, glyph by glyph. Hover any character to learn its letter and name, flip on the captions to read along, and copy a link that opens your secret message already decoded. Soft terminal bleeps as you type.",
