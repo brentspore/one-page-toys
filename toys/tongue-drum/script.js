@@ -115,20 +115,18 @@
     ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R - 3, 0, TAU); ctx.clip(); ctx.globalCompositeOperation = "lighter";
     for (i = 0; i < ripples.length; i++) {
       var rp = ripples[i];
-      ctx.strokeStyle = "rgba(255,206,140," + Math.max(0, rp.life * 0.5) + ")"; ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "rgba(255,206,140," + Math.max(0, rp.life * 0.3) + ")"; ctx.lineWidth = 1.8;
       ctx.beginPath(); ctx.arc(rp.x, rp.y, rp.r, 0, TAU); ctx.stroke();
     }
     ctx.restore();
   }
 
   function capsule(x1, y1, x2, y2, w) {   // closed stadium — used for relief + glow fills
-    var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux, r = w / 2;
+    var r = w / 2, ph = Math.atan2(y2 - y1, x2 - x1), h = Math.PI / 2;
     ctx.beginPath();
-    ctx.arc(x1, y1, r, Math.atan2(ny, nx), Math.atan2(-ny, -nx), true);
-    ctx.lineTo(x2 + nx * r, y2 + ny * r);
-    ctx.arc(x2, y2, r, Math.atan2(ny, nx), Math.atan2(-ny, -nx), false);
-    ctx.lineTo(x1 - nx * r, y1 - ny * r);
-    ctx.closePath();
+    ctx.arc(x1, y1, r, ph + h, ph - h, true);   // cap at inner tip (bulges away from root)
+    ctx.arc(x2, y2, r, ph - h, ph + h, true);   // cap at outer root (bulges away from tip)
+    ctx.closePath();                            // arcs auto-join into the two straight flanks
   }
   function slotPath(x1, y1, x2, y2, w) {   // open U — the cut around a tongue (root stays attached)
     var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux, r = w / 2;
@@ -143,10 +141,14 @@
     var a = tn.angle, cA = Math.cos(a), sA = Math.sin(a);
     var x1 = cx + cA * ringInner, y1 = cy + sA * ringInner;   // inner tip (free end, toward center)
     var x2 = cx + cA * ringOuter, y2 = cy + sA * ringOuter;   // outer root (attached, toward rim)
-    // raised-tongue shading across the whole plate's light axis
+    // gentle CROSS-tongue emboss — a soft cylinder cross-section so each tongue reads
+    // as a consistent raised rounded petal (NOT a plate-wide diagonal that paints bright
+    // triangular wedges on some tongues + dark ones on others).
+    var nx = -sA, ny = cA, r = tongueW / 2, mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    var litSign = (nx * LX + ny * LY) >= 0 ? 1 : -1;
     ctx.save(); capsule(x1, y1, x2, y2, tongueW); ctx.clip();
-    var rel = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
-    rel.addColorStop(0, "rgba(230,240,250,0.14)"); rel.addColorStop(0.5, "rgba(255,255,255,0)"); rel.addColorStop(1, "rgba(0,0,0,0.22)");
+    var rel = ctx.createLinearGradient(mx - nx * r * litSign, my - ny * r * litSign, mx + nx * r * litSign, my + ny * r * litSign);
+    rel.addColorStop(0, "rgba(0,0,0,0.12)"); rel.addColorStop(0.5, "rgba(255,255,255,0.015)"); rel.addColorStop(1, "rgba(236,244,252,0.13)");
     ctx.fillStyle = rel; ctx.fillRect(cx - R, cy - R, 2 * R, 2 * R);
     ctx.restore();
     glowOverlay(tn, x1, y1, x2, y2);
@@ -180,8 +182,13 @@
   }
   function glowOverlay(tn, x1, y1, x2, y2) {
     if (tn.glow <= 0.01) return;
-    ctx.save(); ctx.globalCompositeOperation = "lighter";
-    capsule(x1, y1, x2, y2, tongueW); ctx.fillStyle = "rgba(255,206,140," + tn.glow * 0.5 + ")"; ctx.fill();
+    // soft warm bloom centred on the struck tongue (fades) — reads clearly as "this
+    // petal rang", instead of a flat additive wedge that blows toward white.
+    var mx = (x1 + x2) / 2, my = (y1 + y2) / 2, len = Math.hypot(x2 - x1, y2 - y1);
+    ctx.save(); ctx.globalCompositeOperation = "lighter"; capsule(x1, y1, x2, y2, tongueW); ctx.clip();
+    var gr = ctx.createRadialGradient(mx, my, 0, mx, my, len * 0.62);
+    gr.addColorStop(0, "rgba(255,212,148," + tn.glow * 0.62 + ")"); gr.addColorStop(1, "rgba(255,196,120,0)");
+    ctx.fillStyle = gr; ctx.fillRect(cx - R, cy - R, 2 * R, 2 * R);
     ctx.restore();
   }
   function labelTongue(tn) {
@@ -301,30 +308,37 @@
     var voice = actx.createGain(); voice.gain.value = 0.72 * vel;
     try { var pn = actx.createStereoPanner(); pn.pan.value = Math.max(-1, Math.min(1, pan || 0)); voice.connect(pn); pn.connect(dryBus); pn.connect(wetBus); pn.connect(echoBus); }
     catch (e) { voice.connect(dryBus); voice.connect(wetBus); voice.connect(echoBus); }
-    function part(type, f, peak, dec, atk) {
+    function part(type, f, peak, dec, atk, glide) {
       if (f > nyq * 0.9) return;
-      var o = actx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t);
+      var o = actx.createOscillator(); o.type = type;
+      if (glide) { o.frequency.setValueAtTime(f * Math.pow(2, glide / 1200), t); o.frequency.exponentialRampToValueAtTime(f, t + 0.055); }   // attack "boing" — metal releasing tension
+      else o.frequency.setValueAtTime(f, t);
       var g = actx.createGain();
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(peak, t + (atk || 0.012));
       g.gain.exponentialRampToValueAtTime(0.0004, t + dec);
       o.connect(g); g.connect(voice); o.start(t); o.stop(t + dec + 0.05);
     }
-    // a tuned tongue drum is largely HARMONIC + bell-like: strong fundamental & octave,
-    // a clean twelfth & double-octave for shimmer, only a whisper of metallic inharmonicity.
-    part("sine", freq, 0.34, dur, 0.014);
-    part("sine", freq * Math.pow(2, 3 / 1200), 0.12, dur, 0.014);   // +3-cent chorus (subtle beating warmth)
-    part("sine", freq * 2, 0.17, dur * 0.9, 0.010);                 // octave — the hang-drum body
-    part("sine", freq * 3, 0.05, dur * 0.55);                       // twelfth — bell shimmer
-    part("sine", freq * 4, 0.022, dur * 0.4);                       // double octave — sparkle
-    part("sine", freq * 2.76, 0.018, dur * 0.32);                   // faint inharmonic metallic edge
-    // soft low body "tonk" (the tank resonance under the strike)
-    if (freq * 0.5 > 55) part("sine", freq * 0.5, 0.05, 0.55, 0.006);
-    // soft felt-mallet contact (lowpassed noise)
-    var ln = (0.022 * actx.sampleRate) | 0, nb = actx.createBufferSource(), buf = actx.createBuffer(1, ln, actx.sampleRate), d = buf.getChannelData(0);
-    for (var i = 0; i < ln; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / ln, 2.2);
-    nb.buffer = buf; var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(1200, freq * 2.6); lp.Q.value = 0.6;
-    var ng = actx.createGain(); ng.gain.value = 0.045 * vel; nb.connect(lp); lp.connect(voice); nb.start(t);
+    // NOT a clean harmonic stack (that reads as piano/marimba). A steel tongue drum /
+    // handpan = a tuned fundamental+octave over an INHARMONIC metallic ring cluster, with
+    // a beating shimmer (detuned octave) and a downward attack pitch-glide.
+    part("sine", freq, 0.34, dur, 0.016, 11);                          // fundamental (+ boing)
+    part("sine", freq * Math.pow(2, 4 / 1200), 0.10, dur, 0.016, 11);  // +4¢ detune shimmer
+    part("sine", freq * 2, 0.17, dur * 0.88, 0.012, 9);                // octave — the tuned body
+    part("sine", freq * 2 * Math.pow(2, 7 / 1200), 0.075, dur * 0.68, 0.012, 9); // detuned octave → beating shimmer
+    part("sine", freq * 3, 0.03, dur * 0.5, 0.010);                    // twelfth (handpan-tuned, modest)
+    // inharmonic metallic ring cluster — the "steel" voice (bell-like, not harmonic)
+    part("sine", freq * 2.76, 0.055, dur * 0.34);
+    part("sine", freq * 4.20, 0.034, dur * 0.26);
+    part("sine", freq * 5.40, 0.022, dur * 0.20);
+    part("sine", freq * 6.79, 0.013, dur * 0.15);
+    // faint low body under the strike
+    if (freq * 0.5 > 55) part("sine", freq * 0.5, 0.03, 0.5, 0.008);
+    // soft, dark finger/mallet contact (rounder + duller than a piano hammer)
+    var ln = (0.024 * actx.sampleRate) | 0, nb = actx.createBufferSource(), buf = actx.createBuffer(1, ln, actx.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < ln; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / ln, 1.8);
+    nb.buffer = buf; var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(850, freq * 2); lp.Q.value = 0.5;
+    var ng = actx.createGain(); ng.gain.value = 0.03 * vel; nb.connect(lp); lp.connect(voice); nb.start(t);
   }
   var soundBtn = document.getElementById("soundBtn");
   soundBtn.addEventListener("click", function () {
