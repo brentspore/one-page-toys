@@ -1,5 +1,25 @@
 [
   {
+    "slug": "jigsaw-puzzle",
+    "name": "Jigsaw Puzzle",
+    "shortDescription": "A real interlocking jigsaw—cycle a gallery of pretty generated scenes, pick your favourite, then drag the scattered tab-and-blank pieces into the tray, where they snap into place. Choose 3×3, 4×4, or 5×5 for an easier or harder puzzle, and Peek to see the finished picture.",
+    "category": "game",
+    "tags": ["jigsaw-puzzle"],
+    "status": "live",
+    "path": "toys/jigsaw-puzzle/index.html",
+    "related": []
+  },
+  {
+    "slug": "slide-puzzle",
+    "name": "Slide Puzzle",
+    "shortDescription": "A classic sliding picture puzzle—cycle a gallery of pretty generated scenes, pick your favourite, then scramble it and slide the tiles back into place. Choose 3×3, 4×4, or 5×5 for an easier or harder puzzle, and Peek to see the finished picture.",
+    "category": "game",
+    "tags": ["slide-puzzle"],
+    "status": "live",
+    "path": "toys/slide-puzzle/index.html",
+    "related": []
+  },
+  {
     "slug": "wooly-willy",
     "name": "Magnetic Face",
     "shortDescription": "A magnetic drawing toy—drag the wand to sweep a heap of iron filings across a cartoon face and give him a wild hairdo, a bushy beard, thick eyebrows, and a moustache. The filings comb into the magnetic field just like the real thing. Shake it off to start over.",

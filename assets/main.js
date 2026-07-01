@@ -66,6 +66,10 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "jigsaw-puzzle":
+    "jigsaw puzzle jigsaw interlocking pieces tab blank drag drop assemble picture puzzle image photo scene 3x3 4x4 5x5 solve reassemble snap together relax casual mind game brain teaser gallery scenes sunset mountains aurora night waves balloons",
+  "slide-puzzle":
+    "slide puzzle sliding puzzle slide tile puzzle 15 puzzle picture puzzle scramble shuffle image photo brain teaser rearrange pieces 3x3 4x4 5x5 solve reassemble relax casual mind game classic n-puzzle tiles gallery scenes sunset mountains aurora night",
   "wooly-willy":
     "magnetic face wooly willy woolly willy iron filings magnet magnetic wand drawing toy give him hair beard moustache mustache eyebrows bald cartoon face classic retro toy physics magnetism field lines shavings comb draw doodle silly funny kids nostalgia sketch",
   "gravity-orbits":
