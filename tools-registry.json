@@ -1,5 +1,15 @@
 [
   {
+    "slug": "solitaire",
+    "name": "Solitaire",
+    "shortDescription": "Classic Klondike Solitaire—deal, build the four foundations by suit, and clear the board for the satisfying win cascade. Drag card runs, double-click to auto-play, undo anytime.",
+    "category": "game",
+    "tags": ["solitaire"],
+    "status": "live",
+    "path": "toys/solitaire/index.html",
+    "related": []
+  },
+  {
     "slug": "slice-it",
     "name": "Slice It",
     "shortDescription": "Swipe to slice the fruit flying through the air—juicy splatter, wild combos, and bombs you must dodge. Drop three and it's over. Chase your high score.",

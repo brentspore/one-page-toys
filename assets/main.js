@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "solitaire":
+    "solitaire klondike patience card game cards deck deal foundations tableau stock waste draw aces kings suits hearts spades diamonds clubs classic windows solitaire single player relaxing brain casual deal shuffle undo",
   "slice-it":
     "slice it fruit ninja slicer swipe blade cut chop katana sword fruit watermelon orange lime lemon strawberry combo bomb arcade action reflex reaction high score juicy splatter satisfying casual game addictive viral one more try slash",
   "tongue-drum":

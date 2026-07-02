@@ -382,10 +382,22 @@
   }
   function drawBomb(o) {
     var r = o.r;
+    // pulsing red danger halo so the bomb never blends into the dark background
+    var pulse = 0.5 + 0.5 * Math.sin(performance.now() / 140);
+    ctx.save(); ctx.globalCompositeOperation = "lighter";
+    var hr = r * (2.0 + pulse * 0.35);
+    var hg = ctx.createRadialGradient(0, 0, r * 0.7, 0, 0, hr);
+    hg.addColorStop(0, "rgba(255,60,60," + (0.34 + pulse * 0.22) + ")");
+    hg.addColorStop(0.5, "rgba(255,40,40," + (0.12 + pulse * 0.1) + ")");
+    hg.addColorStop(1, "rgba(255,40,40,0)");
+    ctx.beginPath(); ctx.arc(0, 0, hr, 0, 6.283); ctx.fillStyle = hg; ctx.fill();
+    ctx.restore();
+    // body — lifted off pure black so the sphere reads on the dark felt
     var g = ctx.createRadialGradient(-r * 0.34, -r * 0.36, r * 0.1, 0, 0, r);
-    g.addColorStop(0, "#494f57"); g.addColorStop(0.5, "#1a1e24"); g.addColorStop(1, "#050608");
+    g.addColorStop(0, "#6b7280"); g.addColorStop(0.5, "#2a2f37"); g.addColorStop(1, "#0d0f13");
     ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.283); ctx.fillStyle = g; ctx.fill();
-    ctx.lineWidth = r * 0.06; ctx.strokeStyle = "rgba(255,90,80,0.35)"; ctx.stroke();
+    // warning rim
+    ctx.lineWidth = r * 0.09; ctx.strokeStyle = "rgba(255,70,64," + (0.5 + pulse * 0.35) + ")"; ctx.stroke();
     var sg = ctx.createRadialGradient(-r * 0.4, -r * 0.42, 0, -r * 0.4, -r * 0.42, r * 0.6);
     sg.addColorStop(0, "rgba(255,255,255,0.55)"); sg.addColorStop(1, "rgba(255,255,255,0)");
     ctx.beginPath(); ctx.arc(-r * 0.34, -r * 0.36, r * 0.42, 0, 6.283); ctx.fillStyle = sg; ctx.fill();

@@ -13,32 +13,32 @@
       gtag('js', new Date());
       gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Slice It — One Page Toys</title>
-    <meta name="description" content="Swipe to slice the fruit flying through the air — juicy splatter, wild combos, and bombs you must dodge. Chase your high score. Free, no sign-up, plays on any phone." />
-    <link rel="canonical" href="https://onepagetoys.com/toys/slice-it/index.html" />
+    <title>Solitaire — One Page Toys</title>
+    <meta name="description" content="Play classic Klondike Solitaire — deal, build the foundations, and clear the board for the satisfying win cascade. Drag card runs, double-click to auto-play, undo anytime. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/solitaire/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0b0713" />
+    <meta name="theme-color" content="#0d5b3b" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Slice It — One Page Toys" />
-    <meta property="og:description" content="Swipe to slice flying fruit — juicy splatter, combos, and bombs to dodge. Chase your high score." />
-    <meta property="og:url" content="https://onepagetoys.com/toys/slice-it/index.html" />
-    <meta property="og:image" content="https://onepagetoys.com/assets/og/slice-it.png" />
+    <meta property="og:title" content="Solitaire — One Page Toys" />
+    <meta property="og:description" content="Classic Klondike Solitaire — drag card runs, double-click to auto-play, and clear the board for the win cascade." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/solitaire/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/solitaire.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Slice It — One Page Toys" />
-    <meta name="twitter:description" content="Swipe to slice flying fruit — juicy splatter, combos, and bombs to dodge. Chase your high score." />
-    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/slice-it.png" />
+    <meta name="twitter:title" content="Solitaire — One Page Toys" />
+    <meta name="twitter:description" content="Classic Klondike Solitaire — drag card runs, double-click to auto-play, clear the board for the win cascade." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/solitaire.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Slice It",
-        "url": "https://onepagetoys.com/toys/slice-it/index.html",
-        "description": "Swipe to slice the fruit flying through the air, rack up combos, and dodge the bombs. Chase your high score.",
+        "name": "Solitaire",
+        "url": "https://onepagetoys.com/toys/solitaire/index.html",
+        "description": "Play classic Klondike Solitaire in your browser — deal, build the four foundations by suit, and clear the board for the win cascade.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
@@ -62,28 +62,30 @@
     <canvas id="canvas"></canvas>
 
     <div class="controls" id="controls">
-      <span class="best-chip" id="bestChip">BEST —</span>
-      <button type="button" class="ctrl-btn" id="soundBtn" aria-pressed="false">Sound: on</button>
+      <span class="stat-chip" id="statChip">MOVES 0 · 0:00</span>
+      <button type="button" class="ctrl-btn" id="newBtn">New game</button>
+      <button type="button" class="ctrl-btn" id="undoBtn">Undo</button>
+      <button type="button" class="ctrl-btn" id="drawBtn" aria-pressed="true">Draw 3</button>
+      <button type="button" class="ctrl-btn" id="soundBtn" aria-pressed="true">Sound: on</button>
     </div>
 
-    <div class="overlay" id="overlay">
+    <div class="overlay" id="overlay" hidden>
       <div class="panel">
-        <h1 class="panel__title" id="ovTitle">Slice It</h1>
-        <p class="panel__text" id="ovText">Swipe through the fruit to slice it.<br />Dodge the <strong>bombs</strong>. Don't drop three.</p>
-        <button type="button" class="play-btn" id="ovBtn">Start slicing</button>
-        <p class="panel__best" id="ovBest"></p>
+        <h1 class="panel__title" id="ovTitle">You win!</h1>
+        <p class="panel__text" id="ovText">Cleared the board.</p>
+        <button type="button" class="play-btn" id="ovBtn">New game</button>
       </div>
     </div>
 
     <div class="frame" aria-hidden="true">
-      <span class="frame__corner frame__corner--tl">No. 053</span>
-      <span class="frame__corner frame__corner--tr">Slice It</span>
+      <span class="frame__corner frame__corner--tl">No. 054</span>
+      <span class="frame__corner frame__corner--tr">Solitaire</span>
       <span class="frame__corner frame__corner--bl"><a href="../../index.html">&#8592; onepagetoys.com</a></span>
     </div>
 
-    <p class="hint" id="hint">swipe to slice &mdash; avoid the bombs</p>
+    <p class="hint" id="hint">drag to build down in alternating colors &mdash; double-click to send home</p>
 
-    <script src="script.js?v=3" defer></script>
+    <script src="script.js?v=7" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
     <script src="../../assets/fullscreen.js?v=2" defer></script>
   </body>
