@@ -34,7 +34,7 @@
   // state
   var blocks = [];             // {x, y, w, h, hue} — y is world centre, up = smaller y
   var falling = null;          // {x, y, vy, w, h, hue}
-  var crane = null;            // {x, y, dir, amp, speed, w, h, hue}
+  var crane = null;            // pendulum: {pivotX, pivotY, len, angMax, phase, ang, speed, x, y, w, h, hue}
   var camY = 0, camTarget = 0;
   var instability = 0, swayT = 0;
   var score = 0, combo = 0, best = 0;
@@ -75,9 +75,23 @@
 
   function spawnCrane() {
     var t = topBlock();
-    var amp = Math.min(W * 0.40, BW * 2.4);
     var speed = 1.35 + blocks.length * 0.035;      // swings faster as you climb
-    crane = { x: t.x, y: t.y - BH * 2.5, phase: Math.random() * Math.PI * 2, amp: amp, speed: Math.min(speed, 3.2), w: BW, h: BH, hue: hueFor(blocks.length) };
+    var yLow = t.y - BH * 2.2;                      // lowest point of the swing (block centre)
+    var len = Math.max(BH * 3, H * 0.6 - BH * 1.2 - 44);  // rope length → pivot sits near the top of screen
+    var pivotY = yLow - len;                        // fixed pivot, directly above the stack centre
+    crane = {
+      pivotX: t.x, pivotY: pivotY, len: len, angMax: 0.95,
+      phase: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.5),  // start part-way through a swing
+      speed: Math.min(speed, 3.2), ang: 0, x: t.x, y: yLow, w: BW, h: BH, hue: hueFor(blocks.length)
+    };
+    swingCrane(0);
+  }
+  // position the hanging block along the pendulum arc for the current phase
+  function swingCrane(dt) {
+    crane.phase += crane.speed * dt;
+    crane.ang = crane.angMax * Math.sin(crane.phase);
+    crane.x = crane.pivotX + crane.len * Math.sin(crane.ang);
+    crane.y = crane.pivotY + crane.len * Math.cos(crane.ang);
   }
 
   function drop() {
@@ -86,7 +100,7 @@
     // inherit the crane's pendulum velocity so the block arcs with the swing:
     // released at a swing extreme it drops nearly straight; released through the
     // centre it carries sideways momentum — so timing the release is the skill.
-    var craneVel = Math.cos(crane.phase) * crane.amp * crane.speed;
+    var craneVel = crane.len * Math.cos(crane.ang) * crane.angMax * Math.cos(crane.phase) * crane.speed;
     falling = { x: crane.x, y: crane.y, vy: 0, vx: craneVel * DROP_INHERIT, w: crane.w, h: crane.h, hue: crane.hue };
     crane = null;
   }
@@ -167,10 +181,7 @@
     swayT += dt;
     camY += (camTarget - camY) * Math.min(1, dt * 6);
 
-    if (crane && running && !over) {
-      crane.phase += crane.speed * dt;
-      crane.x = topBlock().x + Math.sin(crane.phase) * crane.amp;
-    }
+    if (crane && running && !over) swingCrane(dt);
 
     if (falling) {
       falling.vy += GRAV * dt;
@@ -300,18 +311,18 @@
       drawBlock(blk, scx);
     }
 
-    // crane + swinging block
+    // crane: fixed pivot overhead, rope tilting as the block swings on its arc
     if (crane && !over) {
-      var cy = sy(crane.y), cx = crane.x;
-      // rail across the top
-      ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 4;
-      var railY = Math.max(18, cy - BH * 1.7);
-      ctx.beginPath(); ctx.moveTo(W * 0.12, railY); ctx.lineTo(W * 0.88, railY); ctx.stroke();
-      // trolley + rope
-      ctx.fillStyle = "#cfd7ea"; ctx.fillRect(cx - 14, railY - 6, 28, 12);
-      ctx.strokeStyle = "rgba(230,236,250,0.7)"; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(cx, railY + 6); ctx.lineTo(cx, cy - BH / 2); ctx.stroke();
-      drawBlock({ x: crane.x, y: crane.y, w: crane.w, h: crane.h, hue: crane.hue }, cx);
+      var pcx = crane.pivotX, pcy = sy(crane.pivotY);
+      var bcx = crane.x, bcy = sy(crane.y);
+      // short jib beam + mount at the pivot
+      ctx.strokeStyle = "rgba(255,255,255,0.30)"; ctx.lineWidth = 5; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(pcx - BW * 0.75, pcy); ctx.lineTo(pcx + BW * 0.75, pcy); ctx.stroke();
+      ctx.fillStyle = "#cfd7ea"; ctx.beginPath(); ctx.arc(pcx, pcy, 6, 0, Math.PI * 2); ctx.fill();
+      // tilted rope from pivot to the top of the block
+      ctx.strokeStyle = "rgba(230,236,250,0.7)"; ctx.lineWidth = 2.5; ctx.lineCap = "butt";
+      ctx.beginPath(); ctx.moveTo(pcx, pcy); ctx.lineTo(bcx, bcy - crane.h / 2); ctx.stroke();
+      drawBlock({ x: crane.x, y: crane.y, w: crane.w, h: crane.h, hue: crane.hue }, bcx);
     }
 
     // falling block
