@@ -25,8 +25,13 @@
   var PLACE_PENALTY = 0.42;    // instability added per unit off-centre
   var PERFECT_HEAL = 0.10;     // instability removed on a perfect
   var HEIGHT_CREEP = 0.004;    // instability added each floor (slow ramp)
-  var SWAY_FREQ = 1.7;
   var DROP_INHERIT = 0.4;      // how much of the crane's swing velocity the drop keeps
+  // tower sway/tip — a real rotation about the base, judged at drop time
+  var SWAY_FULL = 16;          // floors to reach full sway (difficulty ramps in over the first ~16)
+  var SWAY_BASE = 0.010;       // base oscillation amplitude (radians) at full height
+  var SWAY_INST = 0.075;       // extra amplitude per unit instability (a shaky tower sways more)
+  var COM_LEAN = 0.14;         // static lean (rad) per block-width of height-weighted centre-of-mass offset
+  var SWAY_MAX = 0.16;         // hard cap on total tilt (~9°) so the top never leaves the screen
 
   var BW = 160, BH = 66;       // block size (set in resize)
   var GROUND_Y = 0;            // world y of the ground surface (bottom of base block)
@@ -36,7 +41,7 @@
   var falling = null;          // {x, y, vy, w, h, hue}
   var crane = null;            // pendulum: {pivotX, pivotY, len, angMax, phase, ang, speed, x, y, w, h, hue}
   var camY = 0, camTarget = 0;
-  var instability = 0, swayT = 0;
+  var instability = 0, swayT = 0, curTheta = 0;   // curTheta = tower tilt this frame
   var score = 0, combo = 0, best = 0;
   var running = false, over = false, toppling = false, toppleT = 0;
   var particles = [], perfectPops = [];
@@ -57,13 +62,34 @@
   }
   window.addEventListener("resize", resize);
 
-  function hueFor(i) { return (28 + i * 14) % 360; }
+  // ---------- floor styling: curated architectural palettes + facades ----------
+  // h,s = hue/sat; lt/lb = body gradient light→dark; win = lit-window glow.
+  var PALETTES = [
+    { h: 207, s: 28, lt: 58, lb: 40, win: "#ffe6ad" }, // slate blue
+    { h: 26,  s: 40, lt: 62, lb: 45, win: "#fff1c6" }, // warm sandstone
+    { h: 170, s: 32, lt: 55, lb: 38, win: "#e6fff3" }, // teal glass
+    { h: 8,   s: 44, lt: 59, lb: 43, win: "#ffe4c6" }, // terracotta
+    { h: 96,  s: 24, lt: 54, lb: 38, win: "#f1ffd6" }, // sage
+    { h: 282, s: 24, lt: 56, lb: 40, win: "#ffe2ff" }, // plum
+    { h: 210, s: 10, lt: 60, lb: 44, win: "#fff2cf" }, // steel gray
+    { h: 42,  s: 22, lt: 72, lb: 57, win: "#ffe9ac" }  // cream
+  ];
+  // floor TYPES — a mixed-use tower, not all apartments. offices/curtain-wall are
+  // common; masonry setbacks, sky terraces and a mechanical deck show up occasionally.
+  var TYPE_SEQ = ["office", "ribbon", "curtain", "office", "setback", "ribbon",
+                  "terrace", "office", "curtain", "mechanical", "office", "setback", "ribbon", "curtain"];
+  function styleFor(i) {
+    var pal = PALETTES[(i * 2 + 3) % PALETTES.length];   // period-4, adjacent floors always differ
+    return { pal: pal, facade: TYPE_SEQ[i % TYPE_SEQ.length], seed: (i * 97 + 13) };
+  }
+  var DEFAULT_STYLE = styleFor(0);
+  function hsl(h, s, l) { return "hsl(" + h + "," + s + "%," + l + "%)"; }
 
   function reset() {
     resize();
     blocks = [];
     var baseY = GROUND_Y - BH / 2;
-    blocks.push({ x: W / 2, y: baseY, w: BW, h: BH, hue: hueFor(0) });
+    blocks.push({ x: W / 2, y: baseY, w: BW, h: BH, style: styleFor(0) });
     falling = null; instability = 0; swayT = 0; score = 0; combo = 0;
     over = false; toppling = false; toppleT = 0; particles = []; perfectPops = [];
     scoreEl.textContent = "0";
@@ -80,9 +106,9 @@
     var len = Math.max(BH * 3, H * 0.6 - BH * 1.2 - 44);  // rope length → pivot sits near the top of screen
     var pivotY = yLow - len;                        // fixed pivot, directly above the stack centre
     crane = {
-      pivotX: t.x, pivotY: pivotY, len: len, angMax: 0.95,
+      pivotX: W / 2, pivotY: pivotY, len: len, angMax: 0.95,   // fixed overhead pivot — rises with the tower, never drifts sideways
       phase: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.5),  // start part-way through a swing
-      speed: Math.min(speed, 3.2), ang: 0, x: t.x, y: yLow, w: BW, h: BH, hue: hueFor(blocks.length),
+      speed: Math.min(speed, 3.2), ang: 0, x: t.x, y: yLow, w: BW, h: BH, style: styleFor(blocks.length),
       life: 0, maxLife: Math.max(2.5, 4.8 - blocks.length * 0.1)  // auto-drops if you dawdle (shorter as you climb)
     };
     swingCrane(0);
@@ -102,13 +128,17 @@
     // released at a swing extreme it drops nearly straight; released through the
     // centre it carries sideways momentum — so timing the release is the skill.
     var craneVel = crane.len * Math.cos(crane.ang) * crane.angMax * Math.cos(crane.phase) * crane.speed;
-    falling = { x: crane.x, y: crane.y, vy: 0, vx: craneVel * DROP_INHERIT, w: crane.w, h: crane.h, hue: crane.hue };
+    falling = { x: crane.x, y: crane.y, vy: 0, vx: craneVel * DROP_INHERIT, w: crane.w, h: crane.h, style: crane.style };
     crane = null;
   }
 
   function place() {
     var t = topBlock();
-    var off = falling.x - t.x;
+    // judge the landing against where the swaying top ACTUALLY is on screen, so the
+    // tower's tilt is a real moving target — not just a cosmetic wobble.
+    curTheta = towerTheta();
+    var topPos = towerScreen(t.x, t.y);
+    var off = falling.x - topPos.x;         // horizontal miss in screen space (x == world x)
     var rel = Math.abs(off) / falling.w;
     if (rel > MISS) {                       // no real support → it slides off
       // let it keep falling past, then game over
@@ -118,8 +148,17 @@
       return;
     }
     var perfect = rel < PERFECT;
-    var nx = perfect ? t.x : falling.x;
-    var nb = { x: nx, y: t.y - BH, w: falling.w, h: falling.h, hue: falling.hue };
+    var newY = t.y - BH;
+    // store the new block's world x so it renders exactly where it landed on the
+    // tilted stack (invert the base rotation); a perfect snaps true to the top.
+    var nx;
+    if (perfect) {
+      nx = t.x;
+    } else {
+      var c = Math.cos(curTheta), s = Math.sin(curTheta), px = blocks[0].x;
+      nx = px + (falling.x - px + (newY - GROUND_Y) * s) / c;
+    }
+    var nb = { x: nx, y: newY, w: falling.w, h: falling.h, style: falling.style };
     blocks.push(nb);
     falling = null;
     score++;
@@ -145,17 +184,22 @@
 
   function startTopple(slip, blk) {
     toppling = true; toppleT = 0; crane = null;
-    // give each block an angular tumble so the tower collapses
+    curTheta = towerTheta();
+    var lean = curTheta;
+    // the upper floors break free and tumble in the direction the tower was leaning
     var pivotFrom = Math.max(0, blocks.length - 3);
     for (var i = 0; i < blocks.length; i++) {
       var b = blocks[i];
-      b.vx = (Math.random() * 2 - 1) * 60 + (leanShear() * (GROUND_Y - b.y - BH / 2)) * 8;
-      b.vy = -Math.random() * 80;
-      b.va = (Math.random() * 2 - 1) * 3;
-      b.rot = 0;
       b.tumble = i >= pivotFrom;
+      if (!b.tumble) continue;
+      var p = towerScreen(b.x, b.y);            // freeze the swayed screen x so nothing jumps
+      b.x = p.x;
+      b.rot = lean;                             // start already tipped
+      b.vx = (Math.random() * 2 - 1) * 60 + Math.sin(lean) * 320;
+      b.vy = -Math.random() * 80;
+      b.va = (Math.random() * 2 - 1) * 3 + lean * 2.5;
     }
-    if (blk) { blk.va = 5 * blk.slip; blk.tumble = true; blocks.push(blk); }
+    if (blk) { blk.rot = 0; blk.va = 5 * blk.slip; blk.tumble = true; blocks.push(blk); }
     sndCrash();
   }
 
@@ -176,8 +220,33 @@
     }
   }
 
-  // gentle sway grows with instability; this is the shear factor applied per unit world-height
-  function leanShear() { return (0.012 + instability * 0.085) * Math.sin(swayT * SWAY_FREQ); }
+  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+  // The tower tilts on its base axis: a static lean toward its heavy side (from the
+  // height-weighted centre-of-mass offset — its "shape") plus an oscillating sway
+  // that grows with height and instability. Capped so it never leaves the screen.
+  function towerTheta() {
+    var n = blocks.length;
+    if (n < 2) return 0;
+    var baseX = blocks[0].x, sum = 0, wsum = 0;
+    for (var i = 1; i < n; i++) {
+      var h = GROUND_Y - blocks[i].y;            // height above base = leverage
+      sum += (blocks[i].x - baseX) * h;
+      wsum += h;
+    }
+    var avgOff = wsum > 0 ? sum / wsum : 0;       // height-weighted horizontal CoM offset (px)
+    var hf = Math.min(1, n / SWAY_FULL);          // difficulty ramps in with height
+    var lean = clamp(avgOff / BW, -1.4, 1.4) * COM_LEAN * hf;
+    var freq = Math.max(0.72, 1.25 - n * 0.018);  // taller towers sway a touch slower
+    var amp = (SWAY_BASE + instability * SWAY_INST) * hf;
+    return clamp(lean + amp * Math.sin(swayT * freq), -SWAY_MAX, SWAY_MAX);
+  }
+  // rotate a world point about the base contact point, then apply the vertical camera
+  function towerScreen(wx, wy) {
+    var th = curTheta, px = blocks[0].x, py = GROUND_Y;
+    var dx = wx - px, dy = wy - py, c = Math.cos(th), s = Math.sin(th);
+    return { x: px + dx * c - dy * s, y: sy(py + dx * s + dy * c) };
+  }
 
   function update(dt) {
     swayT += dt;
@@ -236,41 +305,159 @@
   var stars = [];
   function ensureStars() { if (stars.length) return; for (var i = 0; i < 90; i++) stars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.4 + 0.3, tw: Math.random() * 6 }); }
 
-  function worldToScreenX(x, worldY) {
-    var heightAboveBase = GROUND_Y - worldY;   // >=0 going up
-    return x + heightAboveBase * leanShear();
-  }
   function sy(worldY) { return worldY - camY; }
 
-  function drawBlock(b, screenXCentre) {
-    var x = screenXCentre, y = sy(b.y), w = b.w, h = b.h;
+  function lit(seed, idx) { return ((idx * 5 + seed) % 7) > 2; }   // deterministic, stable per-floor window pattern
+
+  function drawBlock(b, cx, cy, rot) {
+    var st = b.style || DEFAULT_STYLE, pal = st.pal;
+    var x = cx, y = cy, w = b.w, h = b.h;
     ctx.save();
-    if (b.rot) { ctx.translate(x, y); ctx.rotate(b.rot); ctx.translate(-x, -y); }
-    var lx = x - w / 2, ty = y - h / 2;
-    // body
-    var g = ctx.createLinearGradient(lx, ty, lx + w, ty + h);
-    g.addColorStop(0, "hsl(" + b.hue + ",62%,64%)");
-    g.addColorStop(1, "hsl(" + b.hue + ",58%,46%)");
-    roundRect(lx, ty, w, h, 5); ctx.fillStyle = g; ctx.fill();
-    // top face highlight
-    ctx.fillStyle = "hsl(" + b.hue + ",64%,72%)";
-    roundRect(lx, ty, w, Math.max(5, h * 0.16), 5); ctx.fill();
-    // windows
-    var cols = Math.max(3, Math.round(w / 26)), rows = Math.max(2, Math.round(h / 24));
-    var pad = w * 0.12, ww = (w - pad * 2) / cols * 0.62, wh = (h - h * 0.34) / rows * 0.56;
-    var gx = (w - pad * 2) / cols, gy = (h - h * 0.34) / rows;
-    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
-      var lit = ((r * 7 + c * 3 + (b.hue | 0)) % 5) > 1;
-      ctx.fillStyle = lit ? "rgba(255,240,190,0.92)" : "rgba(20,26,54,0.5)";
-      ctx.fillRect(lx + pad + c * gx + (gx - ww) / 2, ty + h * 0.24 + r * gy + (gy - wh) / 2, ww, wh);
-    }
-    // edge shade
-    ctx.strokeStyle = "rgba(0,0,0,0.18)"; ctx.lineWidth = 1.5; roundRect(lx, ty, w, h, 5); ctx.stroke();
+    if (rot) { ctx.translate(x, y); ctx.rotate(rot); ctx.translate(-x, -y); }
+    var lx = x - w / 2, ty = y - h / 2, shape = SHAPE[st.facade] || "rect";
+
+    // body — vertical gradient reads as a lit facade
+    var g = ctx.createLinearGradient(lx, ty, lx, ty + h);
+    g.addColorStop(0, hsl(pal.h, pal.s, pal.lt));
+    g.addColorStop(1, hsl(pal.h, pal.s, pal.lb));
+    bodyPath(lx, ty, w, h, shape); ctx.fillStyle = g; ctx.fill();
+
+    // facade content (clipped to the silhouette)
+    ctx.save(); bodyPath(lx, ty, w, h, shape); ctx.clip();
+    var litCol = pal.win, glass = hsl(pal.h, pal.s + 8, Math.max(14, pal.lb - 24));
+    drawFacade(st, lx, ty, w, h, litCol, glass, pal);
+    // left highlight / right shade for a little 3D relief
+    var sh = ctx.createLinearGradient(lx, ty, lx + w, ty);
+    sh.addColorStop(0, "rgba(255,255,255,0.10)");
+    sh.addColorStop(0.5, "rgba(255,255,255,0)");
+    sh.addColorStop(1, "rgba(0,0,0,0.16)");
+    ctx.fillStyle = sh; ctx.fillRect(lx, ty, w, h);
+    // roof cap — a bright parapet lip (conforms to the silhouette via the clip)
+    ctx.fillStyle = hsl(pal.h, pal.s, Math.min(88, pal.lt + 14));
+    ctx.fillRect(lx, ty, w, Math.max(4, h * 0.10));
+    ctx.fillStyle = "rgba(0,0,0,0.14)"; ctx.fillRect(lx, ty + Math.max(4, h * 0.10), w, 1.5);
     ctx.restore();
+
+    // mechanical decks wear a protruding maintenance ledge
+    if (st.facade === "mechanical") {
+      ctx.fillStyle = hsl(pal.h, Math.max(0, pal.s - 6), Math.max(20, pal.lb - 8));
+      ctx.fillRect(lx - 4, ty + h * 0.15, w + 8, h * 0.05);
+      ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fillRect(lx - 4, ty + h * 0.20, w + 8, 1.5);
+    }
+
+    // edge shade
+    ctx.strokeStyle = "rgba(0,0,0,0.20)"; ctx.lineWidth = 1.5; bodyPath(lx, ty, w, h, shape); ctx.stroke();
+    ctx.restore();
+  }
+
+  // silhouettes — all keep a flat, full-width BOTTOM so floors seat cleanly
+  var SHAPE = { ribbon: "chamfer", setback: "setback", mechanical: "sharp" };
+  function bodyPath(lx, ty, w, h, shape) {
+    ctx.beginPath();
+    if (shape === "chamfer") {
+      var c = Math.min(18, w * 0.13), r = 5;   // angled top corners
+      ctx.moveTo(lx + c, ty); ctx.lineTo(lx + w - c, ty); ctx.lineTo(lx + w, ty + c);
+      ctx.lineTo(lx + w, ty + h - r); ctx.arcTo(lx + w, ty + h, lx + w - r, ty + h, r);
+      ctx.lineTo(lx + r, ty + h); ctx.arcTo(lx, ty + h, lx, ty + h - r, r);
+      ctx.lineTo(lx, ty + c); ctx.closePath();
+    } else if (shape === "setback") {
+      var ins = w * 0.12, sb = h * 0.22, r2 = 5;   // narrow crown / shoulders
+      ctx.moveTo(lx + ins, ty); ctx.lineTo(lx + w - ins, ty);
+      ctx.lineTo(lx + w - ins, ty + sb); ctx.lineTo(lx + w, ty + sb);
+      ctx.lineTo(lx + w, ty + h - r2); ctx.arcTo(lx + w, ty + h, lx + w - r2, ty + h, r2);
+      ctx.lineTo(lx + r2, ty + h); ctx.arcTo(lx, ty + h, lx, ty + h - r2, r2);
+      ctx.lineTo(lx, ty + sb); ctx.lineTo(lx + ins, ty + sb); ctx.closePath();
+    } else if (shape === "sharp") {
+      ctx.rect(lx, ty, w, h);                       // industrial hard corners
+    } else {
+      roundRect(lx, ty, w, h, 5);
+    }
+  }
+
+  function drawFacade(st, lx, ty, w, h, litCol, glass, pal) {
+    var seed = st.seed, top = ty + h * 0.22, fh = h * 0.66, pad = w * 0.12;
+    var innerW = w - pad * 2, x0 = lx + pad, i;
+
+    if (st.facade === "ribbon") {
+      // horizontal glass bands — modern strip windows
+      var rows = Math.max(2, Math.round(h / 20)), gy = fh / rows, bh = gy * 0.56;
+      var cols = Math.max(4, Math.round(w / 20));
+      for (var r = 0; r < rows; r++) {
+        var by = top + r * gy + (gy - bh) / 2;
+        ctx.fillStyle = glass; ctx.fillRect(x0, by, innerW, bh);
+        for (var c = 0; c < cols; c++) {
+          if (!lit(seed, r * 11 + c)) continue;
+          var cw = innerW / cols;
+          ctx.fillStyle = litCol; ctx.fillRect(x0 + c * cw + cw * 0.14, by, cw * 0.72, bh);
+        }
+      }
+    } else if (st.facade === "curtain") {
+      // tall vertical mullions — sleek glass curtain wall
+      var vcols = Math.max(3, Math.round(w / 24)), gx = innerW / vcols, cw2 = gx * 0.6;
+      var seg = Math.max(3, Math.round(h / 14));
+      for (var v = 0; v < vcols; v++) {
+        var vx = x0 + v * gx + (gx - cw2) / 2;
+        ctx.fillStyle = glass; ctx.fillRect(vx, top, cw2, fh);
+        var sh2 = fh / seg;
+        for (var s = 0; s < seg; s++) {
+          if (!lit(seed, v * 13 + s)) continue;
+          ctx.fillStyle = litCol; ctx.fillRect(vx, top + s * sh2 + sh2 * 0.16, cw2, sh2 * 0.62);
+        }
+      }
+    } else if (st.facade === "setback") {
+      // masonry office — small punched windows, stone reveal bands, mostly dark
+      var mtop = ty + h * 0.34, mfh = h * 0.48, mpad = w * 0.18, mInner = w - mpad * 2, mx = lx + mpad;
+      var mc = Math.max(3, Math.round(w / 40)), mr = 2, mgx = mInner / mc, mgy = mfh / mr;
+      var ww2 = mgx * 0.4, wh2 = mgy * 0.5;
+      for (var rr = 0; rr < mr; rr++) for (var cc = 0; cc < mc; cc++) {
+        ctx.fillStyle = (lit(seed, rr * 5 + cc * 2) && cc % 2 === 0) ? litCol : glass;
+        ctx.fillRect(mx + cc * mgx + (mgx - ww2) / 2, mtop + rr * mgy + (mgy - wh2) / 2, ww2, wh2);
+      }
+      ctx.fillStyle = "rgba(0,0,0,0.10)";
+      ctx.fillRect(lx, ty + h * 0.30, w, 1.5); ctx.fillRect(lx, ty + h * 0.66, w, 1.5);
+    } else if (st.facade === "mechanical") {
+      // utility deck — no lit apartments; louvered vents + a warning light
+      var ttop = ty + h * 0.30, tfh = h * 0.46, tpad = w * 0.13, tInner = w - tpad * 2, tx = lx + tpad;
+      ctx.fillStyle = hsl(pal.h, pal.s, Math.max(12, pal.lb - 30));
+      ctx.fillRect(tx, ttop, tInner, tfh);                       // recessed dark plant panel
+      var slats = Math.max(4, Math.round(tfh / 8));
+      for (i = 0; i < slats; i++) {
+        var yy = ttop + i * (tfh / slats);
+        ctx.fillStyle = "rgba(255,255,255,0.10)"; ctx.fillRect(tx, yy, tInner, 1.5);
+        ctx.fillStyle = "rgba(0,0,0,0.20)"; ctx.fillRect(tx, yy + 1.5, tInner, 2);
+      }
+      ctx.fillStyle = "#ff6a5a"; ctx.fillRect(tx + tInner - 7, ttop + 4, 5, 5);   // status light
+    } else if (st.facade === "terrace") {
+      // sky garden — a planter/hedge band + railing, glass below
+      var gtop = ty + h * 0.20, trough = h * 0.11, gpad = w * 0.08, gInner = w - gpad * 2, gx0 = lx + gpad;
+      ctx.fillStyle = "#2c3f26"; ctx.fillRect(gx0, gtop, gInner, trough);         // planter soil
+      var tufts = Math.max(4, Math.round(w / 26)), greens = ["#4f7a3e", "#6ba24f", "#3f6633"];
+      for (i = 0; i < tufts; i++) {
+        var gxp = gx0 + gInner * (i + 0.5) / tufts;
+        ctx.fillStyle = greens[i % greens.length];
+        ctx.beginPath(); ctx.arc(gxp, gtop + trough * 0.32, trough * 0.5, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.strokeStyle = "rgba(255,255,255,0.30)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(gx0, gtop + trough + 3); ctx.lineTo(gx0 + gInner, gtop + trough + 3); ctx.stroke();
+      var wtop = ty + h * 0.52, wcols = Math.max(3, Math.round(w / 28)), wgx = gInner / wcols, gw = wgx * 0.62, gh = h * 0.22;
+      for (i = 0; i < wcols; i++) {
+        ctx.fillStyle = lit(seed, i * 3) ? litCol : glass;
+        ctx.fillRect(gx0 + i * wgx + (wgx - gw) / 2, wtop, gw, gh);
+      }
+    } else {
+      // office — classic glass window grid
+      var cols3 = Math.max(3, Math.round(w / 26)), rows3 = Math.max(2, Math.round(h / 22));
+      var gx3 = innerW / cols3, gy3 = fh / rows3, ww = gx3 * 0.6, wh = gy3 * 0.56;
+      for (var r3 = 0; r3 < rows3; r3++) for (var c3 = 0; c3 < cols3; c3++) {
+        ctx.fillStyle = lit(seed, r3 * 9 + c3 * 3) ? litCol : glass;
+        ctx.fillRect(x0 + c3 * gx3 + (gx3 - ww) / 2, top + r3 * gy3 + (gy3 - wh) / 2, ww, wh);
+      }
+    }
   }
 
   function render() {
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    curTheta = towerTheta();
     var sk = skyStops();
     var bg = ctx.createLinearGradient(0, 0, 0, H);
     bg.addColorStop(0, sk.top); bg.addColorStop(1, sk.bot);
@@ -309,12 +496,11 @@
       ctx.fillRect(0, baseline, W, H - baseline);
     }
 
-    // tower
+    // tower — placed floors ride the base rotation; tumbling floors fly on their own
     for (var b = 0; b < blocks.length; b++) {
       var blk = blocks[b];
-      var scx = blk.tumble ? blk.x : worldToScreenX(blk.x, blk.y);
-      // soft contact shadow
-      drawBlock(blk, scx);
+      if (blk.tumble) { drawBlock(blk, blk.x, sy(blk.y), blk.rot || 0); }
+      else { var p = towerScreen(blk.x, blk.y); drawBlock(blk, p.x, p.y, curTheta); }
     }
 
     // crane: fixed pivot overhead, rope tilting as the block swings on its arc
@@ -335,28 +521,28 @@
       // tilted rope from pivot to the top of the block
       ctx.strokeStyle = "rgba(230,236,250,0.7)"; ctx.lineWidth = 2.5; ctx.lineCap = "butt";
       ctx.beginPath(); ctx.moveTo(pcx, pcy); ctx.lineTo(bcx, bcy - crane.h / 2); ctx.stroke();
-      drawBlock({ x: crane.x, y: crane.y, w: crane.w, h: crane.h, hue: crane.hue }, bcx);
+      drawBlock({ x: crane.x, y: crane.y, w: crane.w, h: crane.h, style: crane.style }, bcx, bcy, 0);
     }
 
-    // falling block
-    if (falling) drawBlock(falling, falling.x);
+    // falling block (still on the crane, not yet part of the swaying tower)
+    if (falling) drawBlock(falling, falling.x, sy(falling.y), 0);
 
-    // sparkles
+    // sparkles (ride the tower tilt)
     for (var p = 0; p < particles.length; p++) {
-      var q = particles[p]; var a = 1 - q.life / q.max;
+      var q = particles[p]; var a = 1 - q.life / q.max, qp = towerScreen(q.x, q.y);
       ctx.globalAlpha = a; ctx.fillStyle = "hsl(" + q.hue + ",100%,72%)";
-      ctx.beginPath(); ctx.arc(worldToScreenX(q.x, q.y), sy(q.y), 2.4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(qp.x, qp.y, 2.4, 0, Math.PI * 2); ctx.fill();
     }
     ctx.globalAlpha = 1;
 
     // PERFECT popups
     for (var k = 0; k < perfectPops.length; k++) {
-      var pp = perfectPops[k]; var a2 = 1 - pp.t / 0.9;
+      var pp = perfectPops[k]; var a2 = 1 - pp.t / 0.9, ppp = towerScreen(pp.x, pp.y);
       ctx.globalAlpha = a2; ctx.fillStyle = "#ffe27a";
       ctx.font = "900 " + (Math.max(18, BW * 0.16)) + "px Archivo, system-ui, sans-serif";
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
       var label = pp.combo > 1 ? "PERFECT ×" + pp.combo : "PERFECT";
-      ctx.fillText(label, worldToScreenX(pp.x, pp.y), sy(pp.y) - BH * 0.8 - pp.t * 40);
+      ctx.fillText(label, ppp.x, ppp.y - BH * 0.8 - pp.t * 40);
     }
     ctx.globalAlpha = 1;
   }

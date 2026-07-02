@@ -953,7 +953,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="wooly-willy"]{ background: #d9ccb0 url("cards/wooly-willy.png") center / cover no-repeat; }
 .card__preview[data-slug="solitaire"]{ background: #0c5238 url("cards/solitaire.png") center / cover no-repeat; }
 .card__preview[data-slug="slice-it"]{ background: #08050f url("cards/slice-it.png") center / cover no-repeat; }
-.card__preview[data-slug="stack-tower"]{ background: #0e1430 url("cards/stack-tower.png") center / cover no-repeat; }
+.card__preview[data-slug="stack-tower"]{ background: #0e1430 url("cards/stack-tower.png?v=2") center / cover no-repeat; }
 .card__preview[data-slug="music-box"]{ background: #1a2440 url("cards/music-box.png") center / cover no-repeat; }
 .card__preview[data-slug="theremin"]{ background: #0a0a1e url("cards/theremin.png") center / cover no-repeat; }
 .card__preview[data-slug="mini-golf"]{ background: #14663a url("cards/mini-golf.png") center / cover no-repeat; }
