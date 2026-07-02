@@ -259,26 +259,23 @@
     var pull = Math.min(Math.hypot(dx, dy), MAXPULL);
     if (pull < 2) return;
     var a = Math.atan2(dy, dx), frac = pull / MAXPULL;
-    // predicted path with a couple of wall bounces
-    var px = ball.x, py = ball.y, vx = Math.cos(a), vy = Math.sin(a);
-    var len = 60 + frac * Math.min(W, H) * 0.9, bounces = 2, seg = [];
-    seg.push([px, py]);
-    var remaining = len, guard = 0;
-    while (remaining > 0 && bounces >= 0 && guard++ < 200) {
-      var stepLen = Math.min(remaining, 12);
-      px += vx * stepLen; py += vy * stepLen; remaining -= stepLen;
-      if (px - BR < field.x) { px = field.x + BR; vx = Math.abs(vx); bounces--; seg.push([px, py]); }
-      else if (px + BR > field.x + field.w) { px = field.x + field.w - BR; vx = -Math.abs(vx); bounces--; seg.push([px, py]); }
-      if (py - BR < field.y) { py = field.y + BR; vy = Math.abs(vy); bounces--; seg.push([px, py]); }
-      else if (py + BR > field.y + field.h) { py = field.y + field.h - BR; vy = -Math.abs(vy); bounces--; seg.push([px, py]); }
-    }
-    seg.push([px, py]);
+    // Short aim guide only — direction plus a hint of power via its length.
+    // (No full trajectory / wall-bounce prediction — that let you line the dots
+    // straight into the cup, which felt like a cheat.)
+    var len = BR + 16 + frac * Math.min(W, H) * 0.13;
+    var ex = ball.x + Math.cos(a) * len, ey = ball.y + Math.sin(a) * len;
     ctx.save();
     ctx.setLineDash([4, 8]); ctx.lineWidth = 3; ctx.lineCap = "round";
-    ctx.strokeStyle = "rgba(255,255,255,0.75)";
-    ctx.beginPath(); ctx.moveTo(seg[0][0], seg[0][1]); for (var i = 1; i < seg.length; i++) ctx.lineTo(seg[i][0], seg[i][1]); ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,0.7)";
+    ctx.beginPath(); ctx.moveTo(ball.x, ball.y); ctx.lineTo(ex, ey); ctx.stroke();
     ctx.setLineDash([]);
-    // power ring on the ball
+    // arrowhead at the tip
+    var ah = 8;
+    ctx.beginPath();
+    ctx.moveTo(ex, ey); ctx.lineTo(ex - Math.cos(a - 0.42) * ah, ey - Math.sin(a - 0.42) * ah);
+    ctx.moveTo(ex, ey); ctx.lineTo(ex - Math.cos(a + 0.42) * ah, ey - Math.sin(a + 0.42) * ah);
+    ctx.strokeStyle = "rgba(255,255,255,0.85)"; ctx.lineWidth = 3; ctx.stroke();
+    // power ring on the ball (green → red as power rises)
     var col = "hsl(" + (120 - frac * 120) + ",85%,55%)";
     ctx.beginPath(); ctx.arc(ball.x, ball.y, BR + 5, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2); ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.stroke();
     ctx.restore();
