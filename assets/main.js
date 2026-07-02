@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "blackjack":
+    "blackjack 21 twenty one casino card game cards dealer hit stand double down split insurance bet chips bankroll deck vegas gambling table games pays 3 to 2 bust ace face cards deal hand play strategy",
   "solitaire":
     "solitaire klondike patience card game cards deck deal foundations tableau stock waste draw aces kings suits hearts spades diamonds clubs classic windows solitaire single player relaxing brain casual deal shuffle undo",
   "slice-it":
