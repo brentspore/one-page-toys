@@ -20,7 +20,7 @@
   var splat, sctx;                        // persistent juice-splatter layer
 
   // ---- tunables ----
-  var GRAV = 1500;                        // px/s²  (down)
+  var GRAV = 1150;                        // px/s²  (down) — lower = more hang time, easier to slice
   var MISS_MAX = 3;
   var SPARK = "#ffb14e";
 
