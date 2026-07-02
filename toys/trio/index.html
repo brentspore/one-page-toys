@@ -13,32 +13,32 @@
       gtag('js', new Date());
       gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Stack Tower — One Page Toys</title>
-    <meta name="description" content="Build a wobbling skyscraper — a crane swings each floor, tap to drop it, and stack as high as you can before the tower topples. Perfect drops keep it steady. Free, no sign-up." />
-    <link rel="canonical" href="https://onepagetoys.com/toys/stack-tower/index.html" />
+    <title>Trio — One Page Toys</title>
+    <meta name="description" content="A slide-and-merge number puzzle: 1 and 2 join to make 3, then matching tiles double — 3, 6, 12, 24… Every swipe nudges the whole board one step. Chase the biggest tile. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/trio/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0e1430" />
+    <meta name="theme-color" content="#17131f" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Stack Tower — One Page Toys" />
-    <meta property="og:description" content="A crane swings each floor — tap to drop it and stack a wobbling tower as high as you can." />
-    <meta property="og:url" content="https://onepagetoys.com/toys/stack-tower/index.html" />
-    <meta property="og:image" content="https://onepagetoys.com/assets/og/stack-tower.png" />
+    <meta property="og:title" content="Trio — One Page Toys" />
+    <meta property="og:description" content="Slide to combine — 1 and 2 make 3, then matching tiles double. Chase the biggest number." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/trio/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/trio.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Stack Tower — One Page Toys" />
-    <meta name="twitter:description" content="A crane swings each floor — tap to drop it and stack as high as you can." />
-    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/stack-tower.png" />
+    <meta name="twitter:title" content="Trio — One Page Toys" />
+    <meta name="twitter:description" content="Slide to combine — 1 and 2 make 3, then matching tiles double. Chase the biggest number." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/trio.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Stack Tower",
-        "url": "https://onepagetoys.com/toys/stack-tower/index.html",
-        "description": "Build a wobbling skyscraper — a crane swings each floor, tap to drop, and stack as high as you can before it topples.",
+        "name": "Trio",
+        "url": "https://onepagetoys.com/toys/trio/index.html",
+        "description": "A slide-and-merge number puzzle — 1 and 2 combine to make 3, then matching tiles double. Every swipe nudges the whole board one step.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
@@ -66,25 +66,26 @@
       <span class="hud__best" id="best">Best 0</span>
     </div>
 
-    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+    <button type="button" class="round-btn round-btn--new" id="newBtn" title="New game">↻</button>
+    <button type="button" class="round-btn sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
 
     <div class="overlay" id="overlay" hidden>
       <div class="panel">
-        <h1 class="panel__title" id="ovTitle">Stack Tower</h1>
-        <p class="panel__text" id="ovText">A crane swings each floor. Tap to drop it — line it up to build high. Miss and the tower topples.</p>
-        <button type="button" class="play-btn" id="ovBtn">Tap to build</button>
+        <h1 class="panel__title" id="ovTitle">Trio</h1>
+        <p class="panel__text" id="ovText">Swipe (or use the arrow keys) to nudge every tile one step. A <b>1</b> and a <b>2</b> combine into a <b>3</b> — after that, matching tiles double: 3+3=6, 6+6=12… How big can you go?</p>
+        <button type="button" class="play-btn" id="ovBtn">Play</button>
       </div>
     </div>
 
     <div class="frame" aria-hidden="true">
-      <span class="frame__corner frame__corner--tl">No. 060</span>
-      <span class="frame__corner frame__corner--tr">Stack Tower</span>
+      <span class="frame__corner frame__corner--tl">No. 062</span>
+      <span class="frame__corner frame__corner--tr">Trio</span>
       <span class="frame__corner frame__corner--bl"><a href="../../index.html">&#8592; onepagetoys.com</a></span>
     </div>
 
-    <p class="hint" id="hint">tap anywhere to drop the floor</p>
+    <p class="hint" id="hint">swipe or arrow keys · 1 + 2 = 3, then match to double</p>
 
-    <script src="script.js?v=8" defer></script>
+    <script src="script.js?v=1" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
     <script src="../../assets/fullscreen.js?v=2" defer></script>
   </body>

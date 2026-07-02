@@ -12,6 +12,16 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://onepagetoys.com/toys/trio/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/coin-pusher/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://onepagetoys.com/toys/stack-tower/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>

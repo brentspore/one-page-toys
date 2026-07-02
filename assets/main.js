@@ -66,6 +66,10 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "trio":
+    "trio threes 3s slide merge combine number puzzle tile game 1 2 3 doubling twos and threes 2048 like swipe match numbers add strategy brain teaser addictive casual minimal one more move highest tile grid four by four",
+  "coin-pusher":
+    "coin pusher penny pusher arcade coin dozer machine drop coins push shove pile ledge tray win prizes gold coins tokens cascade satisfying oddly satisfying carnival midway seaside arcade gambling fun casual idle tap game",
   "stack-tower":
     "stack tower blocks stacking tower blocks deluxe crane swing drop skyscraper build building floors high score arcade timing tap perfect combo topple balance wobble physics endless one more try casual addictive viral game stacker",
   "music-box":

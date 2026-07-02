@@ -1,5 +1,25 @@
 [
   {
+    "slug": "trio",
+    "name": "Trio",
+    "shortDescription": "A slide-and-merge number puzzle—every swipe nudges the whole board one step. A 1 and a 2 combine into a 3, then matching tiles double: 3, 6, 12, 24… Chase the biggest number.",
+    "category": "game",
+    "tags": ["trio"],
+    "status": "live",
+    "path": "toys/trio/index.html",
+    "related": []
+  },
+  {
+    "slug": "coin-pusher",
+    "name": "Coin Pusher",
+    "shortDescription": "The arcade coin pusher, on your screen—drop coins onto the shelf and let the pusher shove the glittering pile off the front edge into your tray. Aim for the middle and chase the big cascade.",
+    "category": "game",
+    "tags": ["coin-pusher"],
+    "status": "live",
+    "path": "toys/coin-pusher/index.html",
+    "related": []
+  },
+  {
     "slug": "stack-tower",
     "name": "Stack Tower",
     "shortDescription": "A crane swings each floor overhead—tap to drop it and stack a wobbling skyscraper as high as you can. Nail a perfect landing to keep your footprint; drift too far and it topples.",
