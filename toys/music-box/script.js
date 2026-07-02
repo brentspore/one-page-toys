@@ -112,27 +112,27 @@
   function render() {
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     var bg = ctx.createRadialGradient(W * 0.5, H * 0.4, 40, W * 0.5, H * 0.6, Math.max(W, H) * 0.8);
-    bg.addColorStop(0, "#3a271a"); bg.addColorStop(0.6, "#241812"); bg.addColorStop(1, "#160d09");
+    bg.addColorStop(0, "#22305a"); bg.addColorStop(0.6, "#1a2440"); bg.addColorStop(1, "#0b1020");
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
     if (!box) return;
     var b = box;
 
-    // wooden box body
+    // midnight-blue lacquer box body
     roundRect(b.x - 14, b.y - 14, b.w + 28, b.h + 28, 18);
     var wood = ctx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
-    wood.addColorStop(0, "#6b4626"); wood.addColorStop(1, "#4a2f18");
+    wood.addColorStop(0, "#2a3a6b"); wood.addColorStop(1, "#16223f");
     ctx.fillStyle = wood; ctx.fill();
     ctx.strokeStyle = "rgba(0,0,0,0.4)"; ctx.lineWidth = 3; roundRect(b.x - 14, b.y - 14, b.w + 28, b.h + 28, 18); ctx.stroke();
-    // wood grain
+    // faint lacquer sheen lines
     ctx.save(); roundRect(b.x - 14, b.y - 14, b.w + 28, b.h + 28, 18); ctx.clip();
-    ctx.globalAlpha = 0.06; ctx.strokeStyle = "#2a1a0e"; ctx.lineWidth = 2;
+    ctx.globalAlpha = 0.06; ctx.strokeStyle = "#0c1330"; ctx.lineWidth = 2;
     for (var gg = 0; gg < b.h + 28; gg += 9) { ctx.beginPath(); ctx.moveTo(b.x - 14, b.y - 14 + gg + Math.sin(gg) * 2); ctx.lineTo(b.x + b.w + 14, b.y - 14 + gg + Math.cos(gg * 0.7) * 2); ctx.stroke(); }
     ctx.restore();
 
     // inner well (metal plate under the drum)
     roundRect(b.x, b.y, b.w, b.h, 10);
     var plate = ctx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
-    plate.addColorStop(0, "#241812"); plate.addColorStop(1, "#1a1009");
+    plate.addColorStop(0, "#141d38"); plate.addColorStop(1, "#0c1226");
     ctx.fillStyle = plate; ctx.fill();
 
     drawDrum(b);
@@ -146,9 +146,9 @@
   function drawDrum(b) {
     ctx.save();
     roundRect(b.drumX, b.y, b.drumW, b.h, 10); ctx.clip();
-    // cylinder shading (top + bottom darker → rounded barrel look)
+    // blued-steel cylinder shading (top + bottom darker → rounded barrel look)
     var cyl = ctx.createLinearGradient(0, b.y, 0, b.y + b.h);
-    cyl.addColorStop(0, "#3a2413"); cyl.addColorStop(0.12, "#7a5230"); cyl.addColorStop(0.5, "#9c6c3f"); cyl.addColorStop(0.88, "#6b4526"); cyl.addColorStop(1, "#331f0f");
+    cyl.addColorStop(0, "#141c33"); cyl.addColorStop(0.12, "#33436e"); cyl.addColorStop(0.5, "#4a5c90"); cyl.addColorStop(0.88, "#2a3860"); cyl.addColorStop(1, "#111830");
     ctx.fillStyle = cyl; ctx.fillRect(b.drumX, b.y, b.drumW, b.h);
     // vertical ring lines per column
     for (var c = 0; c < COLS; c++) {
@@ -202,7 +202,7 @@
     }
     // comb mounting block
     var bx = b.x + 4;
-    ctx.fillStyle = "#3a2a16"; roundRect(bx, b.innerY - b.rowH * 0.4, 10, ROWS * b.rowH, 4); ctx.fill();
+    ctx.fillStyle = "#222c48"; roundRect(bx, b.innerY - b.rowH * 0.4, 10, ROWS * b.rowH, 4); ctx.fill();
   }
 
   function roundRect(x, y, w, h, r) {

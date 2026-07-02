@@ -7,7 +7,7 @@ html, body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #241812;
+  background: #1a2440;
   font-family: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   touch-action: none;
@@ -36,7 +36,7 @@ html, body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #ffe8c9;
-  background: rgba(40, 26, 16, 0.6);
+  background: rgba(20, 29, 56, 0.6);
   border: 1px solid rgba(255, 210, 150, 0.32);
   padding: 8px 13px;
   border-radius: 999px;
@@ -46,7 +46,7 @@ html, body {
   transition: border-color 140ms ease, color 140ms ease;
 }
 .ctrl-btn:hover { border-color: rgba(255, 210, 150, 0.7); }
-.ctrl-btn[aria-pressed="false"] { color: #9a7a5a; }
+.ctrl-btn[aria-pressed="false"] { color: #7f8bb0; }
 
 .frame { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
 .frame__corner {
