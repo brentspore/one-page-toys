@@ -13,14 +13,19 @@
 
   var W = 0, H = 0, DPR = 1;
   var N = 150;                        // boundary points
-  var baseR = 120;                    // blob radius (set in resize)
-  var cx = 0, cy = 0;                 // blob centre (eases toward the magnet a touch)
+  var baseR = 120;                    // effective blob radius (R0 + swell), set each frame
+  var R0 = 120;                       // rest radius from screen size
+  var swell = 0;                      // transient growth after swallowing a droplet
+  var cx = 0, cy = 0;                 // blob centre (reaches toward the magnet)
   var px = 0, py = 0, hasPointer = false;
   var pull = 0;                       // smoothed field strength 0..1
   var pulse = 0;                      // tap burst envelope
   var t = 0;
   var phases = [];                    // per-point random phase for irregular bristle
   var soundOn = true;
+  var Nd = 30;                        // droplet boundary points
+  var DROP_N = 7;                     // target droplet count
+  var drops = [];                     // satellite droplets the magnet herds around
   var TINTS = [
     { name: "Cyan", a: [120, 210, 255], b: [90, 130, 255] },
     { name: "Magenta", a: [255, 130, 220], b: [150, 90, 255] },
@@ -35,13 +40,32 @@
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    baseR = Math.min(W, H) * 0.15;
+    R0 = Math.min(W, H) * 0.15; baseR = R0 + swell;
     cx = W / 2; cy = H / 2;
     if (!hasPointer) { px = W / 2; py = H / 2; }
+    seedDrops();
   }
   window.addEventListener("resize", resize);
 
   for (var i = 0; i < N; i++) phases.push(Math.random() * Math.PI * 2);
+
+  function seedDrops() {
+    drops = [];
+    for (var i = 0; i < DROP_N; i++) {
+      var a = Math.random() * Math.PI * 2, d = R0 * (2.2 + Math.random() * 2.2);
+      drops.push(makeDrop(cx + Math.cos(a) * d, cy + Math.sin(a) * d, R0 * (0.12 + Math.random() * 0.14), 0, 0));
+    }
+  }
+  function makeDrop(x, y, r, vx, vy) {
+    var ph = []; for (var i = 0; i < Nd; i++) ph.push(Math.random() * Math.PI * 2);
+    return { x: x, y: y, r: r, vx: vx, vy: vy, ph: ph };
+  }
+  function spawnDrop() {
+    var a = Math.random() * Math.PI * 2;
+    drops.push(makeDrop(cx + Math.cos(a) * baseR * 1.05, cy + Math.sin(a) * baseR * 1.05,
+      R0 * (0.11 + Math.random() * 0.13), Math.cos(a) * 3.4, Math.sin(a) * 3.4));
+  }
+  function absorb(dp) { swell = Math.min(R0 * 0.55, swell + dp.r * 0.7); pulse = Math.min(1.2, pulse + 0.32); sndBlip(dp.r / R0); }
 
   function tint() { return TINTS[tintIdx]; }
   function rgba(c, a) { return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + a + ")"; }
@@ -63,14 +87,15 @@
     var targetPull = hasPointer ? Math.max(0.12, 1 - d / maxD) : 0.16;
     pull += (targetPull - pull) * 0.12;
     var dirA = Math.atan2(dy, dx);
-    var arr = [], spikeMax = baseR * (0.55 + pull * 1.15) + pulse * baseR * 0.9;
+    var arr = [], spikeMax = baseR * (0.5 + pull * 0.95) + pulse * baseR * 0.8;
     for (var i = 0; i < N; i++) {
       var a = i / N * Math.PI * 2;
       var align = 0.5 + 0.5 * Math.cos(a - dirA);         // 1 toward magnet
-      var bristle = 0.5 + 0.5 * noise(a + phases[i], 9, 2.1);       // always-present fine spikes
+      var bristle = 0.5 + 0.5 * noise(a + phases[i], 13, 2.1);      // dense fine spikes
+      bristle = Math.pow(bristle, 1.4);                            // sharpen into pointed peaks
       var field = pull * (0.25 + 0.75 * Math.pow(align, 2));
-      var spike = baseR * 0.12 * bristle                            // idle bristle
-        + spikeMax * field * (0.55 + 0.45 * bristle)               // magnet-driven spikes
+      var spike = baseR * 0.1 * bristle                             // idle bristle
+        + spikeMax * field * (0.5 + 0.5 * bristle)                 // magnet-driven spikes
         + pulse * baseR * 0.5 * bristle;                            // tap pulse burst
       // gentle low-freq body wobble
       var wob = baseR * 0.06 * Math.sin(a * 3 + t * 0.9 + phases[i] * 0.2);
@@ -82,9 +107,12 @@
   function render() {
     t += 0.016;
     if (pulse > 0) pulse *= 0.9;
-    // ease centre toward the magnet a little (reaching)
-    if (hasPointer) { cx += (px - cx) * 0.02 * pull; cy += (py - cy) * 0.02 * pull; }
+    swell *= 0.94;
+    baseR = R0 + swell;
+    // reach toward the magnet (leans + stretches its way)
+    if (hasPointer) { cx += (px - cx) * 0.045 * pull; cy += (py - cy) * 0.045 * pull; }
     else { cx += (W / 2 - cx) * 0.03; cy += (H / 2 - cy) * 0.03; }
+    updateDrops();
 
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     // backdrop with a soft spotlight
@@ -96,6 +124,9 @@
     var glow = ctx.createRadialGradient(cx, cy, baseR * 0.3, cx, cy, baseR * 2.4);
     glow.addColorStop(0, rgba(tc.a, 0.10 + pull * 0.10)); glow.addColorStop(1, rgba(tc.a, 0));
     ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(cx, cy, baseR * 2.4, 0, Math.PI * 2); ctx.fill();
+
+    // satellite droplets (behind the body so they slide under it when swallowed)
+    for (var di = 0; di < drops.length; di++) drawDrop(drops[di], tc);
 
     var R = radii(), arr = R.arr;
 
@@ -154,6 +185,52 @@
     updateHum();
   }
 
+  // ---------- droplets ----------
+  function updateDrops() {
+    var reach = Math.min(W, H) * 0.6;
+    for (var i = drops.length - 1; i >= 0; i--) {
+      var dp = drops[i];
+      if (hasPointer) {                                   // pulled toward the magnet
+        var mx = px - dp.x, my = py - dp.y, md = Math.hypot(mx, my) || 1;
+        var f = 0.15 + (0.35 + pull * 1.3) * (1 - Math.min(1, md / reach)) * 1.7;
+        dp.vx += (mx / md) * f; dp.vy += (my / md) * f;
+      }
+      var bx = cx - dp.x, by = cy - dp.y, bd = Math.hypot(bx, by) || 1;
+      var tf = bd > baseR * 3 ? 0.5 : 0.12;               // tether so they stay in play
+      dp.vx += (bx / bd) * tf; dp.vy += (by / bd) * tf;
+      dp.vx *= 0.9; dp.vy *= 0.9;
+      dp.x += dp.vx; dp.y += dp.vy;
+      if (bd < baseR * 0.82 + dp.r) { absorb(dp); drops.splice(i, 1); }  // swallowed
+    }
+    if (drops.length < DROP_N && Math.random() < 0.06) spawnDrop();      // shed a new one
+  }
+
+  function drawDrop(dp, tc) {
+    var dirA = 0, mpull = 0;
+    if (hasPointer) {
+      var mdx = px - dp.x, mdy = py - dp.y, md = Math.hypot(mdx, mdy) || 1;
+      dirA = Math.atan2(mdy, mdx); mpull = Math.max(0, 1 - md / (Math.min(W, H) * 0.5));
+    }
+    ctx.beginPath();
+    for (var i = 0; i <= Nd; i++) {
+      var idx = i % Nd, a = idx / Nd * Math.PI * 2;
+      var align = 0.5 + 0.5 * Math.cos(a - dirA);
+      var br = Math.pow(0.5 + 0.5 * Math.sin(a * 7 + t * 3 + dp.ph[idx]), 1.7);
+      var spike = dp.r * 0.16 * br + dp.r * (0.85 * mpull) * Math.pow(align, 2.2) * (0.4 + 0.6 * br);
+      var r = dp.r + spike, x = dp.x + Math.cos(a) * r, y = dp.y + Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    var body = ctx.createRadialGradient(dp.x - dp.r * 0.3, dp.y - dp.r * 0.35, dp.r * 0.1, dp.x, dp.y, dp.r * 1.5);
+    body.addColorStop(0, "#33353f"); body.addColorStop(0.5, "#141519"); body.addColorStop(1, "#050506");
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = 12; ctx.shadowOffsetY = 5;
+    ctx.fillStyle = body; ctx.fill(); ctx.restore();
+    ctx.save(); ctx.lineWidth = 1.4; ctx.lineJoin = "round"; ctx.strokeStyle = rgba(tc.a, 0.55);
+    ctx.shadowColor = rgba(tc.a, 0.6); ctx.shadowBlur = 6 + mpull * 8; ctx.stroke(); ctx.restore();
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
+    ctx.beginPath(); ctx.arc(dp.x - dp.r * 0.35, dp.y - dp.r * 0.4, dp.r * 0.16, 0, Math.PI * 2); ctx.fill();
+  }
+
   function frame() { render(); requestAnimationFrame(frame); }
 
   // ============================ AUDIO ============================
@@ -198,6 +275,15 @@
     n.buffer = buf; var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 2600; bp.Q.value = 4;
     var g2 = actx.createGain(); g2.gain.setValueAtTime(0.12, t0); g2.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
     n.connect(bp); bp.connect(g2); g2.connect(master); g2.connect(wet); n.start(t0); n.stop(t0 + 0.22);
+  }
+  function sndBlip(v) {
+    if (!actx || !soundOn) return; var t0 = actx.currentTime;
+    // soft wet "plip" as a droplet is swallowed (bigger drop → lower)
+    var o = actx.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(220 - v * 90, t0); o.frequency.exponentialRampToValueAtTime(70, t0 + 0.16);
+    var g = actx.createGain(); g.gain.setValueAtTime(0.001, t0);
+    g.gain.exponentialRampToValueAtTime(0.06 + v * 0.05, t0 + 0.012); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
+    o.connect(g); g.connect(master); g.connect(wet); o.start(t0); o.stop(t0 + 0.22);
   }
 
   // ---------- boot ----------
