@@ -26,6 +26,7 @@
   var PERFECT_HEAL = 0.10;     // instability removed on a perfect
   var HEIGHT_CREEP = 0.004;    // instability added each floor (slow ramp)
   var SWAY_FREQ = 1.7;
+  var DROP_INHERIT = 0.4;      // how much of the crane's swing velocity the drop keeps
 
   var BW = 160, BH = 66;       // block size (set in resize)
   var GROUND_Y = 0;            // world y of the ground surface (bottom of base block)
@@ -82,7 +83,11 @@
   function drop() {
     if (!running || over || falling || !crane) return;
     unlock();
-    falling = { x: crane.x, y: crane.y, vy: 0, w: crane.w, h: crane.h, hue: crane.hue };
+    // inherit the crane's pendulum velocity so the block arcs with the swing:
+    // released at a swing extreme it drops nearly straight; released through the
+    // centre it carries sideways momentum — so timing the release is the skill.
+    var craneVel = Math.cos(crane.phase) * crane.amp * crane.speed;
+    falling = { x: crane.x, y: crane.y, vy: 0, vx: craneVel * DROP_INHERIT, w: crane.w, h: crane.h, hue: crane.hue };
     crane = null;
   }
 
@@ -170,6 +175,7 @@
     if (falling) {
       falling.vy += GRAV * dt;
       falling.y += falling.vy * dt;
+      falling.x += (falling.vx || 0) * dt;    // horizontal momentum carried from the swing
       var landY = topBlock().y - BH;          // centre y when resting on the stack
       if (falling.y >= landY) { falling.y = landY; place(); }
     }
