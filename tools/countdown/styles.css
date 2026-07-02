@@ -466,7 +466,74 @@ body{
 
 /* preset event chips reuse .presets/.preset from the base */
 .field--plain .field__box{ padding:4px 10px; }
-.field__input[type="datetime-local"]{ font-size:1.02rem; font-weight:700; -webkit-appearance:none; appearance:none; }
+
+/* ---------- Custom date + time picker (native datetime-local can't be themed —
+ * dark calendar icon + unthemeable OS popup) ---------- */
+.dtpick{ position:relative; }
+.dtpick__row{ align-items:stretch; padding:0; }
+.dtpick__trigger{
+  flex:1 1 auto; min-width:0;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:12px 10px; border:0; background:transparent; cursor:pointer;
+  font-family:var(--font-display); font-size:1.05rem; font-weight:800; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:-0.01em;
+}
+.dtpick__trigger:focus-visible{ outline:none; }
+.dtpick__ico{ flex:0 0 auto; color:var(--accent); opacity:0.92; }
+.dtpick__value{ line-height:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.dtpop{
+  position:absolute; z-index:30; top:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  width:min(340px, 92vw); display:flex; flex-direction:column; gap:10px; padding:12px;
+  border:1.5px solid var(--line-strong); border-radius:var(--radius-sm);
+  background:var(--surface); box-shadow:var(--shadow-lg);
+}
+.dtpop[hidden]{ display:none; }   /* author display:flex would otherwise beat the UA [hidden] rule */
+
+/* calendar */
+.dtcal__head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.dtcal__title{ font-family:var(--font-display); font-weight:800; font-size:0.98rem; color:var(--ink); }
+.dtnav{
+  width:32px; height:32px; border:1.5px solid var(--line-strong); border-radius:var(--radius-pill);
+  background:var(--surface); color:var(--ink); font-size:1.1rem; line-height:1; cursor:pointer;
+  transition:background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.dtnav:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.dtcal__dow{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin-bottom:4px; }
+.dtcal__dow span{ text-align:center; font-family:var(--font-display); font-size:0.62rem; font-weight:700; letter-spacing:0.04em; color:var(--muted); }
+.dtcal__grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.dtday{
+  aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+  border:0; border-radius:8px; background:transparent; cursor:pointer;
+  font-family:var(--font-display); font-size:0.86rem; font-weight:700; color:var(--ink);
+  font-variant-numeric:tabular-nums; transition:background 110ms ease, color 110ms ease;
+}
+.dtday:hover{ background:var(--surface-2); }
+.dtday--muted{ color:var(--muted); opacity:0.5; }
+.dtday--today{ box-shadow:inset 0 0 0 1.5px var(--line-strong); }
+.dtday[aria-selected="true"]{ background:var(--accent); color:#fff; }
+.dtday:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--accent-soft); }
+
+/* time columns */
+.dttime{ display:flex; gap:6px; padding-top:10px; border-top:1px solid var(--line); }
+.timecol{
+  flex:1 1 0; display:flex; flex-direction:column; gap:2px;
+  max-height:132px; overflow-y:auto; scroll-behavior:smooth;
+  scrollbar-width:thin; scrollbar-color:var(--line-strong) transparent;
+}
+.timecol::-webkit-scrollbar{ width:8px; }
+.timecol::-webkit-scrollbar-thumb{ background:var(--line-strong); border-radius:8px; border:2px solid var(--surface); }
+.timecol::-webkit-scrollbar-track{ background:transparent; }
+.timecol--ap{ flex:0 0 auto; justify-content:flex-start; }
+.timeopt{
+  padding:8px 6px; border:0; border-radius:9px; background:transparent;
+  font-family:var(--font-display); font-size:0.94rem; font-weight:700; color:var(--ink);
+  font-variant-numeric:tabular-nums; text-align:center; cursor:pointer;
+  transition:background 110ms ease, color 110ms ease;
+}
+.timeopt:hover{ background:var(--surface-2); }
+.timeopt[aria-selected="true"]{ background:var(--accent); color:#fff; }
+.timeopt:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--accent-soft); }
 
 /* hero number: gradient applied directly (text set as plain content) */
 .odo{ background:linear-gradient(176deg, var(--hot-1) 0%, var(--hot-2) 48%, var(--hot-3) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; }

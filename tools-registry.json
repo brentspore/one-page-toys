@@ -1,5 +1,15 @@
 [
   {
+    "slug": "slice-it",
+    "name": "Slice It",
+    "shortDescription": "Swipe to slice the fruit flying through the air—juicy splatter, wild combos, and bombs you must dodge. Drop three and it's over. Chase your high score.",
+    "category": "game",
+    "tags": ["slice-it"],
+    "status": "live",
+    "path": "toys/slice-it/index.html",
+    "related": []
+  },
+  {
     "slug": "countdown",
     "name": "Countdown to Anything",
     "shortDescription": "Name any moment—a birthday, a trip, a launch, the weekend—and watch the days, hours, minutes, and seconds tick down live. Copy a link to share your countdown with anyone.",

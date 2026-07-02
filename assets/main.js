@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "slice-it":
+    "slice it fruit ninja slicer swipe blade cut chop katana sword fruit watermelon orange lime lemon strawberry combo bomb arcade action reflex reaction high score juicy splatter satisfying casual game addictive viral one more try slash",
   "tongue-drum":
     "steel tongue drum tank drum hank drum handpan hang drum percussion instrument music play strike mallet pentatonic akebono zen meditation calm relaxing soothing ambient chill mindfulness singing bowl gongs make music melody",
   "kalimba":
