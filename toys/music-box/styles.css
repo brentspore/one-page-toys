@@ -1,0 +1,86 @@
+/* Music Box — pinned drum sequencer. Full-bleed canvas. */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #241812;
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+#canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; }
+
+.controls {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 96vw;
+}
+.ctrl-btn {
+  appearance: none;
+  font-family: inherit;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffe8c9;
+  background: rgba(40, 26, 16, 0.6);
+  border: 1px solid rgba(255, 210, 150, 0.32);
+  padding: 8px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.ctrl-btn:hover { border-color: rgba(255, 210, 150, 0.7); }
+.ctrl-btn[aria-pressed="false"] { color: #9a7a5a; }
+
+.frame { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+.frame__corner {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 232, 201, 0.5);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: 16px; }
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: 16px; }
+.frame__corner--bl { bottom: 14px; left: 16px; }
+.frame__corner a { color: inherit; text-decoration: none; pointer-events: auto; }
+.frame__corner a:hover { color: #ffd28c; }
+
+.hint {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(255, 232, 201, 0.5);
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 300ms ease;
+}
+.hint.is-gone { opacity: 0; }
+
+@media (max-width: 560px) {
+  .frame__corner--bl, .hint { display: none; }
+  .ctrl-btn { font-size: 0.6rem; padding: 7px 10px; }
+}

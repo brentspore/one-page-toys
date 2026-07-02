@@ -1,5 +1,55 @@
 [
   {
+    "slug": "stack-tower",
+    "name": "Stack Tower",
+    "shortDescription": "A crane swings each floor overhead—tap to drop it and stack a wobbling skyscraper as high as you can. Nail a perfect landing to keep your footprint; drift too far and it topples.",
+    "category": "game",
+    "tags": ["stack-tower"],
+    "status": "live",
+    "path": "toys/stack-tower/index.html",
+    "related": []
+  },
+  {
+    "slug": "music-box",
+    "name": "Music Box",
+    "shortDescription": "Place pins on the rotating drum and watch it pluck a glowing brass comb into a looping melody. Pentatonic tuning so it always sounds sweet—set a tempo and let it play.",
+    "category": "audio",
+    "tags": ["music-box"],
+    "status": "live",
+    "path": "toys/music-box/index.html",
+    "related": []
+  },
+  {
+    "slug": "theremin",
+    "name": "Theremin",
+    "shortDescription": "Press and glide across the field to play the untouchable instrument—move sideways for pitch, up and down for volume, with vibrato, portamento, and a live oscilloscope.",
+    "category": "audio",
+    "tags": ["theremin"],
+    "status": "live",
+    "path": "toys/theremin/index.html",
+    "related": []
+  },
+  {
+    "slug": "mini-golf",
+    "name": "Mini Golf",
+    "shortDescription": "Drag back to aim and set your power, then putt across a top-down green—bank off walls and bumpers to sink the cup in as few strokes as you can.",
+    "category": "game",
+    "tags": ["mini-golf"],
+    "status": "live",
+    "path": "toys/mini-golf/index.html",
+    "related": []
+  },
+  {
+    "slug": "ferrofluid",
+    "name": "Ferrofluid",
+    "shortDescription": "Move the magnet to draw glistening black spikes out of a living blob of magnetic fluid—tap to make it pulse. Mesmerizing, tactile, and endlessly fiddleable.",
+    "category": "visual",
+    "tags": ["ferrofluid"],
+    "status": "live",
+    "path": "toys/ferrofluid/index.html",
+    "related": []
+  },
+  {
     "slug": "blackjack",
     "name": "Blackjack",
     "shortDescription": "Casino Blackjack—place your chips, then hit, stand, double down, and split against the dealer. Blackjack pays 3 to 2, dealer stands on 17. Build your bankroll.",

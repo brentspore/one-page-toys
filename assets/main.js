@@ -66,6 +66,16 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "stack-tower":
+    "stack tower blocks stacking tower blocks deluxe crane swing drop skyscraper build building floors high score arcade timing tap perfect combo topple balance wobble physics endless one more try casual addictive viral game stacker",
+  "music-box":
+    "music box musicbox wind up melody pins drum comb brass tines rotating cylinder pentatonic notes tune compose sequencer loop lullaby calm relaxing dreamy chime bells make music melody song play tempo",
+  "theremin":
+    "theremin electronic instrument music play pitch volume glide slide sine wave synth synthesizer oscillator vibrato portamento oscilloscope waveform antenna sci fi spooky eerie ethereal ondes martenot untouchable gesture hand wave make music note scale",
+  "mini-golf":
+    "mini golf minigolf putt putt putting green golf ball hole cup flag aim power drag bank bumpers walls strokes par sports arcade course top down putter casual game relaxing physics",
+  "ferrofluid":
+    "ferrofluid ferro fluid magnetic liquid spikes magnet iron oxide black blob goo ooze morph mesmerizing satisfying sensory fidget tactile science physics simulation art visual relaxing hypnotic oddly satisfying",
   "blackjack":
     "blackjack 21 twenty one casino card game cards dealer hit stand double down split insurance bet chips bankroll deck vegas gambling table games pays 3 to 2 bust ace face cards deal hand play strategy",
   "solitaire":

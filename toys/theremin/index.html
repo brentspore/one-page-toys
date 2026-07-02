@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Theremin — One Page Toys</title>
+    <meta name="description" content="Play the theremin — glide your hand across the field: left-to-right sets the pitch, up-and-down the volume, with an eerie vibrato. No notes to learn. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/theremin/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0a1e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Theremin — One Page Toys" />
+    <meta property="og:description" content="Glide across the field — left-right is pitch, up-down is volume, with eerie vibrato. Play the theremin, no notes to learn." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/theremin/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/theremin.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Theremin — One Page Toys" />
+    <meta name="twitter:description" content="Glide across the field — pitch and volume by position, with eerie vibrato." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/theremin.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Theremin",
+        "url": "https://onepagetoys.com/toys/theremin/index.html",
+        "description": "A browser theremin — glide across the field to control pitch (left-right) and volume (up-down) with eerie vibrato.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires Web Audio and HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="controls" id="controls">
+      <button type="button" class="ctrl-btn" id="scaleBtn">Scale: Free</button>
+      <button type="button" class="ctrl-btn" id="waveBtn">Wave: Sine</button>
+      <button type="button" class="ctrl-btn" id="soundBtn" aria-pressed="true">Sound: on</button>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 058</span>
+      <span class="frame__corner frame__corner--tr">Theremin</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">press and glide &mdash; left/right is pitch, up/down is volume</p>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+    <script src="../../assets/fullscreen.js?v=2" defer></script>
+  </body>
+</html>

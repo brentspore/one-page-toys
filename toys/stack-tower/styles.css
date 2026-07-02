@@ -1,0 +1,154 @@
+/* Stack Tower — crane block-stacker. Full-bleed canvas. */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0e1430;
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+#canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; }
+
+/* ---------- HUD ---------- */
+.hud {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  left: 0; right: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+.hud__score {
+  font-size: clamp(2.4rem, 9vw, 4.2rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.4);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.hud__best {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.sound-btn {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: 14px;
+  z-index: 6;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  background: rgba(10, 16, 40, 0.5);
+  color: #eaf0ff;
+  font-size: 1.05rem;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 140ms ease, background 140ms ease;
+}
+.sound-btn:hover { border-color: rgba(255, 255, 255, 0.6); }
+.sound-btn[aria-pressed="false"] { color: rgba(255, 255, 255, 0.35); }
+
+/* ---------- overlay ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(120% 90% at 50% 42%, rgba(20, 28, 66, 0.45), rgba(6, 9, 24, 0.85));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: opacity 260ms ease;
+}
+.overlay[hidden] { display: none; }
+.overlay.is-hidden { opacity: 0; pointer-events: none; }
+
+.panel { text-align: center; max-width: 430px; animation: pop 320ms cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+@keyframes pop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.panel__title {
+  margin: 0 0 14px;
+  font-size: clamp(2.6rem, 11vw, 4.4rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  background: linear-gradient(176deg, #d8f0ff 0%, #8ab6ff 48%, #b98cff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 6px 30px rgba(138, 182, 255, 0.4));
+}
+.panel__text { margin: 0 0 26px; font-size: clamp(0.98rem, 3.4vw, 1.1rem); line-height: 1.55; font-weight: 500; color: #c3cdea; }
+.play-btn {
+  appearance: none;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0b1024;
+  background: linear-gradient(180deg, #a9ccff, #7aa0ff);
+  border: 0;
+  padding: 16px 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px -6px rgba(122, 160, 255, 0.6);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.play-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(122, 160, 255, 0.7); }
+.play-btn:active { transform: translateY(0); }
+
+/* ---------- frame + hint ---------- */
+.frame { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+.frame__corner {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 240, 255, 0.5);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: 16px; }
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: 62px; }
+.frame__corner--bl { bottom: 14px; left: 16px; }
+.frame__corner a { color: inherit; text-decoration: none; pointer-events: auto; }
+.frame__corner a:hover { color: #a9ccff; }
+
+.hint {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(234, 240, 255, 0.5);
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 300ms ease;
+}
+.hint.is-gone { opacity: 0; }
+
+@media (max-width: 560px) {
+  .frame__corner--bl { display: none; }
+  .frame__corner--tr { display: none; }
+}

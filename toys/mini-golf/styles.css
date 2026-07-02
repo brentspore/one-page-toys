@@ -1,0 +1,126 @@
+/* Mini Golf — top-down putt. Full-bleed canvas. */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #14663a;
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+#canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; }
+
+.hud {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  pointer-events: none;
+}
+.hud__pill {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #eafff1;
+  background: rgba(6, 40, 22, 0.55);
+  border: 1px solid rgba(234, 255, 241, 0.28);
+  padding: 8px 13px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.sound-btn {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: 14px;
+  z-index: 6;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  background: rgba(6, 40, 22, 0.5);
+  color: #eafff1;
+  font-size: 1.05rem;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.sound-btn:hover { border-color: rgba(255, 255, 255, 0.6); }
+.sound-btn[aria-pressed="false"] { color: rgba(255, 255, 255, 0.35); }
+
+.toast {
+  position: fixed;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  z-index: 7;
+  padding: 16px 30px;
+  border-radius: 18px;
+  background: rgba(6, 40, 22, 0.72);
+  border: 1.5px solid rgba(255, 231, 140, 0.5);
+  color: #fff;
+  font-size: clamp(1.3rem, 5vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(0.2, 0.9, 0.25, 1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
+
+/* ---------- frame + hint ---------- */
+.frame { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+.frame__corner {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 255, 241, 0.55);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: 16px; }
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: 62px; }
+.frame__corner--bl { bottom: 14px; left: 16px; }
+.frame__corner a { color: inherit; text-decoration: none; pointer-events: auto; }
+.frame__corner a:hover { color: #ffe78c; }
+
+.hint {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(234, 255, 241, 0.55);
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 300ms ease;
+}
+.hint.is-gone { opacity: 0; }
+
+@media (max-width: 560px) {
+  .frame__corner--bl { display: none; }
+  .frame__corner--tr { display: none; }
+  .hint { font-size: 0.64rem; }
+}
