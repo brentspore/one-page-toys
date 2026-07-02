@@ -113,7 +113,8 @@
     if (rel > MISS) {                       // no real support → it slides off
       // let it keep falling past, then game over
       falling.slip = off > 0 ? 1 : -1;
-      startTopple(true, falling);
+      startTopple(true, falling);           // hands the block to the tumble list
+      falling = null;                       // …so it must be cleared, or place() re-fires
       return;
     }
     var perfect = rel < PERFECT;
