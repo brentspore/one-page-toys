@@ -1,0 +1,18 @@
+name = "opt-suggest"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Where suggestions are emailed. FROM_EMAIL must be on your Resend-verified
+# domain (onepagetoys.com). These are plain vars (not secrets) — safe to commit.
+[vars]
+FROM_EMAIL = "One Page Toys <suggestions@onepagetoys.com>"
+TO_EMAIL = "brent@mightyarmy.com"
+
+# Rate-limit store — created via the Cloudflare API (SUGGEST_KV).
+[[kv_namespaces]]
+binding = "SUGGEST_KV"
+id = "794c95519b7549b8a23a6e600c663aa4"
+
+# Secrets are NOT stored here. Set them with:
+#   npx wrangler secret put RESEND_API_KEY
+#   npx wrangler secret put TURNSTILE_SECRET

@@ -876,8 +876,10 @@ function renderCards(tools) {
 function applyFilters() {
   if (galleryMode === "home") {
     if (!homeFeatured) {
+      // exclude the spotlight toy so it isn't repeated in the Fresh picks grid
+      const featuredSlug = newestTool && newestTool.slug;
       const pool = allTools.filter(function (t) {
-        return t && t.path;
+        return t && t.path && t.slug !== featuredSlug;
       });
       const shuffled = shuffleInPlace(pool.slice(), Math.random);
       homeFeatured = shuffled.slice(0, 9);
