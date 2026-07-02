@@ -42,13 +42,17 @@
   function layout() {
     var pad = Math.max(24, Math.min(W, H) * 0.06);
     var top = Math.max(70, H * 0.16);
-    var bw = Math.min(W - pad * 2, 900), bh = Math.min(H - top - pad, 480);
-    var bx = (W - bw) / 2, by = top + (H - top - pad - bh) / 2;
+    var loopH = 16, loopGap = 22;                 // loop-cycle track below the box
+    var reserve = loopH + loopGap;
+    var bw = Math.min(W - pad * 2, 900);
+    var bh = Math.min(H - top - pad - reserve, 480);
+    var groupH = bh + reserve;
+    var bx = (W - bw) / 2, by = top + (H - top - pad - groupH) / 2;
     var combW = bw * 0.30;                 // left comb area
     var strikeX = bx + combW;
     var drumX = strikeX, drumW = bw - combW;
     var rowH = (bh - 40) / ROWS;
-    box = { x: bx, y: by, w: bw, h: bh, combW: combW, strikeX: strikeX, drumX: drumX, drumW: drumW, rowH: rowH, innerY: by + 20 };
+    box = { x: bx, y: by, w: bw, h: bh, combW: combW, strikeX: strikeX, drumX: drumX, drumW: drumW, rowH: rowH, innerY: by + 20, loopY: by + bh + loopGap, loopH: loopH };
   }
 
   function reset(withDemo) {
@@ -141,6 +145,40 @@
     // strike line
     ctx.save(); ctx.strokeStyle = "rgba(255,220,150,0.5)"; ctx.lineWidth = 2; ctx.setLineDash([5, 6]);
     ctx.beginPath(); ctx.moveTo(b.strikeX, b.innerY - 6); ctx.lineTo(b.strikeX, b.innerY + ROWS * b.rowH - b.rowH * 0.3); ctx.stroke(); ctx.restore();
+
+    drawLoop(b);
+  }
+
+  // Loop-cycle track: a static view of the whole 16-step loop with a playhead
+  // that sweeps left→right and wraps each cycle — so you can shape the overall loop.
+  function drawLoop(b) {
+    var lx = b.drumX, lw = b.drumW, ly = b.loopY, lh = b.loopH;
+    var stepW = lw / COLS;
+    ctx.save();
+    // base track
+    roundRect(lx, ly, lw, lh, lh / 2); ctx.fillStyle = "rgba(10,16,34,0.85)"; ctx.fill();
+    ctx.strokeStyle = "rgba(255,210,150,0.16)"; ctx.lineWidth = 1; roundRect(lx, ly, lw, lh, lh / 2); ctx.stroke();
+    // step cells: your pattern across the whole loop + the current step
+    var nowStep = Math.floor(phase) % COLS;
+    for (var c = 0; c < COLS; c++) {
+      var cx = lx + c * stepW + 2, cw = Math.max(2, stepW - 4);
+      var filled = false; for (var r = 0; r < ROWS; r++) { if (pins[r][c]) { filled = true; break; } }
+      var isBeat = c % 4 === 0;
+      roundRect(cx, ly + 3, cw, lh - 6, 3);
+      if (c === nowStep) ctx.fillStyle = "rgba(255,224,158,0.95)";
+      else if (filled) ctx.fillStyle = "rgba(210,161,79,0.8)";
+      else ctx.fillStyle = isBeat ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.04)";
+      ctx.fill();
+    }
+    // beat numbers above each downbeat
+    ctx.fillStyle = "rgba(255,222,164,0.55)"; ctx.font = "700 10px 'Archivo', system-ui, sans-serif"; ctx.textAlign = "center";
+    for (var d = 0; d < COLS; d += 4) ctx.fillText(String(d / 4 + 1), lx + d * stepW + stepW / 2, ly - 6);
+    // sweeping playhead
+    var px = lx + (phase / COLS) * lw;
+    ctx.strokeStyle = "rgba(255,238,186,0.95)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(px, ly - 3); ctx.lineTo(px, ly + lh + 3); ctx.stroke();
+    ctx.fillStyle = "rgba(255,238,186,1)"; ctx.beginPath(); ctx.arc(px, ly + lh + 3, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
   }
 
   function drawDrum(b) {
@@ -150,10 +188,12 @@
     var cyl = ctx.createLinearGradient(0, b.y, 0, b.y + b.h);
     cyl.addColorStop(0, "#141c33"); cyl.addColorStop(0.12, "#33436e"); cyl.addColorStop(0.5, "#4a5c90"); cyl.addColorStop(0.88, "#2a3860"); cyl.addColorStop(1, "#111830");
     ctx.fillStyle = cyl; ctx.fillRect(b.drumX, b.y, b.drumW, b.h);
-    // vertical ring lines per column
+    // vertical ring lines per column (downbeats brighter → readable rhythmic grid)
     for (var c = 0; c < COLS; c++) {
       var x = colScreenX(c);
-      ctx.strokeStyle = "rgba(0,0,0,0.14)"; ctx.lineWidth = 1;
+      var isBeat = c % 4 === 0;
+      ctx.strokeStyle = isBeat ? "rgba(255,220,150,0.14)" : "rgba(0,0,0,0.14)";
+      ctx.lineWidth = isBeat ? 1.5 : 1;
       ctx.beginPath(); ctx.moveTo(x, b.y); ctx.lineTo(x, b.y + b.h); ctx.stroke();
     }
     // pins
