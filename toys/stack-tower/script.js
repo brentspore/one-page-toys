@@ -82,7 +82,8 @@
     crane = {
       pivotX: t.x, pivotY: pivotY, len: len, angMax: 0.95,
       phase: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.5),  // start part-way through a swing
-      speed: Math.min(speed, 3.2), ang: 0, x: t.x, y: yLow, w: BW, h: BH, hue: hueFor(blocks.length)
+      speed: Math.min(speed, 3.2), ang: 0, x: t.x, y: yLow, w: BW, h: BH, hue: hueFor(blocks.length),
+      life: 0, maxLife: Math.max(2.5, 4.8 - blocks.length * 0.1)  // auto-drops if you dawdle (shorter as you climb)
     };
     swingCrane(0);
   }
@@ -181,7 +182,11 @@
     swayT += dt;
     camY += (camTarget - camY) * Math.min(1, dt * 6);
 
-    if (crane && running && !over) swingCrane(dt);
+    if (crane && running && !over) {
+      swingCrane(dt);
+      crane.life += dt;
+      if (crane.life >= crane.maxLife) drop();   // release on timeout — no swinging forever
+    }
 
     if (falling) {
       falling.vy += GRAV * dt;
@@ -316,8 +321,15 @@
       var pcx = crane.pivotX, pcy = sy(crane.pivotY);
       var bcx = crane.x, bcy = sy(crane.y);
       // short jib beam + mount at the pivot
+      var HB = BW * 0.75;
       ctx.strokeStyle = "rgba(255,255,255,0.30)"; ctx.lineWidth = 5; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(pcx - BW * 0.75, pcy); ctx.lineTo(pcx + BW * 0.75, pcy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pcx - HB, pcy); ctx.lineTo(pcx + HB, pcy); ctx.stroke();
+      // drop-timer: an accent segment on the beam that drains inward, reddening + pulsing when time's low
+      var rem = Math.max(0, 1 - crane.life / crane.maxLife), warn = rem < 0.32;
+      var pulse = warn ? 0.55 + 0.45 * Math.sin(swayT * 18) : 1;
+      ctx.strokeStyle = warn ? "rgba(255,92,80," + (0.9 * pulse) + ")" : "rgba(255,208,128,0.9)";
+      ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(pcx - HB * rem, pcy); ctx.lineTo(pcx + HB * rem, pcy); ctx.stroke();
       ctx.fillStyle = "#cfd7ea"; ctx.beginPath(); ctx.arc(pcx, pcy, 6, 0, Math.PI * 2); ctx.fill();
       // tilted rope from pivot to the top of the block
       ctx.strokeStyle = "rgba(230,236,250,0.7)"; ctx.lineWidth = 2.5; ctx.lineCap = "butt";
