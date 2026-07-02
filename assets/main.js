@@ -158,6 +158,10 @@ const TYPE_NL_PHRASES = {
     "breathing pacer breath guide box breathing 4-7-8 478 inhale exhale calm relax relaxation meditation mindfulness anxiety stress focus pranayama slow deep breaths timer wellness",
   "cost-calculator":
     "meeting cost calculator timer money burn rate how much does this meeting cost salary hourly per person dollars wage expensive standup live counter ticker",
+  "countdown-timer":
+    "countdown timer days until how many days till event birthday christmas new year vacation trip wedding launch deadline weekend clock ticking down share link until the big day time left remaining",
+  "sleep-calculator":
+    "sleep cycle calculator bedtime wake up time alarm when should i go to bed 90 minute cycles rem refreshed groggy nap rest tired how much sleep best time to wake insomnia schedule",
   "wage-timer":
     "time is money hourly wage salary earnings live counter ticker what am i earning per second minute how many hours of work does this cost purchase price worth it your time paycheck",
   "age-counter":
@@ -756,15 +760,9 @@ function createCard(tool) {
   const desc = document.createElement("p");
   desc.textContent = tool.shortDescription || "";
 
-  const tagsEl = document.createElement("div");
-  tagsEl.className = "tags";
-  const tags = Array.isArray(tool.tags) ? tool.tags : [];
-  for (const tag of tags) {
-    const chip = document.createElement("span");
-    chip.className = "tag";
-    chip.textContent = formatTagLabel(tag);
-    tagsEl.appendChild(chip);
-  }
+  // (Per-card tag chips removed — each toy's only tag was its own slug, which
+  // duplicated the title + category line above. Tags still power search via
+  // buildTagSearchHay/TYPE_NL_PHRASES; they're just no longer shown as chips.)
 
   const cta = document.createElement("span");
   cta.className = "card__cta";
@@ -772,7 +770,6 @@ function createCard(tool) {
 
   card.appendChild(cardTop);
   card.appendChild(desc);
-  card.appendChild(tagsEl);
   card.appendChild(cta);
 
   if (!tool.path) {

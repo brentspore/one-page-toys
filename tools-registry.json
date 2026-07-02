@@ -1,5 +1,25 @@
 [
   {
+    "slug": "countdown",
+    "name": "Countdown to Anything",
+    "shortDescription": "Name any moment—a birthday, a trip, a launch, the weekend—and watch the days, hours, minutes, and seconds tick down live. Copy a link to share your countdown with anyone.",
+    "category": "utility",
+    "tags": ["countdown-timer"],
+    "status": "live",
+    "path": "tools/countdown/index.html",
+    "related": []
+  },
+  {
+    "slug": "sleep-cycle",
+    "name": "Sleep Cycle Calculator",
+    "shortDescription": "Wake up refreshed, not groggy. Enter when you're going to bed and get the best alarm times—or enter when you need to wake and get the best bedtimes—all aligned to 90-minute sleep cycles.",
+    "category": "utility",
+    "tags": ["sleep-calculator"],
+    "status": "live",
+    "path": "tools/sleep-cycle/index.html",
+    "related": []
+  },
+  {
     "slug": "time-is-money",
     "name": "Time Is Money",
     "shortDescription": "Turn your hourly wage into real time. Watch what you've earned tick upward live since you opened the page—or flip it and see how many hours of your working life any purchase really costs.",

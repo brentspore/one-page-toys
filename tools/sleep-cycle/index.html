@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Sleep Cycle Calculator — One Page Toys</title>
+    <meta name="description" content="Wake up refreshed, not groggy. Enter when you're going to bed and get the best times to set your alarm — or enter when you need to wake and get the best bedtimes — all aligned to 90-minute sleep cycles. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/sleep-cycle/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fbfaf7" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Sleep Cycle Calculator — One Page Toys" />
+    <meta property="og:description" content="Wake up refreshed, not groggy — the best times to sleep or wake, aligned to 90-minute sleep cycles." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/sleep-cycle/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/sleep-cycle.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sleep Cycle Calculator — One Page Toys" />
+    <meta name="twitter:description" content="The best times to sleep or wake, aligned to 90-minute sleep cycles." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/sleep-cycle.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Sleep Cycle Calculator",
+        "url": "https://onepagetoys.com/tools/sleep-cycle/index.html",
+        "description": "Find the best times to go to sleep or wake up, aligned to 90-minute sleep cycles so you wake between cycles feeling refreshed.",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=3" />
+  </head>
+  <body>
+    <div class="heat" id="heat" aria-hidden="true"></div>
+
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../index.html">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 051 · Sleep Cycle Calculator</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="meter" aria-label="Sleep cycle calculator">
+        <div class="tabs" role="tablist" aria-label="Mode">
+          <button type="button" class="tab" id="tabWake" role="tab" aria-selected="true">I'm going to bed</button>
+          <button type="button" class="tab" id="tabBed" role="tab" aria-selected="false">I need to wake up</button>
+        </div>
+
+        <p class="meter__eyebrow" id="eyebrow">Set your alarm for</p>
+        <div class="odo" id="odo" role="text" aria-label="—">—</div>
+        <p id="sub" class="sub">Tell me when you'll fall asleep and I'll find your best wake-up times.</p>
+
+        <div class="console">
+          <div class="controls">
+            <div class="field" style="flex:1 1 240px;max-width:320px;">
+              <label class="field__label" id="timeLabel">Falling asleep at</label>
+              <div class="timepick" id="timepick">
+                <div class="field__box timepick__row">
+                  <button type="button" class="timepick__trigger" id="timeTrigger" aria-haspopup="dialog" aria-expanded="false">
+                    <svg class="timepick__ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 7v5l3 2"></path>
+                    </svg>
+                    <span class="timepick__value" id="timeValue">—</span>
+                  </button>
+                  <button type="button" class="nowbtn" id="nowBtn">Now</button>
+                </div>
+                <div class="timepop" id="timePop" role="dialog" aria-label="Choose a time" hidden>
+                  <div class="timecol" id="colH" role="listbox" aria-label="Hour"></div>
+                  <div class="timecol timecol--min" id="colM" role="listbox" aria-label="Minute"></div>
+                  <div class="timecol timecol--ap" id="colA" role="listbox" aria-label="AM or PM"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="options" id="options" aria-label="Recommended times"></div>
+
+          <p id="status" class="meter__status" aria-live="polite">Based on 90-minute cycles + ~15 min to drift off.</p>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../index.html">← onepagetoys.com</a>
+    </main>
+
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+    <script src="../../assets/fullscreen.js?v=2" defer></script>
+  </body>
+</html>

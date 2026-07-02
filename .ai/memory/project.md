@@ -1,52 +1,76 @@
 ---
 name: Project overview
-description: Durable project-specific context for AI tools
+description: Durable project-specific context for One Page Toys
 type: project
 ---
 
-**What it is:** One Page Toys (onepagetoys.com) — a growing collection of small browser-based toys, generators, and utilities Synergy ships for fun. Each one is a self-contained static page (currently ~60+ across `/toys/` and `/tools/`). Nothing is monetized directly; no sales CTAs; no affiliate links. **Secondary purpose: top-of-funnel traffic for the rest of the Synergy portfolio** — utility tools and small toys are search-rich, and any visitor who lands on a toy is gently discoverable to the affiliate-feeder family (SE / BI / BOK) once cross-linking is added. **It is NOT an affiliate feeder** — the "feeding" is passive: spread the net wider, some traffic finds the other sites. Don't add affiliate CTAs or sales surfaces; that would break what the site is for.
+> **Read `HANDOFF.md` first** for current state (latest pushed commit, what's in flight, how to
+> resume) and `DECISIONS.md` for the standing quality bars + engineering defaults. This file is the
+> slow-moving overview; where it disagrees with HANDOFF, trust HANDOFF. (Refreshed 2026-07-01 —
+> the earlier version described a pre-2026-06 "tool-shell / tool-cross / .panel" architecture that
+> no longer exists; that has been removed.)
 
-The codebase happens to embody a **consistency-first UI framework** (static HTML/CSS/JS, token-driven CSS, no SPA, no build pipeline beyond a few node scripts). That framework is a portable side-benefit — patterns may eventually get lifted into other Synergy projects — but the framework is a property of the code, not the purpose of the site.
+**What it is:** One Page Toys (onepagetoys.com) — a branded **launcher hub** plus a growing set of
+**standalone, full-bleed browser toys** (50 as of 2026-07-01), each in its own `toys/<slug>/` (or
+`tools/<slug>/` for the small utility family). Every toy opens in a NEW TAB and is a completely
+self-contained static page. Direction is **FUN / playful / experiential — NOT dev tools** (dev
+tools live on the separate BuildUtilities site). Nothing is monetized directly; no sales CTAs, no
+affiliate links (there is a low-key "tip jar" → PayPal, and a "Friends of the gallery" aside).
 
-**Audience/user:** General public; people who land on a specific toy from search or word-of-mouth. The "framework consumer" audience (future-Synergy, AI tools studying the patterns) is secondary.
+**Purpose:** delight first; **secondary** = top-of-funnel search traffic for the wider Synergy
+portfolio (toys are search-rich; a visitor who lands on one is passively discoverable). It is NOT
+an affiliate feeder — keep it that way; don't add sales surfaces.
 
-**Core product direction:** Ship small things, keep them self-contained, don't overthink. The consistency framework is the discipline that keeps shipping painless. Three-layer architecture:
-1. **Invariants** — semantics, accessibility, interaction contracts (focus visible, hit targets, reduced motion), scoping rules. Non-negotiable.
-2. **Shared primitives + patterns** — `.panel`, `.btn`, tool shell layout, chips/segmented controls, "choice" grids, common empty/error blocks. Token-driven, not hardcoded.
-3. **Theme** — swappable CSS variables. A full re-skin is a theme swap, not a rewrite.
+**Audience:** general public who land on a specific toy from search or word-of-mouth. The owner is
+a **designer** and holds a high visual bar — see the "Design quality bar" + "Audio quality bar"
+sections in `HANDOFF.md` / `DECISIONS.md`. A toy isn't done when it "works"; it must look and sound
+intentional, and **every toy must be interactive**.
 
-Tools/toys must read semantic tokens (not hardcoded colors/radii/shadows) so re-skinning works automatically.
+**Tech stack:** hand-written static **HTML + CSS + vanilla JS**. **No build, no framework, no deps**
+to run (`python3 -m http.server` and open it). Toys are typically vanilla **Canvas 2D** (some raw
+WebGL as an escape hatch; avoid Three.js) + **Web Audio** (fully synthesized, no sample files).
+Playwright is a dev-only dependency for headless verification / screenshots / OG rendering
+(`node_modules` is gitignored — reinstall with `npm install && npx playwright install chromium`).
+Geist design system (Geist Sans/Mono, neutral grays, restrained red `#941e1e`, 3-way
+System/Light/Dark theme). Deployed via **GitHub Pages from `main`** → onepagetoys.com (CNAME);
+GA4 + JSON-LD structured data in place.
 
-**Tech stack:** Static HTML/CSS/JS (no SPA framework). Token-driven CSS architecture.
+**Two page shapes:**
+- **Toys** (`toys/<slug>/`) — full-bleed dark experiences: `index.html` + `styles.css` + `script.js`,
+  frame corners (`No. NNN` / name / back-link), a hint line, full SEO meta + JSON-LD + GA + no-flash
+  theme init + `assets/tip-jar.js` + `assets/fullscreen.js`. Copy any recent toy as a template.
+- **Tools** (`tools/<slug>/`) — the small utility family (Meeting Cost Meter, Time Is Money, Life in
+  Numbers, The Latte Factor): a shared light/dark Geist "tool" chrome (topbar + brand + theme toggle
+  + odometer hero + glassy console). Copy `tools/meeting-cost-meter/` and recolor.
 
-**Important source areas:**
-- `assets/styles.css` — base site styling + global tokens (no tool-specific selectors)
-- `assets/main.js` — gallery behavior (home grid, all-tools search/filters)
-- `assets/tool-shell.css` — shared page layout, `.panel`, `.tool-directions`, shared components
-- `assets/tool-cross.js` — injects "Related tools" from `tools-registry.json`
+**Key shared files:**
+- `tools-registry.json` — drives the gallery; prepend new toys newest-first (slug/name/
+  shortDescription/category/tags/status/path).
+- `assets/main.js` — gallery render + search (home shows a random 9; all-toys paginates 12/page
+  alphabetically w/ infinite scroll); `TYPE_NL_PHRASES` natural-language search map (keyed by tag);
+  GA4 events. Cache-bust `?v=N`.
+- `assets/styles.css` — hub styles + per-slug `.card__preview[data-slug]` CSS-motif thumbnails (+ a
+  `:not()` default-exclusion chain). Cache-bust `?v=N`.
+- `assets/theme.js` (3-way theme), `assets/tip-jar.js`, `assets/fullscreen.js`.
+- `sitemap.xml`; `assets/og/<slug>.png` (per-toy share image, every toy has one);
+  `assets/cards/<slug>.png` (rendered card thumbnails — many toys; the tool family uses CSS-motif
+  cards instead).
+- `scripts/og-gen.html` — parameterized 1200×630 OG template (`#<slug>`, screenshot at 1200×630).
 
-**Working rules:**
-- New "looks" should be added as themes/variants (CSS variables), not by editing page-local CSS.
-- **Tool code must not leak into global assets** (scoping discipline).
-- Shared components depend on tokens, not hardcoded one-off values.
-- Predictable structure: tool pages follow the same layout hierarchy.
+**How to add a toy (the manual pipeline — there is no codegen step):**
+1. Create `toys/<slug>/` (or `tools/<slug>/`) = self-contained `index.html` + `styles.css` +
+   `script.js`, following a recent toy as the template.
+2. Register everywhere: prepend to `tools-registry.json`; add to `sitemap.xml`; add a
+   `TYPE_NL_PHRASES` entry in `assets/main.js` (keyed by the toy's tag); add a
+   `.card__preview[data-slug]` rule in `assets/styles.css` **and** add the slug to the `:not()`
+   default-exclusion chain; add an og-gen entry + render `assets/og/<slug>.png` (and a real card
+   `assets/cards/<slug>.png` where it beats a CSS motif).
+3. Cache-bust: bump `?v=N` on any shared asset changed (`assets/styles.css`, `assets/main.js`, …)
+   across `index.html` + `all-toys.html`, and on the toy's own `script.js`/`styles.css`.
+4. Verify headless (Playwright): no console errors, no horizontal overflow at 375px, interactions
+   work; screenshot to eyeball visuals; audio can only be truly judged by the owner's ears.
 
-**Tool page contract (every page must follow):**
-1. Three CSS imports in order: `../../assets/styles.css` → `../../assets/tool-shell.css` → `styles.css` (tool-local)
-2. `data-tool-slug="my-slug"` on `<body>`
-3. Semantic header / main / footer structure
-4. `.panel` wrapping the primary interactive area
-5. `.tool-directions` help text placed *after* controls, not before
-6. `<div id="toolCrossRoot" class="tool-cross-mount"></div>` before `</main>` (related tools injection point)
-7. Deferred `../../assets/site-chrome.js` and `../../assets/tool-cross.js` script imports at end of body
-8. Tool-local CSS must use a slug-prefixed BEM namespace (e.g. `.qrg-`, `.sm-`) — never extend or duplicate global selectors (`.btn`, `.panel`) in tool-local files
-
-**How to add a new tool/toy:**
-1. Create `/tools/my-slug/` (utility) or `/toys/my-slug/` (game/visual/audio/wellness) with `index.html` + `styles.css`
-2. Follow the tool page contract above
-3. Add entry to `tools-registry.json`: slug, name, shortDescription, category, tags, status, related (path auto-filled by script)
-4. Run `node scripts/sync-registry-paths.cjs` then `node scripts/build-sitemap.cjs`
-
-**Builder/import notes:** Hand-coded HTML/CSS/JS. PUBLIC repo, not Lovable-generated. Built with Gemini AI assistance.
-
-**Current-state checkpoint (2026-05-25):** Live at https://onepagetoys.com (GitHub Pages via CNAME). ~60+ toys + tools shipped. Google Analytics + structured data (JSON-LD WebSite) in place. No cross-links to the affiliate-feeder family yet — adding a sister-sites footer linking SE / BI / BOK is in BACKLOG to realize the latent traffic-feeding potential.
+**Workflow constraints (see DECISIONS.md for the full list):** only commit/push when the owner says
+`push`; **exclude both `.claude/settings.json` and `.claude/settings.local.json` from every commit**;
+after a push, bump the HANDOFF pointer + add a "Handoff: commit pointer XXX" follow-up commit + mark
+PULSE PUSHED. The old ~57 pre-pivot toys were archived to `/archive/`.

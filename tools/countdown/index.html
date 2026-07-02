@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Countdown to Anything — One Page Toys</title>
+    <meta name="description" content="Name any moment — a birthday, a trip, a launch, the weekend — and watch the days, hours, minutes, and seconds tick down live. Copy a link to share your countdown. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/countdown/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fbfaf7" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Countdown to Anything — One Page Toys" />
+    <meta property="og:description" content="Name any moment and watch it tick down live — days, hours, minutes, seconds. Share your countdown with a link." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/countdown/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/countdown.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Countdown to Anything — One Page Toys" />
+    <meta name="twitter:description" content="Name any moment and watch it tick down live. Share your countdown with a link." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/countdown.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Countdown to Anything",
+        "url": "https://onepagetoys.com/tools/countdown/index.html",
+        "description": "Name any moment and watch the days, hours, minutes, and seconds tick down live — with a shareable link.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <div class="heat" id="heat" aria-hidden="true"></div>
+
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../index.html">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 052 · Countdown</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="meter" aria-label="Countdown">
+        <input id="title" class="meter__title" value="New Year's Day" spellcheck="false" autocomplete="off" aria-label="Event name" maxlength="48" />
+
+        <p class="meter__eyebrow" id="eyebrow">Days to go</p>
+        <div class="odo" id="odo" role="text" aria-label="0">0</div>
+        <p id="sub" class="sub">Name a moment and pick when — then watch it tick down.</p>
+
+        <div class="console">
+          <div class="numgrid" id="grid">
+            <div class="numcard"><div class="numcard__val" id="hh">00</div><div class="numcard__label">Hours</div></div>
+            <div class="numcard"><div class="numcard__val" id="mm">00</div><div class="numcard__label">Minutes</div></div>
+            <div class="numcard"><div class="numcard__val" id="ss">00</div><div class="numcard__label">Seconds</div></div>
+          </div>
+
+          <div class="controls" style="margin-top:18px;">
+            <div class="field field--plain" style="flex:1 1 280px;max-width:340px;">
+              <label class="field__label" for="target">Target date &amp; time</label>
+              <div class="field__box">
+                <input id="target" class="field__input" type="datetime-local" />
+              </div>
+            </div>
+          </div>
+
+          <div class="presets" id="presets" role="group" aria-label="Quick events">
+            <button type="button" class="preset" data-preset="newyear">🎆 New Year</button>
+            <button type="button" class="preset" data-preset="christmas">🎄 Christmas</button>
+            <button type="button" class="preset" data-preset="weekend">🎉 The weekend</button>
+            <button type="button" class="preset" data-preset="friday">🍻 Friday 5pm</button>
+          </div>
+
+          <div class="actions">
+            <button id="copyBtn" class="btn btn--primary" type="button">Copy share link</button>
+          </div>
+
+          <p id="status" class="meter__status" aria-live="polite">Ticking down in real time.</p>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../index.html">← onepagetoys.com</a>
+    </main>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+    <script src="../../assets/fullscreen.js?v=2" defer></script>
+  </body>
+</html>

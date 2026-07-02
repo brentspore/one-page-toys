@@ -247,6 +247,16 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://onepagetoys.com/tools/countdown/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/tools/sleep-cycle/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://onepagetoys.com/tools/time-is-money/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>

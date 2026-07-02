@@ -577,6 +577,44 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
   filter: drop-shadow(0 4px 18px rgba(214, 50, 50, 0.45));
 }
 
+/* Countdown to Anything — a live days-remaining counter (teal) */
+.card__preview[data-slug="countdown"]{
+  background: radial-gradient(125% 130% at 50% 138%, #0a3b37 0%, #072421 58%, #04140f 100%);
+}
+.card__preview[data-slug="countdown"]::after{
+  content: "12 days";
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(176deg, #c7f5ee 0%, #14b8a6 48%, #0a7267 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(20, 184, 166, 0.45));
+}
+
+/* Sleep Cycle Calculator — the recommended wake time (night blue) */
+.card__preview[data-slug="sleep-cycle"]{
+  background: radial-gradient(125% 130% at 50% 138%, #1a2150 0%, #0e1330 58%, #080a1c 100%);
+}
+.card__preview[data-slug="sleep-cycle"]::after{
+  content: "7:15 AM";
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(176deg, #dbe3ff 0%, #5a7be6 48%, #33469f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(90, 123, 230, 0.45));
+}
+
 /* Time Is Money — live earnings odometer (money green) */
 .card__preview[data-slug="time-is-money"]{
   background: radial-gradient(125% 130% at 50% 138%, #0d3a24 0%, #071e14 58%, #04120b 100%);
@@ -919,7 +957,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="slide-puzzle"]{ background: #10131c url("cards/slide-puzzle.png") center / cover no-repeat; }
 
 /* Default — clean neutral preview for any future toy */
-.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]):not([data-slug="lava-lamp"]):not([data-slug="bubble-wrap"]):not([data-slug="newtons-cradle"]):not([data-slug="spirograph"]):not([data-slug="plasma-ball"]):not([data-slug="kaleidoscope"]):not([data-slug="ripple-pond"]):not([data-slug="wind-chimes"]):not([data-slug="marble-drop"]):not([data-slug="zen-sand-garden"]):not([data-slug="floating-lanterns"]):not([data-slug="aurora-drift"]):not([data-slug="campfire"]):not([data-slug="fireworks"]):not([data-slug="rain-window"]):not([data-slug="perfect-circle"]):not([data-slug="pin-art"]):not([data-slug="chladni-plate"]):not([data-slug="pottery-wheel"]):not([data-slug="aurebesh-translator"]):not([data-slug="double-pendulum"]):not([data-slug="cloth"]):not([data-slug="gravity-orbits"]):not([data-slug="wooly-willy"]):not([data-slug="slide-puzzle"]):not([data-slug="jigsaw-puzzle"]):not([data-slug="kalimba"]):not([data-slug="tongue-drum"]):not([data-slug="time-is-money"]):not([data-slug="life-in-numbers"]):not([data-slug="latte-factor"]){
+.card__preview:not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]):not([data-slug="lava-lamp"]):not([data-slug="bubble-wrap"]):not([data-slug="newtons-cradle"]):not([data-slug="spirograph"]):not([data-slug="plasma-ball"]):not([data-slug="kaleidoscope"]):not([data-slug="ripple-pond"]):not([data-slug="wind-chimes"]):not([data-slug="marble-drop"]):not([data-slug="zen-sand-garden"]):not([data-slug="floating-lanterns"]):not([data-slug="aurora-drift"]):not([data-slug="campfire"]):not([data-slug="fireworks"]):not([data-slug="rain-window"]):not([data-slug="perfect-circle"]):not([data-slug="pin-art"]):not([data-slug="chladni-plate"]):not([data-slug="pottery-wheel"]):not([data-slug="aurebesh-translator"]):not([data-slug="double-pendulum"]):not([data-slug="cloth"]):not([data-slug="gravity-orbits"]):not([data-slug="wooly-willy"]):not([data-slug="slide-puzzle"]):not([data-slug="jigsaw-puzzle"]):not([data-slug="kalimba"]):not([data-slug="tongue-drum"]):not([data-slug="time-is-money"]):not([data-slug="life-in-numbers"]):not([data-slug="latte-factor"]):not([data-slug="sleep-cycle"]):not([data-slug="countdown"]){
   background:
     radial-gradient(120% 120% at 50% 130%, var(--accent-soft), transparent 60%),
     var(--surface-2);
@@ -980,19 +1018,6 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 }
 .badge--experimental{ color: var(--ink); border-color: var(--line-strong); }
 .badge--beta{ color: var(--muted); }
-
-.tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.tag{
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  background: var(--surface-2);
-  color: var(--muted);
-}
 
 .card__cta{
   display: inline-flex;
