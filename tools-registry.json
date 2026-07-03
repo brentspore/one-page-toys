@@ -1,5 +1,15 @@
 [
   {
+    "slug": "random-maze",
+    "name": "Random Maze",
+    "shortDescription": "A fresh neon maze every time—guide the glowing spark from the corner to the exit with the arrow keys, a swipe, or a tap, and beat your best time. Flip on a torch-lit fog for a tougher run.",
+    "category": "game",
+    "tags": ["random-maze"],
+    "status": "live",
+    "path": "toys/random-maze/index.html",
+    "related": []
+  },
+  {
     "slug": "trio",
     "name": "Trio",
     "shortDescription": "A slide-and-merge number puzzle—every swipe nudges the whole board one step. A 1 and a 2 combine into a 3, then matching tiles double: 3, 6, 12, 24… Chase the biggest number.",

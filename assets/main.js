@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "random-maze":
+    "random maze labyrinth generated procedural neon grid solve navigate find the exit path corridors walls escape puzzle brain adventure dungeon get through best time speedrun fog torch dark explore arrows swipe tap dead end tron glowing game",
   "trio":
     "trio threes 3s slide merge combine number puzzle tile game 1 2 3 doubling twos and threes 2048 like swipe match numbers add strategy brain teaser addictive casual minimal one more move highest tile grid four by four",
   "coin-pusher":
