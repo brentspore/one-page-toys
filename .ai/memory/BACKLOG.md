@@ -18,21 +18,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Add a "Sister sites" footer column linking to the affiliate-feeder family
-
-**Why it matters:** Per project.md, one-page-toys' secondary purpose is top-of-funnel traffic for the rest of the Synergy portfolio. Currently the cross-link is **passive only** — visitors who land on a toy have no way to discover SE / BI / BOK from here. Adding a small "Sister sites" footer column (matching the pattern already shipped across SE / BI / BOK / JMML on 2026-05-24) realizes the latent traffic-feeding role without changing the character of the site.
-
-**When to revisit:** Whenever this repo is next touched. Small change.
-
-**Notes:** Pattern reference — see the corresponding footer columns already shipped on the four affiliate-feeder sites for the visual treatment and link copy shape (short descriptors per site, no icons, text-only, same-tab). For one-page-toys, just three target sites:
-- **Supercharged Email** → https://superchargedemail.com — "Free tools + DIY email marketing"
-- **Beautiful Inbox** → https://beautifulinbox.com — "White-glove email marketing service"
-- **Biz Online Kit** → https://bizonlinekit.com — "Get your business online (domains, email, websites)"
-
-JMML is omitted — it's the email-capture backend, not a customer-facing destination from a toys audience. Implementation in `assets/styles.css` or wherever the global footer lives; check `index.html` / `all-tools.html` for the current footer markup. No tracking params on the URLs — these are family links, not affiliate referrals.
-
----
-
 ### New toy: Random Maze (solve-the-maze)
 
 **Why it matters:** A maze is broadly appealing and endlessly replayable — random generation means infinite content from a small amount of code, and it fits the "FUN / playful / experiential" direction and the `game` category. Photographs well for a card/OG. Self-contained vanilla-Canvas build.
