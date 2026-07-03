@@ -1,5 +1,15 @@
 [
   {
+    "slug": "vapor",
+    "name": "Vapor",
+    "shortDescription": "Stir glowing smoke with your finger—a real fluid simulation that swirls, curls, and blooms into color. Drag to paint the flow, tap for a puff. Endlessly mesmerizing.",
+    "category": "visual",
+    "tags": ["vapor"],
+    "status": "live",
+    "path": "toys/vapor/index.html",
+    "related": []
+  },
+  {
     "slug": "dot-loop",
     "name": "Dot Loop",
     "shortDescription": "A calm connect-the-dots puzzle—drag to link touching same-colored dots and clear them; close a loop to wipe out every dot of that color at once. Endless, no fail.",

@@ -8,7 +8,7 @@
   "use strict";
 
   // ---- TUNABLES -----------------------------------------------------------
-  var N = 15;                       // number of tines (3 octaves of pentatonic)
+  var N = 15;                       // desktop tine count (phones drop to 9 for fat, easy-to-pluck targets — see resize)
   var DEGREES = [0, 2, 4, 7, 9];    // major pentatonic scale (semitone offsets)
   var ROOTS = [                     // selectable keys (root MIDI note)
     { name: "C", midi: 60 }, { name: "D", midi: 62 }, { name: "F", midi: 65 },
@@ -64,14 +64,18 @@
     canvas.width = W * DPR; canvas.height = H * DPR;
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // Fewer, fatter tines on phones so each is an easy fingertip target.
+    var mobile = W <= 560, wantN = mobile ? 9 : 15;
+    if (wantN !== N) { N = wantN; buildTines(); }
     cx = W / 2;
-    bw = Math.min(W * 0.86, 560);
+    bw = Math.min(W * (mobile ? 0.94 : 0.86), 560);
     bh = Math.min(H * 0.46, 380);
     boardBottom = Math.min(H * 0.82, H - 78);
     boardTopY = boardBottom - bh;
     bridgeY = boardTopY + bh * 0.52;
     Hmax = bh * 0.62; Hmin = bh * 0.24;
-    leftX = cx - bw * 0.40; rightX = cx + bw * 0.40;
+    var play = mobile ? 0.45 : 0.40;
+    leftX = cx - bw * play; rightX = cx + bw * play;
     spacing = (rightX - leftX) / (N - 1);
     if (!bgMotes.length) seedBgMotes();
     seedStars();

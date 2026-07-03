@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "vapor":
+    "vapor smoke fluid simulation navier stokes stable fluids ink dye plume swirl curl flow gas mist haze paint stir drag interactive generative visual mesmerizing satisfying trippy glow bloom colorful sensory fidget relaxing",
   "dot-loop":
     "dot loop dots connect the dots two dots twodots dots and co link match same color colour chain clear loop square pastel calm zen relaxing puzzle line draw board casual cozy satisfying fidget minimalist grid drop",
   "paper-plane":

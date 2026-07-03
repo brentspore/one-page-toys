@@ -20,6 +20,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ### New toy: Random Maze (solve-the-maze)
 
+**Status:** done
+
 **Why it matters:** A maze is broadly appealing and endlessly replayable — random generation means infinite content from a small amount of code, and it fits the "FUN / playful / experiential" direction and the `game` category. Photographs well for a card/OG. Self-contained vanilla-Canvas build.
 
 **When to revisit:** Next time we're building new toys (owner picks candidates via AskUserQuestion). Quick, satisfying build.
@@ -40,6 +42,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ### New toy: Connect-the-dots puzzle (Dots & Co-style)
 
+**Status:** done
+
 **Why it matters:** A calm, minimalist, deeply satisfying connect-the-dots puzzle — instantly learnable, endlessly replayable, and gorgeous in a restrained way that suits the design bar and photographs beautifully for card/OG. Fits `game`/puzzle and the cozy lane. The connect-loop mechanic is genuinely juicy (chain sounds, board-clear cascades).
 
 **When to revisit:** Next puzzle/cozy toy round. Moderate scope — the grid + gravity refill + loop-detection is the meat.
@@ -59,6 +63,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 
 ### New toy: Zuma-style marble shooter
+
+**Status:** done
 
 **Why it matters:** A classic, tense, deeply satisfying match-3 chain-shooter — instantly readable, combo-driven, and endlessly replayable. Distinct mechanic from anything in the gallery (aim-and-shoot vs. tap/drag), strong arcade/viral appeal, and a vivid look that pops on a card/OG. `game`/`arcade` (or puzzle).
 
@@ -86,6 +92,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 
 ### New toy: Flappy-Bird-style one-tap flyer
+
+**Status:** done
 
 **Why it matters:** A proven viral/addictive one-tap arcade game — trivially learnable, endlessly replayable, great for top-of-funnel discovery and sharing a high score. Fits the `game` category and the "super addictive/viral" lane (cf. Perfect Circle, Slice It). Small, self-contained vanilla-Canvas build.
 
@@ -132,5 +140,55 @@ Items in this file follow the structure below so that any AI tool or human editi
 - **Economy + UI:** gold counter, lives, wave counter, a tower-build palette (tap a slot → choose tower → pay gold), sell/upgrade menu, a start-next-wave button, speed-up toggle.
 - **Juice:** hit flashes, death poofs, projectile trails, gold-pop numbers, a "wave incoming" banner; synth audio (shoot/hit/enemy-death/gold/wave/lose per the audio bar).
 - ⚠ **Scope + legal:** this is FAR bigger than a typical one-page toy — plan an MVP (1 path, 2–3 tower types, 3–5 waves, 2 enemy types) then expand. Tower defense is a genre (fine); **Kingdom Rush is a specific game** — use our **own art/theme/name** (e.g. a neon/fantasy/bug-invasion skin — offer via AskUserQuestion), not its assets or branding. Category `game`. Full add-a-toy pipeline (registry/sitemap/NL/card+`:not()`/og-gen, hub cache-bust); real rendered card + OG.
+
+---
+
+### New toy: Ink Marbling (generative visual)
+
+**Why it matters:** Calm, gorgeous, endlessly satisfying generative visual — drop and swirl blooming clouds of color into dark water (paper-marbling). Cozy lane, photographs beautifully, strong "just watch / gently play" appeal. Distinct from the existing visual toys.
+
+**When to revisit:** Next generative-visual round. Moderate build (a lightweight fluid/advection or a bloom-and-comb particle model — doesn't need a full Navier-Stokes solver like Vapor).
+
+**Notes:** Owner idea (2026-07-03, from the generative-visual shortlist; was also a runner-up when Ferrofluid was replaced). Drop ink (tap) → a bloom of color expands and mixes into the "water"; drag to **comb/rake** the currents (the classic marbling gesture) so blooms stretch into feathered veins; palette options (jewel / monochrome ink / metallic gold). Calm, no fail. Reuse Vapor's dye-advection ideas OR a simpler concentric-ring + comb-displacement model. Real card + OG; full add-a-toy pipeline. Category `visual`.
+
+---
+
+### New toy: Slime Mold (Physarum) (generative visual)
+
+**Why it matters:** Mesmerizing emergent behavior — thousands of tiny agents lay down glowing trails and follow each other, self-organizing into living vein-like networks. High "watch it come alive" appeal; a genre-distinct generative toy.
+
+**When to revisit:** Next generative-visual round. Meaty-ish (agent sim + a trail map with diffuse/decay), but well-understood (Physarum / Jeff Jones model).
+
+**Notes:** Owner idea (2026-07-03, from the generative-visual shortlist). Model: N agents each with position + heading; each senses the trail map ahead (3 sensors L/C/R), steers toward the strongest, moves, and deposits trail; the trail map **diffuses + decays** each frame → emergent networks. Interactive: **tap/drag to drop "food"/attractant** the agents swarm toward; maybe a palette + a "reset" and a density/behavior slider. GPU would be ideal but a CPU version at ~20–60k agents on a downscaled trail grid is doable in vanilla JS/typed arrays (keep the trail grid modest, cap agents for mobile). Glowing on dark. Real card + OG; full pipeline. Category `visual`.
+
+---
+
+### New toy: Reaction-Diffusion (Turing patterns) (generative visual)
+
+**Why it matters:** Hypnotic organic patterns — spots, stripes, mazes, and coral-like growth that morph endlessly (Gray-Scott model). A classic generative-art centerpiece; deeply satisfying to watch and tweak.
+
+**When to revisit:** Next generative-visual round. Moderate build (a two-chemical grid update; the math is simple but needs a decent grid resolution + a couple of update steps/frame for speed).
+
+**Notes:** Owner idea (2026-07-03, from the generative-visual shortlist). Gray-Scott reaction-diffusion on a grid (two chemicals A,B; feed/kill rates control the regime). Interactive: **drag to seed** new growth (paint B), buttons to switch the **regime** (coral / mitosis / worms / spots / maze) by changing feed/kill, a speed control, and a palette (the density mapped through a gradient). Alive on arrival (start with a seeded blob growing). Run 2–4 solver steps/frame for smooth motion; keep grid ~200² and render via ImageData scaled up. Real card + OG; full pipeline. Category `visual`.
+
+---
+
+### New toy: Flow Field (generative visual)
+
+**Why it matters:** Silky, elegant generative art — thousands of particles ride a hidden Perlin-noise vector field, painting layered flowing ribbons. The quintessential "flow field" generative aesthetic; gorgeous stills for a card.
+
+**When to revisit:** Next generative-visual round. Light-to-moderate build (particles + a noise field; the classic generative-coding sketch).
+
+**Notes:** Owner idea (2026-07-03, from the generative-visual shortlist). A hidden vector field from layered value/Perlin noise (evolving slowly over time); thousands of particles sample the field at their position and steer along it, drawing thin fading trails → silky ribbons. Interactive: **drag to disturb/push** the field near the cursor, **tap to reseed** the field (a whole new pattern), palette + trail-length/persistence controls. Additive glow on dark; particles recycle when off-screen or aged. Real card + OG; full pipeline. Category `visual`.
+
+---
+
+### New toy: Particle Life (generative visual)
+
+**Why it matters:** Surprisingly alive — a few colors of particles governed by simple asymmetric attraction/repulsion rules self-assemble into cells, chasers, membranes, and drifting "creatures." Endlessly fascinating emergent life from tiny rules; a standout generative toy.
+
+**When to revisit:** Next generative-visual round. Moderate build (N-body-ish interactions — needs spatial hashing / a cutoff radius to stay fast; cap particle count for mobile).
+
+**Notes:** Owner idea (2026-07-03, from the generative-visual shortlist). ~4–6 particle "species" (colors); a random (or curated) **attraction matrix** defines how each species is attracted to/repelled by each other within a cutoff radius; integrate with friction. Emergent structures form. Interactive: **tap to spawn/scatter**, **drag to stir**, a "**new rules**" button (reroll the matrix → a whole new ecosystem), palette, particle-count/friction sliders. Use a **spatial grid** for neighbor queries so it stays 60fps with a few thousand particles (cap on mobile). Glowing dots on dark. Real card + OG; full pipeline. Category `visual`.
 
 ---
