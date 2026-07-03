@@ -1,5 +1,15 @@
 [
   {
+    "slug": "nova-coil",
+    "name": "Nova Coil",
+    "shortDescription": "A cosmic marble shooter—a glowing chain of orbs spirals toward the reactor core. Aim the cannon and fire, matching three or more of a colour to blast them away before the coil reaches the centre.",
+    "category": "game",
+    "tags": ["nova-coil"],
+    "status": "live",
+    "path": "toys/nova-coil/index.html",
+    "related": []
+  },
+  {
     "slug": "random-maze",
     "name": "Random Maze",
     "shortDescription": "A fresh neon maze every time—guide the glowing spark from the corner to the exit with the arrow keys, a swipe, or a tap, and beat your best time. Flip on a torch-lit fog for a tougher run.",

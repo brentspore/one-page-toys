@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "nova-coil":
+    "nova coil zuma marble shooter ball blast puzzlebobble bust a move match 3 three color orbs spiral chain reaction combo aim cannon shoot spheres neon cosmic space reactor core arcade luxor snood tumble puzzle game addictive",
   "random-maze":
     "random maze labyrinth generated procedural neon grid solve navigate find the exit path corridors walls escape puzzle brain adventure dungeon get through best time speedrun fog torch dark explore arrows swipe tap dead end tron glowing game",
   "trio":
