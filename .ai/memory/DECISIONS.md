@@ -121,3 +121,20 @@ Standing principle: **each release should feel a notch more polished than the la
 **Rationale:** The site's whole value is instant, no-friction, one-tab play; persistence-dependent games break that promise and can't work without the accounts/backend the site doesn't have.
 
 **Revisit if:** One Page Toys ever gains accounts / cloud save / cross-session progression, or the owner wants a dedicated "bigger games" surface.
+
+---
+
+### 2026-07-03 — Always richly tag every toy in the backend (search now + a filter later)
+
+**Context:** Owner directive — "even though tags aren't exposed in the UI, always make sure you are relevantly tagging all the toys so it improves search. This is a project-wide ask; I'll add [a tag filter] later. I was just making sure we're continually tagging things on the back end to save us work later."
+
+**How search actually works (so tags land where they matter):** `normalizeHaystack()` in `assets/main.js` builds each toy's search string from `name + shortDescription + slug + category + buildTagSearchHay(tags)`. `buildTagSearchHay` walks the toy's `tags` array and, **for each tag**, adds the tag word, its dash→space form, AND `TYPE_NL_PHRASES[tag]` if that key exists. So:
+- The **rich keyword string lives in `TYPE_NL_PHRASES[<key>]`** (synonyms, vibes, what-it-does, comparables) and is pulled in ONLY if that key is one of the toy's `tags`. Historically each toy's single tag was its slug (or a concept key like `countdown-timer`, `monty-hall`, `sequence-memory`) that keys its NL phrase.
+- ⚠ **NEVER remove a toy's NL-phrase-key tag** (usually the slug) — that's what drops its whole keyword string into search. Only ADD tags.
+- The **registry `tags` array** also feeds a **future faceted tag filter** the owner plans (currently the tag-chip UI is dead — `renderTagChips` early-returns because `#toolsTags` was removed — so extra tags surface no UI today; they're pure backend data).
+
+**Decision / checklist for every new or touched toy:**
+1. Give it a comprehensive `TYPE_NL_PHRASES[<key>]` entry (keyed by a tag it carries) — synonyms, mood/vibe words, mechanic, and comparables (e.g. "flappy", "zuma", "threes", "wooly willy", "ferrofluid").
+2. Populate its registry `tags` with ~5–8 relevant concept tags: mechanic (puzzle/arcade/matching/physics/drawing/sequencer…), vibe (relaxing/satisfying/cozy/meditative/mesmerizing/chaotic…), input (drag/tap/swipe/keyboard), theme (space/neon/nature/casino…), and comparables — **plus keep the NL-key tag**.
+
+**Done 2026-07-03:** backfilled all 67 toys from ~1 tag each → avg ~7.3 concept tags (registry). Verified: search gained real matches (casino→Blackjack/Coin Pusher, plinko→Marble Drop, ferrofluid→Goo Cursor, handpan→Tongue Drum, monty hall→Three Doors…), no toy lost its NL key, 0 console errors, no tag UI resurrected.

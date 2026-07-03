@@ -1104,6 +1104,88 @@ async function loadRegistryAndRender() {
   }
 }
 
+// "Friends of the gallery": each refresh, feature ONE rotating partner as a
+// rich card (favicon + blurb); the rest stay as a quiet compact row of links
+// (every partner remains a real, crawlable backlink). Blurbs are drafted from
+// each site's own meta description; favicons are hosted locally in assets/partners/.
+var PARTNER_META = {
+  "symmetrygenius.com": { icon: "assets/partners/symmetry-genius.png", blurb: "Drag shapes to solve symmetry puzzles." },
+  "five-second-game.lovable.app": { icon: "assets/partners/five-second-game.png", blurb: "Stop the clock at exactly five seconds." },
+  "globalwar.app": { icon: "assets/partners/global-war.png", blurb: "Turn-based world-domination strategy." },
+  "meshgradientstudio.com": { icon: "assets/partners/mesh-gradient-studio.png", blurb: "Generate lush mesh gradients, export anywhere." },
+  "buildutilities.com": { icon: "assets/partners/buildutilities.png", blurb: "Tiny, fast utilities for building software." },
+  "thisstuffisamazing.com": { icon: "assets/partners/this-stuff-is-amazing.png", blurb: "Genuinely great picks from trusted voices." },
+  "pollencountgraph.com": { icon: "assets/partners/pollen-count-graph.png", blurb: "Daily pollen counts for your area." },
+  "signalspages.com": { icon: "assets/partners/signals-pages.png", blurb: "Clear buy, hold, or sell signals." },
+  "beautifulinbox.com": { icon: "assets/partners/beautiful-inbox.png", blurb: "Write better emails that get opened." },
+  "superchargedemail.com": { icon: "assets/partners/supercharged-email.png", blurb: "Done-for-you email tools and campaigns." },
+  "joinmymailinglist.com": { icon: "assets/partners/joinmymailinglist.png", blurb: "Build signup forms, grow your list." },
+  "bizonlinekit.com": { icon: "assets/partners/biz-online-kit.png", blurb: "Get your small business online, right." },
+  "docpreptalk.com": { icon: "assets/partners/docpreptalk.png", blurb: "Prep for your next doctor visit." },
+  "actionguide.us": { icon: "assets/partners/action-guide-us.png", blurb: "Real actions to defend democracy today." },
+  "designisnotui.com": { icon: "assets/partners/design-is-not-ui.png", blurb: "Why judgment matters more than pixels." }
+};
+function partnerHost(url) {
+  try { return new URL(url, window.location.href).hostname.replace(/^www\./, ""); }
+  catch (e) { return ""; }
+}
+function wirePartners() {
+  var section = document.querySelector(".tools-partners");
+  if (!section) return;
+  var featured = document.getElementById("partnersFeatured");
+  var badges = section.querySelectorAll(".tools-partners__badge");
+  if (!featured || !badges.length) return;
+
+  // candidates = badges we have a favicon + blurb for
+  var cands = [];
+  for (var i = 0; i < badges.length; i++) {
+    var host = partnerHost(badges[i].href);
+    if (PARTNER_META[host]) cands.push({ el: badges[i], host: host });
+  }
+  if (!cands.length) return;
+
+  var pick = cands[Math.floor(Math.random() * cands.length)];
+  var meta = PARTNER_META[pick.host];
+  var labelEl = pick.el.querySelector(".tools-partners__badge-label");
+  var name = (labelEl || pick.el).textContent.trim();
+
+  var link = document.createElement("a");
+  link.className = "tools-partners__feature-link";
+  link.href = pick.el.href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.setAttribute("aria-label", name + " — " + meta.blurb + " (opens in new tab)");
+  var iconWrap = document.createElement("span");
+  iconWrap.className = "tools-partners__feature-icon";
+  var img = document.createElement("img");
+  img.src = meta.icon; img.alt = ""; img.width = 30; img.height = 30; img.loading = "lazy";
+  iconWrap.appendChild(img);
+  var body = document.createElement("span");
+  body.className = "tools-partners__feature-body";
+  var nm = document.createElement("span");
+  nm.className = "tools-partners__feature-name"; nm.textContent = name;
+  var bl = document.createElement("span");
+  bl.className = "tools-partners__feature-blurb"; bl.textContent = meta.blurb;
+  body.appendChild(nm); body.appendChild(bl);
+  var cta = document.createElement("span");
+  cta.className = "tools-partners__feature-cta"; cta.setAttribute("aria-hidden", "true");
+  cta.innerHTML = "Visit &rarr;";
+  link.appendChild(iconWrap); link.appendChild(body); link.appendChild(cta);
+
+  featured.innerHTML = "";
+  featured.appendChild(link);
+  featured.hidden = false;
+  pick.el.classList.add("is-featured-hidden"); // don't repeat the featured one in the row
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) return;
+  section.classList.add("js-reveal");
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { featured.classList.add("is-in"); });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   loadRegistryAndRender();
+  wirePartners();
 });

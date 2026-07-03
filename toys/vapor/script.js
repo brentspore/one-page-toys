@@ -178,12 +178,14 @@
 
   function ambient(dt) {
     ambT -= dt;
-    if (ambT <= 0) {
-      ambT = 0.7 + Math.random() * 1.1;
-      var gx = N * (0.15 + Math.random() * 0.7), gy = N * (0.55 + Math.random() * 0.4);
-      var ang = -Math.PI / 2 + (Math.random() * 2 - 1) * 0.6;
-      inject(gx, gy, BR + 2, injColor(), DYE * 1.4, Math.cos(ang) * 22, Math.sin(ang) * 30);
-    }
+    if (ambT > 0) return;
+    // When the tune is playing, its notes feed the smoke — so keep this base
+    // drift sparse and gentle; when muted/pre-unlock, it keeps the scene alive.
+    var tuneOn = soundOn && actx && padOscs.length;
+    ambT = (tuneOn ? 1.7 : 0.7) + Math.random() * (tuneOn ? 1.8 : 1.1);
+    var gx = N * (0.15 + Math.random() * 0.7), gy = N * (0.55 + Math.random() * 0.4);
+    var ang = -Math.PI / 2 + (Math.random() * 2 - 1) * 0.6;
+    inject(gx, gy, BR + 2, injColor(), DYE * (tuneOn ? 0.9 : 1.4), Math.cos(ang) * 22, Math.sin(ang) * 30);
   }
 
   // ---------------- render ----------------
@@ -309,23 +311,35 @@
       padLP.frequency.setTargetAtTime(360 + Math.min(1500, activity * 1200), now, 0.3); // opens up as you stir
     }
   }
-  // one soft bell/pluck voice — shared by the generative tune and by taps
+  // one soft, warm, breathy voice — shared by the generative tune and by taps.
+  // No metallic bell: a slow "bloom" attack, warm harmonic partials + a gently
+  // detuned triangle, and a filter that opens then mellows (like the smoke).
   function voiceNote(midi, vel, pan) {
     if (!actx) return;
     var now = actx.currentTime, f = mtof(midi);
     vel = Math.max(0.05, Math.min(1, vel));
     var g = actx.createGain(); g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.11 * vel, now + 0.014);
-    g.gain.exponentialRampToValueAtTime(0.0005, now + 2.0 + vel * 0.9);
-    var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2500 + vel * 2600;
+    g.gain.exponentialRampToValueAtTime(0.095 * vel, now + 0.05);          // soft bloom, not a ding
+    g.gain.exponentialRampToValueAtTime(0.0004, now + 2.4 + vel * 1.1);    // long gentle tail
+    var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.5;
+    lp.frequency.setValueAtTime(480, now);
+    lp.frequency.linearRampToValueAtTime(1050 + vel * 1500, now + 0.11);   // opens...
+    lp.frequency.setTargetAtTime(660, now + 0.34, 0.7);                    // ...then mellows
     if (actx.createStereoPanner) { var p = actx.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, pan || 0)); g.connect(lp); lp.connect(p); p.connect(master); p.connect(wet); }
     else { g.connect(lp); lp.connect(master); lp.connect(wet); }
-    var parts = [1, 2, 2.8];
+    var parts = [[1, 0.6, "sine"], [1.004, 0.42, "triangle"], [2, 0.12, "sine"], [3, 0.04, "sine"]];
     for (var i = 0; i < parts.length; i++) {
-      var o = actx.createOscillator(); o.type = "sine"; o.frequency.value = f * parts[i];
-      var og = actx.createGain(); og.gain.value = i === 0 ? 0.6 : 0.16 / i;
-      o.connect(og); og.connect(g); o.start(now); o.stop(now + 3.1);
+      var o = actx.createOscillator(); o.type = parts[i][2]; o.frequency.value = f * parts[i][0];
+      var og = actx.createGain(); og.gain.value = parts[i][1];
+      o.connect(og); og.connect(g); o.start(now); o.stop(now + 3.8);
     }
+  }
+  // The visual half of a tone: bloom colored smoke where the note sits, so you
+  // SEE every note — both the tune's and your taps'. (xFrac/yFrac in 0..1.)
+  function noteBloom(xFrac, yFrac, vel) {
+    var gx = Math.max(2, Math.min(N - 2, xFrac * N));
+    var gy = Math.max(2, Math.min(N - 2, yFrac * N));
+    inject(gx, gy, BR + 1, injColor(), DYE * (1.05 + vel * 1.25), (Math.random() - 0.5) * 7, -9 - vel * 10);
   }
   function ladderFor(k) { var pent = k.minor ? [0, 3, 5, 7, 10] : [0, 2, 4, 7, 9]; return pent.concat(pent.map(function (d) { return d + 12; })).concat([24]); }
   // taps = a deliberate accent: the tap's HEIGHT picks the note (top = high),
@@ -359,6 +373,7 @@
     var pan = Math.sin(t * 0.7) * 0.45 + (Math.random() - 0.5) * 0.3;
     var vel = 0.38 + dens * 0.35 + Math.random() * 0.15;
     voiceNote(k.root + ladder[mel.idx], vel, pan);
+    noteBloom(0.5 + pan * 0.4, 0.16 + 0.66 * (1 - mel.idx / (ladder.length - 1)), vel); // smoke blooms where the note sits
     if (Math.random() < 0.22) voiceNote(k.root + ladder[Math.max(0, mel.idx - 2)], vel * 0.5, -pan * 0.6); // soft harmony a step below
   }
   function sndPuff() {

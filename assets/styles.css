@@ -467,21 +467,12 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
   .tools-find__select{ width: 100%; min-width: 0; height: 44px; }
   .tools-find__clear{ flex: 0 0 auto; height: 44px; }
 
+  /* Category chips: a tidy, compact WRAP (no horizontal scroll) — smaller
+   * chips so all categories sit in ~2 calm rows instead of a crowded 3. */
   .tools-cats-wrap{ margin-bottom: 10px; }
-  /* .tools-tags.tools-tags--cats — extra specificity so nowrap wins over the
-   * later base .tools-tags{flex-wrap:wrap} rule at equal single-class weight. */
-  .tools-tags.tools-tags--cats{
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    margin-inline: -18px;      /* bleed the scroll track to the screen edges */
-    padding: 3px 18px;         /* keep chips inset at rest; last chip peeks */
-    scroll-snap-type: x proximity;
-  }
-  .tools-tags.tools-tags--cats::-webkit-scrollbar{ display: none; }
-  .tools-tags.tools-tags--cats .tools-tag{ flex: 0 0 auto; scroll-snap-align: start; }
+  .tools-tags--cats{ gap: 7px; }
+  .tools-tags--cats .tools-tag{ font-size: 0.8rem; padding: 7px 12px; }
+  .tools-tag__n{ margin-left: 5px; }
 
   .tools-resultbar{ margin-bottom: 14px; }
 }
@@ -1111,24 +1102,73 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
   color: var(--muted);
   max-width: 56ch;
 }
+/* Featured friend — one rotating partner shown as a rich card (favicon +
+ * blurb) with a gentle breathing accent glow. JS renders it on load. */
+.tools-partners__featured{ margin: 0 0 16px; }
+.tools-partners.js-reveal .tools-partners__featured{ opacity: 0; transform: translateY(8px); }
+.tools-partners.js-reveal .tools-partners__featured.is-in{
+  opacity: 1; transform: translateY(0);
+  transition: opacity 460ms ease, transform 460ms cubic-bezier(.2, .7, .3, 1);
+}
+.tools-partners__feature-link{
+  display: flex; align-items: center; gap: 14px;
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line-strong));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  color: var(--text);
+  text-decoration: none;
+  animation: partnerGlow 3.6s ease-in-out infinite;
+  transition: transform 200ms cubic-bezier(.2, .7, .3, 1), border-color 160ms ease, background 160ms ease;
+}
+.tools-partners__feature-link:hover{
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.tools-partners__feature-link:focus-visible{ outline: none; box-shadow: var(--ring); }
+.tools-partners__feature-icon{
+  flex: 0 0 auto;
+  width: 44px; height: 44px; border-radius: 11px;
+  background: #fff; display: grid; place-items: center;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+}
+.tools-partners__feature-icon img{ width: 30px; height: 30px; object-fit: contain; display: block; }
+.tools-partners__feature-body{ flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tools-partners__feature-name{ font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+.tools-partners__feature-blurb{ font-size: 0.85rem; color: var(--muted); }
+.tools-partners__feature-cta{
+  flex: 0 0 auto; margin-left: 6px;
+  font-size: 0.8rem; font-weight: 600; color: var(--accent);
+  transition: transform 200ms ease;
+}
+.tools-partners__feature-link:hover .tools-partners__feature-cta{ transform: translateX(3px); }
+@keyframes partnerGlow{
+  0%, 100%{ filter: drop-shadow(0 1px 4px color-mix(in srgb, var(--accent) 16%, transparent)); }
+  50%{ filter: drop-shadow(0 4px 14px color-mix(in srgb, var(--accent) 48%, transparent)); }
+}
+
+/* The rest of the friends — a quiet, compact row of small pill links
+ * (every partner stays a real, crawlable link; the featured one is hidden). */
 .tools-partners__badges{
   list-style: none; margin: 0; padding: 0;
-  display: flex; flex-wrap: wrap; gap: 8px;
+  display: flex; flex-wrap: wrap; gap: 6px;
 }
 .tools-partners__badge{
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  padding: 7px 14px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  color: var(--text);
-  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+  display: inline-flex; align-items: center;
+  padding: 4px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 140ms ease, border-color 140ms ease, background 140ms ease;
 }
-.tools-partners__badge:hover{ border-color: var(--ink); color: var(--ink); }
+.tools-partners__badge:hover{ color: var(--ink); border-color: var(--line-strong); background: var(--surface); }
 .tools-partners__badge:focus-visible{ outline: none; box-shadow: var(--ring); }
-.tools-partners__badge-label{ font-size: 0.8rem; font-weight: 500; }
+.tools-partners__badge-label{ font-size: 0.78rem; font-weight: 500; }
+.tools-partners__badge.is-featured-hidden{ display: none; }
 
 .sr-only{
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -1195,4 +1235,5 @@ a.site-footer__madeby:focus-visible{ outline: 1px solid var(--ink); }
   html{ scroll-behavior: auto; }
   .btn, .card, .card__cta::after, .tools-partners__badge{ transition-duration: 0.01ms !important; }
   .card:hover{ transform: none; }
+  .tools-partners__feature-link{ animation: none; }   /* keep the static accent card, drop the breathing glow */
 }

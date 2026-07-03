@@ -4,7 +4,18 @@
     "name": "Vapor",
     "shortDescription": "Stir glowing smoke with your finger—a real fluid simulation that swirls, curls, and blooms into color. Drag to paint the flow, tap for a puff. Endlessly mesmerizing.",
     "category": "visual",
-    "tags": ["vapor"],
+    "tags": [
+      "vapor",
+      "fluid",
+      "smoke",
+      "simulation",
+      "generative",
+      "relaxing",
+      "sensory",
+      "interactive",
+      "ambient",
+      "mesmerizing"
+    ],
     "status": "live",
     "path": "toys/vapor/index.html",
     "related": []
@@ -14,7 +25,16 @@
     "name": "Dot Loop",
     "shortDescription": "A calm connect-the-dots puzzle—drag to link touching same-colored dots and clear them; close a loop to wipe out every dot of that color at once. Endless, no fail.",
     "category": "game",
-    "tags": ["dot-loop"],
+    "tags": [
+      "dot-loop",
+      "puzzle",
+      "matching",
+      "connect-the-dots",
+      "relaxing",
+      "casual",
+      "dots-and-co",
+      "colors"
+    ],
     "status": "live",
     "path": "toys/dot-loop/index.html",
     "related": []
@@ -24,7 +44,16 @@
     "name": "Paper Plane",
     "shortDescription": "A one-tap flyer—keep a folded paper plane aloft and thread the gaps between dusk-lit skyscrapers. One clip ends the run; chase your best distance.",
     "category": "game",
-    "tags": ["paper-plane"],
+    "tags": [
+      "paper-plane",
+      "arcade",
+      "one-tap",
+      "flappy",
+      "endless",
+      "reflex",
+      "flyer",
+      "high-score"
+    ],
     "status": "live",
     "path": "toys/paper-plane/index.html",
     "related": []
@@ -34,7 +63,16 @@
     "name": "Nova Coil",
     "shortDescription": "A cosmic marble shooter—a glowing chain of orbs spirals toward the reactor core. Aim the cannon and fire, matching three or more of a colour to blast them away before the coil reaches the centre.",
     "category": "game",
-    "tags": ["nova-coil"],
+    "tags": [
+      "nova-coil",
+      "arcade",
+      "marble-shooter",
+      "zuma",
+      "matching",
+      "color-match",
+      "action",
+      "waves"
+    ],
     "status": "live",
     "path": "toys/nova-coil/index.html",
     "related": []
@@ -44,7 +82,15 @@
     "name": "Random Maze",
     "shortDescription": "A fresh neon maze every time—guide the glowing spark from the corner to the exit with the arrow keys, a swipe, or a tap, and beat your best time. Flip on a torch-lit fog for a tougher run.",
     "category": "game",
-    "tags": ["random-maze"],
+    "tags": [
+      "random-maze",
+      "maze",
+      "puzzle",
+      "navigation",
+      "procedural",
+      "keyboard",
+      "labyrinth"
+    ],
     "status": "live",
     "path": "toys/random-maze/index.html",
     "related": []
@@ -54,7 +100,16 @@
     "name": "Trio",
     "shortDescription": "A slide-and-merge number puzzle—every swipe nudges the whole board one step. A 1 and a 2 combine into a 3, then matching tiles double: 3, 6, 12, 24… Chase the biggest number.",
     "category": "game",
-    "tags": ["trio"],
+    "tags": [
+      "trio",
+      "puzzle",
+      "merge",
+      "threes",
+      "numbers",
+      "slide",
+      "strategy",
+      "2048"
+    ],
     "status": "live",
     "path": "toys/trio/index.html",
     "related": []
@@ -64,7 +119,15 @@
     "name": "Coin Pusher",
     "shortDescription": "The arcade coin pusher, on your screen—drop coins onto the shelf and let the pusher shove the glittering pile off the front edge into your tray. Aim for the middle and chase the big cascade.",
     "category": "game",
-    "tags": ["coin-pusher"],
+    "tags": [
+      "coin-pusher",
+      "arcade",
+      "physics",
+      "coins",
+      "satisfying",
+      "idle",
+      "casino"
+    ],
     "status": "live",
     "path": "toys/coin-pusher/index.html",
     "related": []
@@ -74,7 +137,15 @@
     "name": "Stack Tower",
     "shortDescription": "A crane swings each floor overhead—tap to drop it and stack a wobbling skyscraper as high as you can. Nail a perfect landing to keep your footprint; drift too far and it topples.",
     "category": "game",
-    "tags": ["stack-tower"],
+    "tags": [
+      "stack-tower",
+      "arcade",
+      "stacking",
+      "timing",
+      "tower",
+      "high-score",
+      "reflex"
+    ],
     "status": "live",
     "path": "toys/stack-tower/index.html",
     "related": []
@@ -84,7 +155,16 @@
     "name": "Music Box",
     "shortDescription": "Place pins on the rotating drum and watch it pluck a glowing brass comb into a looping melody. Pentatonic tuning so it always sounds sweet—set a tempo and let it play.",
     "category": "audio",
-    "tags": ["music-box"],
+    "tags": [
+      "music-box",
+      "instrument",
+      "sequencer",
+      "melody",
+      "pentatonic",
+      "relaxing",
+      "loop",
+      "generative"
+    ],
     "status": "live",
     "path": "toys/music-box/index.html",
     "related": []
@@ -94,7 +174,15 @@
     "name": "Theremin",
     "shortDescription": "Press and glide across the field to play the untouchable instrument—move sideways for pitch, up and down for volume, with vibrato, portamento, and a live oscilloscope.",
     "category": "audio",
-    "tags": ["theremin"],
+    "tags": [
+      "theremin",
+      "instrument",
+      "synth",
+      "pitch",
+      "gesture",
+      "expressive",
+      "electronic"
+    ],
     "status": "live",
     "path": "toys/theremin/index.html",
     "related": []
@@ -104,7 +192,15 @@
     "name": "Mini Golf",
     "shortDescription": "Drag back to aim and set your power, then putt across a top-down green—bank off walls and bumpers to sink the cup in as few strokes as you can.",
     "category": "game",
-    "tags": ["mini-golf"],
+    "tags": [
+      "mini-golf",
+      "sports",
+      "golf",
+      "aim",
+      "physics",
+      "putting",
+      "casual"
+    ],
     "status": "live",
     "path": "toys/mini-golf/index.html",
     "related": []
@@ -114,7 +210,16 @@
     "name": "Murmuration",
     "shortDescription": "A living flock of starlings swirls across a dusk sky—move to herd them into shifting ribbons and shapes, tap to scatter the whole murmuration. Mesmerizing and calming.",
     "category": "visual",
-    "tags": ["murmuration"],
+    "tags": [
+      "murmuration",
+      "flocking",
+      "boids",
+      "birds",
+      "simulation",
+      "generative",
+      "relaxing",
+      "nature"
+    ],
     "status": "live",
     "path": "toys/murmuration/index.html",
     "related": []
@@ -124,7 +229,15 @@
     "name": "Blackjack",
     "shortDescription": "Casino Blackjack—place your chips, then hit, stand, double down, and split against the dealer. Blackjack pays 3 to 2, dealer stands on 17. Build your bankroll.",
     "category": "game",
-    "tags": ["blackjack"],
+    "tags": [
+      "blackjack",
+      "cards",
+      "casino",
+      "gambling",
+      "strategy",
+      "21",
+      "table-game"
+    ],
     "status": "live",
     "path": "toys/blackjack/index.html",
     "related": []
@@ -134,7 +247,15 @@
     "name": "Solitaire",
     "shortDescription": "Classic Klondike Solitaire—deal, build the four foundations by suit, and clear the board for the satisfying win cascade. Drag card runs, double-click to auto-play, undo anytime.",
     "category": "game",
-    "tags": ["solitaire"],
+    "tags": [
+      "solitaire",
+      "cards",
+      "klondike",
+      "patience",
+      "puzzle",
+      "classic",
+      "relaxing"
+    ],
     "status": "live",
     "path": "toys/solitaire/index.html",
     "related": []
@@ -144,7 +265,16 @@
     "name": "Slice It",
     "shortDescription": "Swipe to slice the fruit flying through the air—juicy splatter, wild combos, and bombs you must dodge. Drop three and it's over. Chase your high score.",
     "category": "game",
-    "tags": ["slice-it"],
+    "tags": [
+      "slice-it",
+      "arcade",
+      "action",
+      "fruit-ninja",
+      "swipe",
+      "reflex",
+      "combo",
+      "high-score"
+    ],
     "status": "live",
     "path": "toys/slice-it/index.html",
     "related": []
@@ -154,7 +284,15 @@
     "name": "Countdown to Anything",
     "shortDescription": "Name any moment—a birthday, a trip, a launch, the weekend—and watch the days, hours, minutes, and seconds tick down live. Copy a link to share your countdown with anyone.",
     "category": "utility",
-    "tags": ["countdown-timer"],
+    "tags": [
+      "countdown-timer",
+      "timer",
+      "countdown",
+      "deadline",
+      "date",
+      "event",
+      "tool"
+    ],
     "status": "live",
     "path": "tools/countdown/index.html",
     "related": []
@@ -164,7 +302,15 @@
     "name": "Sleep Cycle Calculator",
     "shortDescription": "Wake up refreshed, not groggy. Enter when you're going to bed and get the best alarm times—or enter when you need to wake and get the best bedtimes—all aligned to 90-minute sleep cycles.",
     "category": "utility",
-    "tags": ["sleep-calculator"],
+    "tags": [
+      "sleep-calculator",
+      "sleep",
+      "bedtime",
+      "calculator",
+      "health",
+      "wellness",
+      "tool"
+    ],
     "status": "live",
     "path": "tools/sleep-cycle/index.html",
     "related": []
@@ -174,7 +320,15 @@
     "name": "Time Is Money",
     "shortDescription": "Turn your hourly wage into real time. Watch what you've earned tick upward live since you opened the page—or flip it and see how many hours of your working life any purchase really costs.",
     "category": "utility",
-    "tags": ["wage-timer"],
+    "tags": [
+      "wage-timer",
+      "wage",
+      "money",
+      "calculator",
+      "productivity",
+      "tool",
+      "time"
+    ],
     "status": "live",
     "path": "tools/time-is-money/index.html",
     "related": []
@@ -184,7 +338,15 @@
     "name": "Life in Numbers",
     "shortDescription": "Enter your birthday and watch your life count up in real time—seconds lived, heartbeats, breaths, trips around the Sun, full moons seen, and a countdown to your next birthday.",
     "category": "utility",
-    "tags": ["age-counter"],
+    "tags": [
+      "age-counter",
+      "age",
+      "birthday",
+      "calculator",
+      "stats",
+      "life",
+      "tool"
+    ],
     "status": "live",
     "path": "tools/life-in-numbers/index.html",
     "related": []
@@ -194,7 +356,15 @@
     "name": "The Latte Factor",
     "shortDescription": "Add up a small daily habit—coffee, energy drinks, a subscription—and see the eye-opening total over 1, 5, 10, and 30 years. Flip on 'invested at 7%' to see what it could have grown into instead.",
     "category": "utility",
-    "tags": ["savings-calculator"],
+    "tags": [
+      "savings-calculator",
+      "savings",
+      "money",
+      "calculator",
+      "budget",
+      "finance",
+      "tool"
+    ],
     "status": "live",
     "path": "tools/latte-factor/index.html",
     "related": []
@@ -204,7 +374,16 @@
     "name": "Steel Tongue Drum",
     "shortDescription": "A warm, meditative steel tongue drum you play top-down. Strike the tongues—or drag across them for a run—for round, blooming, hang-drum tones with long reverberant sustain. Tuned to pentatonic and Akebono scales so anything you play sounds calm and consonant. Fully synthesized, no samples.",
     "category": "audio",
-    "tags": ["tongue-drum"],
+    "tags": [
+      "tongue-drum",
+      "instrument",
+      "percussion",
+      "handpan",
+      "meditative",
+      "relaxing",
+      "ambient",
+      "pentatonic"
+    ],
     "status": "live",
     "path": "toys/tongue-drum/index.html",
     "related": []
@@ -214,7 +393,16 @@
     "name": "Kalimba",
     "shortDescription": "A glowing thumb-piano you can actually play. Pluck the tines for warm, dreamy pentatonic notes—swipe across for a glissando—and every note releases a rising mote of light. It's tuned so anything you play sounds beautiful; cycle the key and toggle note labels. Fully synthesized, no samples.",
     "category": "audio",
-    "tags": ["kalimba"],
+    "tags": [
+      "kalimba",
+      "instrument",
+      "thumb-piano",
+      "mbira",
+      "pentatonic",
+      "relaxing",
+      "dreamy",
+      "sky"
+    ],
     "status": "live",
     "path": "toys/kalimba/index.html",
     "related": []
@@ -224,7 +412,15 @@
     "name": "Jigsaw Puzzle",
     "shortDescription": "A real interlocking jigsaw—cycle a gallery of pretty generated scenes, pick your favourite, then drag the scattered tab-and-blank pieces into the tray, where they snap into place. Choose 3×3, 4×4, or 5×5 for an easier or harder puzzle, and Peek to see the finished picture.",
     "category": "game",
-    "tags": ["jigsaw-puzzle"],
+    "tags": [
+      "jigsaw-puzzle",
+      "puzzle",
+      "jigsaw",
+      "assembly",
+      "relaxing",
+      "casual",
+      "pieces"
+    ],
     "status": "live",
     "path": "toys/jigsaw-puzzle/index.html",
     "related": []
@@ -234,7 +430,15 @@
     "name": "Slide Puzzle",
     "shortDescription": "A classic sliding picture puzzle—cycle a gallery of pretty generated scenes, pick your favourite, then scramble it and slide the tiles back into place. Choose 3×3, 4×4, or 5×5 for an easier or harder puzzle, and Peek to see the finished picture.",
     "category": "game",
-    "tags": ["slide-puzzle"],
+    "tags": [
+      "slide-puzzle",
+      "puzzle",
+      "sliding",
+      "15-puzzle",
+      "classic",
+      "casual",
+      "tiles"
+    ],
     "status": "live",
     "path": "toys/slide-puzzle/index.html",
     "related": []
@@ -244,7 +448,15 @@
     "name": "Magnetic Face",
     "shortDescription": "A magnetic drawing toy—drag the wand to sweep a heap of iron filings across a cartoon face and give him a wild hairdo, a bushy beard, thick eyebrows, and a moustache. The filings comb into the magnetic field just like the real thing. Shake it off to start over.",
     "category": "game",
-    "tags": ["wooly-willy"],
+    "tags": [
+      "wooly-willy",
+      "magnet",
+      "drawing",
+      "toy",
+      "iron-filings",
+      "silly",
+      "nostalgic"
+    ],
     "status": "live",
     "path": "toys/wooly-willy/index.html",
     "related": []
@@ -254,7 +466,16 @@
     "name": "Gravity Orbits",
     "shortDescription": "A little gravity sandbox—fling planets around a glowing star and watch them fall into orbit, trace glowing elliptical trails, slingshot past each other, and merge into bigger worlds. Build your own tiny solar system.",
     "category": "simulation",
-    "tags": ["gravity-orbits"],
+    "tags": [
+      "gravity-orbits",
+      "physics",
+      "gravity",
+      "space",
+      "planets",
+      "simulation",
+      "sandbox",
+      "orbits"
+    ],
     "status": "live",
     "path": "toys/gravity-orbits/index.html",
     "related": []
@@ -264,7 +485,15 @@
     "name": "Cloth & Tear",
     "shortDescription": "A hanging piece of cloth simulated with real verlet physics—drag to swing and stretch the fabric, then yank hard or swipe fast to tear holes right through it. Flip on a breeze to watch it ripple. Soft, tactile, endlessly fiddleable.",
     "category": "simulation",
-    "tags": ["cloth"],
+    "tags": [
+      "cloth",
+      "physics",
+      "verlet",
+      "simulation",
+      "fabric",
+      "tear",
+      "sandbox"
+    ],
     "status": "live",
     "path": "toys/cloth/index.html",
     "related": []
@@ -274,7 +503,15 @@
     "name": "Double Pendulum",
     "shortDescription": "A chaotic double pendulum with faithful physics—drag an arm and let go to send it whipping into wild, never-repeating motion that paints glowing rainbow trails across the dark. A hands-on chaos-theory sandbox.",
     "category": "simulation",
-    "tags": ["double-pendulum"],
+    "tags": [
+      "double-pendulum",
+      "physics",
+      "chaos",
+      "pendulum",
+      "simulation",
+      "mesmerizing",
+      "science"
+    ],
     "status": "live",
     "path": "toys/double-pendulum/index.html",
     "related": []
@@ -284,7 +521,16 @@
     "name": "Aurebesh Translator",
     "shortDescription": "Type a message in English and watch it transliterate live into Aurebesh—the writing system of the Star Wars galaxy—on a glowing Imperial datapad, glyph by glyph. Hover any character to learn its letter and name, flip on the captions to read along, and copy a link that opens your secret message already decoded. Soft terminal bleeps as you type.",
     "category": "visual",
-    "tags": ["aurebesh-translator"],
+    "tags": [
+      "aurebesh-translator",
+      "star-wars",
+      "translator",
+      "cipher",
+      "aurebesh",
+      "decoder",
+      "sci-fi",
+      "text"
+    ],
     "status": "live",
     "path": "toys/aurebesh-translator/index.html",
     "related": []
@@ -294,7 +540,16 @@
     "name": "Pottery Wheel",
     "shortDescription": "A calming digital pottery wheel—a lump of clay spins on the wheel and you drag up and down its side to pull the walls out and in, shaping a vase, bowl, or pot in soft 3D. Then fire it in the kiln to reveal your finished, glazed piece. Soft wheel hum and wet-clay shaping sounds.",
     "category": "wellness",
-    "tags": ["pottery-wheel"],
+    "tags": [
+      "pottery-wheel",
+      "pottery",
+      "clay",
+      "crafting",
+      "relaxing",
+      "creative",
+      "wellness",
+      "throwing"
+    ],
     "status": "live",
     "path": "toys/pottery-wheel/index.html",
     "related": []
@@ -304,7 +559,16 @@
     "name": "Chladni Plate",
     "shortDescription": "A digital cymatics sand plate—thousands of grains shake across a vibrating square and settle onto the nodal lines, drawing intricate standing-wave figures. Press and drag to pour sand anywhere on the plate, change the frequency faster or slower, and pause to watch it settle.",
     "category": "simulation",
-    "tags": ["chladni-plate"],
+    "tags": [
+      "chladni-plate",
+      "cymatics",
+      "physics",
+      "sand",
+      "simulation",
+      "patterns",
+      "science",
+      "sound"
+    ],
     "status": "live",
     "path": "toys/chladni-plate/index.html",
     "related": []
@@ -314,7 +578,16 @@
     "name": "Pin Art",
     "shortDescription": "A fullscreen digital metal pinscreen—the relief rises under your hand, and you can press and drag to draw a lasting 3D impression in glowing metal pins. Erase or clear to start fresh.",
     "category": "visual",
-    "tags": ["pin-art"],
+    "tags": [
+      "pin-art",
+      "pinscreen",
+      "drawing",
+      "tactile",
+      "relief",
+      "fidget",
+      "sensory",
+      "toy"
+    ],
     "status": "live",
     "path": "toys/pin-art/index.html",
     "related": []
@@ -324,7 +597,15 @@
     "name": "Perfect Circle",
     "shortDescription": "Draw a circle freehand in one stroke and get scored on how perfectly round it is. A color heat-map shows where you wandered—chase 100%, beat your best, and try just one more time.",
     "category": "game",
-    "tags": ["perfect-circle"],
+    "tags": [
+      "perfect-circle",
+      "drawing",
+      "challenge",
+      "precision",
+      "skill",
+      "score",
+      "viral"
+    ],
     "status": "live",
     "path": "toys/perfect-circle/index.html",
     "related": []
@@ -334,7 +615,16 @@
     "name": "Rain on a Window",
     "shortDescription": "A cozy rainy night through a foggy pane—drag to wipe the glass and reveal warm bokeh city lights, while raindrops cling, grow, and slide down in clear trails. Ambient rain and distant thunder.",
     "category": "wellness",
-    "tags": ["rain-window"],
+    "tags": [
+      "rain-window",
+      "rain",
+      "cozy",
+      "ambient",
+      "relaxing",
+      "weather",
+      "night",
+      "wellness"
+    ],
     "status": "live",
     "path": "toys/rain-window/index.html",
     "related": []
@@ -344,7 +634,14 @@
     "name": "Fireworks",
     "shortDescription": "Tap the night sky to launch fireworks—shells arc up and burst into glowing, crackling sparks that drift down and reflect on the water below, with layered boom-and-crackle sound.",
     "category": "visual",
-    "tags": ["fireworks"],
+    "tags": [
+      "fireworks",
+      "celebration",
+      "night",
+      "particles",
+      "tap",
+      "festive"
+    ],
     "status": "live",
     "path": "toys/fireworks/index.html",
     "related": []
@@ -354,7 +651,16 @@
     "name": "Campfire",
     "shortDescription": "A crackling fire on a dark night—tap to toss on a log, drag to fan the flames brighter. Embers drift up, the glow warms, and it crackles with fully synthesized fire sound.",
     "category": "wellness",
-    "tags": ["campfire"],
+    "tags": [
+      "campfire",
+      "fire",
+      "cozy",
+      "ambient",
+      "relaxing",
+      "night",
+      "wellness",
+      "nature"
+    ],
     "status": "live",
     "path": "toys/campfire/index.html",
     "related": []
@@ -364,7 +670,16 @@
     "name": "Aurora Drift",
     "shortDescription": "Drag across a starlit sky to paint slow, shimmering curtains of northern lights over snowy peaks—green and violet ribbons that sway and softly fade.",
     "category": "wellness",
-    "tags": ["aurora-drift"],
+    "tags": [
+      "aurora-drift",
+      "aurora",
+      "northern-lights",
+      "painting",
+      "relaxing",
+      "sky",
+      "wellness",
+      "ambient"
+    ],
     "status": "live",
     "path": "toys/aurora-drift/index.html",
     "related": []
@@ -374,7 +689,16 @@
     "name": "Floating Lanterns",
     "shortDescription": "A calm night lake under a full moon—tap the water to release a glowing paper lantern that drifts up into the stars, swaying and flickering, mirrored on the surface below.",
     "category": "wellness",
-    "tags": ["floating-lanterns"],
+    "tags": [
+      "floating-lanterns",
+      "lanterns",
+      "night",
+      "relaxing",
+      "ambient",
+      "water",
+      "wellness",
+      "calm"
+    ],
     "status": "live",
     "path": "toys/floating-lanterns/index.html",
     "related": []
@@ -384,7 +708,16 @@
     "name": "Zen Sand Garden",
     "shortDescription": "A miniature Japanese rock garden—drag to rake calm flowing lines through the sand, tap to set a smooth stone, and watch the furrows ripple out around it.",
     "category": "wellness",
-    "tags": ["zen-sand-garden"],
+    "tags": [
+      "zen-sand-garden",
+      "zen",
+      "sand",
+      "raking",
+      "relaxing",
+      "meditative",
+      "wellness",
+      "japanese"
+    ],
     "status": "live",
     "path": "toys/zen-sand-garden/index.html",
     "related": []
@@ -394,7 +727,15 @@
     "name": "Marble Drop",
     "shortDescription": "Drop glossy glass marbles onto a brass pegboard and watch them bounce, clack, and pile up in the bins below. Tap anywhere up top to drop one.",
     "category": "game",
-    "tags": ["marble-drop"],
+    "tags": [
+      "marble-drop",
+      "plinko",
+      "physics",
+      "marbles",
+      "satisfying",
+      "pegboard",
+      "galton"
+    ],
     "status": "live",
     "path": "toys/marble-drop/index.html",
     "related": []
@@ -404,7 +745,15 @@
     "name": "Wind Chimes",
     "shortDescription": "A set of hanging metal wind chimes—drag to send a breeze through them or tap a tube to ring it, and hear calm, consonant tones float on the warm evening air.",
     "category": "audio",
-    "tags": ["wind-chimes"],
+    "tags": [
+      "wind-chimes",
+      "instrument",
+      "chimes",
+      "relaxing",
+      "ambient",
+      "wind",
+      "meditative"
+    ],
     "status": "live",
     "path": "toys/wind-chimes/index.html",
     "related": []
@@ -414,7 +763,16 @@
     "name": "Zen Ripple Pond",
     "shortDescription": "A still moonlit pond—tap or drag the water and watch real ripples spread, collide, and shimmer across the surface while koi drift below the lily pads.",
     "category": "visual",
-    "tags": ["ripple-pond"],
+    "tags": [
+      "ripple-pond",
+      "water",
+      "ripples",
+      "physics",
+      "relaxing",
+      "zen",
+      "simulation",
+      "pond"
+    ],
     "status": "live",
     "path": "toys/ripple-pond/index.html",
     "related": []
@@ -424,7 +782,14 @@
     "name": "Kaleidoscope",
     "shortDescription": "A living kaleidoscope—drag to stir glowing jewel shards into endless mirrored symmetry, and tap to drop a new gem. Hypnotic and ever-shifting.",
     "category": "visual",
-    "tags": ["kaleidoscope"],
+    "tags": [
+      "kaleidoscope",
+      "symmetry",
+      "generative",
+      "mesmerizing",
+      "colors",
+      "visual"
+    ],
     "status": "live",
     "path": "toys/kaleidoscope/index.html",
     "related": []
@@ -434,7 +799,15 @@
     "name": "Plasma Ball",
     "shortDescription": "A glowing plasma ball—electric arcs branch and crackle from the central electrode, and chase your finger when you touch the glass.",
     "category": "visual",
-    "tags": ["plasma-ball"],
+    "tags": [
+      "plasma-ball",
+      "plasma",
+      "electric",
+      "arcs",
+      "retro",
+      "interactive",
+      "glow"
+    ],
     "status": "live",
     "path": "toys/plasma-ball/index.html",
     "related": []
@@ -444,7 +817,14 @@
     "name": "Spirograph",
     "shortDescription": "A self-drawing digital spirograph—watch geometric petal patterns bloom and shift through color as each curve completes and the next begins. Tap to skip.",
     "category": "visual",
-    "tags": ["spirograph"],
+    "tags": [
+      "spirograph",
+      "geometric",
+      "generative",
+      "patterns",
+      "drawing",
+      "mesmerizing"
+    ],
     "status": "live",
     "path": "toys/spirograph/index.html",
     "related": []
@@ -454,7 +834,15 @@
     "name": "Newton's Cradle",
     "shortDescription": "A satisfying Newton's Cradle simulation—swing 1, 2, or 3 balls and watch momentum transfer in perfect clacking loops. Mesmerizing physics.",
     "category": "simulation",
-    "tags": ["newtons-cradle"],
+    "tags": [
+      "newtons-cradle",
+      "physics",
+      "momentum",
+      "desk-toy",
+      "satisfying",
+      "pendulum",
+      "fidget"
+    ],
     "status": "live",
     "path": "toys/newtons-cradle/index.html",
     "related": []
@@ -464,7 +852,15 @@
     "name": "Bubble Wrap",
     "shortDescription": "A full sheet of virtual bubble wrap—tap or drag to pop satisfying bubbles with a crisp audio crack. Reset for a fresh sheet. Endlessly satisfying.",
     "category": "game",
-    "tags": ["bubble-wrap"],
+    "tags": [
+      "bubble-wrap",
+      "fidget",
+      "popping",
+      "satisfying",
+      "stress-relief",
+      "tap",
+      "sensory"
+    ],
     "status": "live",
     "path": "toys/bubble-wrap/index.html",
     "related": []
@@ -474,7 +870,14 @@
     "name": "Lava Lamp",
     "shortDescription": "A full-screen digital lava lamp—warm amber blobs slowly rise, merge, and drift apart in hypnotic metaball loops. Just watch.",
     "category": "visual",
-    "tags": ["lava-lamp"],
+    "tags": [
+      "lava-lamp",
+      "metaballs",
+      "relaxing",
+      "retro",
+      "hypnotic",
+      "ambient"
+    ],
     "status": "live",
     "path": "toys/lava-lamp/index.html",
     "related": []
@@ -485,7 +888,13 @@
     "shortDescription": "A material sandbox—draw with sand, water, fire, plant, oil, and stone and watch them fall, flow, burn, and grow. Water douses fire, sand sinks, fire eats plants.",
     "category": "visual",
     "tags": [
-      "falling-sand"
+      "falling-sand",
+      "sandbox",
+      "cellular-automata",
+      "sand",
+      "physics",
+      "creative",
+      "elements"
     ],
     "status": "live",
     "path": "toys/falling-sand/index.html",
@@ -497,7 +906,14 @@
     "shortDescription": "A glowing step sequencer—tap the grid to build a looping beat with drums and a pentatonic melody as the playhead sweeps. Tuned so every pattern sounds good.",
     "category": "audio",
     "tags": [
-      "beat-maker"
+      "beat-maker",
+      "sequencer",
+      "drums",
+      "music",
+      "beats",
+      "loop",
+      "rhythm",
+      "synth"
     ],
     "status": "live",
     "path": "toys/beat-maker/index.html",
@@ -509,7 +925,13 @@
     "shortDescription": "The famous working-memory challenge—numbers flash on a grid then hide; click them in order from memory, one more each round. Can you beat a chimp?",
     "category": "game",
     "tags": [
-      "chimp-test"
+      "chimp-test",
+      "memory",
+      "test",
+      "challenge",
+      "cognitive",
+      "brain",
+      "focus"
     ],
     "status": "live",
     "path": "toys/chimp-test/index.html",
@@ -521,7 +943,13 @@
     "shortDescription": "A glowing Simon-style memory game—watch the growing pattern of light and sound, then echo it back. How long a sequence can you hold?",
     "category": "game",
     "tags": [
-      "sequence-memory"
+      "sequence-memory",
+      "memory",
+      "simon",
+      "sequence",
+      "pattern",
+      "sound",
+      "challenge"
     ],
     "status": "live",
     "path": "toys/echo/index.html",
@@ -533,7 +961,14 @@
     "shortDescription": "Plant seeds and watch flowers grow and bloom in real time under a drifting day–night sky—it keeps growing while you're away.",
     "category": "game",
     "tags": [
-      "idle-garden"
+      "idle-garden",
+      "idle",
+      "garden",
+      "growing",
+      "relaxing",
+      "cozy",
+      "plants",
+      "incremental"
     ],
     "status": "live",
     "path": "toys/tiny-idle-garden/index.html",
@@ -545,7 +980,14 @@
     "shortDescription": "Click to burst stars into a drifting cosmos of nebulae and shooting stars—your stars connect into glowing constellations.",
     "category": "visual",
     "tags": [
-      "star-sky"
+      "star-sky",
+      "space",
+      "stars",
+      "constellations",
+      "generative",
+      "relaxing",
+      "cosmos",
+      "ambient"
     ],
     "status": "live",
     "path": "toys/star-click-sky/index.html",
@@ -557,7 +999,13 @@
     "shortDescription": "Classic noughts and crosses vs the computer—Chill mode is winnable, Ruthless is an unbeatable minimax AI. Neon board, instant rematch.",
     "category": "game",
     "tags": [
-      "tic-tac-toe"
+      "tic-tac-toe",
+      "classic",
+      "strategy",
+      "ai",
+      "noughts-and-crosses",
+      "casual",
+      "board-game"
     ],
     "status": "live",
     "path": "toys/tic-tac-toe/index.html",
@@ -569,7 +1017,12 @@
     "shortDescription": "Throw rock, paper, or scissors against the computer, watch the clash, and chase a winning streak.",
     "category": "game",
     "tags": [
-      "gesture-game"
+      "gesture-game",
+      "classic",
+      "casual",
+      "gesture",
+      "luck",
+      "quick"
     ],
     "status": "live",
     "path": "toys/rock-paper-scissors/index.html",
@@ -581,7 +1034,12 @@
     "shortDescription": "The Monty Hall problem as a game show—pick a door, the host reveals a goat, then switch or stay. Watch the 2/3 vs 1/3 win rates emerge.",
     "category": "game",
     "tags": [
-      "monty-hall"
+      "monty-hall",
+      "probability",
+      "puzzle",
+      "game-show",
+      "math",
+      "brain"
     ],
     "status": "live",
     "path": "toys/three-doors/index.html",
@@ -593,7 +1051,13 @@
     "shortDescription": "Flip cards two at a time and find every pair from memory. Three grid sizes, a move counter, and a timer.",
     "category": "game",
     "tags": [
-      "memory-game"
+      "memory-game",
+      "memory",
+      "matching",
+      "cards",
+      "concentration",
+      "casual",
+      "pairs"
     ],
     "status": "live",
     "path": "toys/memory-match/index.html",
@@ -605,7 +1069,13 @@
     "shortDescription": "Classic neon snake—eat, grow, and chase a high score with arrow keys, WASD, swipe, or the on-screen pad. Best score saved locally.",
     "category": "game",
     "tags": [
-      "snake-game"
+      "snake-game",
+      "arcade",
+      "snake",
+      "classic",
+      "retro",
+      "high-score",
+      "keyboard"
     ],
     "status": "live",
     "path": "toys/snake-mini/index.html",
@@ -617,7 +1087,12 @@
     "shortDescription": "A generative-art playground: flow fields, harmonographs, swarms, and kaleidoscopes. Switch modes and palettes, drag to steer, and save a PNG.",
     "category": "visual",
     "tags": [
-      "generative-art"
+      "generative-art",
+      "flow-field",
+      "harmonograph",
+      "creative",
+      "visual",
+      "mesmerizing"
     ],
     "status": "live",
     "path": "toys/weird-generative-canvas/index.html",
@@ -629,7 +1104,13 @@
     "shortDescription": "Roll faceted 3D dice—d4 through d20, solo or a whole pool at once. They tumble and settle fair, with a running total and history.",
     "category": "game",
     "tags": [
-      "dice-roller"
+      "dice-roller",
+      "dice",
+      "rpg",
+      "random",
+      "tabletop",
+      "d20",
+      "roller"
     ],
     "status": "live",
     "path": "toys/dice-roller/index.html",
@@ -641,7 +1122,13 @@
     "shortDescription": "Ask a yes/no question and shake the glossy 8-ball—the window clouds over and the blue triangle surfaces with your answer.",
     "category": "game",
     "tags": [
-      "fortune-toy"
+      "fortune-toy",
+      "fortune",
+      "magic-8-ball",
+      "novelty",
+      "random",
+      "decision",
+      "silly"
     ],
     "status": "live",
     "path": "toys/magic-eight-ball/index.html",
@@ -653,7 +1140,13 @@
     "shortDescription": "A cluster of glowing gooey blobs that sing warm synth voices. Tap or drag to play; hit Shimmer for generative ambient.",
     "category": "audio",
     "tags": [
-      "synth-toy"
+      "synth-toy",
+      "synth",
+      "voices",
+      "ambient",
+      "generative",
+      "relaxing",
+      "experimental"
     ],
     "status": "live",
     "path": "toys/blob-choir/index.html",
@@ -665,7 +1158,13 @@
     "shortDescription": "Toss a real 3D gold coin—it arcs, tumbles, and lands heads or tails with cryptographically fair odds. Tracks streaks and your run.",
     "category": "game",
     "tags": [
-      "coin-flip"
+      "coin-flip",
+      "coin",
+      "random",
+      "decision",
+      "heads-tails",
+      "luck",
+      "novelty"
     ],
     "status": "live",
     "path": "toys/coin-flipper/index.html",
@@ -677,7 +1176,13 @@
     "shortDescription": "A calm glowing orb that expands and contracts to pace your breath—Calm, Box, or 4·7·8, with an optional ambient tone.",
     "category": "wellness",
     "tags": [
-      "breathing-tool"
+      "breathing-tool",
+      "breathing",
+      "meditation",
+      "calm",
+      "wellness",
+      "relaxation",
+      "mindfulness"
     ],
     "status": "live",
     "path": "toys/breathing-pacer/index.html",
@@ -689,7 +1194,13 @@
     "shortDescription": "Set the hourly rate and headcount, hit start, and watch a live dollar counter climb as the meeting drags on.",
     "category": "utility",
     "tags": [
-      "cost-calculator"
+      "cost-calculator",
+      "calculator",
+      "money",
+      "meetings",
+      "productivity",
+      "tool",
+      "work"
     ],
     "status": "live",
     "path": "tools/meeting-cost-meter/index.html",
@@ -701,7 +1212,14 @@
     "shortDescription": "Chrome-and-lava metaballs that trail your cursor and merge like living ferrofluid. Tap to splat.",
     "category": "visual",
     "tags": [
-      "generative-art"
+      "generative-art",
+      "metaballs",
+      "cursor",
+      "fluid",
+      "satisfying",
+      "ferrofluid",
+      "interactive",
+      "sensory"
     ],
     "status": "live",
     "path": "toys/goo-cursor/index.html",
