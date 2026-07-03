@@ -1,5 +1,15 @@
 [
   {
+    "slug": "dot-loop",
+    "name": "Dot Loop",
+    "shortDescription": "A calm connect-the-dots puzzle—drag to link touching same-colored dots and clear them; close a loop to wipe out every dot of that color at once. Endless, no fail.",
+    "category": "game",
+    "tags": ["dot-loop"],
+    "status": "live",
+    "path": "toys/dot-loop/index.html",
+    "related": []
+  },
+  {
     "slug": "paper-plane",
     "name": "Paper Plane",
     "shortDescription": "A one-tap flyer—keep a folded paper plane aloft and thread the gaps between dusk-lit skyscrapers. One clip ends the run; chase your best distance.",

@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "dot-loop":
+    "dot loop dots connect the dots two dots twodots dots and co link match same color colour chain clear loop square pastel calm zen relaxing puzzle line draw board casual cozy satisfying fidget minimalist grid drop",
   "paper-plane":
     "paper plane flappy bird flap tap one tap flyer glide fly through gaps pipes buildings skyscrapers city dusk sunset endless arcade obstacle dodge high score reflex casual addictive origami folded plane sky",
   "nova-coil":
