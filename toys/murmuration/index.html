@@ -13,32 +13,32 @@
       gtag('js', new Date());
       gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Ferrofluid — One Page Toys</title>
-    <meta name="description" content="Play with magnetic fluid — a blob of glossy black ferrofluid bristles into spikes and chases your cursor. Tap to pulse. Mesmerizing and oddly satisfying. Free, no sign-up." />
-    <link rel="canonical" href="https://onepagetoys.com/toys/ferrofluid/index.html" />
+    <title>Murmuration — One Page Toys</title>
+    <meta name="description" content="A living flock of starlings that swirls across a dusk sky — move to herd them, tap to scatter, and watch the murmuration ripple into shifting shapes. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/murmuration/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#050507" />
+    <meta name="theme-color" content="#0e1130" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Ferrofluid — One Page Toys" />
-    <meta property="og:description" content="A blob of glossy black magnetic fluid bristles into spikes and chases your cursor. Tap to pulse." />
-    <meta property="og:url" content="https://onepagetoys.com/toys/ferrofluid/index.html" />
-    <meta property="og:image" content="https://onepagetoys.com/assets/og/ferrofluid.png" />
+    <meta property="og:title" content="Murmuration — One Page Toys" />
+    <meta property="og:description" content="A living flock of starlings swirling across a dusk sky — move to herd them, tap to scatter." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/murmuration/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/murmuration.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ferrofluid — One Page Toys" />
-    <meta name="twitter:description" content="Magnetic black fluid that bristles into spikes and chases your cursor. Tap to pulse." />
-    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/ferrofluid.png" />
+    <meta name="twitter:title" content="Murmuration — One Page Toys" />
+    <meta name="twitter:description" content="A living flock of starlings swirling across a dusk sky — move to herd them, tap to scatter." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/murmuration.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Ferrofluid",
-        "url": "https://onepagetoys.com/toys/ferrofluid/index.html",
-        "description": "An interactive magnetic-fluid toy — a glossy black blob bristles into spikes and follows your cursor; tap to pulse.",
+        "name": "Murmuration",
+        "url": "https://onepagetoys.com/toys/murmuration/index.html",
+        "description": "A flocking simulation of starlings that swirl across a dusk sky and react to your cursor — move to herd them, tap to scatter the flock.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
@@ -61,18 +61,19 @@
   <body>
     <canvas id="canvas"></canvas>
 
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
     <div class="controls" id="controls">
-      <button type="button" class="ctrl-btn" id="tintBtn">Sheen: Cyan</button>
-      <button type="button" class="ctrl-btn" id="soundBtn" aria-pressed="true">Sound: on</button>
+      <button type="button" class="ctrl" id="modeBtn" title="Cursor behaviour">Flee</button>
     </div>
 
     <div class="frame" aria-hidden="true">
       <span class="frame__corner frame__corner--tl">No. 056</span>
-      <span class="frame__corner frame__corner--tr">Ferrofluid</span>
+      <span class="frame__corner frame__corner--tr">Murmuration</span>
       <span class="frame__corner frame__corner--bl"><a href="../../index.html">&#8592; onepagetoys.com</a></span>
     </div>
 
-    <p class="hint" id="hint">move to raise the spikes &amp; herd the droplets &mdash; tap to pulse</p>
+    <p class="hint" id="hint">move to herd the flock · tap to scatter</p>
 
     <script src="script.js?v=2" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>

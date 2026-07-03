@@ -70,13 +70,13 @@
     "related": []
   },
   {
-    "slug": "ferrofluid",
-    "name": "Ferrofluid",
-    "shortDescription": "Move the magnet to draw glistening black spikes out of a living blob of magnetic fluid—tap to make it pulse. Mesmerizing, tactile, and endlessly fiddleable.",
+    "slug": "murmuration",
+    "name": "Murmuration",
+    "shortDescription": "A living flock of starlings swirls across a dusk sky—move to herd them into shifting ribbons and shapes, tap to scatter the whole murmuration. Mesmerizing and calming.",
     "category": "visual",
-    "tags": ["ferrofluid"],
+    "tags": ["murmuration"],
     "status": "live",
-    "path": "toys/ferrofluid/index.html",
+    "path": "toys/murmuration/index.html",
     "related": []
   },
   {

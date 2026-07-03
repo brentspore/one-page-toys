@@ -80,8 +80,8 @@ const TYPE_NL_PHRASES = {
     "theremin electronic instrument music play pitch volume glide slide sine wave synth synthesizer oscillator vibrato portamento oscilloscope waveform antenna sci fi spooky eerie ethereal ondes martenot untouchable gesture hand wave make music note scale",
   "mini-golf":
     "mini golf minigolf putt putt putting green golf ball hole cup flag aim power drag bank bumpers walls strokes par sports arcade course top down putter casual game relaxing physics",
-  "ferrofluid":
-    "ferrofluid ferro fluid magnetic liquid spikes magnet iron oxide black blob goo ooze morph mesmerizing satisfying sensory fidget tactile science physics simulation art visual relaxing hypnotic oddly satisfying",
+  "murmuration":
+    "murmuration starlings flock birds boids flocking swarm swirl swirling dusk sky sunset silhouette formation shapes nature calming mesmerizing hypnotic relaxing sensory visual simulation cursor herd scatter school of fish",
   "blackjack":
     "blackjack 21 twenty one casino card game cards dealer hit stand double down split insurance bet chips bankroll deck vegas gambling table games pays 3 to 2 bust ace face cards deal hand play strategy",
   "solitaire":
