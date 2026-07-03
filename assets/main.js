@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "paper-plane":
+    "paper plane flappy bird flap tap one tap flyer glide fly through gaps pipes buildings skyscrapers city dusk sunset endless arcade obstacle dodge high score reflex casual addictive origami folded plane sky",
   "nova-coil":
     "nova coil zuma marble shooter ball blast puzzlebobble bust a move match 3 three color orbs spiral chain reaction combo aim cannon shoot spheres neon cosmic space reactor core arcade luxor snood tumble puzzle game addictive",
   "random-maze":

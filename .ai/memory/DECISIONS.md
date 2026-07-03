@@ -111,3 +111,13 @@ Reference builds that clear this bar: **Kalimba** (inharmonic bar modes + chorus
 Standing principle: **each release should feel a notch more polished than the last** — "we always want to continue to push the presentation envelope as much as we dare within reason." Applies to both look/feel and sound. When touching an existing toy, look for the upgrade (more depth, better material/lighting, richer synthesis, more space) rather than leaving it at "works." "Within reason" = don't break the zero-build vanilla-Canvas/Web-Audio, single-file, hand-tweakable soul of the repo, and don't over-engineer past what a one-page toy warrants — but do dare. This is why e.g. the tongue drum went flat-chrome → premium 3D gunmetal dome and dry → lush hall-with-delay after a first pass that merely "worked."
 
 ---
+
+### 2026-07-03 — Keep builds small & self-contained; escalate "evolved" games to a separate project
+
+**Context:** One Page Toys has no accounts, no progression, and no server-side save — users can't save or resume a game. As toy ideas get more ambitious (e.g. a full Kingdom Rush-style tower defense), some would require persistence/meta-progression this site can't offer. (Owner directive, 2026-07-03.)
+
+**Decision:** Keep every toy to a single sitting — a self-contained fidget or an arcade score-chase (best score in `localStorage` is the only persistence). When the owner suggests — or a build naturally grows into — something **too large or that would be a more evolved game** (deep progression, meta-systems, multi-level campaigns, saved state, a player-built economy over time), **flag it and suggest building it as its own dedicated/standalone project** instead of shoehorning it here. Apply to backlog triage too: mark oversized ideas as "better as its own project" (optionally keep a stripped MVP-for-here note).
+
+**Rationale:** The site's whole value is instant, no-friction, one-tab play; persistence-dependent games break that promise and can't work without the accounts/backend the site doesn't have.
+
+**Revisit if:** One Page Toys ever gains accounts / cloud save / cross-session progression, or the owner wants a dedicated "bigger games" surface.

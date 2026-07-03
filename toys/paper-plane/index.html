@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Paper Plane — One Page Toys</title>
+    <meta name="description" content="Tap to keep a folded paper plane aloft, threading the gaps between dusk-lit skyscrapers. One clip and it's down — how far can you glide? Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/paper-plane/index.html" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#241f47" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Paper Plane — One Page Toys" />
+    <meta property="og:description" content="Tap to flap a paper plane through the gaps between dusk-lit skyscrapers. How far can you glide?" />
+    <meta property="og:url" content="https://onepagetoys.com/toys/paper-plane/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/paper-plane.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Paper Plane — One Page Toys" />
+    <meta name="twitter:description" content="Tap to flap a paper plane through the gaps between dusk-lit skyscrapers." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/paper-plane.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Paper Plane",
+        "url": "https://onepagetoys.com/toys/paper-plane/index.html",
+        "description": "A one-tap arcade flyer — keep a folded paper plane aloft and thread the gaps between dusk-lit skyscrapers. One clip ends the run; chase your best distance.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud">
+      <span class="hud__score" id="score">0</span>
+      <span class="hud__best" id="best">Best 0</span>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay" hidden>
+      <div class="panel">
+        <h1 class="panel__title" id="ovTitle">Paper Plane</h1>
+        <p class="panel__text" id="ovText">Tap, click, or press space to give the paper plane a little lift. Thread the gaps between the skyscrapers — one clip and it's down. How far can you glide?</p>
+        <button type="button" class="play-btn" id="ovBtn">Take off</button>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 065</span>
+      <span class="frame__corner frame__corner--tr">Paper Plane</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../index.html">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">tap · click · or space to flap</p>
+
+    <script src="script.js?v=3" defer></script>
+    <script src="../../assets/tip-jar.js?v=9" defer></script>
+    <script src="../../assets/fullscreen.js?v=2" defer></script>
+  </body>
+</html>
