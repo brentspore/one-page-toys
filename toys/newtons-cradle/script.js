@@ -268,7 +268,7 @@
     "varying vec3 vW; varying vec3 vN;" +
     "void main(){ vec4 w=uModel*vec4(aPos,1.0); vW=w.xyz; vN=uNorm*aNorm; gl_Position=uProj*uView*w; }",
     "precision highp float;" + ENV_GLSL +
-    "varying vec3 vW; varying vec3 vN; uniform vec3 uCam,uTint; uniform float uMetal,uRough,uFres,uSpec,uTonemap,uUseCube; uniform samplerCube uCube;" +
+    "varying vec3 vW; varying vec3 vN; uniform vec3 uCam,uTint; uniform float uMetal,uRough,uFres,uSpec,uRim,uTonemap,uUseCube; uniform samplerCube uCube;" +
     "void main(){" +
     "  vec3 N=normalize(vN), V=normalize(uCam-vW), R=reflect(-V,N);" +
     "  vec3 env;" +
@@ -282,7 +282,8 @@
     "  vec3 c=mix(diffuse,metalC,uMetal);" +
     "  c=mix(c,broad+vec3(0.2),fres*uFres);" +
     "  float sp=pow(max(dot(R,Ld),0.0),220.0); c+=vec3(1.0)*sp*uSpec;" +
-    "  if(uTonemap>0.5){ c=c/(c+vec3(0.9)); c=pow(max(c,0.0),vec3(1.0/2.2)); }" +
+    "  c+=vec3(0.38,0.48,0.66)*pow(1.0-max(dot(N,V),0.0),3.5)*uRim;" +               // cool rim so dark edges separate from the black
+    "  if(uTonemap>0.5){ c=clamp((c*(2.51*c+0.03))/(c*(2.43*c+0.59)+0.14),0.0,1.0); c=pow(c,vec3(1.0/2.2)); }" + // ACES filmic — punchier highlights, richer contrast
     "  gl_FragColor=vec4(c,1.0);" +
     "}"
   );
@@ -304,7 +305,8 @@
     "  float pool=smoothstep(0.9,0.05,length(q));" +
     "  c+=vec3(0.028,0.033,0.046)*pool;" +                            // dim glow for a little depth only
     "  c*=smoothstep(1.5,0.18,length(ndc));" +                         // deep vignette to black at the edges
-    "  c=c/(c+vec3(0.9)); c=pow(max(c,0.0),vec3(1.0/2.2));" +
+    "  c=clamp((c*(2.51*c+0.03))/(c*(2.43*c+0.59)+0.14),0.0,1.0); c=pow(c,vec3(1.0/2.2));" + // same ACES as the surfaces
+
     "  gl_FragColor=vec4(c,1.0);" +
     "}"
   );
@@ -331,7 +333,7 @@
   );
 
   function loc(p, n) { return gl.getUniformLocation(p, n); }
-  var uS = { proj: loc(surfProg, "uProj"), view: loc(surfProg, "uView"), model: loc(surfProg, "uModel"), norm: loc(surfProg, "uNorm"), cam: loc(surfProg, "uCam"), tint: loc(surfProg, "uTint"), metal: loc(surfProg, "uMetal"), rough: loc(surfProg, "uRough"), fres: loc(surfProg, "uFres"), spec: loc(surfProg, "uSpec"), tonemap: loc(surfProg, "uTonemap"), useCube: loc(surfProg, "uUseCube"), cube: loc(surfProg, "uCube"), light: loc(surfProg, "uLight") };
+  var uS = { proj: loc(surfProg, "uProj"), view: loc(surfProg, "uView"), model: loc(surfProg, "uModel"), norm: loc(surfProg, "uNorm"), cam: loc(surfProg, "uCam"), tint: loc(surfProg, "uTint"), metal: loc(surfProg, "uMetal"), rough: loc(surfProg, "uRough"), fres: loc(surfProg, "uFres"), spec: loc(surfProg, "uSpec"), rim: loc(surfProg, "uRim"), tonemap: loc(surfProg, "uTonemap"), useCube: loc(surfProg, "uUseCube"), cube: loc(surfProg, "uCube"), light: loc(surfProg, "uLight") };
   var aS_pos = gl.getAttribLocation(surfProg, "aPos"), aS_norm = gl.getAttribLocation(surfProg, "aNorm");
   var uB = { inv: loc(bgProg, "uInv"), cam: loc(bgProg, "uCam"), res: loc(bgProg, "uRes"), light: loc(bgProg, "uLight") };
   var aB_pos = gl.getAttribLocation(bgProg, "aPos");
@@ -351,13 +353,13 @@
   function drawSurf(mesh, model, mat) {
     gl.uniformMatrix4fv(uS.model, false, model);
     gl.uniformMatrix3fv(uS.norm, false, mNormal(model));
-    gl.uniform3fv(uS.tint, mat.tint); gl.uniform1f(uS.metal, mat.metal); gl.uniform1f(uS.rough, mat.rough); gl.uniform1f(uS.fres, mat.fres); gl.uniform1f(uS.spec, mat.spec);
+    gl.uniform3fv(uS.tint, mat.tint); gl.uniform1f(uS.metal, mat.metal); gl.uniform1f(uS.rough, mat.rough); gl.uniform1f(uS.fres, mat.fres); gl.uniform1f(uS.spec, mat.spec); gl.uniform1f(uS.rim, mat.rim || 0);
     gl.drawElements(gl.TRIANGLES, mesh.n, gl.UNSIGNED_SHORT, 0);
   }
 
-  var MAT_CHROME = { tint: [0.95, 0.96, 1.0], metal: 1.0, rough: 0.012, fres: 0.6, spec: 2.8 };
-  var MAT_FRAME = { tint: [0.19, 0.21, 0.26], metal: 0.5, rough: 0.5, fres: 0.45, spec: 0.6 };  // more diffuse so the single light shapes it
-  var MAT_STRING = { tint: [0.09, 0.10, 0.13], metal: 0.0, rough: 1.0, fres: 0.1, spec: 0.0 };
+  var MAT_CHROME = { tint: [0.95, 0.96, 1.0], metal: 1.0, rough: 0.012, fres: 0.6, spec: 2.8, rim: 0.20 };
+  var MAT_FRAME = { tint: [0.19, 0.21, 0.26], metal: 0.5, rough: 0.5, fres: 0.45, spec: 0.6, rim: 0.10 };  // more diffuse so the single light shapes it
+  var MAT_STRING = { tint: [0.09, 0.10, 0.13], metal: 0.0, rough: 1.0, fres: 0.1, spec: 0.0, rim: 0.0 };
 
   /* frame segments (static) — just the top rails the strings hang from */
   var frameSegs = [];
@@ -390,6 +392,17 @@
     for (i = 0; i < N; i++) {
       var t3 = theta[i], mx = ballX(i) + L * Math.sin(t3), my = pivotY - L * Math.cos(t3);
       drawSurf(sphere, mMul(mTranslate(mx, my, 0), mScale(ballR, ballR, ballR)), MAT_CHROME);
+    }
+    if (includeStrings) {
+      // attachment hardware: a small cap where the strings meet each ball + tiny lugs on the bar
+      gl.uniform1f(uS.useCube, 0);
+      for (i = 0; i < N; i++) {
+        var t5 = theta[i], cx5 = ballX(i), bx5 = cx5 + L * Math.sin(t5), by5 = pivotY - L * Math.cos(t5);
+        var dx = cx5 - bx5, dy = pivotY - by5, dl = Math.sqrt(dx * dx + dy * dy) || 1;
+        drawSurf(sphere, mMul(mTranslate(bx5 + dx / dl * ballR, by5 + dy / dl * ballR, 0), mScale(0.05, 0.05, 0.05)), MAT_FRAME);
+        drawSurf(sphere, mMul(mTranslate(cx5, pivotY, zBar), mScale(0.034, 0.034, 0.034)), MAT_FRAME);
+        drawSurf(sphere, mMul(mTranslate(cx5, pivotY, -zBar), mScale(0.034, 0.034, 0.034)), MAT_FRAME);
+      }
     }
   }
 
