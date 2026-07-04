@@ -138,3 +138,13 @@ Standing principle: **each release should feel a notch more polished than the la
 2. Populate its registry `tags` with ~5–8 relevant concept tags: mechanic (puzzle/arcade/matching/physics/drawing/sequencer…), vibe (relaxing/satisfying/cozy/meditative/mesmerizing/chaotic…), input (drag/tap/swipe/keyboard), theme (space/neon/nature/casino…), and comparables — **plus keep the NL-key tag**.
 
 **Done 2026-07-03:** backfilled all 67 toys from ~1 tag each → avg ~7.3 concept tags (registry). Verified: search gained real matches (casino→Blackjack/Coin Pusher, plinko→Marble Drop, ferrofluid→Goo Cursor, handpan→Tongue Drum, monty hall→Three Doors…), no toy lost its NL key, 0 console errors, no tag UI resurrected.
+
+---
+
+### 2026-07-04 — Research each new toy before building; use 3D when it fits (owner directive)
+
+**Decision:** Before building any new toy, do a bit of **research first** — learn how the real thing works and what the best version looks/feels/sounds like: its features, visual design/materials, characteristic **sounds**, and interaction models. Use that to **propose the strongest options available** (not just the first workable idea) — surface a couple of well-informed choices for the owner rather than defaulting. This applies to the up-front concept/skin/mechanic pick (often via AskUserQuestion) AND to the audio and feel.
+
+**3D:** When a toy would genuinely be better in **3D**, use it — don't force everything into flat 2D. Judgment call per the existing 3D-direction decision (pottery-wheel era): default to **vanilla Canvas-2D pseudo-3D** (fixed viewpoint / surface-of-revolution / relief / parallax / metaballs) to keep the zero-build single-file soul; reach for **single-file raw WebGL (no Three.js, no build)** when the toy truly needs a free-orbit camera or real volumetric depth; only consider Three.js if a whole cluster of real-3D toys ever justifies the dep + build. The bar rises over time (see the "keep pushing the presentation envelope" decision) — research + real-3D-when-warranted is how we keep clearing it.
+
+**Why:** The owner is a designer with a high bar; a toy isn't done when it merely works — it must look/feel/sound intentional and be its richest self. Informed choices up front (and real 3D where it elevates the piece) beat first-draft defaults.

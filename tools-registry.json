@@ -832,7 +832,7 @@
   {
     "slug": "newtons-cradle",
     "name": "Newton's Cradle",
-    "shortDescription": "A satisfying Newton's Cradle simulation—swing 1, 2, or 3 balls and watch momentum transfer in perfect clacking loops. Mesmerizing physics.",
+    "shortDescription": "A real-3D Newton's Cradle—drag a chrome ball back and release, and watch momentum clack perfectly across the row. Orbit the view; mesmerizing physics.",
     "category": "simulation",
     "tags": [
       "newtons-cradle",
@@ -841,7 +841,12 @@
       "desk-toy",
       "satisfying",
       "pendulum",
-      "fidget"
+      "fidget",
+      "3d",
+      "webgl",
+      "chrome",
+      "steel-balls",
+      "reflective"
     ],
     "status": "live",
     "path": "toys/newtons-cradle/index.html",

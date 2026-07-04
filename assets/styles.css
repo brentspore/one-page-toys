@@ -950,7 +950,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 /* Real rendered thumbnails of each toy (authentic representation) */
 .card__preview[data-slug="lava-lamp"]{ background: #080207 url("cards/lava-lamp.png") center / cover no-repeat; }
 .card__preview[data-slug="bubble-wrap"]{ background: #0c1a28 url("cards/bubble-wrap.png") center / cover no-repeat; }
-.card__preview[data-slug="newtons-cradle"]{ background: #0b0c10 url("cards/newtons-cradle.png") center / cover no-repeat; }
+.card__preview[data-slug="newtons-cradle"]{ background: #0b0c10 url("cards/newtons-cradle.png?v=2") center / cover no-repeat; }
 .card__preview[data-slug="spirograph"]{ background: #06060f url("cards/spirograph.png") center / cover no-repeat; }
 .card__preview[data-slug="plasma-ball"]{ background: #04030c url("cards/plasma-ball.png") center / cover no-repeat; }
 .card__preview[data-slug="kaleidoscope"]{ background: #07061a url("cards/kaleidoscope.png") center / cover no-repeat; }
