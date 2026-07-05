@@ -192,3 +192,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** Owner idea (2026-07-03, from the generative-visual shortlist). ~4–6 particle "species" (colors); a random (or curated) **attraction matrix** defines how each species is attracted to/repelled by each other within a cutoff radius; integrate with friction. Emergent structures form. Interactive: **tap to spawn/scatter**, **drag to stir**, a "**new rules**" button (reroll the matrix → a whole new ecosystem), palette, particle-count/friction sliders. Use a **spatial grid** for neighbor queries so it stays 60fps with a few thousand particles (cap on mobile). Glowing dots on dark. Real card + OG; full pipeline. Category `visual`.
 
 ---
+### Upgrade dice to 3D
+
+---
