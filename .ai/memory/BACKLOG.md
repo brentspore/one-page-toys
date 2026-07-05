@@ -194,4 +194,373 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### Upgrade dice to 3D
 
+**Status:** active
+
+**Why it matters:** Owner idea (2026-07-05): rebuild the existing Dice Roller (toys/dice-roller/) with real tumbling 3D dice — a major glow-up for an existing toy using the proven zero-dep raw-WebGL foundation from Newton's Cradle.
+
+**When to revisit:** IN PROGRESS now — research workflow running (physics, provably-fair relabel trick, d4–d20 geometry/numbering, texture atlas); design questions to owner next, then build in place (same slug).
+
+**Notes:** Real rigid-body tumbling (quaternions, floor/wall/die-die collision, settle detection, read the top face), CSPRNG-fair via face-relabel trick, canvas texture atlas for numbers (d4 corner-read, d10 trapezohedron), synth dice-clatter audio, drag-to-throw. Keep all current features (d4–d20, pool, running total, best).
+
+---
+
+
+### New toy: Pinball (mini table)
+
+**Why it matters:** A flagship arcade classic with enormous nostalgia and replay pull — real flipper physics, bumpers, and a score chase. The kind of showpiece that gets shared. Category `game`.
+
+**When to revisit:** Next big-game round. The largest game idea on this list — scope the flipper/ball physics and a single curated table first; keep it one table, no progression (per the keep-it-small rule).
+
+**Notes:** AI suggestion (2026-07-05, per-category brainstorm). One lovingly-crafted mini table: two flippers (tap left/right halves or arrow keys), plunger launch (pull-drag), bumpers/slingshots that kick, rollover lanes, maybe one ramp. Ball = circle vs. line-segment/arc table geometry (continuous collision so it never tunnels); flippers as rotating segments with angular impulse. Score + best in `localStorage`, multiball optional stretch. Design bar: a curated neon-noir or retro-space table with lit inserts that react, bumper flash, screen-shake on slam; synth arcade audio (flipper thock, bumper ding chorus, drain thud, launch spring) per the audio bar. Real card + OG; full add-a-toy pipeline.
+
+---
+
+### New toy: Bowling (real-3D, WebGL)
+
+**Why it matters:** The natural next real-3D physics toy after the dice rebuild — a throw, a hush, then a hugely satisfying pin crash. Broad appeal, instantly understood. Category `game`. Reuses the zero-dep WebGL foundation (Newton's Cradle) + the rigid-body work from the 3D dice.
+
+**When to revisit:** After the 3D Dice Roller ships — it will have proven the quaternion rigid-body + floor collision patterns this needs.
+
+**Notes:** AI suggestion (2026-07-05). Drag-back-and-release (or swipe) to throw with power + curve/spin; ball physics down a glossy reflective lane (cubemap reflection like the cradle floor), 10 pins as rigid bodies (cylinder-ish collision or capsule approximations) with pin-pin knockdown chatter; frame scoring (strikes/spares) kept casual — 10 frames, best series in `localStorage`. Design: dark lane, single raking key light, lane-oil sheen, pin glow rims; synth audio: rolling rumble that follows ball speed, pin crash burst (layered inharmonic clatter), gutter thunk. Real card + OG; full pipeline.
+
+---
+
+### New toy: Minesweeper
+
+**Why it matters:** A beloved classic logic game missing from the collection — instantly recognized, deeply replayable, quick to build well. Category `game`/puzzle.
+
+**When to revisit:** Any quick-win round between larger builds.
+
+**Notes:** AI suggestion (2026-07-05). Classic rules with first-click-always-safe board generation; long-press/right-click to flag (touch-first); Easy/Medium/Hard grids; timer + best per difficulty in `localStorage`; chord-clicking for pros. Design bar: premium dark skin — beveled tiles with soft depth, satisfying reveal ripple on flood-fill, mine detonation shake + flash, confetti on a clean sweep; crisp synth ticks/pops per the audio bar, tension bed optional. Real card + OG; full pipeline.
+
+---
+
+### New toy: Word Hunt (Boggle-style letter grid)
+
+**Why it matters:** The site has zero word games — a gap for a huge audience. Drag-to-trace word finding is tactile, satisfying, and endlessly replayable with a fresh grid each round. Category `game`/word.
+
+**When to revisit:** Next puzzle round. Needs a bundled dictionary decision (see notes) — scope that first.
+
+**Notes:** AI suggestion (2026-07-05). 4×4 or 5×5 letter grid (dice-distribution letter frequencies); drag through adjacent letters (incl. diagonals) to trace words; 90-second round or zen mode; scoring by length; found-words list + best score in `localStorage`. Constraint: needs a word list — a compact common-word list (~30-60k words, ~200-400KB raw, less gzipped) bundled locally keeps it self-contained; prefix-trie for live validation. Keep name/trade dress distinct from Boggle. Design: warm wooden letter tiles or glowing runes, a glowing trace line, tile pop + pentatonic pluck per letter (rises with word length), fanfare on rare long words. Real card + OG; full pipeline.
+
+---
+
+### New toy: Nonogram / Picross
+
+**Why it matters:** A beloved logic-puzzle genre (huge dedicated audience) absent from the site; solving reveals pixel-art — inherently rewarding and screenshot-friendly. Category `game`/puzzle.
+
+**When to revisit:** Next puzzle round. Main scope: a curated set of solvable puzzles (or a generator + solvability checker).
+
+**Notes:** AI suggestion (2026-07-05). Row/column count clues; tap to fill, long-press/second-tool to mark X; mistake-forgiveness toggle; 5×5 → 15×15 sizes. Content: procedurally generate boards and verify line-solvability, or hand-curate a pack of charming pixel-art reveals (animals, objects) — reveal animates + colorizes on completion. Timer + best per size in `localStorage`. Design: clean paper-grid aesthetic or glowing terminal; satisfying fill thunk, error buzz (gentle), completion chime + the picture coming alive. Keep the name generic ("Picture Logic" etc. — Picross is trademarked). Real card + OG; full pipeline.
+
+---
+
+### New toy: Breakout / brick smasher
+
+**Why it matters:** An arcade staple with instant muscle-memory appeal and very juicy feedback potential (brick shatter, screen shake, multiball). Category `game`/arcade.
+
+**When to revisit:** Next arcade round; medium-small scope.
+
+**Notes:** AI suggestion (2026-07-05). Paddle follows pointer/touch; ball physics with paddle-english (hit position steers angle); a few hand-designed brick layouts cycling with speed ramp; power-ups kept minimal (widen, multiball, laser — pick 2); lives, score + best in `localStorage`. Design bar: neon-glass bricks that crack then shatter with particles, trail on the ball, bloom-y glow, screen-shake on last-brick; synth audio: pitch-rising brick pings (pentatonic ladder = the addictive part), paddle thock, multiball shimmer. Real card + OG; full pipeline.
+
+---
+
+### New toy: Darts
+
+**Why it matters:** A quick, universally-understood aim-and-timing pub game; short sessions, high "one more throw" pull. Category `game`.
+
+**When to revisit:** Quick-win round.
+
+**Notes:** AI suggestion (2026-07-05). Aim via a drifting/oscillating reticle (timing skill) or drag-back throw with wobble; proper dartboard scoring (doubles/triples/bull); play 301/501 vs. a simple AI or a 10-dart high-score mode. Perspective board with a satisfying THUNK + dart quiver on landing; felt-lined pub-corner mood, warm spotlight; crowd-less quiet ambience, synth thunk/ding per the audio bar. Best in `localStorage`. Real card + OG; full pipeline.
+
+---
+
+### New toy: Air Hockey (vs AI)
+
+**Why it matters:** Fast, physical, instantly fun on touch (finger = mallet); the table glow + puck clack is naturally juicy. Category `game`/arcade.
+
+**When to revisit:** Next arcade round; small-medium scope.
+
+**Notes:** AI suggestion (2026-07-05). Drag your mallet (bottom half only); puck physics with friction + wall bounce + mallet impulse; AI opponent with tunable reaction/speed (rubber-bands to stay fun); first to 7. Design: glowing neon table, air-hole dot grid, puck trail, goal flash + shake; audio: authentic hollow puck CLACK (velocity-scaled), table air hiss bed, goal horn (tasteful). Best-of streak in `localStorage`. Real card + OG; full pipeline.
+
+---
+
+### New toy: More card games — Video Poker + Pyramid
+
+**Why it matters:** The card-render foundation (Solitaire/Blackjack: pips, courts, chips, felt, deal animations) makes each additional card game a cheap, high-polish win for the popular `game`/cards lane.
+
+**When to revisit:** Any quick-win round — these were already flagged as follow-ups when Solitaire/Blackjack shipped.
+
+**Notes:** AI suggestion (2026-07-05, consolidating the standing Pyramid/Video Poker note). **Video Poker (Jacks or Better):** bet chips, deal 5, hold/redraw once, standard paytable, bankroll persists (like Blackjack's `bj_bank`). **Pyramid:** clear pairs summing to 13 from a 28-card pyramid + stock; drag/tap pairs; win cascade like Solitaire's. Each is its own toy folder/slug. Reuse felt + audio bus; distinct table accent colors. Real cards + OGs; full pipeline each.
+
+---
+
+### New toy: Paper Snowflake Cutter (kirigami)
+
+**Why it matters:** Deeply tactile childhood magic — cut notches from a folded paper wedge, then unfold to reveal the six-fold snowflake. The reveal moment is inherently shareable and photographs beautifully. Category `visual`/craft (Pottery Wheel energy).
+
+**When to revisit:** Next visual/craft round — also a natural December feature.
+
+**Notes:** AI suggestion (2026-07-05). Show a folded triangle wedge; drag to cut polyline snips from the edges (polygon clipping on the wedge shape); an unfold button (or auto-preview) mirrors the wedge 12× (6-fold + reflection) into the full snowflake with a paper-unfolding animation. Then: cut another, drift finished flakes in a gentle snow scene, download/share. Design: soft paper texture, scissor-line preview, warm desk-lamp scene vs. cool snowy backdrop for the reveal; audio: crisp paper-snip, soft unfolding rustle, a twinkle on reveal. Real card + OG; full pipeline.
+
+---
+
+### New toy: Mandelbrot Infinite Zoom (WebGL)
+
+**Why it matters:** The definitive mesmerizing math-visual — smooth infinite-feeling zoom into the fractal with flowing palettes. A perfect fit for the proven zero-dep WebGL capability (fragment-shader compute). Category `visual`.
+
+**When to revisit:** Next visual round; medium scope (precision handling is the crux).
+
+**Notes:** AI suggestion (2026-07-05). Fragment-shader Mandelbrot with smooth (continuous) coloring + animated palette cycling; tap/drag to pan, pinch/scroll to zoom toward the cursor. Handle float precision: single-precision WebGL1 runs out ~10^-4 scale — use double-emulation (split-float) in-shader or cap zoom gracefully with a "journey" of curated deep-zoom waypoints. Julia-set morph mode as a second palette of play (drag to sweep the c-parameter live — very interactive). Design: curated palettes (ember, glacier, bioluminescent), subtle bloom; ambient drone that deepens with zoom depth per the audio bar. Real card + OG; full pipeline.
+
+---
+
+### New toy: Lite-Brite pegboard
+
+**Why it matters:** Pure glowing nostalgia in the Pin Art / Magnetic Face family — punch luminous pegs into a black board and paint with light. Simple, tactile, screenshot-friendly. Category `visual`.
+
+**When to revisit:** Quick-win visual round.
+
+**Notes:** AI suggestion (2026-07-05). Dark board with a hex/square hole grid; pick from ~8 glowing peg colors, tap/drag to place (drag = paint), long-press to remove; each peg is a bright core + halo bloom on the dark board; optional template outlines (rocket, flower) as faint guides. Clear/save-to-PNG buttons. Trademark-safe generic name ("Glow Pegs" / "Peg Glow"). Audio: soft plastic *click-in* per peg (velocity-varied), gentle hum bed that thickens with board fullness. Real card + OG; full pipeline.
+
+---
+
+### New toy: Voronoi Stained Glass
+
+**Why it matters:** Interactive geometry that reads as art — shatter a glowing stained-glass window into living cells that grow, merge, and recolor under your finger. Category `visual`/generative.
+
+**When to revisit:** Next generative-visual round.
+
+**Notes:** AI suggestion (2026-07-05). Voronoi diagram over drifting seed points; tap adds a seed (a new glass pane grows in), drag herds seeds; palettes = cathedral jewel tones with leaded borders, backlit glow (light source slowly moves like the sun through a window). Optional Lloyd-relaxation "settle" button for even panes. Audio: crystalline chime per new pane (pentatonic), soft glass shimmer bed. Real card + OG; full pipeline.
+
+---
+
+### New toy: Fractal Tree Grower (L-systems)
+
+**Why it matters:** Watching a tree grow from your touch is quietly magical; parameterized L-systems give endless organic variety with tiny code. Crosses visual + wellness. Category `visual`.
+
+**When to revisit:** Next visual/cozy round.
+
+**Notes:** AI suggestion (2026-07-05). Tap the ground to plant; the tree grows branch-by-branch (animated L-system with slight randomness); sliders/chips for branch angle, lushness, and season (spring blossom / summer green / autumn fire / winter bare + snow); drag to bend the wind through the canopy (leaves flutter, petals fall). Multiple trees compose a grove scene. Audio: soft creak/rustle that follows wind strength, birdsong at full bloom. Real card + OG; full pipeline.
+
+---
+
+### New toy: Marble Music Machine
+
+**Why it matters:** Wintergatan-style magic — marbles drop onto tuned bars and the machine plays a melody: physics + music in one loop, hypnotic to watch and inherently viral. The strongest audio idea on this list. Category `audio` (flagship).
+
+**When to revisit:** Next audio round when there's appetite for a medium-large build.
+
+**Notes:** AI suggestion (2026-07-05). A marble dropper on a loop timer releases marbles down pegs/ramps onto a row of tuned vibraphone bars (pentatonic — everything sounds good); the player edits the machine: drag gates/ramps to route marbles, toggle drop columns per loop step (a physical step-sequencer). Marble hits = the note; visual bar shimmer + marble bounce physics (reuse Marble Drop's collision knowledge). Tempo control; maybe 2 marble sizes = 2 octaves. Audio bar fully loaded: warm vibraphone/kalimba-family synthesis (reverb+delay bus), wooden ramp rolls, marble clacks. Real card + OG; full pipeline.
+
+---
+
+### New toy: Singing Bowl
+
+**Why it matters:** Rub the rim and the bowl slowly blooms into its ring — a meditative gesture-to-sound loop that crosses `audio` and `wellness` perfectly (Tongue Drum's sibling).
+
+**When to revisit:** Next audio/wellness round; small-medium scope.
+
+**Notes:** AI suggestion (2026-07-05). A bronze bowl (top-down or 3/4 pseudo-3D); circle your finger around the rim — sustained circling builds amplitude (a resonance model: slow attack, long release, wobble/beating between close partials as it swells); strike the side for an immediate warm GONG with long decay; a mallet follows your touch around the rim. Water-in-bowl option: droplets dance when loud. Inharmonic-ish bowl partials (like the tongue-drum research), heavy lush reverb, iOS unlock. Design: warm bronze with hammered texture, cushion, incense-calm scene; ripple rings emanate while singing. Real card + OG; full pipeline.
+
+---
+
+### New toy: Euclidean Rhythm Circles
+
+**Why it matters:** Circular sequencers distributing K hits over N steps produce world-rhythms automatically — gorgeous rotating geometry + instant polyrhythmic grooves; a beautiful, brainy step up from Beat Maker. Category `audio`.
+
+**When to revisit:** Next audio round.
+
+**Notes:** AI suggestion (2026-07-05). 3-4 concentric rings, each a voice (kick/hat/pluck/chime); per-ring controls: steps N, pulses K (Euclidean/Bjorklund distribution), rotation offset, sound. Playhead sweeps like a radar; hits light and pulse outward. Tempo + swing; mute/solo per ring. The geometry IS the interface — dragging K reshapes the polygon inscribed in the ring. Synth voices through the standard bus (reverb/delay/compressor); visual: neon polygons on dark, vertices flash on hit. Real card + OG; full pipeline.
+
+---
+
+### New toy: Omnichord / Strum Pad
+
+**Why it matters:** Pick a chord, strum a glowing harp strip — instant lush music for people who play nothing. One of the most satisfying "anyone sounds good" instruments. Category `audio`.
+
+**When to revisit:** Next audio round; small-medium scope.
+
+**Notes:** AI suggestion (2026-07-05). Chord buttons (I–vi across a friendly key, or a small major/minor grid) + a vertical touch strip: sliding across it arpeggiates the held chord's notes (harp-like, velocity from slide speed); optional gentle rhythm pad (soft drum loop) and auto-bass on chord press. Sparkly plucked-string synthesis (detuned pairs, shimmer reverb per the audio bar). Design: a dreamlike instrument-object with a glowing strum field, light motes rising per note (Kalimba's world-language). Trademark-safe name ("Strumboard"?). Real card + OG; full pipeline.
+
+---
+
+### New toy: Radio Dial (numbers station)
+
+**Why it matters:** Pure atmosphere — turn a heavy analog dial through synthesized static and drift past ghost stations (a numbers voice? a distant waltz? morse?). Unique mood-piece unlike anything on the site. Category `audio`.
+
+**When to revisit:** Next audio/mood round.
+
+**Notes:** AI suggestion (2026-07-05). A beautiful vintage radio face; drag the needle across the band — filtered-noise static whose texture shifts, with stations at hidden frequencies that fade in through the crackle as you approach (synthesized: shortwave interval tones, a lonely piano loop, morse bursts, a "numbers" pattern via synthesized vocal-ish formants or tone-coded digits, whale-song-like sweeps). Fine-tuning knob narrows the crackle; signal-strength meter twitches. All audio synthesized (no samples, per the audio bar) — bandpassed noise beds, heterodyne whistles, AM warble. Design: warm dial lamp glow, brushed metal + bakelite, VU needle physics. Easter-egg station log in `localStorage`. Real card + OG; full pipeline.
+
+---
+
+### New toy: Rain Stick
+
+**Why it matters:** Tip it and a thousand beads cascade — tactile, calming, and a rare *device-motion* toy (gyro tilt on mobile). Category `audio`/wellness.
+
+**When to revisit:** Quick-ish audio round; motion-permission UX needs care (iOS requires a user-gesture permission prompt).
+
+**Notes:** AI suggestion (2026-07-05). A long transparent-ish tube of beads; tilt via device orientation (with a drag-to-tilt fallback on desktop) — beads tumble past internal pins with granular bead-shower synthesis (density/pitch follows flow rate + tilt angle); full invert = the big satisfying cascade. Design: warm wood/woven tube, bead sparkle, soft desert-evening backdrop. iOS `DeviceOrientationEvent.requestPermission` behind a tap; graceful desktop mode. Real card + OG; full pipeline.
+
+---
+
+### New toy: Dominoes (topple chains)
+
+**Why it matters:** Set up, then topple — the payoff loop of every domino video, now yours to build. The setup-anticipation-cascade arc is deeply satisfying and infinitely replayable. Category `simulation`.
+
+**When to revisit:** Next physics round; medium scope.
+
+**Notes:** AI suggestion (2026-07-05). Top-down or slight-perspective table; drag to lay smooth curves of dominoes (auto-spaced along your stroke), stamp presets (spiral, fork, loop), then tap the first one — falling-domino physics chain (each tile a thin rigid body: tip → strike next; simplified 2.5D physics is fine if convincing). Colored tiles paint patterns visible mid-cascade. Undo/eraser; slow-mo replay of the topple; counter of toppled tiles. Audio: THE sound — accelerating clack-clack-clack cascade (velocity-scheduled clicks with slight pitch variance), a hush before the first tip. Real card + OG; full pipeline.
+
+---
+
+### New toy: Spinning Top / Gyroscope (real-3D, WebGL)
+
+**Why it matters:** Flick a top and watch real precession, wobble, and the slow death-spiral rattle — mesmerizing physics you can feel. The perfect desk-toy sibling to the 3D Newton's Cradle. Category `simulation`.
+
+**When to revisit:** After the 3D dice ship (shares the rigid-body + WebGL foundation).
+
+**Notes:** AI suggestion (2026-07-05). Zero-dep WebGL: a machined metal top (lathe profile = surface of revolution mesh) on a reflective dark surface (cradle's floor language); drag-flick or twist-gesture to spin (spin rate from gesture); simulate gyroscopic precession + nutation (Euler's equations for an axisymmetric top — well-known closed forms), friction slowly bleeding spin until the wobble grows and it clatters down (satisfying rattle audio). Multiple tops to duel? (collisions optional/stretch). Spin-time record in `localStorage`. Audio: spin hum whose pitch follows RPM, scrape as the tip wanders, the end-rattle. Real card + OG; full pipeline.
+
+---
+
+### New toy: Soft-body Jelly Cube
+
+**Why it matters:** Poke it, stretch it, fling it — wobble physics is universally, giggle-inducingly satisfying (the digital stress-ball). Category `simulation`.
+
+**When to revisit:** Next physics round; small-medium scope.
+
+**Notes:** AI suggestion (2026-07-05). A 2D soft-body (spring-mass lattice or pressure-model blob, like Cloth's verlet cousin) sitting on a floor: drag to grab/stretch any point, release to *sproing*; toss it at walls; it jiggles with damped shear waves. Maybe 2-3 bodies with different squish (jelly / dough / water balloon). Design: translucent wobbling jelly with internal glow + specular film, squash-and-stretch shadows; audio: comedic-but-tasteful squish/wobble (filtered noise + pitch-bent body tones scaled by deformation energy). Real card + OG; full pipeline.
+
+---
+
+### New toy: Orrery (brass solar system, real-3D)
+
+**Why it matters:** A clockwork solar-system model you crank — brass, gears, ivory planets; educational-adjacent beauty with real orbital ratios. Gorgeous card material. Category `simulation`.
+
+**When to revisit:** WebGL round after dice; medium scope (mostly modeling/materials, physics is simple).
+
+**Notes:** AI suggestion (2026-07-05). Zero-dep WebGL: stylized brass armature, planets on arms with correct *relative* periods (crank speed = time multiplier; drag to spin time forward/back, watch retrograde alignments); tap a planet for its name + a fact chip; toggle real-scale vs. display-scale spacing. Single warm key light (museum spot), brass env-glints (cradle's material language), soft table shadow. Audio: gentle clockwork tick + gear whirr that follows crank speed, a chime on planetary alignment. Real card + OG; full pipeline.
+
+---
+
+### New toy: Magnetic Pendulum Fractal
+
+**Why it matters:** A pendulum over three magnets — release it and it dances chaotically before choosing one; the hidden basin-of-attraction fractal it traces is a jaw-dropping reveal. Chaos you can play with. Category `simulation`.
+
+**When to revisit:** Next physics round.
+
+**Notes:** AI suggestion (2026-07-05). Top-down pendulum bob attracted to 3 colored magnets (+ drag friction); drag to place/release the bob — it swirls and settles on a magnet (trail colored by eventual winner). "Reveal the map" mode: progressively raster-compute which magnet each start point falls into → the famous fractal basin image paints in live (chunked so the UI stays responsive). Move the magnets and watch the map morph. Audio: swooshes following speed, a soft lock-in chime colored per magnet. Real card + OG; full pipeline.
+
+---
+
+### New toy: Lorenz Attractor (3D butterfly)
+
+**Why it matters:** The icon of chaos theory as a living 3D ribbon you orbit — glowing particle trails weaving the butterfly forever, never repeating. Category `simulation`/visual.
+
+**When to revisit:** WebGL round; small-medium scope.
+
+**Notes:** AI suggestion (2026-07-05). Zero-dep WebGL: integrate many Lorenz trajectories (slightly offset starts — watch them diverge: chaos made visible); render as glowing additive ribbons/particles; drag to orbit, pinch to zoom; sliders for ρ (rho) morph the attractor shape live; a "twins" button launches two dyed trails from near-identical starts. Deep-space palette, bloom. Audio: an ethereal shimmer bed modulated by trajectory divergence. Real card + OG; full pipeline.
+
+---
+
+### New toy: Thunderstorm Maker
+
+**Why it matters:** The classic ambient-mixer, done to this site's audio bar — layer rain, thunder, wind, and distance into your perfect storm and just… stay a while. Enormous cozy appeal. Category `wellness`.
+
+**When to revisit:** Next wellness round; small-medium scope (audio-first build).
+
+**Notes:** AI suggestion (2026-07-05). Elegant sliders/dials: rain intensity (drizzle→downpour), thunder frequency + distance (delay + lowpass = far rumbles vs. near cracks), wind, rain-on-surface character (leaves/tin roof/window). All synthesized per the audio bar (layered filtered noise beds, the Rain-on-a-Window + Fireworks boom know-how). Visual: a living storm vignette that matches the mix — clouds darken, rain streaks thicken, lightning flashes precede thunder by the right distance-delay, wind bends the trees. A "sleep" dim mode. Real card + OG; full pipeline.
+
+---
+
+### New toy: Bonsai Pruning
+
+**Why it matters:** The Pottery Wheel of plants — slow, deliberate shaping of a living thing; snip a branch, watch it heal and regrow, care for it across a sitting. Deeply calm. Category `wellness`.
+
+**When to revisit:** Next wellness/craft round.
+
+**Notes:** AI suggestion (2026-07-05). A procedural bonsai (recursive branch structure) in a ceramic pot on a wooden stand; tap a branch to snip (clean cut animation + a leaf flutter), pinch/drag to wire a branch's angle gently; the tree slowly buds/regrows toward light over the session; choose pot + style (cascade, windswept, formal). Seasons/flowering as a quiet reward for balanced pruning. Audio: crisp snip, leaf rustle, distant temple ambience (synthesized bell, wind). Photo-mode card composition. Real card + OG; full pipeline.
+
+---
+
+### New toy: Snow Globe
+
+**Why it matters:** Shake it and watch the world settle — a one-gesture cozy ritual everyone already knows. Seasonal spotlight potential (December feature). Category `wellness`.
+
+**When to revisit:** Cozy round / before the holidays.
+
+**Notes:** AI suggestion (2026-07-05). A glass globe (specular + refraction-ish distortion of the tiny scene) over a carved base; shake via drag-flick (or device motion) — hundreds of snow particles swirl with fluid-ish turbulence then settle drift-by-drift; tiny scene inside (cabin + pines, lantern-lit; maybe 2-3 scenes to cycle). Glass glints, warm interior glow, falling-settled snow accumulates. Audio: soft glass-muffled swirl, twinkling music-box phrase that plays as snow falls (reuse Music Box voice), settling hush. Real card + OG; full pipeline.
+
+---
+
+### New toy: Grass Field in Wind
+
+**Why it matters:** Drag gusts through a golden meadow and watch waves roll across it — the pure "touch the landscape" fantasy; wind made visible. Category `wellness`/visual.
+
+**When to revisit:** Next wellness/visual round.
+
+**Notes:** AI suggestion (2026-07-05). Thousands of grass blades (instanced strokes with per-blade phase; canvas-2D batched or WebGL for density) swaying to a wind field; drag = a gust that bends a traveling wave through the field (blades bow + shimmer as it passes); ambient breeze keeps it alive; fireflies or seeds drift at dusk; time-of-day tint chip (noon gold / dusk rose / night silver). Audio: wind bed that follows gust strength + soft grass hiss (bandpassed noise), distant birds by day, crickets at night. Real card + OG; full pipeline.
+
+---
+
+### New toy: Fireflies at Dusk
+
+**Why it matters:** Catch-and-release fireflies in a jar on a summer evening — nostalgia distilled; gentle, luminous, and quietly interactive. Category `wellness`.
+
+**When to revisit:** Cozy round (summer feature).
+
+**Notes:** AI suggestion (2026-07-05). A dusk meadow-edge scene; fireflies drift and blink in organic patterns (synchronizing waves occasionally — real firefly behavior); move a cupped-hand/jar cursor to gently catch them (they glow inside the jar, lighting your corner of the scene); open the lid to release a swirl of light. No score — just the ritual. Audio: cricket bed, soft jar clink, a warm swell when the jar glows bright. Design: deep blue-hour palette, bloom on every lantern-belly. Real card + OG; full pipeline.
+
+---
+
+### New toy: Tide Pool
+
+**Why it matters:** Waves washing over sand — foam lines, retreating shimmer, and small discoveries (shells, anemones that shy from touch). A beach in a browser tab. Category `wellness`.
+
+**When to revisit:** Next wellness round.
+
+**Notes:** AI suggestion (2026-07-05). A gentle shoreline loop: waves slide up the sand (translucent water edge + foam lace that decays), retreat leaving wet-sand sheen that dries; tap the water to splash, touch anemones to make them shy closed, flip small shells; maybe write in the wet sand with a finger and watch the next wave erase it (the poetic hook). Audio: the wave cycle (approach hiss, wash, retreating fizz — layered noise beds), gull far off. Real card + OG; full pipeline.
+
+---
+
+### New tool: Decision Wheel (spin to decide)
+
+**Why it matters:** Type your options, spin the wheel, let fate decide — the most shareable utility imaginable (hash-encoded wheels = send a "where do we eat?" wheel to the group chat). Category `utility`.
+
+**When to revisit:** Next tools round; small scope, high virality.
+
+**Notes:** AI suggestion (2026-07-05). Editable option list (2-12 entries) → a colorful wheel; drag-flick to spin with real angular momentum + friction + a ticking flapper (pointer physics against pegs); dramatic slow-down, winner celebration. Presets: dinner picker, chore assigner, yes/no/maybe. **Share via URL hash** (like Countdown) so a specific wheel is linkable; last wheel in `localStorage`. Geist tool-family styling (light/dark) OR full-bleed toy treatment — decide at build. Audio: accelerating tick-tick-tick that slows to the verdict, fanfare. CSS-motif or rendered card + OG; full pipeline.
+
+---
+
+### New tool: Pomodoro Timer
+
+**Why it matters:** The classic focus ritual, done in the site's clean meter-family style — a genuinely useful daily-return tool (rare retention driver for the portfolio). Category `utility`.
+
+**When to revisit:** Next tools round; small scope.
+
+**Notes:** AI suggestion (2026-07-05). 25/5 cycles (customizable work/break lengths, long-break every 4); a beautiful big dial/arc that drains; session tally today (localStorage); gentle synth chime on transitions (no jarring alarm), optional tick. Title-bar countdown (`document.title`) so it works in a background tab; Notification API optional (permission-gated). Geist tool family (copy meeting-cost-meter styles, recolor tomato-warm). CSS-motif card + og-gen `bignum` OG; full pipeline.
+
+---
+
+### New tool: Tip Splitter
+
+**Why it matters:** The utility everyone reaches for after dinner — bill + tip% + people = per-person amount, zero friction. Completes the money-tool family (Time Is Money, Latte Factor). Category `utility`.
+
+**When to revisit:** Quick-win tools round.
+
+**Notes:** AI suggestion (2026-07-05). Bill amount, tip presets (15/18/20/25% + custom, with a service-quality hint), split count with a big stepper; outputs per-person tip + total, rounded-up "make it even" toggle; everything updates live in a big odometer hero (meter-family style). Optionally itemized "who had what" as a stretch — probably keep v1 simple. Geist tool family, money-green sibling palette. CSS-motif card + OG; full pipeline.
+
+---
+
+### New tool: World Clock Overlap ("when can we call?")
+
+**Why it matters:** Visual answer to the eternal remote-work/family question — pick 2-4 places, see the stacked day/night bars, and the green window where waking hours overlap. Category `utility`.
+
+**When to revisit:** Next tools round; small-medium scope (timezone data via `Intl` keeps it dependency-free).
+
+**Notes:** AI suggestion (2026-07-05). City/timezone picker (curated list + search over IANA zones via `Intl.supportedValuesOf('timeZone')`); horizontal 24h bars per place aligned to *your* now-line, tinted night/dawn/day/dusk with sleeping hours hatched; the mutual "good call window" glows; drag the now-line to scrub ("if I call at 9pm my time it's 6am for Mom"). Share via URL hash. Geist tool family, sky-gradient palette. CSS-motif card + OG; full pipeline.
+
 ---

@@ -268,7 +268,7 @@
     "varying vec3 vW; varying vec3 vN;" +
     "void main(){ vec4 w=uModel*vec4(aPos,1.0); vW=w.xyz; vN=uNorm*aNorm; gl_Position=uProj*uView*w; }",
     "precision highp float;" + ENV_GLSL +
-    "varying vec3 vW; varying vec3 vN; uniform vec3 uCam,uTint; uniform float uMetal,uRough,uFres,uSpec,uRim,uTonemap,uUseCube; uniform samplerCube uCube;" +
+    "varying vec3 vW; varying vec3 vN; uniform vec3 uCam,uTint; uniform float uMetal,uRough,uFres,uSpec,uRim,uBrush,uTonemap,uUseCube; uniform samplerCube uCube;" +
     "void main(){" +
     "  vec3 N=normalize(vN), V=normalize(uCam-vW), R=reflect(-V,N);" +
     "  vec3 env;" +
@@ -282,6 +282,7 @@
     "  vec3 c=mix(diffuse,metalC,uMetal);" +
     "  c=mix(c,broad+vec3(0.2),fres*uFres);" +
     "  float sp=pow(max(dot(R,Ld),0.0),220.0); c+=vec3(1.0)*sp*uSpec;" +
+    "  if(uBrush>0.5){ c*=1.0+0.022*(sin(vW.x*63.0)+sin(vW.x*37.0+1.7)+sin(vW.x*101.0+0.6)); }" + // subtle brushed-metal grain along the bar
     "  c+=vec3(0.38,0.48,0.66)*pow(1.0-max(dot(N,V),0.0),3.5)*uRim;" +               // cool rim so dark edges separate from the black
     "  if(uTonemap>0.5){ c=clamp((c*(2.51*c+0.03))/(c*(2.43*c+0.59)+0.14),0.0,1.0); c=pow(c,vec3(1.0/2.2)); }" + // ACES filmic — punchier highlights, richer contrast
     "  gl_FragColor=vec4(c,1.0);" +
@@ -317,7 +318,8 @@
     "void main(){" +
     "  vec2 p=vW.xz;" +
     "  float sh=0.0;" +
-    "  for(int i=0;i<5;i++){ float d=length(p-uBall[i].xy); sh=max(sh, uBall[i].z*smoothstep(0.95,0.0,d)); }" +
+    "  for(int i=0;i<5;i++){ float d=length(p-uBall[i].xy); float h=uBall[i].z;" +   // h = ball height above rest
+    "    sh=max(sh, 0.46*exp(-h*1.1)*smoothstep(0.9+h*0.55,0.0,d)); }" +             // higher ball -> wider, fainter shadow (penumbra)
     "  float fao=smoothstep(3.6,1.2,length(p))*0.30; sh=max(sh,fao);" +
     "  float rad=smoothstep(4.5,0.0,length(p));" +
     "  vec3 base=mix(vec3(0.007,0.009,0.014),vec3(0.028,0.032,0.042),rad);" +  // darker, moodier floor
@@ -333,7 +335,7 @@
   );
 
   function loc(p, n) { return gl.getUniformLocation(p, n); }
-  var uS = { proj: loc(surfProg, "uProj"), view: loc(surfProg, "uView"), model: loc(surfProg, "uModel"), norm: loc(surfProg, "uNorm"), cam: loc(surfProg, "uCam"), tint: loc(surfProg, "uTint"), metal: loc(surfProg, "uMetal"), rough: loc(surfProg, "uRough"), fres: loc(surfProg, "uFres"), spec: loc(surfProg, "uSpec"), rim: loc(surfProg, "uRim"), tonemap: loc(surfProg, "uTonemap"), useCube: loc(surfProg, "uUseCube"), cube: loc(surfProg, "uCube"), light: loc(surfProg, "uLight") };
+  var uS = { proj: loc(surfProg, "uProj"), view: loc(surfProg, "uView"), model: loc(surfProg, "uModel"), norm: loc(surfProg, "uNorm"), cam: loc(surfProg, "uCam"), tint: loc(surfProg, "uTint"), metal: loc(surfProg, "uMetal"), rough: loc(surfProg, "uRough"), fres: loc(surfProg, "uFres"), spec: loc(surfProg, "uSpec"), rim: loc(surfProg, "uRim"), brush: loc(surfProg, "uBrush"), tonemap: loc(surfProg, "uTonemap"), useCube: loc(surfProg, "uUseCube"), cube: loc(surfProg, "uCube"), light: loc(surfProg, "uLight") };
   var aS_pos = gl.getAttribLocation(surfProg, "aPos"), aS_norm = gl.getAttribLocation(surfProg, "aNorm");
   var uB = { inv: loc(bgProg, "uInv"), cam: loc(bgProg, "uCam"), res: loc(bgProg, "uRes"), light: loc(bgProg, "uLight") };
   var aB_pos = gl.getAttribLocation(bgProg, "aPos");
@@ -353,12 +355,12 @@
   function drawSurf(mesh, model, mat) {
     gl.uniformMatrix4fv(uS.model, false, model);
     gl.uniformMatrix3fv(uS.norm, false, mNormal(model));
-    gl.uniform3fv(uS.tint, mat.tint); gl.uniform1f(uS.metal, mat.metal); gl.uniform1f(uS.rough, mat.rough); gl.uniform1f(uS.fres, mat.fres); gl.uniform1f(uS.spec, mat.spec); gl.uniform1f(uS.rim, mat.rim || 0);
+    gl.uniform3fv(uS.tint, mat.tint); gl.uniform1f(uS.metal, mat.metal); gl.uniform1f(uS.rough, mat.rough); gl.uniform1f(uS.fres, mat.fres); gl.uniform1f(uS.spec, mat.spec); gl.uniform1f(uS.rim, mat.rim || 0); gl.uniform1f(uS.brush, mat.brush || 0);
     gl.drawElements(gl.TRIANGLES, mesh.n, gl.UNSIGNED_SHORT, 0);
   }
 
   var MAT_CHROME = { tint: [0.95, 0.96, 1.0], metal: 1.0, rough: 0.012, fres: 0.6, spec: 2.8, rim: 0.20 };
-  var MAT_FRAME = { tint: [0.19, 0.21, 0.26], metal: 0.5, rough: 0.5, fres: 0.45, spec: 0.6, rim: 0.10 };  // more diffuse so the single light shapes it
+  var MAT_FRAME = { tint: [0.19, 0.21, 0.26], metal: 0.5, rough: 0.5, fres: 0.45, spec: 0.6, rim: 0.10, brush: 1 };  // diffuse brushed metal so the single light shapes it
   var MAT_STRING = { tint: [0.09, 0.10, 0.13], metal: 0.0, rough: 1.0, fres: 0.1, spec: 0.0, rim: 0.0 };
 
   /* frame segments (static) — just the top rails the strings hang from */
@@ -445,6 +447,48 @@
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  /* ---- bloom: the hot highlights glow. The metal is re-rendered small,
+     thresholded + blurred, then ADDED over the main image — the main pass
+     stays on the default (MSAA) framebuffer so edges keep their AA. ---- */
+  var postVS = "attribute vec3 aPos; varying vec2 vUv; void main(){ vUv=aPos.xy*0.5+0.5; gl_Position=vec4(aPos.xy,0.0,1.0); }";
+  var blurProg = program(postVS,
+    "precision mediump float; varying vec2 vUv; uniform sampler2D uTex; uniform vec2 uDir; uniform float uThresh;" +
+    "vec3 tap(vec2 o){ vec3 c=texture2D(uTex,vUv+o).rgb; return max(c-vec3(uThresh),0.0); }" +
+    "void main(){ vec3 s=tap(vec2(0.0))*0.227027;" +
+    " s+=(tap(uDir*1.3846)+tap(-uDir*1.3846))*0.3162162;" +
+    " s+=(tap(uDir*3.2308)+tap(-uDir*3.2308))*0.0702703;" +
+    " gl_FragColor=vec4(s,1.0); }");
+  var addProg = program(postVS,
+    "precision mediump float; varying vec2 vUv; uniform sampler2D uTex; uniform float uAmt;" +
+    "void main(){ gl_FragColor=vec4(texture2D(uTex,vUv).rgb*uAmt,1.0); }");
+  var uBL = { tex: loc(blurProg, "uTex"), dir: loc(blurProg, "uDir"), thresh: loc(blurProg, "uThresh") };
+  var aBL_pos = gl.getAttribLocation(blurProg, "aPos");
+  var uAD = { tex: loc(addProg, "uTex"), amt: loc(addProg, "uAmt") };
+  var aAD_pos = gl.getAttribLocation(addProg, "aPos");
+  var BLOOM_THRESH = 0.62, BLOOM_AMT = 0.9;
+  var rtA = null, rtB = null, rtW = 0, rtH = 0;
+  function makeRT(w, h, depth) {
+    var t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    var fb = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+    var rb = null;
+    if (depth) { rb = gl.createRenderbuffer(); gl.bindRenderbuffer(gl.RENDERBUFFER, rb); gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, w, h); gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb); }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return { fb: fb, tex: t, rb: rb };
+  }
+  function dropRT(rt) { if (!rt) return; gl.deleteFramebuffer(rt.fb); gl.deleteTexture(rt.tex); if (rt.rb) gl.deleteRenderbuffer(rt.rb); }
+  function ensureRTs() {
+    var w = Math.max(1, canvas.width >> 2), h = Math.max(1, canvas.height >> 2); // quarter res
+    if (w === rtW && h === rtH) return;
+    rtW = w; rtH = h; dropRT(rtA); dropRT(rtB);
+    rtA = makeRT(w, h, true); rtB = makeRT(w, h, false);
+  }
+
   /* ================= camera ================= */
   var baseYaw = -0.34, basePitch = 0.09, userYaw = 0, userPitch = 0, dist = 10.2;
   var target = [0, -0.1, 0];
@@ -506,7 +550,7 @@
 
     // floor + soft contact shadows (blended)
     var i;
-    for (i = 0; i < N; i++) { ballFloorBuf[i * 3] = ballX(i) + L * Math.sin(theta[i]); ballFloorBuf[i * 3 + 1] = 0; ballFloorBuf[i * 3 + 2] = 0.42; }
+    for (i = 0; i < N; i++) { ballFloorBuf[i * 3] = ballX(i) + L * Math.sin(theta[i]); ballFloorBuf[i * 3 + 1] = 0; ballFloorBuf[i * 3 + 2] = L * (1 - Math.cos(theta[i])); } // z = height above rest
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(floorProg);
     var floorModel = mMul(mTranslate(0, baseY - 0.12, 0), mScale(9, 1, 6));
@@ -519,6 +563,34 @@
 
     // surfaces — balls sample the reflection cube-map (already bound to unit 0)
     drawSceneSurfaces(curProj, curView, camPos, 1.0, 1.0, true);
+
+    /* 3) bloom: re-render the metal small -> threshold+blur -> add over the image */
+    ensureRTs();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, rtA.fb);
+    gl.viewport(0, 0, rtW, rtH);
+    gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubeTex);
+    drawSceneSurfaces(curProj, curView, camPos, 1.0, 1.0, false);      // no strings (they'd sparkle at quarter res)
+    gl.disable(gl.DEPTH_TEST); gl.depthMask(false);
+    gl.useProgram(blurProg);                                           // threshold + horizontal blur A->B
+    gl.bindBuffer(gl.ARRAY_BUFFER, bgBuf); gl.enableVertexAttribArray(aBL_pos); gl.vertexAttribPointer(aBL_pos, 3, gl.FLOAT, false, 0, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, rtB.fb);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, rtA.tex);
+    gl.uniform1i(uBL.tex, 0); gl.uniform2f(uBL.dir, 1 / rtW, 0); gl.uniform1f(uBL.thresh, BLOOM_THRESH);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, rtA.fb);                        // vertical blur B->A
+    gl.bindTexture(gl.TEXTURE_2D, rtB.tex);
+    gl.uniform2f(uBL.dir, 0, 1 / rtH); gl.uniform1f(uBL.thresh, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);                          // additive composite onto the screen
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.useProgram(addProg);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bgBuf); gl.enableVertexAttribArray(aAD_pos); gl.vertexAttribPointer(aAD_pos, 3, gl.FLOAT, false, 0, 0);
+    gl.bindTexture(gl.TEXTURE_2D, rtA.tex);
+    gl.uniform1i(uAD.tex, 0); gl.uniform1f(uAD.amt, BLOOM_AMT);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.disable(gl.BLEND); gl.depthMask(true); gl.enable(gl.DEPTH_TEST);
 
     requestAnimationFrame(render);
   }
