@@ -564,3 +564,13 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** AI suggestion (2026-07-05). City/timezone picker (curated list + search over IANA zones via `Intl.supportedValuesOf('timeZone')`); horizontal 24h bars per place aligned to *your* now-line, tinted night/dawn/day/dusk with sleeping hours hatched; the mutual "good call window" glows; drag the now-line to scrub ("if I call at 9pm my time it's 6am for Mom"). Share via URL hash. Geist tool family, sky-gradient palette. CSS-motif card + OG; full pipeline.
 
 ---
+
+### New toy: Pool / 8-Ball (billiards)
+
+**Why it matters:** A beloved classic with instantly satisfying physics — the crack of the break, balls rolling true, the corner-pocket drop. Broad appeal, endless replay, and it photographs beautifully (green felt + gloss balls). Category `game`.
+
+**When to revisit:** Next game round with appetite for a medium-large physics build (ball-ball collision + pockets + cue feel are the meat).
+
+**Notes:** Owner request (2026-07-05). Top-down (or slight-perspective) table; **drag back from the cue ball to aim + set power** (like Mini Golf's proven de-cheated aim: direction arrow + power ring, no full trajectory preview), release to strike; optional english via a small spin-offset picker. Physics: elastic ball-ball collisions with rolling friction + cushion restitution (2D circles — well-trodden), pocket capture with a satisfying drop. Mode scoped SMALL per the keep-it-small rule: solo **clear-the-table** (fewest strokes, best in `localStorage`) and/or **pass-and-play 8-ball** on one device — skip AI opponent v1 (rubber-banding cue AI is a project of its own). Design bar: deep-felt table under a warm low lamp, glossy numbered balls (reuse the card/pip rendering discipline), subtle cloth texture, chalk-dust puff on strike. Audio bar: the authentic cue *tock*, ball-ball *clack* (velocity-scaled, the Newton's Cradle steel-click family retuned for phenolic resin), cushion thump, pocket rumble-drop. Real rendered card + OG; full add-a-toy pipeline. If it grows toward opponents/multiplayer → separate project per the scoping rule.
+
+---
