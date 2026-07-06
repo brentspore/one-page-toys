@@ -18,6 +18,25 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
+### Improve: Campfire — make the fire feel more realistic
+
+**Why it matters:** Campfire (No. 032, `toys/campfire/`, wellness) is a cozy centerpiece toy, but the owner feels the fire doesn't read as *real* enough. Fire is the whole point — pushing its fidelity is a high-leverage polish pass that raises the whole wellness lane and photographs beautifully. Fits the "keep pushing the presentation envelope" meta-principle.
+
+**When to revisit:** Next polish/wellness round, or whenever iterating on cozy toys. Contained scope — it's a rework of the existing `toys/campfire/script.js` flame/light/audio model, not a new toy. Stay vanilla Canvas 2D (this toy has no need for WebGL).
+
+**Notes:** Owner idea (2026-07-06): "Make the campfire feel more realistic." The toy already has upward flame-tongue particles (white-hot→orange→red), embers, smoke, a warm ground glow, logs that burn away via a fuel model, and synth audio (roar bed + Poisson crackle + sizzle + log knock). Realism upgrades to layer on:
+- **Organic flame motion** — drive flames with a **curl-noise / flow-field turbulence** so they lick and curl instead of rising straight; buoyancy accelerates hot particles upward, they cool→redden→shrink and shed into smoke at the top. Layer a dense **white-hot core column** + sparser **outer orange tongues** for depth; additive blending so overlaps brighten.
+- **A glowing coal/ember bed** beneath the flames (the hottest, most convincing part of a real fire) — pulsing orange cracks in the charring logs that **brighten when fanned**, ash accumulation over time.
+- **Heat-haze shimmer** — a subtle refraction/distortion wobble in the hot-air column ABOVE the flames (cheap canvas warp / sine-noise displacement of the background) = the signature "it's hot" cue.
+- **Convincing sparks/embers** — fewer but better: born from the hottest zones, caught in the **updraft and swirling with the same curl field**, twinkling out; the occasional bright pop-spark that arcs away.
+- **Fire-driven dynamic light** — the warm ground/rock/foreground glow should **flicker in sync with the actual summed flame energy** (not an independent LFO) so the scene breathes *with* the fire; soft radial light pulse, maybe faint moving shadows. A believable blackbody-ish color ramp (white→yellow→orange→deep red→smoke, hint of blue at the fuel base).
+- **Smoke** — wispy translucent plumes that thicken as logs char, drift with wind, faintly underlit by the fire.
+- **Interaction** — fanning (drag) visibly bends the flame, brightens the coals, and throws a spark shower; a gentle ambient breeze leans the flame when idle.
+- **Audio (per the audio bar)** — richer crackle (layered ticks + occasional sharp resinous pops + a low roar bed whose level tracks flame energy + soft hiss); fanning = whoosh + spark shower; keep it calm/wellness. Wants the owner's ears.
+- Keep it **interactive + calm**; bump `campfire/script.js?v=N`; **regenerate the card + OG** if the look changes materially; screenshot/drive frames manually to eyeball (headless throttles rAF). Tunables to expose at the top of the script (flame count / buoyancy / turbulence / cool-rate / light-flicker gain).
+
+---
+
 ### New toy: Zaxxon-style isometric scroll-shooter
 
 **Why it matters:** A distinctive, nostalgic **isometric axonometric shooter** — nothing in the gallery uses a diagonal iso view or an altitude axis, so it stands out hard and photographs beautifully for a card/OG (the diagonal grid + long shadows are instantly recognizable). Score-chasey, arcade/viral lane, endlessly replayable. A natural fit for the repo's **single-file raw-WebGL** direction (Newton's Cradle / Dice Roller precedent + the DECISIONS "use 3D when it genuinely elevates the toy" rule): the whole appeal of Zaxxon IS the depth, so **real 3D earns its keep here** — this should be a showcase-quality 3D toy, not a flat iso fake.
