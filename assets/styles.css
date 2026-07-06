@@ -752,17 +752,9 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
     inset 0 0 0 6px rgba(120, 88, 20, 0.5);
 }
 
-/* Dice Roller — a faceted violet d20 */
+/* Dice Roller — real 3D dice on green felt (rendered card) */
 .card__preview[data-slug="dice-roller"]{
-  background: radial-gradient(circle at 50% 60%, #1c1533 0%, #0d0a18 72%);
-}
-.card__preview[data-slug="dice-roller"]::after{
-  content: "";
-  width: 74px;
-  height: 74px;
-  clip-path: polygon(25% 5%, 75% 5%, 98% 50%, 75% 95%, 25% 95%, 2% 50%);
-  background: linear-gradient(135deg, #a978ff 0%, #8b5cf6 46%, #6d28d9 47%, #d946ef 100%);
-  filter: drop-shadow(0 10px 22px rgba(140, 60, 220, 0.5));
+  background: #0c2b1c url("cards/dice-roller.png?v=3") center/cover no-repeat;
 }
 
 /* Magic 8-Ball — glossy black sphere + blue triangle */

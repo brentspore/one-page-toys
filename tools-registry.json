@@ -1106,7 +1106,7 @@
   {
     "slug": "dice-roller",
     "name": "Dice Roller",
-    "shortDescription": "Roll faceted 3D dice—d4 through d20, solo or a whole pool at once. They tumble and settle fair, with a running total and history.",
+    "shortDescription": "Roll real 3D dice—d4 through d20—on green felt. Flick to throw; they tumble with true physics and settle on fair, crypto-random odds, with a running total, best, and history.",
     "category": "game",
     "tags": [
       "dice-roller",
@@ -1115,7 +1115,10 @@
       "random",
       "tabletop",
       "d20",
-      "roller"
+      "roller",
+      "3d",
+      "physics",
+      "webgl"
     ],
     "status": "live",
     "path": "toys/dice-roller/index.html",

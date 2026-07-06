@@ -14,14 +14,14 @@
       gtag('config', 'G-VBVJ93GL8L');
     </script>
     <title>Dice Roller — One Page Toys</title>
-    <meta name="description" content="Roll faceted 3D dice—d4, d6, d8, d10, d12, d20—one or a whole pool at once. They tumble and settle with cryptographically fair odds, with a running total and roll history. Free, no sign-up." />
+    <meta name="description" content="Roll real 3D dice—d4, d6, d8, d10, d12, d20—solo or a whole pool. They tumble across the felt with true physics and settle on cryptographically fair odds, with a running total and roll history. Free, no sign-up." />
     <link rel="canonical" href="https://onepagetoys.com/toys/dice-roller/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0e0b1a" />
+    <meta name="theme-color" content="#0c2b1c" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
     <meta property="og:title" content="Dice Roller — One Page Toys" />
-    <meta property="og:description" content="Roll faceted 3D dice (d4–d20), one or a whole pool at once. They tumble and settle fair, with a total and history." />
+    <meta property="og:description" content="Roll real 3D dice (d4–d20), solo or a pool. Flick to throw; they tumble on the felt and settle fair, with a total and history." />
     <meta property="og:url" content="https://onepagetoys.com/toys/dice-roller/index.html" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og/dice-roller.png" />
     <meta property="og:image:width" content="1200" />
@@ -30,7 +30,7 @@
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Dice Roller — One Page Toys" />
-    <meta name="twitter:description" content="Roll faceted 3D dice (d4–d20), solo or a pool. Fair odds, total, history." />
+    <meta name="twitter:description" content="Roll real 3D dice (d4–d20), solo or a pool. Flick to throw, fair odds, total, history." />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og/dice-roller.png" />
     <script type="application/ld+json">
       {
@@ -38,28 +38,31 @@
         "@type": "WebApplication",
         "name": "Dice Roller",
         "url": "https://onepagetoys.com/toys/dice-roller/index.html",
-        "description": "Roll faceted 3D dice (d4–d20), one or a whole pool at once, with cryptographically fair odds, a running total, and roll history.",
+        "description": "Roll real 3D dice (d4–d20), solo or a whole pool at once — physics-based tumbling on green felt with cryptographically fair odds, a running total, and roll history.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "browserRequirements": "Requires JavaScript. Requires WebGL.",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
       }
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
-    <div class="bg" aria-hidden="true"></div>
+    <canvas id="canvas" aria-label="3D dice on a felt table"></canvas>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
 
-    <main class="stage">
-      <div class="readout">
-        <span class="readout__eyebrow" id="rollLabel">Total</span>
+    <div class="hud hud--top">
+      <div class="readout" aria-live="polite">
+        <span class="readout__eyebrow" id="rollLabel">Roll</span>
         <span class="readout__total" id="total">—</span>
-        <span class="readout__detail" id="detail">Pick dice, then roll</span>
+        <span class="readout__detail" id="detail">roll a d6</span>
       </div>
+      <div class="best" id="best">Best —</div>
+    </div>
 
-      <div class="arena" id="arena" aria-live="polite"></div>
-
+    <div class="hud hud--bottom">
       <div class="dietypes" role="group" aria-label="Die type">
         <button type="button" class="die-chip" data-sides="4">d4</button>
         <button type="button" class="die-chip is-on" data-sides="6">d6</button>
@@ -77,10 +80,11 @@
         </div>
         <button type="button" class="btn btn--primary" id="rollBtn">Roll</button>
         <button type="button" class="btn btn--ghost" id="clearBtn">Clear</button>
+        <button type="button" class="btn btn--ghost" id="soundBtn" aria-pressed="true">Sound: on</button>
       </div>
 
       <ol class="history" id="history" aria-label="Recent totals"></ol>
-    </main>
+    </div>
 
     <div class="frame" aria-hidden="true">
       <span class="frame__corner frame__corner--tl">No. 005</span>
@@ -89,9 +93,9 @@
       <span class="frame__corner frame__corner--br">Cryptographically fair</span>
     </div>
 
-    <p class="hint" id="hint">pick a die · set how many · roll (or press R)</p>
+    <p class="hint" id="hint">flick to throw · or press Roll (R)</p>
 
-    <script src="script.js?v=1" defer></script>
+    <script src="script.js?v=3" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
     <script src="../../assets/fullscreen.js?v=2" defer></script>
   </body>
