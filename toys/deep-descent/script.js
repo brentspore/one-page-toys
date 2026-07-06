@@ -29,7 +29,8 @@
   var HW0 = 158, HWMIN = 72; // corridor half-width (px), start → deep
   var EDGE_M = 12;           // min rock margin at the screen edge
   var PVMAX = 560;           // used to cap corridor slope so it stays dodgeable
-  var KEY_V = 660;           // keyboard steer speed
+  var KEY_V = 660;           // keyboard steer speed (full, when held)
+  var KEY_ACCEL = 9;         // how fast the key steer ramps up/down (lower = gentler quick taps)
   var GEM_R = 9, GEM_PTS = 25;
   var GRACE_OBST = 900, GRACE_GEM = 520; // depth before obstacles / gems appear
   var NEAR_D = 11;           // near-miss clearance
@@ -44,7 +45,7 @@
   var player = { x: 0, tx: 0, vx: 0, bob: 0 };
   var meanderTarget = 0;
   var shake = 0, flick = 0, nearCd = 0, ambLevel = 0, driftScore = 0;
-  var keyL = false, keyR = false;
+  var keyL = false, keyR = false, keyVel = 0;
 
   try { best = parseInt(localStorage.getItem("descent_best"), 10) || 0; } catch (e) { best = 0; }
   bestEl.textContent = best > 0 ? "Best " + best + "m" : "Best —";
@@ -236,9 +237,15 @@
     }
     streamTerrain();
 
-    // steer
-    if (keyL) player.tx -= KEY_V * dt;
-    if (keyR) player.tx += KEY_V * dt;
+    // steer — keyboard ramps up while held (gentle quick taps) and stops the target
+    // the instant you release (no coasting); player.x still eases so the ship glides smoothly
+    var kdir = (keyR ? 1 : 0) - (keyL ? 1 : 0);
+    if (kdir !== 0) {
+      keyVel += (kdir * KEY_V - keyVel) * Math.min(1, dt * KEY_ACCEL);
+      player.tx += keyVel * dt;
+    } else {
+      keyVel = 0;
+    }
     player.tx = clamp(player.tx, PR, W - PR);
     var ox = player.x;
     player.x += (player.tx - player.x) * (1 - Math.exp(-dt * 17));
