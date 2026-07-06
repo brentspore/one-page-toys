@@ -1,5 +1,26 @@
 [
   {
+    "slug": "deep-descent",
+    "name": "Deep Descent",
+    "shortDescription": "Descend an endless torch-lit cave that scrolls up to meet you. Thread the winding, narrowing passage, grab glowing gems for combo bonuses, and dodge the stone that looms out of the dark.",
+    "category": "game",
+    "tags": [
+      "deep-descent",
+      "cave",
+      "endless-runner",
+      "arcade",
+      "dodge",
+      "torch",
+      "spelunking",
+      "reflex",
+      "high-score",
+      "interactive"
+    ],
+    "status": "live",
+    "path": "toys/deep-descent/index.html",
+    "related": []
+  },
+  {
     "slug": "vapor",
     "name": "Vapor",
     "shortDescription": "Stir glowing smoke with your finger—a real fluid simulation that swirls, curls, and blooms into color. Drag to paint the flow, tap for a puff. Endlessly mesmerizing.",

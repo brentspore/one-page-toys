@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "deep-descent":
+    "deep descent cave descend spelunking spelunker torch torchlight underground dungeon cavern endless runner arcade dodge thread winding passage tunnel scrolling maze runner adventurer miner gems crystals collect combo multiplier avoid walls stalactite columns rocks reflex high score how deep survival dark atmospheric moody game",
   "vapor":
     "vapor smoke fluid simulation navier stokes stable fluids ink dye plume swirl curl flow gas mist haze paint stir drag interactive generative visual mesmerizing satisfying trippy glow bloom colorful sensory fidget relaxing",
   "dot-loop":
