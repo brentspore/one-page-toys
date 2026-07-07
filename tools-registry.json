@@ -911,7 +911,7 @@
   {
     "slug": "falling-sand",
     "name": "Falling Sand",
-    "shortDescription": "A material sandbox—draw with sand, water, fire, plant, oil, and stone and watch them fall, flow, burn, and grow. Water douses fire, sand sinks, fire eats plants.",
+    "shortDescription": "A glowing material sandbox—draw with sand, water, lava, fire, acid, ice, gunpowder and more. Lava melts sand to glass and quenches to stone, acid dissolves, gunpowder chain-explodes, heat spreads and glows.",
     "category": "visual",
     "tags": [
       "falling-sand",
@@ -920,7 +920,13 @@
       "sand",
       "physics",
       "creative",
-      "elements"
+      "elements",
+      "lava",
+      "fire",
+      "acid",
+      "explosion",
+      "powder-toy",
+      "simulation"
     ],
     "status": "live",
     "path": "toys/falling-sand/index.html",

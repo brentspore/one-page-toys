@@ -934,7 +934,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
     radial-gradient(circle, #ff9b4a 60%, transparent) 86% 82% / 11% 22% no-repeat;
 }
 .card__preview[data-slug="falling-sand"]{
-  background: #0c0a07 url("cards/falling-sand.png") center / cover no-repeat;
+  background: #0c0a07 url("cards/falling-sand.png?v=2") center / cover no-repeat;
   image-rendering: pixelated;
 }
 
@@ -952,7 +952,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="zen-sand-garden"]{ background: #cdb585 url("cards/zen-sand-garden.png") center / cover no-repeat; }
 .card__preview[data-slug="floating-lanterns"]{ background: #0b1026 url("cards/floating-lanterns.png") center / cover no-repeat; }
 .card__preview[data-slug="aurora-drift"]{ background: #060a1a url("cards/aurora-drift.png") center / cover no-repeat; }
-.card__preview[data-slug="campfire"]{ background: #0a0604 url("cards/campfire.png") center / cover no-repeat; }
+.card__preview[data-slug="campfire"]{ background: #0a0604 url("cards/campfire.png?v=2") center / cover no-repeat; }
 .card__preview[data-slug="fireworks"]{ background: #070512 url("cards/fireworks.png") center / cover no-repeat; }
 .card__preview[data-slug="rain-window"]{ background: #0a1424 url("cards/rain-window.png") center / cover no-repeat; }
 .card__preview[data-slug="perfect-circle"]{ background: #07091a url("cards/perfect-circle.png") center / cover no-repeat; }

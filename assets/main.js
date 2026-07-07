@@ -155,7 +155,7 @@ const TYPE_NL_PHRASES = {
   "lava-lamp":
     "lava lamp metaballs blobs ambient relaxing hypnotic chill retro fluid simulation rise drift float merge wave slow satisfying screensaver 70s groovy warm orange",
   "falling-sand":
-    "falling sand game powder toy cellular automaton sandbox simulation physics sand water fire plant oil stone draw elements materials burn flow melt pixel zen satisfying noita powder game",
+    "falling sand game powder toy cellular automaton sandbox simulation physics sand water fire plant oil stone lava acid ice gunpowder glass gas smoke steam draw elements materials burn flow melt freeze dissolve explode explosion glow heat quench obsidian pixel zen satisfying noita powder game the powder toy sandspiel",
   "beat-maker":
     "beat maker step sequencer drum machine make music loop rhythm beats grid tap groove melody synth tempo bpm pattern create song producer audio play instrument",
   "chimp-test":

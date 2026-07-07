@@ -20,7 +20,7 @@
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     CX = W / 2; BASEY = H * 0.72;
-    seedStars(); seedRocks();
+    seedStars(); seedRocks(); seedCoals();
   }
 
   // ---- backdrop -----------------------------------------------------------
@@ -38,12 +38,38 @@
       rocks.push({ x: CX + Math.cos(a) * ring * 1.5, y: BASEY + Math.sin(a) * ring * 0.5 + 6, r: 13 + Math.random() * 12 });
     }
   }
+  function seedCoals() {
+    coals.length = 0;
+    var bedW = Math.min(W, H) * 0.11, n = 28;
+    for (var i = 0; i < n; i++) {
+      var u = (Math.random() - 0.5);                 // -0.5..0.5 across the bed
+      coals.push({
+        x: CX + u * bedW * 2, y: BASEY + 2 + (Math.random() - 0.5) * 10,
+        r: (3 + Math.random() * 7) * (1 - Math.abs(u) * 0.6),   // domed: biggest in the middle
+        ph: Math.random() * 6.28, hot: 0.4 + Math.random() * 0.6, blue: Math.random() < 0.14
+      });
+    }
+  }
 
   // ---- fire state ---------------------------------------------------------
   var intensity = 0.72, fan = 0;
   var FLOOR = 0.34;                 // settles to a steady cosy fire, never near-out
   var logs = [];
   var FIRE_W = 0;
+
+  // realism tunables
+  var FLOW = 52;                    // horizontal turbulence strength — makes flames lick as tongues
+  var HAZE = 1;                     // heat-haze shimmer above the flames (0 disables)
+  var coals = [];                   // glowing coal bed at the base
+  var lightF = 1;                   // per-frame firelight flicker multiplier (~0.85..1.15)
+
+  // a coherent flow field: nearby particles feel a similar drift, so columns of
+  // flame sway and curl together into licking tongues instead of jittering apart.
+  function flow(x, y, t) {
+    return Math.sin(y * 0.017 + t * 2.0)
+      + Math.sin(y * 0.039 - t * 1.35 + x * 0.012) * 0.6
+      + Math.sin(x * 0.021 + t * 3.1) * 0.45;
+  }
 
   function addLog(x) {
     if (logs.length >= 7) logs.shift();
@@ -105,17 +131,21 @@
     emberAcc += (intensity * 3 + fan * 6) * dt;
     while (emberAcc >= 1) { spawnEmber(); emberAcc--; }
 
-    var i, p;
+    var i, p, ff = nowish;
     for (i = flames.length - 1; i >= 0; i--) {
       p = flames[i]; p.age += dt;
+      var pf = p.age / p.life;
       p.vy *= (1 - 0.6 * dt); p.vx *= (1 - 1.2 * dt);
-      p.x += (p.vx + Math.sin(p.age * 7 + p.seed) * 22) * dt;
+      // coherent turbulence — older/higher licks sway more, so tongues curl as they rise
+      var sway = flow(p.x, p.y, ff) * FLOW * (0.35 + pf) + Math.sin(p.age * 6 + p.seed) * 6;
+      p.x += (p.vx + sway) * dt;
       p.y += p.vy * dt;
       if (p.age >= p.life) { if (Math.random() < 0.25 && intensity < 0.7) spawnSmoke(p.x, p.y); flames.splice(i, 1); }
     }
     for (i = embers.length - 1; i >= 0; i--) {
       p = embers[i]; p.age += dt; p.vy *= (1 - 0.3 * dt); p.vy += 14 * dt;   // cool & start to fall
-      p.x += (p.vx + Math.sin(p.age * 4 + p.tw) * 16) * dt; p.y += p.vy * dt;
+      var esw = flow(p.x, p.y, ff) * FLOW * 0.5 + fanDir * fan * 10;         // sparks swirl in the updraft
+      p.x += (p.vx + esw) * dt; p.y += p.vy * dt;
       if (p.age >= p.life || p.y > H) embers.splice(i, 1);
     }
     for (i = smoke.length - 1; i >= 0; i--) {
@@ -125,7 +155,7 @@
 
     // crackle audio: Poisson-ish pops, rate scales with fire
     if (actx) {
-      var rate = 6 + intensity * 38 + fan * 30;            // pops/sec
+      var rate = 5 + intensity * 30 + fan * 26;            // crackle events/sec
       crackAcc += rate * dt;
       while (crackAcc >= 1) { pop(); crackAcc--; }
       // keep the roar/sizzle beds tracking the fire
@@ -138,6 +168,10 @@
 
   // ---- render -------------------------------------------------------------
   function frameDraw() {
+    // firelight flicker — a few fast incoherent sines so the whole lit scene breathes
+    var fl = Math.sin(nowish * 11.3) * 0.5 + Math.sin(nowish * 17.7 + 1.7) * 0.3 + Math.sin(nowish * 27.1 + 4.2) * 0.2;
+    lightF = 1 + fl * (0.11 + fan * 0.06);
+
     // night
     var sky = ctx.createLinearGradient(0, 0, 0, H);
     sky.addColorStop(0, "#070608"); sky.addColorStop(0.6, "#0a0707"); sky.addColorStop(1, "#0c0805");
@@ -145,10 +179,10 @@
     for (var i = 0; i < stars.length; i++) { var s = stars[i]; ctx.globalAlpha = (0.25 + Math.abs(Math.sin(nowish * s.sp + s.tw)) * 0.5) * (1 - intensity * 0.3); ctx.fillStyle = "#cdd6f0"; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.28); ctx.fill(); }
     ctx.globalAlpha = 1;
 
-    // warm ground glow
-    var gr = (Math.min(W, H) * 0.5) * (0.5 + intensity * 0.9 + fan * 0.2);
+    // warm ground glow (radius + brightness flicker with the firelight)
+    var gr = (Math.min(W, H) * 0.5) * (0.5 + intensity * 0.9 + fan * 0.2) * (0.95 + 0.05 * lightF);
     var glow = ctx.createRadialGradient(CX, BASEY, 0, CX, BASEY, gr);
-    var gi = 0.5 + intensity * 0.5;
+    var gi = (0.5 + intensity * 0.5) * lightF;
     glow.addColorStop(0, "rgba(255,150,50," + (0.32 * gi).toFixed(3) + ")");
     glow.addColorStop(0.4, "rgba(200,90,30," + (0.14 * gi).toFixed(3) + ")");
     glow.addColorStop(1, "rgba(120,40,10,0)");
@@ -167,12 +201,18 @@
     // logs
     drawLogs();
 
+    // glowing coal bed (behind the flames — the hottest, most convincing part)
+    drawCoalBed();
+
     // flames (additive)
     ctx.globalCompositeOperation = "lighter";
     for (i = 0; i < flames.length; i++) drawFlame(flames[i]);
     // embers
     for (i = 0; i < embers.length; i++) { var e = embers[i], ef = e.age / e.life; var a = (1 - ef) * (0.6 + Math.abs(Math.sin(e.age * 10 + e.tw)) * 0.4); var col = ef < 0.5 ? "255,210,120" : "255,120,50"; ctx.fillStyle = "rgba(" + col + "," + a.toFixed(3) + ")"; ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, 6.28); ctx.fill(); }
     ctx.globalCompositeOperation = "source-over";
+
+    // heat-haze shimmer distorting the air above the flames
+    if (HAZE > 0) heatHaze();
 
     // rocks (front rim)
     drawRocks();
@@ -181,20 +221,77 @@
   function drawFlame(p) {
     var f = p.age / p.life, a = (1 - f);
     var r, g, b;
-    if (f < 0.22) { r = 255; g = 248; b = 214; }       // white-hot base
-    else if (f < 0.5) { r = 255; g = 186; b = 72; }     // yellow-orange
-    else if (f < 0.78) { r = 240; g = 110; b = 38; }    // orange
-    else { r = 200; g = 56; b = 26; }                   // red tip
-    var rad = p.r * (1 + f * 0.5);
-    // flames are taller than wide — draw an upward-elongated glow tongue
+    if (f < 0.18) { r = 255; g = 250; b = 222; }        // white-hot base
+    else if (f < 0.44) { r = 255; g = 194; b = 84; }    // yellow-orange
+    else if (f < 0.72) { r = 244; g = 116; b = 40; }    // orange
+    else { r = 196; g = 54; b = 24; }                   // red, sooty tip
+    var rad = p.r * (1 + f * 0.55);
+    // flames are taller than wide — an upward-elongated glow tongue, brightest low
     ctx.save();
     ctx.translate(p.x, p.y);
-    ctx.scale(1, 1.7);
-    var gr = ctx.createRadialGradient(0, -rad * 0.15, 0, 0, 0, rad);
-    gr.addColorStop(0, "rgba(" + r + "," + g + "," + b + "," + (a * 0.62).toFixed(3) + ")");
-    gr.addColorStop(0.5, "rgba(" + r + "," + g + "," + b + "," + (a * 0.3).toFixed(3) + ")");
+    ctx.scale(1, 1.75);
+    var gr = ctx.createRadialGradient(0, rad * 0.18, 0, 0, 0, rad);
+    gr.addColorStop(0, "rgba(" + r + "," + g + "," + b + "," + (a * 0.6).toFixed(3) + ")");
+    gr.addColorStop(0.5, "rgba(" + r + "," + g + "," + b + "," + (a * 0.28).toFixed(3) + ")");
     gr.addColorStop(1, "rgba(" + r + "," + g + "," + b + ",0)");
     ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(0, 0, rad, 0, 6.28); ctx.fill();
+    // hot white core low in each young flame (the searing base)
+    if (f < 0.42) {
+      var ca = a * 0.5 * (1 - f / 0.42);
+      ctx.fillStyle = "rgba(255,246,214," + ca.toFixed(3) + ")";
+      ctx.beginPath(); ctx.arc(0, rad * 0.12, rad * 0.34, 0, 6.28); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // glowing bed of coals — a warm ember pool + individual pulsing coals, brighter when fanned
+  function drawCoalBed() {
+    ctx.globalCompositeOperation = "lighter";
+    var pb = (0.4 + intensity * 0.6 + fan * 0.25) * lightF;
+    var pw = FIRE_W * 2.4;
+    var pg = ctx.createRadialGradient(CX, BASEY, 0, CX, BASEY, pw);
+    pg.addColorStop(0, "rgba(255,112,32," + (0.5 * pb).toFixed(3) + ")");
+    pg.addColorStop(0.5, "rgba(200,58,16," + (0.22 * pb).toFixed(3) + ")");
+    pg.addColorStop(1, "rgba(120,30,8,0)");
+    ctx.fillStyle = pg; ctx.beginPath(); ctx.ellipse(CX, BASEY, pw, pw * 0.42, 0, 0, 6.28); ctx.fill();
+    for (var i = 0; i < coals.length; i++) {
+      var c = coals[i];
+      var b = (0.45 + 0.55 * Math.sin(nowish * (2 + c.hot * 3) + c.ph)) * (0.5 + intensity * 0.6 + fan * 0.45) * lightF;
+      if (b <= 0.03) continue;
+      var col = (c.blue && b > 0.55) ? "150,180,255" : (b > 0.72 ? "255,222,150" : "255,120,42");
+      var g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r * 2.3);
+      g.addColorStop(0, "rgba(" + col + "," + Math.min(0.9, b).toFixed(3) + ")");
+      g.addColorStop(1, "rgba(" + col + ",0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c.x, c.y, c.r * 2.3, 0, 6.28); ctx.fill();
+      ctx.fillStyle = "rgba(255,242,206," + Math.min(0.8, b * 0.7).toFixed(3) + ")";
+      ctx.beginPath(); ctx.arc(c.x, c.y, c.r * 0.6, 0, 6.28); ctx.fill();
+    }
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  // heat-haze: shift thin horizontal slices of the already-drawn frame above the
+  // flames by a wobbling sine, so the hot air visibly shimmers (real refraction).
+  function heatHaze() {
+    var amp = (1.5 + intensity * 3.2 + fan * 3.6) * HAZE;
+    if (amp < 0.6) return;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);           // work in device pixels
+    var d = DPR;
+    var x0 = Math.max(0, (CX - FIRE_W * 3.4) * d), x1 = Math.min(W * d, (CX + FIRE_W * 3.4) * d);
+    var sw = x1 - x0;
+    // start well ABOVE the bright coal base (in the dim upper column/smoke) so the
+    // band's edges never seam over the bright pool; fade the shift in/out at both ends
+    var yBot = (BASEY - FIRE_W * 2.3) * d, yTop = Math.max(0, (BASEY - H * 0.52) * d);
+    var slice = Math.max(2, Math.round(2 * d)), span = yBot - yTop, ramp = span * 0.18;
+    if (sw > 4 && span > slice * 4) {
+      for (var y = yBot; y > yTop; y -= slice) {
+        if (y - slice < 0) break;
+        var edge = Math.min(1, (yBot - y) / ramp) * Math.min(1, (y - yTop) / ramp); // 0 at both ends
+        var off = Math.sin(y * 0.05 + nowish * 7) * amp * d * edge;
+        if (Math.abs(off) < 0.5) continue;
+        ctx.drawImage(canvas, x0, y, sw, slice, x0 + off, y, sw, slice);
+      }
+    }
     ctx.restore();
   }
 
@@ -239,8 +336,8 @@
       g.addColorStop(0, "#5b4f47"); g.addColorStop(1, "#1b1512");
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.ellipse(rk.x, rk.y, rk.r, rk.r * 0.7, 0, 0, 6.28); ctx.fill();
-      // warm fire-side rim
-      ctx.fillStyle = "rgba(255,140,60," + (0.16 + intensity * 0.2).toFixed(3) + ")";
+      // warm fire-side rim (flickers with the firelight)
+      ctx.fillStyle = "rgba(255,140,60," + ((0.16 + intensity * 0.2) * lightF).toFixed(3) + ")";
       ctx.beginPath(); ctx.ellipse(rk.x, rk.y - rk.r * 0.18, rk.r * 0.8, rk.r * 0.4, 0, Math.PI, 6.28); ctx.fill();
     }
   }
@@ -258,7 +355,10 @@
     try {
       actx = new (window.AudioContext || window.webkitAudioContext)();
       var b = actx.createBuffer(1, 1, 22050); var s = actx.createBufferSource(); s.buffer = b; s.connect(actx.destination); s.start(0);
-      master = actx.createGain(); master.gain.value = 0.9; master.connect(actx.destination);
+      master = actx.createGain(); master.gain.value = 0.9;
+      var comp = actx.createDynamicsCompressor();          // glue + keep the loud snaps from clipping
+      comp.threshold.value = -13; comp.knee.value = 22; comp.ratio.value = 5; comp.attack.value = 0.003; comp.release.value = 0.18;
+      master.connect(comp); comp.connect(actx.destination);
       makeNoise();
       // roar bed: low-passed noise = the body of the fire
       var rs = actx.createBufferSource(); rs.buffer = noiseBuf; rs.loop = true;
@@ -278,25 +378,53 @@
     var d = noiseBuf.getChannelData(0);
     for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
   }
-  // one crackle: a tiny exponentially-decaying noise burst through a bandpass.
-  // Mostly faint ticks; occasionally a louder, lower, woody snap.
-  function pop() {
+  // one crackle. Three tiers make a real fire's texture: tiny TICKS (the background
+  // sputter), woody CRACKLES (a sharp click + a resonant "pock"), and rare loud
+  // resin POPS (bigger click + low thump + a steam-spit hiss and a spark spit).
+  // The fast broadband CLICK at the front is what makes it read as a crack, not a tick.
+  function pop(tier) {
     if (!actx) return;
+    if (tier == null) { var rr = Math.random(); tier = rr < 0.70 ? 0 : rr < 0.965 ? 1 : 2; }
     var t = actx.currentTime;
-    var snap = Math.random() < 0.12;
-    var dur = snap ? 0.02 + Math.random() * 0.05 : 0.003 + Math.random() * 0.018;
-    var n = Math.max(2, Math.floor(actx.sampleRate * dur));
-    var buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
-    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, snap ? 2.5 : 4);
-    var src = actx.createBufferSource(); src.buffer = buf;
-    var bp = actx.createBiquadFilter(); bp.type = "bandpass";
-    bp.frequency.value = snap ? 500 + Math.random() * 900 : 1400 + Math.random() * 3200;
-    bp.Q.value = snap ? 4 + Math.random() * 4 : 1 + Math.random() * 3;
-    var g = actx.createGain();
-    var amp = snap ? 0.12 + Math.random() * 0.16 : 0.015 + Math.random() * 0.07;
-    g.gain.value = amp;
-    src.connect(bp); bp.connect(g); g.connect(master);
-    src.start(t); src.stop(t + dur + 0.01);
+
+    // --- click transient (near-instant broadband snap) ---
+    var cd = tier === 2 ? 0.006 : tier === 1 ? 0.004 : 0.0022;
+    var cn = Math.max(2, Math.floor(actx.sampleRate * cd));
+    var cbuf = actx.createBuffer(1, cn, actx.sampleRate), cbd = cbuf.getChannelData(0);
+    for (var i = 0; i < cn; i++) cbd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / cn, 1.4);
+    var csrc = actx.createBufferSource(); csrc.buffer = cbuf;
+    var chp = actx.createBiquadFilter(); chp.type = "highpass"; chp.frequency.value = tier === 0 ? 2400 : 1200;
+    var cg = actx.createGain();
+    cg.gain.value = tier === 2 ? 0.32 + Math.random() * 0.16 : tier === 1 ? 0.11 + Math.random() * 0.1 : 0.02 + Math.random() * 0.05;
+    csrc.connect(chp); chp.connect(cg); cg.connect(master); csrc.start(t); csrc.stop(t + cd + 0.006);
+
+    // --- woody resonant "pock" body (crackles + pops) — a fast pitch-dropping sine ---
+    if (tier >= 1) {
+      var f = tier === 2 ? 140 + Math.random() * 260 : 300 + Math.random() * 560;
+      var o = actx.createOscillator(); o.type = "sine";
+      o.frequency.setValueAtTime(f * 1.7, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.02);
+      var og = actx.createGain(); var oamp = tier === 2 ? 0.16 + Math.random() * 0.1 : 0.05 + Math.random() * 0.05;
+      var odec = tier === 2 ? 0.10 : 0.045;
+      og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(oamp, t + 0.003); og.gain.exponentialRampToValueAtTime(0.0001, t + odec);
+      o.connect(og); og.connect(master); o.start(t); o.stop(t + odec + 0.03);
+    }
+
+    // --- big resin pop: a steam-spit hiss tail + a couple of visual sparks ---
+    if (tier === 2) {
+      var sd = 0.05 + Math.random() * 0.09, sn = Math.floor(actx.sampleRate * sd), sbuf = actx.createBuffer(1, sn, actx.sampleRate), sbd = sbuf.getChannelData(0);
+      for (var j = 0; j < sn; j++) sbd[j] = (Math.random() * 2 - 1) * (1 - j / sn);
+      var ssrc = actx.createBufferSource(); ssrc.buffer = sbuf;
+      var sbp = actx.createBiquadFilter(); sbp.type = "bandpass"; sbp.frequency.value = 2800 + Math.random() * 2600; sbp.Q.value = 0.7;
+      var sg = actx.createGain(); sg.gain.setValueAtTime(0.0001, t + 0.006); sg.gain.exponentialRampToValueAtTime(0.05, t + 0.02); sg.gain.exponentialRampToValueAtTime(0.0001, t + sd);
+      ssrc.connect(sbp); sbp.connect(sg); sg.connect(master); ssrc.start(t); ssrc.stop(t + sd + 0.02);
+      sparkBurst(2 + (Math.random() * 3 | 0));
+    }
+
+    // --- crackles/pops often trail a quick rattle of tiny ticks ---
+    if (tier >= 1 && Math.random() < 0.55) {
+      var extra = 1 + (Math.random() * 3 | 0);
+      for (var k = 0; k < extra; k++) setTimeout(function () { pop(0); }, 18 + Math.random() * 95);
+    }
   }
   // a log being added: woody resonant knock (two hits settling) + bark scrape + spark flare
   function logKnock() {
