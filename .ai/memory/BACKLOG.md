@@ -18,6 +18,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### Improve: Campfire — make the fire feel more realistic
 
+**Status:** done
+
 **Why it matters:** Campfire (No. 032, `toys/campfire/`, wellness) is a cozy centerpiece toy, but the owner feels the fire doesn't read as *real* enough. Fire is the whole point — pushing its fidelity is a high-leverage polish pass that raises the whole wellness lane and photographs beautifully. Fits the "keep pushing the presentation envelope" meta-principle.
 
 **When to revisit:** Next polish/wellness round, or whenever iterating on cozy toys. Contained scope — it's a rework of the existing `toys/campfire/script.js` flame/light/audio model, not a new toy. Stay vanilla Canvas 2D (this toy has no need for WebGL).
