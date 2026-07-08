@@ -46,7 +46,7 @@
   var started = false, running = false, dead = false, soundOn = true, holding = false;
   var bird = { x: 0, y: 0, vx: 0, vy: 0, s: 0, grounded: true, rot: 0, sq: 1 };
   var camX = 0, camY = 0, zoom = 1, shakeX = 0, shakeY = 0, shake = 0, hitStop = 0;
-  var sunT = SUN_TIMER, dayPhase = 0, tNow = 0;
+  var sunT = SUN_TIMER, dayPhase = 0, visGrade = 0, tNow = 0;
   var chain = 0, fever = false, feverGlow = 0, score = 0, bonus = 0, best = 0;
   var canScore = false, wasWater = false;
   // intro: the bird starts in a NEST — a 3-2-1 countdown, then it hops out and the run begins
@@ -203,11 +203,12 @@
     }
   }
   function ensureGen() { var need = camX + W / zoom + 400; while (lastGenX() < need) nextSeg(); }
-  // suns hug the terrain surface (groundY is filled for [xa,xb]) so they're always just above ground & reachable
+  // suns hug the terrain surface (groundY is filled for [xa,xb]) so they're always just above ground & reachable;
+  // a small handful per slope (2-4) — an accent to chase, not a slope filled wall-to-wall
   function spawnSunRun(xa, xb) {
-    var span = xb - xa, step = 78;
-    var n = Math.max(2, Math.min(6, Math.floor((span - 90) / step)));
-    var startX = xa + (span - (n - 1) * step) / 2;   // center the run within the slope
+    var span = xb - xa, step = 112;
+    var n = Math.max(2, Math.min(4, Math.round(span / 300)));
+    var startX = xa + (span - (n - 1) * step) / 2;   // center the little run within the slope
     for (var i = 0; i < n; i++) {
       var x = startX + i * step;
       var t = n > 1 ? i / (n - 1) : 0.5;
@@ -266,6 +267,9 @@
       dayPhase = clamp(1 - sunT / SUN_TIMER, 0, 1);
       if (sunT <= 0) { endRun(); }
     }
+    // ease the dusk veil toward its target so sunT jumps never snap it
+    var gradeTarget = dayPhase < 0.35 ? 0 : (dayPhase - 0.35) / 0.65;
+    visGrade += (gradeTarget - visGrade) * Math.min(1, dt * 1.6);
 
     if (running) stepBird(dt);
 
@@ -804,11 +808,14 @@
     ctx.restore();
   }
 
+  // dusk grade: eased via visGrade so sunset pushbacks (fever perfects / sun pips) GLIDE the veil
+  // instead of snapping it — a snapping full-screen tint read as a "scrim toggling off" on perfects.
+  // Warmer + gentler so it feels like evening light, not a modal overlay.
   function drawGrade() {
-    if (dayPhase < 0.35) return;
-    var t = (dayPhase - 0.35) / 0.65;
+    if (visGrade < 0.01) return;
+    var t = visGrade;
     ctx.save(); ctx.globalCompositeOperation = "multiply";
-    ctx.fillStyle = "rgba(" + (120 - t * 60) + "," + (90 - t * 50) + "," + (140 - t * 40) + "," + (t * 0.34).toFixed(3) + ")";
+    ctx.fillStyle = "rgba(" + ((132 - t * 48) | 0) + "," + ((98 - t * 44) | 0) + "," + ((132 - t * 38) | 0) + "," + (t * 0.24).toFixed(3) + ")";
     ctx.fillRect(0, 0, W, H); ctx.restore();
   }
   function drawPops() {
@@ -840,7 +847,7 @@
     bird.x = 80; bird.grounded = true; bird.s = 260; bird.vx = 260; bird.vy = 0;
     bird.y = groundY(bird.x) - R; bird.rot = 0; bird.sq = 1;
     camX = bird.x; camY = bird.y; zoom = 0.9;
-    sunT = SUN_TIMER; dayPhase = 0; chain = 0; fever = false; feverGlow = 0; bonus = 0; score = 0;
+    sunT = SUN_TIMER; dayPhase = 0; visGrade = 0; chain = 0; fever = false; feverGlow = 0; bonus = 0; score = 0;
     canScore = false; wasWater = false; slideT = 0; slideHoldT = 0; expr.kind = ""; exprCool = 0; spinP = 0; trail = []; parts = []; pops = []; shake = 0; hitStop = 0; dead = false;
     intro = null; nestX = bird.x;
     scoreEl.textContent = "0";
