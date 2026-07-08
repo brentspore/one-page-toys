@@ -95,11 +95,12 @@ html, body {
 }
 @keyframes pop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .panel__title {
-  margin: 0 0 14px;
+  margin: 0 0 6px;
   font-size: clamp(2.6rem, 11vw, 4.4rem);
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 0.95;
+  padding-bottom: 0.16em;
   background: linear-gradient(176deg, #bfe0ff 0%, #ff9db0 55%, #ffd27a 100%);
   -webkit-background-clip: text;
   background-clip: text;

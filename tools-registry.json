@@ -1,5 +1,26 @@
 [
   {
+    "slug": "puffling",
+    "name": "Puffling",
+    "shortDescription": "A one-touch hill glider — hold to dive down the slopes and slingshot off the crests, chain perfect slides into a fever streak, and glide across candy-striped islands before the sun sets.",
+    "category": "game",
+    "tags": [
+      "puffling",
+      "hill-glider",
+      "tiny-wings",
+      "one-touch",
+      "arcade",
+      "momentum",
+      "bird",
+      "endless",
+      "high-score",
+      "interactive"
+    ],
+    "status": "live",
+    "path": "toys/puffling/index.html",
+    "related": []
+  },
+  {
     "slug": "deep-descent",
     "name": "Deep Descent",
     "shortDescription": "Descend an endless torch-lit cave that scrolls up to meet you. Thread the winding, narrowing passage, grab glowing gems for combo bonuses, and dodge the stone that looms out of the dark.",

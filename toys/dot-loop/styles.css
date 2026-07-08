@@ -123,11 +123,12 @@ html, body {
 }
 @keyframes pop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .panel__title {
-  margin: 0 0 14px;
+  margin: 0 0 6px;
   font-size: clamp(2.4rem, 10vw, 3.9rem);
   font-weight: 900;
   letter-spacing: -0.02em;
   line-height: 0.95;
+  padding-bottom: 0.16em;
   background: linear-gradient(120deg, #ff5a68 0%, #ffab33 28%, #25d6a4 55%, #4f9bff 78%, #a86bff 100%);
   -webkit-background-clip: text;
   background-clip: text;

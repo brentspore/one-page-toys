@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "puffling":
+    "puffling tiny wings hill glider bird glide slide slope momentum one touch tap hold dive pump swoop crest launch fly perfect slide fever streak candy stripe islands sun sunset race endless arcade high score cozy cute storybook flappy alto adventure snowboard game",
   "deep-descent":
     "deep descent cave descend spelunking spelunker torch torchlight underground dungeon cavern endless runner arcade dodge thread winding passage tunnel scrolling maze runner adventurer miner gems crystals collect combo multiplier avoid walls stalactite columns rocks reflex high score how deep survival dark atmospheric moody game",
   "vapor":

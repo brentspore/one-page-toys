@@ -13,32 +13,32 @@
       gtag('js', new Date());
       gtag('config', 'G-VBVJ93GL8L');
     </script>
-    <title>Paper Plane — One Page Toys</title>
-    <meta name="description" content="Tap to keep a folded paper plane aloft, threading the gaps between dusk-lit skyscrapers. One clip and it's down — how far can you glide? Free, no sign-up." />
-    <link rel="canonical" href="https://onepagetoys.com/toys/paper-plane/index.html" />
+    <title>Puffling — One Page Toys</title>
+    <meta name="description" content="A one-touch hill-gliding game: hold to dive down the slopes and slingshot off the crests, chain perfect slides into fever, and glide across candy-striped islands before the sun sets. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/puffling/index.html" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#241f47" />
+    <meta name="theme-color" content="#7ec8e3" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
-    <meta property="og:title" content="Paper Plane — One Page Toys" />
-    <meta property="og:description" content="Tap to flap a paper plane through the gaps between dusk-lit skyscrapers. How far can you glide?" />
-    <meta property="og:url" content="https://onepagetoys.com/toys/paper-plane/index.html" />
-    <meta property="og:image" content="https://onepagetoys.com/assets/og/paper-plane.png" />
+    <meta property="og:title" content="Puffling — One Page Toys" />
+    <meta property="og:description" content="Hold to dive down sunlit hills and slingshot off the crests — chain perfect slides into fever and race the sunset across candy-striped islands." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/puffling/index.html" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/puffling.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Paper Plane — One Page Toys" />
-    <meta name="twitter:description" content="Tap to flap a paper plane through the gaps between dusk-lit skyscrapers." />
-    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/paper-plane.png" />
+    <meta name="twitter:title" content="Puffling — One Page Toys" />
+    <meta name="twitter:description" content="Hold to dive down sunlit hills, slingshot off crests, chain perfect slides into fever, and race the sunset." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/puffling.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Paper Plane",
-        "url": "https://onepagetoys.com/toys/paper-plane/index.html",
-        "description": "A one-tap arcade flyer — keep a folded paper plane aloft and thread the gaps between dusk-lit skyscrapers. One clip ends the run; chase your best distance.",
+        "name": "Puffling",
+        "url": "https://onepagetoys.com/toys/puffling/index.html",
+        "description": "A one-touch momentum hill-gliding game — hold to dive down the slopes and slingshot off the crests, chain perfect slides into a fever streak, and glide across procedurally generated candy-striped islands before the sun sets.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
@@ -56,35 +56,40 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=2" />
+    <link rel="stylesheet" href="styles.css?v=3" />
   </head>
   <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" aria-label="A bird gliding down sunlit hills"></canvas>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
 
     <div class="hud" id="hud">
       <span class="hud__score" id="score">0</span>
-      <span class="hud__best" id="best">Best 0</span>
+      <span class="hud__best" id="best">Best —</span>
     </div>
 
     <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
 
     <div class="overlay" id="overlay" hidden>
-      <div class="panel">
-        <h1 class="panel__title" id="ovTitle">Paper Plane</h1>
-        <p class="panel__text" id="ovText">Tap, click, or press space to give the paper plane a little lift. Thread the gaps between the skyscrapers — one clip and it's down. How far can you glide?</p>
+      <div class="panel-wrap">
+        <img class="panel-bird" src="hero.png?v=1" alt="" aria-hidden="true" />
+        <div class="panel">
+        <h1 class="panel__title" id="ovTitle">Puffling</h1>
+        <p class="panel__text" id="ovText">A little bird with wings too small to fly. <b>Hold</b> anywhere to dive — hug a downslope all the way for a <b>perfect slide</b>, and carry the speed to <b>soar off the crests</b> (let go at the top for extra height). String three perfects together for <b>fever</b>. Glide as far as you can before the sun sets.</p>
         <button type="button" class="play-btn" id="ovBtn">Take off</button>
+        </div>
       </div>
     </div>
 
     <div class="frame" aria-hidden="true">
-      <span class="frame__corner frame__corner--tl">No. 065</span>
-      <span class="frame__corner frame__corner--tr">Paper Plane</span>
+      <span class="frame__corner frame__corner--tl">No. 069</span>
+      <span class="frame__corner frame__corner--tr">Puffling</span>
       <span class="frame__corner frame__corner--bl"><a href="../../index.html">&#8592; onepagetoys.com</a></span>
     </div>
 
-    <p class="hint" id="hint">tap · click · or space to flap</p>
+    <p class="hint" id="hint">hold to dive down the hills &amp; soar off the crests</p>
 
-    <script src="script.js?v=3" defer></script>
+    <script src="script.js?v=12" defer></script>
     <script src="../../assets/tip-jar.js?v=9" defer></script>
     <script src="../../assets/fullscreen.js?v=2" defer></script>
   </body>
