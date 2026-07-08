@@ -236,6 +236,7 @@
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    fsTried = false;   // fresh orientation/viewport = one fresh fullscreen attempt on the next touch
     HV = Math.min(Math.max(W, H), 840);   // rotation-invariant world scale (same hills either way up)
     BASE = HV * 0.36; AMP = HV * 0.19; WATER_Y = HV * 0.58;
     if (!keys.length) { resetRun(); return; }
@@ -904,12 +905,25 @@
     intro = null; nestX = bird.x;
     scoreEl.textContent = "0";
   }
+  // ---- fullscreen on landscape phones: lose the browser chrome (iOS 16.4+ supports the API) ----
+  // One polite attempt per orientation stint — if the player exits fullscreen, don't nag until they rotate.
+  var fsTried = false;
+  function maybeFullscreen() {
+    if (fsTried || W <= H || !(navigator.maxTouchPoints > 0)) return;
+    if (document.fullscreenElement || document.webkitFullscreenElement) return;
+    var d = document.documentElement;
+    var fn = d.requestFullscreen || d.webkitRequestFullscreen;
+    if (!fn) return;
+    fsTried = true;
+    try { var r = fn.call(d, { navigationUI: "hide" }); if (r && r.catch) r.catch(function () {}); } catch (e) {}
+  }
+
   function startGame() {
     overlay.classList.add("is-hidden"); setTimeout(function () { overlay.hidden = true; }, 240);
     started = true; dead = false;
     running = false; intro = { t: 0 };   // nest countdown: 3-2-1 → hop out → run begins
     hintEl.classList.remove("is-gone"); setTimeout(function () { hintEl.classList.add("is-gone"); }, 6500);
-    unlock(); startMusic();
+    unlock(); startMusic(); maybeFullscreen();
   }
   function endRun() {
     if (dead) return; dead = true; running = false; holding = false; stopMusic();
@@ -936,6 +950,7 @@
 
   // ---- input ----
   function down() {
+    maybeFullscreen();   // rotating to landscape mid-game: the next touch is the gesture that hides the chrome
     if (!started) { advance(); return; }
     if (dead) { if (!overlay.hidden) advance(); return; }   // let the nap beat land; restart once the card is up
     holding = true;
