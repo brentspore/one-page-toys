@@ -32,7 +32,7 @@
     if (document.getElementById("opt-tipjar-style")) return;
     var css =
       // A round Mighty Army badge docked at right-center; expands to a pill on hover/focus.
-      ".opt-tipjar{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:2147483000;" +
+      ".opt-tipjar{position:fixed;right:max(16px, env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:2147483000;" +
       "display:inline-flex;align-items:center;height:46px;overflow:hidden;--tj-bg:#fff;" +
       "background:#fff;color:#211f1d;border:1.5px solid #211f1d;border-radius:999px;" +
       "box-shadow:0 6px 20px rgba(33,31,29,.22);cursor:pointer;text-decoration:none;" +
@@ -49,7 +49,7 @@
       "@keyframes tjNudge{0%,100%{transform:translateY(-50%) scale(1) rotate(0)}14%{transform:translateY(-50%) scale(1.14) rotate(-8deg)}32%{transform:translateY(-50%) scale(1.08) rotate(7deg)}50%{transform:translateY(-50%) scale(1.1) rotate(-4deg)}70%{transform:translateY(-50%) scale(1.04) rotate(2deg)}}" +
       "@keyframes tjRing{0%{box-shadow:0 6px 20px rgba(33,31,29,.22),0 0 0 0 rgba(148,30,30,.45)}100%{box-shadow:0 6px 20px rgba(33,31,29,.22),0 0 0 18px rgba(148,30,30,0)}}" +
       ".opt-tipjar.tj-nudge{animation:tjNudge 950ms cubic-bezier(.36,.07,.19,.97),tjRing 950ms ease-out;}" +
-      "@media (max-width:560px){.opt-tipjar{right:8px;height:40px;}.opt-tipjar__jar{width:38px;height:38px;}.opt-tipjar__logo{height:22px;}.opt-tipjar:hover .opt-tipjar__label,.opt-tipjar:focus-visible .opt-tipjar__label{max-width:110px;padding-left:12px;}}" +
+      "@media (max-width:560px){.opt-tipjar{right:max(8px, env(safe-area-inset-right));height:40px;}.opt-tipjar__jar{width:38px;height:38px;}.opt-tipjar__logo{height:22px;}.opt-tipjar:hover .opt-tipjar__label,.opt-tipjar:focus-visible .opt-tipjar__label{max-width:110px;padding-left:12px;}}" +
       "@media (prefers-reduced-motion:reduce){.opt-tipjar,.opt-tipjar__label{transition:none;}.opt-tipjar.tj-nudge{animation:none;}}";
     var style = document.createElement("style");
     style.id = "opt-tipjar-style";

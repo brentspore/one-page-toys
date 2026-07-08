@@ -656,11 +656,15 @@
       var isl = islands[i];
       var x0 = Math.max(isl.x0, vl), x1 = Math.min(isl.x1, vr);
       if (x1 <= x0) continue;
-      // path
+      // path — island edges taper outward underwater (a sloping bank, not a sheer cliff at the waterline)
       var path = new Path2D(); path.moveTo(x0, groundY(x0));
       for (var x = x0; x <= x1; x += SEG_W) path.lineTo(x, groundY(x));
       path.lineTo(x1, groundY(x1));
-      path.lineTo(x1, WATER_Y + H); path.lineTo(x0, WATER_Y + H); path.closePath();
+      path.lineTo(x1 + 30, Math.min(groundY(x1) + 170, WATER_Y + H));
+      path.lineTo(x1 + 30, WATER_Y + H);
+      path.lineTo(x0 - 30, WATER_Y + H);
+      path.lineTo(x0 - 30, Math.min(groundY(x0) + 170, WATER_Y + H));
+      path.closePath();
       // base + shading + stripes + grain (all clipped to the hill body — nothing floats over the viewport)
       ctx.save(); ctx.clip(path);
       var pal = isl.pal;
@@ -670,23 +674,28 @@
       // paint from far above the tallest possible peak down past the path bottom (WATER_Y + H):
       // a fill top that grazes the peak clamp left tall crests with a see-through band under the lip
       var fillTop = HV * 0.02, fillH = WATER_Y + H * 2 - fillTop;
-      ctx.fillStyle = bg; ctx.fillRect(x0 - 4, fillTop, (x1 - x0) + 8, fillH);
-      drawStripes(isl, x0, x1);
-      if (grainPat) { ctx.fillStyle = grainPat; ctx.fillRect(x0 - 4, fillTop, (x1 - x0) + 8, fillH); }
+      ctx.fillStyle = bg; ctx.fillRect(x0 - 34, fillTop, (x1 - x0) + 68, fillH);   // covers the underwater taper
+      drawStripes(isl, x0 - 34, x1 + 34);
+      if (grainPat) { ctx.fillStyle = grainPat; ctx.fillRect(x0 - 34, fillTop, (x1 - x0) + 68, fillH); }
       // soft inner shadow just under the crest line (depth under the lip)
       ctx.lineJoin = "round"; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(x0, groundY(x0) + 10);
       for (var xs = x0; xs <= x1; xs += SEG_W) ctx.lineTo(xs, groundY(xs) + 10);
       ctx.strokeStyle = "rgba(30,18,10,0.10)"; ctx.lineWidth = 10; ctx.stroke();
       ctx.restore();
-      // cream rim-light top lip
-      ctx.lineJoin = "round"; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(x0, groundY(x0) + 3.5);
-      for (var xx = x0; xx <= x1; xx += SEG_W) ctx.lineTo(xx, groundY(xx) + 3.5);
+      // cream rim-light top lip — BUTT caps + a small end inset so the stroke ends flush with the
+      // island body instead of its round cap overhanging the water at the island's edges
+      var lx0 = x0 + 1.5, lx1 = x1 - 1.5;
+      ctx.lineJoin = "round"; ctx.lineCap = "butt";
+      ctx.beginPath(); ctx.moveTo(lx0, groundY(lx0) + 3.5);
+      for (var xx = lx0; xx <= lx1; xx += SEG_W) ctx.lineTo(xx, groundY(xx) + 3.5);
+      ctx.lineTo(lx1, groundY(lx1) + 3.5);
       ctx.strokeStyle = "rgba(60,40,30,0.18)"; ctx.lineWidth = 4; ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x0, groundY(x0));
-      for (xx = x0; xx <= x1; xx += SEG_W) ctx.lineTo(xx, groundY(xx));
+      ctx.beginPath(); ctx.moveTo(lx0, groundY(lx0));
+      for (xx = lx0; xx <= lx1; xx += SEG_W) ctx.lineTo(xx, groundY(xx));
+      ctx.lineTo(lx1, groundY(lx1));
       ctx.strokeStyle = "rgba(255,250,236,0.95)"; ctx.lineWidth = 4.5; ctx.stroke();
+      ctx.lineCap = "round";
       drawDecor(isl, x0, x1);
     }
   }
