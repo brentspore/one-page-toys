@@ -39,8 +39,10 @@
   var SUN_BONUS = 0.4;       // seconds a collected sun pushes the sunset back
   var R = 15;                // bird radius
 
-  // terrain shape (set on resize, H-relative)
-  var BASE = 0, AMP = 0, WATER_Y = 0;
+  // terrain shape (set on resize). HV = the world's vertical scale — keyed to the device's LONG
+  // dimension (capped) so it's rotation-invariant: hills are exactly as steep in landscape as in
+  // portrait (H-keyed terrain made landscape hills half as steep over the same dx = way easier).
+  var BASE = 0, AMP = 0, WATER_Y = 0, HV = 0;
 
   // ---- state ----
   var started = false, running = false, dead = false, soundOn = true, holding = false;
@@ -158,7 +160,7 @@
       var amp = AMP * (0.9 + 0.45 * Math.min(g.island * 0.12, 1)) * (0.9 + rr(0, 0.35));
       var dx = rr(400, 640) * (1 + 0.08 * Math.min(g.island, 8));
       var y;
-      if (g.sign < 0) y = clamp(BASE - amp, H * 0.11, BASE - 40);       // peak
+      if (g.sign < 0) y = clamp(BASE - amp, HV * 0.11, BASE - 40);      // peak
       else y = clamp(BASE + amp * 0.6, BASE + 30, WATER_Y - 46);         // valley
       var nx = prev.x + dx;
       fillSeg(prev.x, prev.y, nx, y, false);
@@ -170,7 +172,7 @@
     }
     if (g.mode === "crest") {  // the island's final launch peak (the last hill IS the run-up)
       var dxc = rr(380, 480);
-      var yc = clamp(BASE - AMP * 0.7, H * 0.14, BASE - 40);
+      var yc = clamp(BASE - AMP * 0.7, HV * 0.14, BASE - 40);
       var nxc = prev.x + dxc;
       fillSeg(prev.x, prev.y, nxc, yc, false);
       keys.push({ x: nxc, y: yc });
@@ -230,17 +232,18 @@
   // ---- layout ----
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
-    var oldH = H;
+    var oldHV = HV;
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
-    BASE = H * 0.36; AMP = H * 0.19; WATER_Y = H * 0.58;
+    HV = Math.min(Math.max(W, H), 840);   // rotation-invariant world scale (same hills either way up)
+    BASE = HV * 0.36; AMP = HV * 0.19; WATER_Y = HV * 0.58;
     if (!keys.length) { resetRun(); return; }
-    // rotation / viewport change mid-run: every vertical terrain value is proportional to H,
-    // so rescaling the stored world by newH/oldH reproduces exactly what generation would
-    // have produced at the new height (x spacing is absolute and untouched)
-    if (oldH && H !== oldH) {
-      var r = H / oldH;
+    // world-scale change mid-run (desktop window resize; phone rotation leaves HV unchanged):
+    // every vertical terrain value is proportional to HV, so rescaling the stored world by
+    // newHV/oldHV reproduces exactly what generation would have produced (x spacing untouched)
+    if (oldHV && HV !== oldHV) {
+      var r = HV / oldHV;
       for (var k in gY) gY[k] *= r;
       for (var i = 0; i < keys.length; i++) keys[i].y *= r;
       for (var j = 0; j < suns.length; j++) suns[j].y *= r;
@@ -491,7 +494,8 @@
     camY += (tgt - camY) * (1 - Math.exp(-9 * dt));
     var speed = bird.grounded ? bird.s : Math.hypot(bird.vx, bird.vy);
     var alt = Math.max(0, groundY(bird.x) - bird.y);
-    var tz = clamp(1.15 - speed / 4200 - alt / 2400, 0.58, 1.08);
+    // short viewports (landscape phones) pull the camera out a touch so the full-size hills frame well
+    var tz = clamp((1.15 - speed / 4200 - alt / 2400) * clamp(H / 620, 0.78, 1), 0.5, 1.08);
     zoom += (tz - zoom) * (1 - Math.exp(-3.5 * dt));
   }
   var ANCH_X = 0, ANCH_Y = 0;
