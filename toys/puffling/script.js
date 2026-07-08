@@ -49,6 +49,8 @@
   var sunT = SUN_TIMER, dayPhase = 0, tNow = 0;
   var chain = 0, fever = false, feverGlow = 0, score = 0, bonus = 0, best = 0;
   var canScore = false, wasWater = false;
+  // intro: the bird starts in a NEST — a 3-2-1 countdown, then it hops out and the run begins
+  var intro = null, nestX = 80;
   // dive-slide (Tiny Wings perfect): dive & hug any downslope; the flatten/upswing cashes it in as a perfect
   var slideT = 0, slideHoldT = 0, slidePeakY = 0, slideMaxY = 0;
   // little expressions: effort grunts/sweat on slow climbs, antics in the air (occasional, not every time)
@@ -244,6 +246,21 @@
 
     if (running && hitStop > 0) { hitStop -= dt; dt = Math.max(0, dt - hitStop > 0 ? 0 : dt); if (hitStop > 0) dt = 0; }
 
+    // nest countdown: 3… 2… 1… WHEE! — then the bird hops out and the run begins
+    if (intro) {
+      intro.t += dt;
+      var steps = [[0.25, "3"], [0.95, "2"], [1.65, "1"]];
+      for (var si = 0; si < steps.length; si++) {
+        if (intro.t >= steps[si][0] && !intro[si]) { intro[si] = true; countPop(steps[si][1]); sndTick(3 - si); }
+      }
+      if (intro.t >= 2.35) {
+        intro = null; running = true;
+        bird.grounded = false; bird.vx = 300; bird.vy = -330; bird.airT = 0; canScore = false; bird.boostT = 0.12;
+        countPop("WHEE!"); sndWhee(); featherPuff();
+        expr.kind = "whee"; expr.t = 0; expr.dur = 0.9; exprCool = 1.5;
+      }
+    }
+
     if (running) {
       sunT -= dt;
       dayPhase = clamp(1 - sunT / SUN_TIMER, 0, 1);
@@ -414,6 +431,7 @@
   function sparkle(n, col) { for (var i = 0; i < n; i++) { var a = Math.random() * 6.28, sp = 40 + Math.random() * 160; parts.push({ x: bird.x, y: bird.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40, t: 0, max: 0.5 + Math.random() * 0.5, g: 60, size: 1.5 + Math.random() * 2.5, color: col, add: true }); } }
   function splash() { for (var i = 0; i < 34; i++) { var a = -Math.PI / 2 + (Math.random() - 0.5) * 2.0, sp = 120 + Math.random() * 260; parts.push({ x: bird.x, y: WATER_Y, vx: Math.cos(a) * sp * 0.6, vy: Math.sin(a) * sp, t: 0, max: 0.5 + Math.random() * 0.5, g: 620, size: 2 + Math.random() * 3, color: "rgba(190,230,255,0.9)" }); } }
   function addPop(txt, big) { pops.push({ sx: ANCH_X, sy: w2sy(bird.y) - R * 2.4, t: 0, max: 1.5, txt: txt, big: !!big }); }
+  function countPop(txt) { pops.push({ sx: W / 2, sy: H * 0.34, t: 0, max: 0.66, txt: txt, big: true }); }
   function flash() { flashEl.classList.add("is-on"); setTimeout(function () { flashEl.classList.remove("is-on"); }, 130); }
   function updateSuns() {
     var cullX = camX - W / zoom - 140;
@@ -464,8 +482,10 @@
     drawWater();
     drawHills();
     drawSuns();
+    drawNest(false);
     drawParticles();
     drawBird();
+    drawNest(true);
     ctx.restore();
 
     drawGrade();
@@ -652,6 +672,33 @@
     }
   }
 
+  // the home nest — back bowl drawn behind the bird, front lip drawn over it so the bird sits IN the nest;
+  // it stays on the first hill and scrolls away once the run begins
+  function drawNest(front) {
+    if (nestX < camX - W / zoom - 90 || nestX > camX + W / zoom + 90) return;
+    var y = groundY(nestX), th = slopeAt(nestX);
+    ctx.save(); ctx.translate(nestX, y); ctx.rotate(th);
+    if (!front) {
+      var g = ctx.createLinearGradient(0, -16, 0, 14);
+      g.addColorStop(0, "#a97b4b"); g.addColorStop(1, "#6b4626");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, -7, 27, 14, 0, 0, 6.283); ctx.fill();
+      ctx.fillStyle = "#4c3118"; ctx.beginPath(); ctx.ellipse(0, -9, 21, 9, 0, 0, 6.283); ctx.fill();
+    } else {
+      var g2 = ctx.createLinearGradient(0, -12, 0, 12);
+      g2.addColorStop(0, "#b98a56"); g2.addColorStop(1, "#74502c");
+      ctx.fillStyle = g2;
+      ctx.beginPath(); ctx.moveTo(-27, -8);
+      ctx.quadraticCurveTo(0, 5, 27, -8);
+      ctx.quadraticCurveTo(28, 8, 0, 13);
+      ctx.quadraticCurveTo(-28, 8, -27, -8);
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "rgba(56,35,16,0.5)"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+      for (var i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(-23 + i * 8, -3 + (i % 2) * 4); ctx.lineTo(-15 + i * 8, 2 + (i % 3) * 2); ctx.stroke(); }
+      ctx.beginPath(); ctx.moveTo(-27, -8); ctx.lineTo(-35, -13); ctx.moveTo(27, -8); ctx.lineTo(34, -14); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawSuns() {
     for (var i = 0; i < suns.length; i++) {
       var sn = suns[i]; if (sn.taken) continue;
@@ -772,10 +819,16 @@
       var pop = f < 0.2 ? 0.55 + 0.45 * (f / 0.2) : 1;                    // little scale-in bounce
       var sz = (p.big ? 48 : 33) * pop;
       ctx.save(); ctx.translate(p.sx, p.sy); ctx.globalAlpha = a;
-      ctx.font = "800 " + Math.round(sz) + "px Baloo 2, Archivo, sans-serif";
-      ctx.lineWidth = 5; ctx.strokeStyle = "rgba(90,50,20,0.55)";
+      // NOTE: font families with digits MUST be quoted or the whole font string is invalid —
+      // Safari then falls back to 10px sans-serif and the popup renders as a dark smudge
+      ctx.font = "800 " + Math.round(sz) + "px 'Baloo 2', Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif";
+      ctx.lineJoin = "round"; ctx.lineWidth = Math.max(2.5, sz * 0.10);
+      ctx.strokeStyle = "rgba(94,52,22,0.45)";
+      ctx.shadowColor = "rgba(60,30,10,0.28)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 2;
       ctx.fillStyle = p.big ? "#ffd45a" : "#fff3c8";
-      ctx.strokeText(p.txt, 0, 0); ctx.fillText(p.txt, 0, 0);
+      ctx.strokeText(p.txt, 0, 0);
+      ctx.shadowColor = "transparent";
+      ctx.fillText(p.txt, 0, 0);
       ctx.restore();
     }
     ctx.globalAlpha = 1; ctx.textBaseline = "alphabetic";
@@ -789,12 +842,14 @@
     camX = bird.x; camY = bird.y; zoom = 0.9;
     sunT = SUN_TIMER; dayPhase = 0; chain = 0; fever = false; feverGlow = 0; bonus = 0; score = 0;
     canScore = false; wasWater = false; slideT = 0; slideHoldT = 0; expr.kind = ""; exprCool = 0; spinP = 0; trail = []; parts = []; pops = []; shake = 0; hitStop = 0; dead = false;
+    intro = null; nestX = bird.x;
     scoreEl.textContent = "0";
   }
   function startGame() {
     overlay.classList.add("is-hidden"); setTimeout(function () { overlay.hidden = true; }, 240);
-    started = true; running = true; dead = false;
-    hintEl.classList.remove("is-gone"); setTimeout(function () { hintEl.classList.add("is-gone"); }, 5000);
+    started = true; dead = false;
+    running = false; intro = { t: 0 };   // nest countdown: 3-2-1 → hop out → run begins
+    hintEl.classList.remove("is-gone"); setTimeout(function () { hintEl.classList.add("is-gone"); }, 6500);
     unlock(); startMusic();
   }
   function endRun() {
@@ -900,6 +955,7 @@
   function sndPerfect(n) { if (!actx || !soundOn) return; var deg = PENTA[Math.min(PENTA.length - 1, n + 1)]; glock(ROOT + 24 + deg, actx.currentTime, 0.9); }
   function sndSun() { if (!actx || !soundOn) return; var t = actx.currentTime; glock(ROOT + 24, t, 0.26); glock(ROOT + 28, t + 0.06, 0.2); }
   function sndGrunt() { if (!actx || !soundOn) return; var t = actx.currentTime; var f0 = 150 * (0.9 + Math.random() * 0.25); var o = actx.createOscillator(); o.type = "triangle"; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f0 * 0.58, t + 0.09); var fl = actx.createBiquadFilter(); fl.type = "lowpass"; fl.frequency.value = 480; var g = actx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.055, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0003, t + 0.14); o.connect(fl); fl.connect(g); g.connect(sfxG); o.start(t); o.stop(t + 0.16); }
+  function sndTick(n) { if (!actx || !soundOn) return; glock(ROOT + 12 + (3 - n) * 2, actx.currentTime, 0.28); }
   function sndFever() { if (!actx || !soundOn) return; var t = actx.currentTime;[0, 4, 7, 12].forEach(function (d, i) { glock(ROOT + 12 + d, t + i * 0.06, 0.8); }); }
   function sndThud() { if (!actx || !soundOn) return; var t = actx.currentTime; var o = actx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(60, t + 0.18); var g = actx.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + 0.24); o.connect(g); g.connect(sfxG); o.start(t); o.stop(t + 0.26); }
   function sndSplash() { if (!actx || !soundOn) return; var t = actx.currentTime; var s = actx.createBufferSource(); s.buffer = noiseBuf(0.3); var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.setValueAtTime(1600, t); bp.frequency.exponentialRampToValueAtTime(500, t + 0.25); var g = actx.createGain(); g.gain.setValueAtTime(0.14, t); g.gain.exponentialRampToValueAtTime(0.0004, t + 0.3); s.connect(bp); bp.connect(g); g.connect(sfxG); g.connect(wet); s.start(t); s.stop(t + 0.32); }
