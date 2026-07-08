@@ -3,7 +3,8 @@
 :root { --font: "Geist", system-ui, -apple-system, sans-serif; }
 
 *,*::before,*::after { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; }
+html, body {
+  -webkit-tap-highlight-color: transparent; height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; }
 body { font-family: var(--font); background: #07091a; touch-action: none; }
 
 canvas { display: block; position: fixed; inset: 0; cursor: crosshair; }

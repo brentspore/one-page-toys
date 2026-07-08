@@ -5,7 +5,8 @@
 :root{ --font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; }
 
 *,*::before,*::after{ box-sizing:border-box; }
-html,body{ height:100%; }
+html,body{
+  -webkit-tap-highlight-color: transparent; height:100%; }
 body{
   margin:0; font-family:var(--font); color:#efe7da;
   overflow:hidden; overscroll-behavior:none; background:#0c0a07;

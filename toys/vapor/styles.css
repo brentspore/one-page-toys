@@ -4,6 +4,7 @@
 *::after { box-sizing: border-box; }
 
 html, body {
+  -webkit-tap-highlight-color: transparent;
   margin: 0;
   height: 100%;
   overflow: hidden;

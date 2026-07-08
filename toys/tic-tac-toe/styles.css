@@ -17,7 +17,8 @@
 
 [hidden]{ display: none !important; }
 
-html, body{ height: 100%; }
+html, body{
+  -webkit-tap-highlight-color: transparent; height: 100%; }
 
 body{
   margin: 0;
