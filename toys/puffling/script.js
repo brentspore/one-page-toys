@@ -231,7 +231,9 @@
 
   // ---- layout ----
   function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    // phones render at 1.75× (they're DPR-3 screens already downsampling our 2×) — ~23% less
+    // raster work per frame for imperceptible softness on this soft-shapes art; desktop stays 2×
+    DPR = Math.min(window.devicePixelRatio || 1, navigator.maxTouchPoints > 0 ? 1.75 : 2);
     var oldHV = HV;
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
@@ -629,6 +631,10 @@
 
   function drawWater() {
     var vl = camX - W / zoom, vr = camX + W / zoom;
+    // water only exists in the narrow gaps — skip the big fill + shimmer when none is in view
+    var c0 = Math.floor(vl / SEG_W), c1 = Math.ceil(vr / SEG_W), seen = false;
+    for (var c = c0; c <= c1; c += 4) { if (gW[c] === 1) { seen = true; break; } }
+    if (!seen) return;
     var g = ctx.createLinearGradient(0, WATER_Y, 0, WATER_Y + H);
     var wc = lerp3([90, 175, 214], [70, 90, 150], dayPhase);
     g.addColorStop(0, rgb(lerp3(wc, [255, 255, 255], 0.28))); g.addColorStop(1, rgb(wc));
@@ -846,18 +852,28 @@
     ctx.fillStyle = effort ? "rgba(255,105,85,0.65)" : "rgba(255,140,120,0.45)";
     ctx.beginPath(); ctx.ellipse(w * 0.3, h * 0.2, h * 0.18, h * 0.13, 0, 0, 6.28); ctx.fill();
     ctx.restore();
-    // half-submerged: a local water strip over the bird's lower body (edge-faded so it blends seamlessly)
+    // half-submerged: a local water strip over the bird's lower body (edge-faded so it blends seamlessly),
+    // CLAMPED to the actual water span so it never paints over the neighbouring island's slopes
     if (swim) {
-      var wl = WATER_Y + Math.sin(tNow * 5) * 1.4;
-      var wc2 = lerp3(lerp3([90, 175, 214], [70, 90, 150], dayPhase), [255, 255, 255], 0.26);
-      var wg = ctx.createLinearGradient(bird.x - R * 2.6, 0, bird.x + R * 2.6, 0);
-      var wcs = (wc2[0] | 0) + "," + (wc2[1] | 0) + "," + (wc2[2] | 0);
-      wg.addColorStop(0, "rgba(" + wcs + ",0)"); wg.addColorStop(0.28, "rgba(" + wcs + ",0.9)");
-      wg.addColorStop(0.72, "rgba(" + wcs + ",0.9)"); wg.addColorStop(1, "rgba(" + wcs + ",0)");
-      ctx.fillStyle = wg; ctx.fillRect(bird.x - R * 2.6, wl, R * 5.2, R * 1.5);
-      // bobbing foam collar at the waterline
-      ctx.fillStyle = "rgba(255,255,255,0.55)";
-      ctx.beginPath(); ctx.ellipse(bird.x - R * 0.1, wl + 1.5, R * 1.55, 3.4, 0, 0, 6.28); ctx.fill();
+      var ci = Math.floor(bird.x / SEG_W), cl = ci, cr = ci, lim = 80;
+      while (gW[cl - 1] === 1 && lim-- > 0) cl--;
+      lim = 80; while (gW[cr + 1] === 1 && lim-- > 0) cr++;
+      var wx0 = Math.max(bird.x - R * 2.6, cl * SEG_W + 1);
+      var wx1 = Math.min(bird.x + R * 2.6, (cr + 1) * SEG_W - 1);
+      if (wx1 > wx0 + 4) {
+        var wl = WATER_Y + Math.sin(tNow * 5) * 1.4;
+        var wc2 = lerp3(lerp3([90, 175, 214], [70, 90, 150], dayPhase), [255, 255, 255], 0.26);
+        var wg = ctx.createLinearGradient(wx0, 0, wx1, 0);
+        var wcs = (wc2[0] | 0) + "," + (wc2[1] | 0) + "," + (wc2[2] | 0);
+        wg.addColorStop(0, "rgba(" + wcs + ",0)"); wg.addColorStop(0.28, "rgba(" + wcs + ",0.9)");
+        wg.addColorStop(0.72, "rgba(" + wcs + ",0.9)"); wg.addColorStop(1, "rgba(" + wcs + ",0)");
+        ctx.fillStyle = wg; ctx.fillRect(wx0, wl, wx1 - wx0, R * 1.5);
+        // bobbing foam collar at the waterline (clipped to the same span)
+        ctx.save(); ctx.beginPath(); ctx.rect(wx0, wl - 6, wx1 - wx0, R * 1.8); ctx.clip();
+        ctx.fillStyle = "rgba(255,255,255,0.55)";
+        ctx.beginPath(); ctx.ellipse(bird.x - R * 0.1, wl + 1.5, R * 1.55, 3.4, 0, 0, 6.28); ctx.fill();
+        ctx.restore();
+      }
     }
   }
 
@@ -871,27 +887,44 @@
     ctx.fillStyle = "rgba(" + ((132 - t * 48) | 0) + "," + ((98 - t * 44) | 0) + "," + ((132 - t * 38) | 0) + "," + (t * 0.24).toFixed(3) + ")";
     ctx.fillRect(0, 0, W, H); ctx.restore();
   }
+  // popup text is pre-rendered ONCE per (text, size) to an offscreen sprite — Safari rasterizes
+  // shadowBlur'd strokeText on the CPU every frame, which visibly dropped mobile frame rate
+  var popCache = {}, popCacheN = 0;
+  function popSprite(txt, big) {
+    var key = (big ? "B:" : "s:") + txt;
+    var spr = popCache[key];
+    if (spr) return spr;
+    if (popCacheN > 40) { popCache = {}; popCacheN = 0; }   // safety cap (chain counts are open-ended)
+    var base = big ? 48 : 33, pad = 20;
+    var c = document.createElement("canvas");
+    var FONT = "800 " + base + "px 'Baloo 2', Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif";
+    var t = c.getContext("2d");
+    t.font = FONT;
+    var wpx = Math.ceil(t.measureText(txt).width) + pad * 2, hpx = base + pad * 2;
+    c.width = wpx * 2; c.height = hpx * 2;                  // 2× for crispness on high-DPI
+    t = c.getContext("2d"); t.scale(2, 2);
+    t.textAlign = "center"; t.textBaseline = "middle"; t.font = FONT;
+    t.lineJoin = "round"; t.lineWidth = Math.max(2.5, base * 0.10);
+    t.strokeStyle = "rgba(94,52,22,0.45)";
+    t.shadowColor = "rgba(60,30,10,0.28)"; t.shadowBlur = 8; t.shadowOffsetY = 2;
+    t.fillStyle = big ? "#ffd45a" : "#fff3c8";
+    t.strokeText(txt, wpx / 2, hpx / 2);
+    t.shadowColor = "transparent";
+    t.fillText(txt, wpx / 2, hpx / 2);
+    spr = { cv: c, w: wpx, h: hpx };
+    popCache[key] = spr; popCacheN++;
+    return spr;
+  }
   function drawPops() {
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
     for (var i = 0; i < pops.length; i++) {
       var p = pops[i], f = p.t / p.max;
       var a = f < 0.14 ? f / 0.14 : clamp(1 - (f - 0.14) / 0.86, 0, 1);   // quick fade-in, slow fade-out
       var pop = f < 0.2 ? 0.55 + 0.45 * (f / 0.2) : 1;                    // little scale-in bounce
-      var sz = (p.big ? 48 : 33) * pop;
-      ctx.save(); ctx.translate(p.sx, p.sy); ctx.globalAlpha = a;
-      // NOTE: font families with digits MUST be quoted or the whole font string is invalid —
-      // Safari then falls back to 10px sans-serif and the popup renders as a dark smudge
-      ctx.font = "800 " + Math.round(sz) + "px 'Baloo 2', Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif";
-      ctx.lineJoin = "round"; ctx.lineWidth = Math.max(2.5, sz * 0.10);
-      ctx.strokeStyle = "rgba(94,52,22,0.45)";
-      ctx.shadowColor = "rgba(60,30,10,0.28)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 2;
-      ctx.fillStyle = p.big ? "#ffd45a" : "#fff3c8";
-      ctx.strokeText(p.txt, 0, 0);
-      ctx.shadowColor = "transparent";
-      ctx.fillText(p.txt, 0, 0);
-      ctx.restore();
+      var spr = popSprite(p.txt, p.big);
+      ctx.globalAlpha = a;
+      ctx.drawImage(spr.cv, p.sx - spr.w * pop / 2, p.sy - spr.h * pop / 2, spr.w * pop, spr.h * pop);
     }
-    ctx.globalAlpha = 1; ctx.textBaseline = "alphabetic";
+    ctx.globalAlpha = 1;
   }
 
   // ---- flow ----

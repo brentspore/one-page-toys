@@ -17,7 +17,7 @@
       "interactive"
     ],
     "status": "live",
-    "path": "toys/puffling/index.html",
+    "path": "toys/puffling/",
     "related": []
   },
   {
@@ -38,7 +38,7 @@
       "interactive"
     ],
     "status": "live",
-    "path": "toys/deep-descent/index.html",
+    "path": "toys/deep-descent/",
     "related": []
   },
   {
@@ -59,7 +59,7 @@
       "mesmerizing"
     ],
     "status": "live",
-    "path": "toys/vapor/index.html",
+    "path": "toys/vapor/",
     "related": []
   },
   {
@@ -78,7 +78,7 @@
       "colors"
     ],
     "status": "live",
-    "path": "toys/dot-loop/index.html",
+    "path": "toys/dot-loop/",
     "related": []
   },
   {
@@ -97,7 +97,7 @@
       "high-score"
     ],
     "status": "live",
-    "path": "toys/paper-plane/index.html",
+    "path": "toys/paper-plane/",
     "related": []
   },
   {
@@ -116,7 +116,7 @@
       "waves"
     ],
     "status": "live",
-    "path": "toys/nova-coil/index.html",
+    "path": "toys/nova-coil/",
     "related": []
   },
   {
@@ -134,7 +134,7 @@
       "labyrinth"
     ],
     "status": "live",
-    "path": "toys/random-maze/index.html",
+    "path": "toys/random-maze/",
     "related": []
   },
   {
@@ -153,7 +153,7 @@
       "2048"
     ],
     "status": "live",
-    "path": "toys/trio/index.html",
+    "path": "toys/trio/",
     "related": []
   },
   {
@@ -171,7 +171,7 @@
       "casino"
     ],
     "status": "live",
-    "path": "toys/coin-pusher/index.html",
+    "path": "toys/coin-pusher/",
     "related": []
   },
   {
@@ -189,7 +189,7 @@
       "reflex"
     ],
     "status": "live",
-    "path": "toys/stack-tower/index.html",
+    "path": "toys/stack-tower/",
     "related": []
   },
   {
@@ -208,7 +208,7 @@
       "generative"
     ],
     "status": "live",
-    "path": "toys/music-box/index.html",
+    "path": "toys/music-box/",
     "related": []
   },
   {
@@ -226,7 +226,7 @@
       "electronic"
     ],
     "status": "live",
-    "path": "toys/theremin/index.html",
+    "path": "toys/theremin/",
     "related": []
   },
   {
@@ -244,7 +244,7 @@
       "casual"
     ],
     "status": "live",
-    "path": "toys/mini-golf/index.html",
+    "path": "toys/mini-golf/",
     "related": []
   },
   {
@@ -263,7 +263,7 @@
       "nature"
     ],
     "status": "live",
-    "path": "toys/murmuration/index.html",
+    "path": "toys/murmuration/",
     "related": []
   },
   {
@@ -281,7 +281,7 @@
       "table-game"
     ],
     "status": "live",
-    "path": "toys/blackjack/index.html",
+    "path": "toys/blackjack/",
     "related": []
   },
   {
@@ -299,7 +299,7 @@
       "relaxing"
     ],
     "status": "live",
-    "path": "toys/solitaire/index.html",
+    "path": "toys/solitaire/",
     "related": []
   },
   {
@@ -318,7 +318,7 @@
       "high-score"
     ],
     "status": "live",
-    "path": "toys/slice-it/index.html",
+    "path": "toys/slice-it/",
     "related": []
   },
   {
@@ -336,7 +336,7 @@
       "tool"
     ],
     "status": "live",
-    "path": "tools/countdown/index.html",
+    "path": "tools/countdown/",
     "related": []
   },
   {
@@ -354,7 +354,7 @@
       "tool"
     ],
     "status": "live",
-    "path": "tools/sleep-cycle/index.html",
+    "path": "tools/sleep-cycle/",
     "related": []
   },
   {
@@ -372,7 +372,7 @@
       "time"
     ],
     "status": "live",
-    "path": "tools/time-is-money/index.html",
+    "path": "tools/time-is-money/",
     "related": []
   },
   {
@@ -390,7 +390,7 @@
       "tool"
     ],
     "status": "live",
-    "path": "tools/life-in-numbers/index.html",
+    "path": "tools/life-in-numbers/",
     "related": []
   },
   {
@@ -408,7 +408,7 @@
       "tool"
     ],
     "status": "live",
-    "path": "tools/latte-factor/index.html",
+    "path": "tools/latte-factor/",
     "related": []
   },
   {
@@ -427,7 +427,7 @@
       "pentatonic"
     ],
     "status": "live",
-    "path": "toys/tongue-drum/index.html",
+    "path": "toys/tongue-drum/",
     "related": []
   },
   {
@@ -446,7 +446,7 @@
       "sky"
     ],
     "status": "live",
-    "path": "toys/kalimba/index.html",
+    "path": "toys/kalimba/",
     "related": []
   },
   {
@@ -464,7 +464,7 @@
       "pieces"
     ],
     "status": "live",
-    "path": "toys/jigsaw-puzzle/index.html",
+    "path": "toys/jigsaw-puzzle/",
     "related": []
   },
   {
@@ -482,7 +482,7 @@
       "tiles"
     ],
     "status": "live",
-    "path": "toys/slide-puzzle/index.html",
+    "path": "toys/slide-puzzle/",
     "related": []
   },
   {
@@ -500,7 +500,7 @@
       "nostalgic"
     ],
     "status": "live",
-    "path": "toys/wooly-willy/index.html",
+    "path": "toys/wooly-willy/",
     "related": []
   },
   {
@@ -519,7 +519,7 @@
       "orbits"
     ],
     "status": "live",
-    "path": "toys/gravity-orbits/index.html",
+    "path": "toys/gravity-orbits/",
     "related": []
   },
   {
@@ -537,7 +537,7 @@
       "sandbox"
     ],
     "status": "live",
-    "path": "toys/cloth/index.html",
+    "path": "toys/cloth/",
     "related": []
   },
   {
@@ -555,7 +555,7 @@
       "science"
     ],
     "status": "live",
-    "path": "toys/double-pendulum/index.html",
+    "path": "toys/double-pendulum/",
     "related": []
   },
   {
@@ -574,7 +574,7 @@
       "text"
     ],
     "status": "live",
-    "path": "toys/aurebesh-translator/index.html",
+    "path": "toys/aurebesh-translator/",
     "related": []
   },
   {
@@ -593,7 +593,7 @@
       "throwing"
     ],
     "status": "live",
-    "path": "toys/pottery-wheel/index.html",
+    "path": "toys/pottery-wheel/",
     "related": []
   },
   {
@@ -612,7 +612,7 @@
       "sound"
     ],
     "status": "live",
-    "path": "toys/chladni-plate/index.html",
+    "path": "toys/chladni-plate/",
     "related": []
   },
   {
@@ -631,7 +631,7 @@
       "toy"
     ],
     "status": "live",
-    "path": "toys/pin-art/index.html",
+    "path": "toys/pin-art/",
     "related": []
   },
   {
@@ -649,7 +649,7 @@
       "viral"
     ],
     "status": "live",
-    "path": "toys/perfect-circle/index.html",
+    "path": "toys/perfect-circle/",
     "related": []
   },
   {
@@ -668,7 +668,7 @@
       "wellness"
     ],
     "status": "live",
-    "path": "toys/rain-window/index.html",
+    "path": "toys/rain-window/",
     "related": []
   },
   {
@@ -685,7 +685,7 @@
       "festive"
     ],
     "status": "live",
-    "path": "toys/fireworks/index.html",
+    "path": "toys/fireworks/",
     "related": []
   },
   {
@@ -704,7 +704,7 @@
       "nature"
     ],
     "status": "live",
-    "path": "toys/campfire/index.html",
+    "path": "toys/campfire/",
     "related": []
   },
   {
@@ -723,7 +723,7 @@
       "ambient"
     ],
     "status": "live",
-    "path": "toys/aurora-drift/index.html",
+    "path": "toys/aurora-drift/",
     "related": []
   },
   {
@@ -742,7 +742,7 @@
       "calm"
     ],
     "status": "live",
-    "path": "toys/floating-lanterns/index.html",
+    "path": "toys/floating-lanterns/",
     "related": []
   },
   {
@@ -761,7 +761,7 @@
       "japanese"
     ],
     "status": "live",
-    "path": "toys/zen-sand-garden/index.html",
+    "path": "toys/zen-sand-garden/",
     "related": []
   },
   {
@@ -779,7 +779,7 @@
       "galton"
     ],
     "status": "live",
-    "path": "toys/marble-drop/index.html",
+    "path": "toys/marble-drop/",
     "related": []
   },
   {
@@ -797,7 +797,7 @@
       "meditative"
     ],
     "status": "live",
-    "path": "toys/wind-chimes/index.html",
+    "path": "toys/wind-chimes/",
     "related": []
   },
   {
@@ -816,7 +816,7 @@
       "pond"
     ],
     "status": "live",
-    "path": "toys/ripple-pond/index.html",
+    "path": "toys/ripple-pond/",
     "related": []
   },
   {
@@ -833,7 +833,7 @@
       "visual"
     ],
     "status": "live",
-    "path": "toys/kaleidoscope/index.html",
+    "path": "toys/kaleidoscope/",
     "related": []
   },
   {
@@ -851,7 +851,7 @@
       "glow"
     ],
     "status": "live",
-    "path": "toys/plasma-ball/index.html",
+    "path": "toys/plasma-ball/",
     "related": []
   },
   {
@@ -868,7 +868,7 @@
       "mesmerizing"
     ],
     "status": "live",
-    "path": "toys/spirograph/index.html",
+    "path": "toys/spirograph/",
     "related": []
   },
   {
@@ -891,7 +891,7 @@
       "reflective"
     ],
     "status": "live",
-    "path": "toys/newtons-cradle/index.html",
+    "path": "toys/newtons-cradle/",
     "related": []
   },
   {
@@ -909,7 +909,7 @@
       "sensory"
     ],
     "status": "live",
-    "path": "toys/bubble-wrap/index.html",
+    "path": "toys/bubble-wrap/",
     "related": []
   },
   {
@@ -926,7 +926,7 @@
       "ambient"
     ],
     "status": "live",
-    "path": "toys/lava-lamp/index.html",
+    "path": "toys/lava-lamp/",
     "related": []
   },
   {
@@ -950,7 +950,7 @@
       "simulation"
     ],
     "status": "live",
-    "path": "toys/falling-sand/index.html",
+    "path": "toys/falling-sand/",
     "related": []
   },
   {
@@ -969,7 +969,7 @@
       "synth"
     ],
     "status": "live",
-    "path": "toys/beat-maker/index.html",
+    "path": "toys/beat-maker/",
     "related": []
   },
   {
@@ -987,7 +987,7 @@
       "focus"
     ],
     "status": "live",
-    "path": "toys/chimp-test/index.html",
+    "path": "toys/chimp-test/",
     "related": []
   },
   {
@@ -1005,7 +1005,7 @@
       "challenge"
     ],
     "status": "live",
-    "path": "toys/echo/index.html",
+    "path": "toys/echo/",
     "related": []
   },
   {
@@ -1024,7 +1024,7 @@
       "incremental"
     ],
     "status": "live",
-    "path": "toys/tiny-idle-garden/index.html",
+    "path": "toys/tiny-idle-garden/",
     "related": []
   },
   {
@@ -1043,7 +1043,7 @@
       "ambient"
     ],
     "status": "live",
-    "path": "toys/star-click-sky/index.html",
+    "path": "toys/star-click-sky/",
     "related": []
   },
   {
@@ -1061,7 +1061,7 @@
       "board-game"
     ],
     "status": "live",
-    "path": "toys/tic-tac-toe/index.html",
+    "path": "toys/tic-tac-toe/",
     "related": []
   },
   {
@@ -1078,7 +1078,7 @@
       "quick"
     ],
     "status": "live",
-    "path": "toys/rock-paper-scissors/index.html",
+    "path": "toys/rock-paper-scissors/",
     "related": []
   },
   {
@@ -1095,7 +1095,7 @@
       "brain"
     ],
     "status": "live",
-    "path": "toys/three-doors/index.html",
+    "path": "toys/three-doors/",
     "related": []
   },
   {
@@ -1113,7 +1113,7 @@
       "pairs"
     ],
     "status": "live",
-    "path": "toys/memory-match/index.html",
+    "path": "toys/memory-match/",
     "related": []
   },
   {
@@ -1131,7 +1131,7 @@
       "keyboard"
     ],
     "status": "live",
-    "path": "toys/snake-mini/index.html",
+    "path": "toys/snake-mini/",
     "related": []
   },
   {
@@ -1148,7 +1148,7 @@
       "mesmerizing"
     ],
     "status": "live",
-    "path": "toys/weird-generative-canvas/index.html",
+    "path": "toys/weird-generative-canvas/",
     "related": []
   },
   {
@@ -1169,7 +1169,7 @@
       "webgl"
     ],
     "status": "live",
-    "path": "toys/dice-roller/index.html",
+    "path": "toys/dice-roller/",
     "related": []
   },
   {
@@ -1187,7 +1187,7 @@
       "silly"
     ],
     "status": "live",
-    "path": "toys/magic-eight-ball/index.html",
+    "path": "toys/magic-eight-ball/",
     "related": []
   },
   {
@@ -1205,7 +1205,7 @@
       "experimental"
     ],
     "status": "live",
-    "path": "toys/blob-choir/index.html",
+    "path": "toys/blob-choir/",
     "related": []
   },
   {
@@ -1223,7 +1223,7 @@
       "novelty"
     ],
     "status": "live",
-    "path": "toys/coin-flipper/index.html",
+    "path": "toys/coin-flipper/",
     "related": []
   },
   {
@@ -1241,7 +1241,7 @@
       "mindfulness"
     ],
     "status": "live",
-    "path": "toys/breathing-pacer/index.html",
+    "path": "toys/breathing-pacer/",
     "related": []
   },
   {
@@ -1259,7 +1259,7 @@
       "work"
     ],
     "status": "live",
-    "path": "tools/meeting-cost-meter/index.html",
+    "path": "tools/meeting-cost-meter/",
     "related": []
   },
   {
@@ -1278,7 +1278,7 @@
       "sensory"
     ],
     "status": "live",
-    "path": "toys/goo-cursor/index.html",
+    "path": "toys/goo-cursor/",
     "related": []
   }
 ]
