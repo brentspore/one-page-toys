@@ -313,7 +313,9 @@
       } else if (waterAt(bird.x)) {
         bird.x = nx; bird.y = groundY(bird.x) - R; bird.rot = th; waterSkim();
       } else {
-        bird.x = nx; bird.y = groundY(bird.x) - R; bird.rot = th; wasWater = false;
+        bird.x = nx; bird.y = groundY(bird.x) - R; bird.rot = th;
+        if (wasWater) exitSpray();
+        wasWater = false;
         spraySlide(th);
         // --- dive-slide: while grounded on a downslope, accrue dive credit; the flatten/upswing grades it ---
         if (sn > 0.05) {
@@ -389,8 +391,8 @@
   function isEffortKind(k) { return k === "sweat" || k === "puff" || k === "grit"; }
   function updateExpr(dt) {
     exprCool -= dt;
-    // tiny wing flaps: lazy bob on the ground, quick flutter in the air, tucked while diving
-    wingT += dt * (bird.grounded ? 5 + bird.s * 0.004 : (holding ? 4 : 11) + (expr.kind === "flutter" ? 16 : 0));
+    // tiny wing flaps: lazy bob on the ground, quick flutter in the air, tucked while diving, paddling in water
+    wingT += dt * (bird.grounded ? (waterAt(bird.x) ? 15 : 5 + bird.s * 0.004) : (holding ? 4 : 11) + (expr.kind === "flutter" ? 16 : 0));
     if (expr.kind) { expr.t += dt; if (expr.t >= expr.dur) expr.kind = ""; }
     if (expr.kind === "spin") spinP = Math.min(1, expr.t / expr.dur);
     if (!running || dead) return;
@@ -424,16 +426,33 @@
   function featherPuff() { for (var i = 0; i < 4; i++) parts.push({ x: bird.x - R * 0.4, y: bird.y, vx: -60 - Math.random() * 80, vy: -40 + Math.random() * 80, t: 0, max: 0.7, g: 120, size: 2 + Math.random() * 2, color: i % 2 ? "#7adfd4" : "#ff9d7e" }); }
   function startFever() { fever = true; sparkle(24, "#ffd36b"); addPop("FEVER!", true); sndFever(); flash(); }
   function breakStreak() { chain = 0; if (fever) { fever = false; } }
+  var lastWake = 0;
   function waterSkim() {
     if (!wasWater) { wasWater = true; slideT = 0; slideHoldT = 0; bird.s *= 0.35; breakStreak(); splash(); shake = Math.max(shake, 6); hitStop = 0.06; sndSplash(); }
     bird.s *= Math.exp(-2.6 * (1 / 60)); if (bird.s < 60) bird.s = 60;
+    // paddling wake: little kicks of spray behind, drips off the crest, expanding ripples
+    if (tNow - lastWake > 0.16) {
+      lastWake = tNow;
+      for (var i = 0; i < 2; i++) parts.push({ x: bird.x - R * (0.8 + Math.random() * 0.6), y: WATER_Y - 2, vx: -50 - Math.random() * 70 - bird.s * 0.3, vy: -60 - Math.random() * 90, t: 0, max: 0.45 + Math.random() * 0.25, g: 520, size: 1.6 + Math.random() * 2, color: "rgba(200,235,255,0.9)" });
+      parts.push({ x: bird.x - R * 1.2, y: WATER_Y, vx: -30 - bird.s * 0.2, vy: 0, t: 0, max: 0.8, g: 0, size: 2.5, color: "rgba(255,255,255,0.5)" });
+      if (Math.random() < 0.6) sndPaddle();
+    }
+  }
+  // clambering out: a happy shake-off spray
+  function exitSpray() {
+    for (var i = 0; i < 14; i++) { var a = -Math.PI / 2 + (Math.random() - 0.5) * 1.6; var sp = 90 + Math.random() * 170; parts.push({ x: bird.x, y: bird.y, vx: Math.cos(a) * sp + bird.s * 0.25, vy: Math.sin(a) * sp, t: 0, max: 0.5 + Math.random() * 0.3, g: 560, size: 1.6 + Math.random() * 2.2, color: "rgba(200,235,255,0.9)" }); }
   }
 
   // ---- particles ----
   function spraySlide(th) { if (bird.s > 260 && Math.random() < 0.5) parts.push({ x: bird.x - Math.cos(th) * R, y: bird.y + R * 0.7, vx: -Math.cos(th) * bird.s * 0.2 + (Math.random() * 2 - 1) * 30, vy: -Math.random() * 60 - 10, t: 0, max: 0.4 + Math.random() * 0.3, g: 240, size: 1.5 + Math.random() * 2, color: "rgba(255,255,255,0.8)" }); }
   function dust(n) { for (var i = 0; i < n; i++) parts.push({ x: bird.x + (Math.random() * 2 - 1) * R, y: bird.y + R * 0.7, vx: (Math.random() * 2 - 1) * 80, vy: -Math.random() * 80 - 20, t: 0, max: 0.4 + Math.random() * 0.4, g: 260, size: 2 + Math.random() * 2.5, color: "rgba(240,230,210,0.85)" }); }
   function sparkle(n, col) { for (var i = 0; i < n; i++) { var a = Math.random() * 6.28, sp = 40 + Math.random() * 160; parts.push({ x: bird.x, y: bird.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40, t: 0, max: 0.5 + Math.random() * 0.5, g: 60, size: 1.5 + Math.random() * 2.5, color: col, add: true }); } }
-  function splash() { for (var i = 0; i < 34; i++) { var a = -Math.PI / 2 + (Math.random() - 0.5) * 2.0, sp = 120 + Math.random() * 260; parts.push({ x: bird.x, y: WATER_Y, vx: Math.cos(a) * sp * 0.6, vy: Math.sin(a) * sp, t: 0, max: 0.5 + Math.random() * 0.5, g: 620, size: 2 + Math.random() * 3, color: "rgba(190,230,255,0.9)" }); } }
+  function splash() {
+    // droplet burst + a crown of bigger drops + a low foam skirt spreading along the surface
+    for (var i = 0; i < 34; i++) { var a = -Math.PI / 2 + (Math.random() - 0.5) * 2.0, sp = 120 + Math.random() * 260; parts.push({ x: bird.x, y: WATER_Y, vx: Math.cos(a) * sp * 0.6, vy: Math.sin(a) * sp, t: 0, max: 0.5 + Math.random() * 0.5, g: 620, size: 2 + Math.random() * 3, color: "rgba(190,230,255,0.9)" }); }
+    for (var c = 0; c < 8; c++) { var ca = -Math.PI / 2 + (c / 7 - 0.5) * 1.3; var cs = 220 + Math.random() * 160; parts.push({ x: bird.x, y: WATER_Y, vx: Math.cos(ca) * cs * 0.7, vy: Math.sin(ca) * cs, t: 0, max: 0.65 + Math.random() * 0.3, g: 620, size: 3.5 + Math.random() * 2.5, color: "rgba(225,245,255,0.95)" }); }
+    for (var f = 0; f < 10; f++) { var fd = (f / 9 - 0.5) * 2; parts.push({ x: bird.x + fd * R * 1.4, y: WATER_Y - 1, vx: fd * (120 + Math.random() * 80), vy: -14 - Math.random() * 22, t: 0, max: 0.55, g: 240, size: 2.4 + Math.random() * 2, color: "rgba(255,255,255,0.75)" }); }
+  }
   function addPop(txt, big) { pops.push({ sx: ANCH_X, sy: w2sy(bird.y) - R * 2.4, t: 0, max: 1.5, txt: txt, big: !!big }); }
   function countPop(txt) { pops.push({ sx: W / 2, sy: H * 0.34, t: 0, max: 0.66, txt: txt, big: true }); }
   function flash() { flashEl.classList.add("is-on"); setTimeout(function () { flashEl.classList.remove("is-on"); }, 130); }
@@ -740,8 +759,10 @@
     if (feverGlow > 0.05) { var gl = ctx.createRadialGradient(bird.x, bird.y, 0, bird.x, bird.y, R * 4 * feverGlow); gl.addColorStop(0, "rgba(255,200,90," + (0.5 * feverGlow) + ")"); gl.addColorStop(1, "rgba(255,150,60,0)"); ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(bird.x, bird.y, R * 4 * feverGlow, 0, 6.28); ctx.fill(); }
     ctx.restore();
 
+    var swim = bird.grounded && !dead && waterAt(bird.x);           // paddling across a water gap
     ctx.save(); ctx.translate(bird.x, bird.y);
-    ctx.rotate(bird.rot * 0.5 + (expr.kind === "spin" ? -spinP * 6.283 : 0));   // occasional backflip
+    if (swim) { ctx.translate(0, R * 0.55 + Math.sin(tNow * 5) * 1.6); ctx.rotate(Math.sin(tNow * 4.2) * 0.07); }   // settle in, bob & rock
+    ctx.rotate((swim ? 0 : bird.rot * 0.5) + (expr.kind === "spin" ? -spinP * 6.283 : 0));   // occasional backflip
     var sq = bird.sq, w = R * (2 - sq), h = R * sq;
     var effort = isEffortKind(expr.kind);
     var happy = expr.kind === "whee" || dead;                       // dead = the sunset nap → sweet closed eyes
@@ -765,8 +786,8 @@
     // crest feathers
     ctx.fillStyle = "#ff7a59";
     for (var k = -1; k <= 1; k++) { ctx.save(); ctx.translate(-w * 0.2 + k * w * 0.16, -h * 0.9); ctx.rotate(-0.5 + k * 0.4); ctx.beginPath(); ctx.ellipse(0, -h * 0.25, w * 0.1, h * 0.4, 0, 0, 6.28); ctx.fill(); ctx.restore(); }
-    // tiny wing (the joke of the species) — lazy bob grounded, flutters in the air, tucks on a dive
-    var flap = Math.sin(wingT) * (bird.grounded ? 0.2 : 0.55) - (diving ? 0.6 : 0.1);
+    // tiny wing (the joke of the species) — lazy bob grounded, flutters in the air, tucks on a dive, paddles in water
+    var flap = swim ? Math.sin(wingT) * 0.75 + 0.15 : Math.sin(wingT) * (bird.grounded ? 0.2 : 0.55) - (diving ? 0.6 : 0.1);
     ctx.save(); ctx.translate(-w * 0.14, -h * 0.02); ctx.rotate(-flap);
     var wgr = ctx.createLinearGradient(0, 0, -w * 0.6, 0); wgr.addColorStop(0, "#1d9c91"); wgr.addColorStop(1, "#14837a");
     ctx.fillStyle = wgr; ctx.beginPath(); ctx.ellipse(-w * 0.26, h * 0.04, w * 0.32, h * 0.2, 0.22, 0, 6.28); ctx.fill();
@@ -800,12 +821,25 @@
       ctx.fillStyle = "#25241f"; ctx.beginPath(); ctx.arc(px, py, pr, 0, 6.28); ctx.fill();
       ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(px + pr * 0.35, py - pr * 0.42, pr * 0.36, 0, 6.28); ctx.fill();
       ctx.fillStyle = "rgba(255,255,255,0.8)"; ctx.beginPath(); ctx.arc(px - pr * 0.32, py + pr * 0.35, pr * 0.16, 0, 6.28); ctx.fill();
-      if (diving) { ctx.strokeStyle = "#1e1d19"; ctx.lineWidth = h * 0.08; ctx.beginPath(); ctx.moveTo(ex - h * 0.3, ey - h * 0.4); ctx.lineTo(ex + h * 0.18, ey - h * 0.32); ctx.stroke(); }   // determined brow
+      if (diving || swim) { ctx.strokeStyle = "#1e1d19"; ctx.lineWidth = h * 0.08; ctx.beginPath(); ctx.moveTo(ex - h * 0.3, ey - h * 0.4); ctx.lineTo(ex + h * 0.18, ey - h * 0.32); ctx.stroke(); }   // determined brow
     }
     // rosy cheek (flushes deeper under strain)
     ctx.fillStyle = effort ? "rgba(255,105,85,0.65)" : "rgba(255,140,120,0.45)";
     ctx.beginPath(); ctx.ellipse(w * 0.3, h * 0.2, h * 0.18, h * 0.13, 0, 0, 6.28); ctx.fill();
     ctx.restore();
+    // half-submerged: a local water strip over the bird's lower body (edge-faded so it blends seamlessly)
+    if (swim) {
+      var wl = WATER_Y + Math.sin(tNow * 5) * 1.4;
+      var wc2 = lerp3(lerp3([90, 175, 214], [70, 90, 150], dayPhase), [255, 255, 255], 0.26);
+      var wg = ctx.createLinearGradient(bird.x - R * 2.6, 0, bird.x + R * 2.6, 0);
+      var wcs = (wc2[0] | 0) + "," + (wc2[1] | 0) + "," + (wc2[2] | 0);
+      wg.addColorStop(0, "rgba(" + wcs + ",0)"); wg.addColorStop(0.28, "rgba(" + wcs + ",0.9)");
+      wg.addColorStop(0.72, "rgba(" + wcs + ",0.9)"); wg.addColorStop(1, "rgba(" + wcs + ",0)");
+      ctx.fillStyle = wg; ctx.fillRect(bird.x - R * 2.6, wl, R * 5.2, R * 1.5);
+      // bobbing foam collar at the waterline
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      ctx.beginPath(); ctx.ellipse(bird.x - R * 0.1, wl + 1.5, R * 1.55, 3.4, 0, 0, 6.28); ctx.fill();
+    }
   }
 
   // dusk grade: eased via visGrade so sunset pushbacks (fever perfects / sun pips) GLIDE the veil
@@ -863,10 +897,13 @@
     if (dead) return; dead = true; running = false; holding = false; stopMusic();
     var isBest = score > best;
     if (isBest) { best = score; try { localStorage.setItem(bestKey(), String(best)); } catch (e) {} bestEl.textContent = "Best " + best; burstConfetti(); }
+    window.OPT_SHARE_TEXT = "I glided " + score + " on today's hills in Puffling before the sun set — can you beat it? 🐦";
     sndLull();
+    var finalScore = score;   // freeze NOW — a quick restart resets the global before the timeout fires
     setTimeout(function () {
+      if (!dead) return;      // player already flew again — don't pop a stale overlay over the new run
       ovTitle.textContent = isBest ? "New best!" : "The sun set.";
-      ovText.innerHTML = "You glided <span class='stat'>" + score + "</span>" + (isBest ? " — a new best for today!" : ".") + " The puffling is having a nap." + (best > 0 ? " <span class='stat'>Best " + best + "</span>." : "");
+      ovText.innerHTML = "You glided <span class='stat'>" + finalScore + "</span>" + (isBest ? " — a new best for today!" : ".") + " The puffling is having a nap." + (best > 0 ? " <span class='stat'>Best " + best + "</span>." : "");
       ovBtn.textContent = "Fly again";
       overlay.hidden = false; overlay.classList.remove("is-hidden");
     }, 900);
@@ -880,12 +917,16 @@
   }
 
   // ---- input ----
-  function down() { if (!started || dead) { advance(); return; } holding = true; }
+  function down() {
+    if (!started) { advance(); return; }
+    if (dead) { if (!overlay.hidden) advance(); return; }   // let the nap beat land; restart once the card is up
+    holding = true;
+  }
   function up() { holding = false; }
   canvas.addEventListener("pointerdown", function (e) { e.preventDefault(); unlock(); down(); });
   window.addEventListener("pointerup", function () { up(); });
   window.addEventListener("pointercancel", function () { up(); });
-  window.addEventListener("keydown", function (e) { if (e.code === "Space" || e.code === "ArrowDown") { e.preventDefault(); unlock(); if (!started || dead) { advance(); } else holding = true; } });
+  window.addEventListener("keydown", function (e) { if (e.code === "Space" || e.code === "ArrowDown") { e.preventDefault(); unlock(); if (!started || dead) { if (!started || !overlay.hidden) advance(); } else holding = true; } });
   window.addEventListener("keyup", function (e) { if (e.code === "Space" || e.code === "ArrowDown") holding = false; });
   soundBtn.addEventListener("click", function () { soundOn = !soundOn; soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false"); if (masterG) masterG.gain.value = soundOn ? 0.9 : 0; unlock(); });
 
@@ -963,6 +1004,7 @@
   function sndSun() { if (!actx || !soundOn) return; var t = actx.currentTime; glock(ROOT + 24, t, 0.26); glock(ROOT + 28, t + 0.06, 0.2); }
   function sndGrunt() { if (!actx || !soundOn) return; var t = actx.currentTime; var f0 = 150 * (0.9 + Math.random() * 0.25); var o = actx.createOscillator(); o.type = "triangle"; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f0 * 0.58, t + 0.09); var fl = actx.createBiquadFilter(); fl.type = "lowpass"; fl.frequency.value = 480; var g = actx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.055, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0003, t + 0.14); o.connect(fl); fl.connect(g); g.connect(sfxG); o.start(t); o.stop(t + 0.16); }
   function sndTick(n) { if (!actx || !soundOn) return; glock(ROOT + 12 + (3 - n) * 2, actx.currentTime, 0.28); }
+  function sndPaddle() { if (!actx || !soundOn) return; var t = actx.currentTime; var s = actx.createBufferSource(); s.buffer = noiseBuf(0.08); var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 850 + Math.random() * 500; bp.Q.value = 1.3; var g = actx.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.032, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0003, t + 0.09); s.connect(bp); bp.connect(g); g.connect(sfxG); s.start(t); s.stop(t + 0.1); }
   function sndFever() { if (!actx || !soundOn) return; var t = actx.currentTime;[0, 4, 7, 12].forEach(function (d, i) { glock(ROOT + 12 + d, t + i * 0.06, 0.8); }); }
   function sndThud() { if (!actx || !soundOn) return; var t = actx.currentTime; var o = actx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(60, t + 0.18); var g = actx.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + 0.24); o.connect(g); g.connect(sfxG); o.start(t); o.stop(t + 0.26); }
   function sndSplash() { if (!actx || !soundOn) return; var t = actx.currentTime; var s = actx.createBufferSource(); s.buffer = noiseBuf(0.3); var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.setValueAtTime(1600, t); bp.frequency.exponentialRampToValueAtTime(500, t + 0.25); var g = actx.createGain(); g.gain.setValueAtTime(0.14, t); g.gain.exponentialRampToValueAtTime(0.0004, t + 0.3); s.connect(bp); bp.connect(g); g.connect(sfxG); g.connect(wet); s.start(t); s.stop(t + 0.32); }
