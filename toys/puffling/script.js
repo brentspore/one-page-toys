@@ -230,11 +230,22 @@
   // ---- layout ----
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var oldH = H;
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
     BASE = H * 0.36; AMP = H * 0.19; WATER_Y = H * 0.58;
-    if (!keys.length) resetRun();
+    if (!keys.length) { resetRun(); return; }
+    // rotation / viewport change mid-run: every vertical terrain value is proportional to H,
+    // so rescaling the stored world by newH/oldH reproduces exactly what generation would
+    // have produced at the new height (x spacing is absolute and untouched)
+    if (oldH && H !== oldH) {
+      var r = H / oldH;
+      for (var k in gY) gY[k] *= r;
+      for (var i = 0; i < keys.length; i++) keys[i].y *= r;
+      for (var j = 0; j < suns.length; j++) suns[j].y *= r;
+      bird.y *= r; camY *= r; slidePeakY *= r; slideMaxY *= r;
+    }
   }
 
   // ---- physics ----

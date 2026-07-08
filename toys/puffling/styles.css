@@ -204,3 +204,15 @@ html, body {
   .frame__corner--bl { display: none; }
   .frame__corner--tr { display: none; }
 }
+
+/* landscape phones / short viewports: compact card so everything fits without scrolling
+   (kept at the end of the file so it wins the equal-specificity cascade) */
+@media (max-height: 520px) {
+  .overlay { padding: 10px; }
+  .panel { max-width: 620px; padding: 14px 22px 16px; }
+  .panel__title { font-size: clamp(1.6rem, 7vh, 2.1rem); margin-bottom: 2px; }
+  .panel__text { font-size: 0.84rem; line-height: 1.42; margin-bottom: 12px; }
+  .play-btn { padding: 10px 28px; font-size: 0.95rem; }
+  .panel .opt-share { margin-top: 8px; padding: 7px 13px; }
+  .panel-bird { width: 92px; top: -64px; left: -10px; }
+}
