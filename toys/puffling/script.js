@@ -105,7 +105,7 @@
   // wherever it is in world space. world(nc,dc) = nc*n + dc*d.
   function drawStripes(isl, x0, x1) {
     var ang = isl.sang, per = isl.sper, ca = Math.cos(ang), sa = Math.sin(ang);
-    var yTop = BASE - AMP * 1.7, yBot = WATER_Y + H;
+    var yTop = HV * 0.02, yBot = WATER_Y + H * 2;
     var xs = [x0, x1], ys = [yTop, yBot];
     var minN = 1e9, maxN = -1e9, minD = 1e9, maxD = -1e9;
     for (var i = 0; i < 2; i++) for (var j = 0; j < 2; j++) {
@@ -660,9 +660,12 @@
       var bg = ctx.createLinearGradient(0, BASE - AMP, 0, WATER_Y);
       bg.addColorStop(0, hsl(pal.h, pal.s, Math.min(70, pal.l + 12)));
       bg.addColorStop(1, hsl(pal.h, pal.s, Math.max(24, pal.l - 16)));
-      ctx.fillStyle = bg; ctx.fillRect(x0 - 4, BASE - AMP * 1.4, (x1 - x0) + 8, H * 2);
+      // paint from far above the tallest possible peak down past the path bottom (WATER_Y + H):
+      // a fill top that grazes the peak clamp left tall crests with a see-through band under the lip
+      var fillTop = HV * 0.02, fillH = WATER_Y + H * 2 - fillTop;
+      ctx.fillStyle = bg; ctx.fillRect(x0 - 4, fillTop, (x1 - x0) + 8, fillH);
       drawStripes(isl, x0, x1);
-      if (grainPat) { ctx.fillStyle = grainPat; ctx.fillRect(x0 - 4, BASE - AMP * 1.4, (x1 - x0) + 8, H * 2); }
+      if (grainPat) { ctx.fillStyle = grainPat; ctx.fillRect(x0 - 4, fillTop, (x1 - x0) + 8, fillH); }
       // soft inner shadow just under the crest line (depth under the lip)
       ctx.lineJoin = "round"; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(x0, groundY(x0) + 10);

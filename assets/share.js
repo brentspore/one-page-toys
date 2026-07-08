@@ -17,13 +17,13 @@
     var style = document.createElement("style");
     style.id = "opt-share-style";
     style.textContent =
-      ".opt-share{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:9px 16px;" +
-      "border:1px solid rgba(128,128,128,0.35);border-radius:999px;background:transparent;color:inherit;" +
-      "font:inherit;font-size:0.85em;font-weight:700;opacity:0.72;cursor:pointer;" +
+      ".opt-share{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 8px;" +
+      "border:0;background:transparent;color:inherit;" +
+      "font:inherit;font-size:0.82em;font-weight:700;opacity:0.6;cursor:pointer;" +
       "-webkit-tap-highlight-color:transparent;transition:opacity 140ms ease;}" +
-      ".opt-share:hover{opacity:1;}" +
+      ".opt-share:hover{opacity:1;text-decoration:underline;text-underline-offset:3px;}" +
       ".opt-share:focus-visible{outline:2px solid currentColor;outline-offset:2px;opacity:1;}" +
-      ".opt-share svg{width:14px;height:14px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}";
+      ".opt-share svg{width:13px;height:13px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}";
     document.head.appendChild(style);
 
     var btn = document.createElement("button");
