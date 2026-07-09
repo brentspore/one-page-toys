@@ -1,5 +1,25 @@
 [
   {
+    "slug": "rain-stick",
+    "name": "Rain Stick",
+    "shortDescription": "Tip the tube and hundreds of beads cascade past the pins in a soft shower of rain. Tilt your phone or drag to steer the flow, tap to shake, and flip it for the full downpour.",
+    "category": "audio",
+    "tags": [
+      "rain-stick",
+      "rainstick",
+      "beads",
+      "tilt",
+      "device-motion",
+      "granular",
+      "relaxing",
+      "wellness",
+      "interactive"
+    ],
+    "status": "live",
+    "path": "toys/rain-stick/",
+    "related": []
+  },
+  {
     "slug": "marble-machine",
     "name": "Marble Machine",
     "shortDescription": "A marble music machine you program and watch play itself — place pegs on the looping barrel and glass marbles drop onto tuned vibraphone bars in rhythm, then a conveyor lifts them back to the top.",

@@ -162,6 +162,8 @@ const TYPE_NL_PHRASES = {
     "beat maker step sequencer drum machine make music loop rhythm beats grid tap groove melody synth tempo bpm pattern create song producer audio play instrument",
   "marble-machine":
     "marble machine marble music machine wintergatan marble run marble drop vibraphone xylophone kalimba tuned bars pegs barrel programming wheel step sequencer generative music loop rhythm melody pentatonic falling marbles conveyor lift mechanical music box orchestrion make music satisfying hypnotic relaxing physics glass marbles tap to program play",
+  "rain-stick":
+    "rain stick rainstick rain maker rainmaker cactus tube beads pebbles seeds tilt pour cascade shower rainfall rain sound white noise granular asmr calming soothing relaxing meditative wellness sleep sensory fidget desert tilt your phone gyro device motion accelerometer shake flip pins percussion instrument nature ambient",
   "chimp-test":
     "chimp test chimpanzee memory working memory number sequence grid brain training cognitive human benchmark ayumu numbers order recall concentration mental focus iq test smarter than a chimp",
   "sequence-memory":
