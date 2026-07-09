@@ -160,6 +160,8 @@ const TYPE_NL_PHRASES = {
     "falling sand game powder toy cellular automaton sandbox simulation physics sand water fire plant oil stone lava acid ice gunpowder glass gas smoke steam draw elements materials burn flow melt freeze dissolve explode explosion glow heat quench obsidian pixel zen satisfying noita powder game the powder toy sandspiel",
   "beat-maker":
     "beat maker step sequencer drum machine make music loop rhythm beats grid tap groove melody synth tempo bpm pattern create song producer audio play instrument",
+  "marble-machine":
+    "marble machine marble music machine wintergatan marble run marble drop vibraphone xylophone kalimba tuned bars pegs barrel programming wheel step sequencer generative music loop rhythm melody pentatonic falling marbles conveyor lift mechanical music box orchestrion make music satisfying hypnotic relaxing physics glass marbles tap to program play",
   "chimp-test":
     "chimp test chimpanzee memory working memory number sequence grid brain training cognitive human benchmark ayumu numbers order recall concentration mental focus iq test smarter than a chimp",
   "sequence-memory":
@@ -755,10 +757,18 @@ let _pageItems = [];
 let _pageShown = 0;
 let _scrollObserver = null;
 
+// Toy paths in the registry are stored root-relative (e.g. "toys/slug/") so a
+// single string works both from "/" and from "/all-toys/". Anchor them to the
+// site root so gallery links resolve no matter which page is rendering them.
+function toyHref(p) {
+  if (!p) return "#";
+  return (/^(?:[a-z]+:)?\/\//i.test(p) || p.charAt(0) === "/") ? p : "/" + p;
+}
+
 function createCard(tool) {
   const card = document.createElement("a");
   card.className = "card";
-  card.href = tool.path || "#";
+  card.href = toyHref(tool.path);
 
   // Static preview thumbnail — a still glimpse of the toy (CSS-rendered per slug).
   const preview = document.createElement("div");
@@ -952,7 +962,7 @@ function wireRandomButton() {
         toy_category: pick.category || "",
         source: "surprise_me"
       });
-      window.open(pick.path, "_blank", "noopener");
+      window.open(toyHref(pick.path), "_blank", "noopener");
     });
   });
 }
@@ -987,9 +997,9 @@ function renderHomeHero() {
       source: "home_featured"
     });
   }
-  if (linkEl) { linkEl.href = t.path; linkEl.addEventListener("click", go); }
+  if (linkEl) { linkEl.href = toyHref(t.path); linkEl.addEventListener("click", go); }
   if (mediaEl) {
-    mediaEl.href = t.path;
+    mediaEl.href = toyHref(t.path);
     mediaEl.setAttribute("target", "_blank");
     mediaEl.setAttribute("rel", "noopener");
     mediaEl.addEventListener("click", go);
@@ -1060,7 +1070,7 @@ async function loadRegistryAndRender() {
     galleryMode = modeAttr === "home" ? "home" : "all";
     homeFeatured = null;
 
-    const res = await fetch(new URL("tools-registry.json", location.href).toString(), { cache: "no-store" });
+    const res = await fetch("/tools-registry.json", { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to load registry (" + res.status + ")");
     const tools = await res.json();
 
@@ -1113,21 +1123,21 @@ async function loadRegistryAndRender() {
 // (every partner remains a real, crawlable backlink). Blurbs are drafted from
 // each site's own meta description; favicons are hosted locally in assets/partners/.
 var PARTNER_META = {
-  "symmetrygenius.com": { icon: "assets/partners/symmetry-genius.png", blurb: "Drag shapes to solve symmetry puzzles." },
-  "five-second-game.lovable.app": { icon: "assets/partners/five-second-game.png", blurb: "Stop the clock at exactly five seconds." },
-  "globalwar.app": { icon: "assets/partners/global-war.png", blurb: "Turn-based world-domination strategy." },
-  "meshgradientstudio.com": { icon: "assets/partners/mesh-gradient-studio.png?v=2", blurb: "Generate lush mesh gradients, export anywhere." },
-  "buildutilities.com": { icon: "assets/partners/buildutilities.png", blurb: "Tiny, fast utilities for building software." },
-  "thisstuffisamazing.com": { icon: "assets/partners/this-stuff-is-amazing.png", blurb: "Genuinely great picks from trusted voices." },
-  "pollencountgraph.com": { icon: "assets/partners/pollen-count-graph.png", blurb: "Daily pollen counts for your area." },
-  "signalspages.com": { icon: "assets/partners/signals-pages.png", blurb: "Clear buy, hold, or sell signals." },
-  "beautifulinbox.com": { icon: "assets/partners/beautiful-inbox.png", blurb: "Write better emails that get opened." },
-  "superchargedemail.com": { icon: "assets/partners/supercharged-email.png", blurb: "Done-for-you email tools and campaigns." },
-  "joinmymailinglist.com": { icon: "assets/partners/joinmymailinglist.png", blurb: "Build signup forms, grow your list." },
-  "bizonlinekit.com": { icon: "assets/partners/biz-online-kit.png", blurb: "Get your small business online, right." },
-  "docpreptalk.com": { icon: "assets/partners/docpreptalk.png", blurb: "Prep for your next doctor visit." },
-  "actionguide.us": { icon: "assets/partners/action-guide-us.png", blurb: "Real actions to defend democracy today." },
-  "designisnotui.com": { icon: "assets/partners/design-is-not-ui.png", blurb: "Why judgment matters more than pixels." }
+  "symmetrygenius.com": { icon: "/assets/partners/symmetry-genius.png", blurb: "Drag shapes to solve symmetry puzzles." },
+  "five-second-game.lovable.app": { icon: "/assets/partners/five-second-game.png", blurb: "Stop the clock at exactly five seconds." },
+  "globalwar.app": { icon: "/assets/partners/global-war.png", blurb: "Turn-based world-domination strategy." },
+  "meshgradientstudio.com": { icon: "/assets/partners/mesh-gradient-studio.png?v=2", blurb: "Generate lush mesh gradients, export anywhere." },
+  "buildutilities.com": { icon: "/assets/partners/buildutilities.png", blurb: "Tiny, fast utilities for building software." },
+  "thisstuffisamazing.com": { icon: "/assets/partners/this-stuff-is-amazing.png", blurb: "Genuinely great picks from trusted voices." },
+  "pollencountgraph.com": { icon: "/assets/partners/pollen-count-graph.png", blurb: "Daily pollen counts for your area." },
+  "signalspages.com": { icon: "/assets/partners/signals-pages.png", blurb: "Clear buy, hold, or sell signals." },
+  "beautifulinbox.com": { icon: "/assets/partners/beautiful-inbox.png", blurb: "Write better emails that get opened." },
+  "superchargedemail.com": { icon: "/assets/partners/supercharged-email.png", blurb: "Done-for-you email tools and campaigns." },
+  "joinmymailinglist.com": { icon: "/assets/partners/joinmymailinglist.png", blurb: "Build signup forms, grow your list." },
+  "bizonlinekit.com": { icon: "/assets/partners/biz-online-kit.png", blurb: "Get your small business online, right." },
+  "docpreptalk.com": { icon: "/assets/partners/docpreptalk.png", blurb: "Prep for your next doctor visit." },
+  "actionguide.us": { icon: "/assets/partners/action-guide-us.png", blurb: "Real actions to defend democracy today." },
+  "designisnotui.com": { icon: "/assets/partners/design-is-not-ui.png", blurb: "Why judgment matters more than pixels." }
 };
 function partnerHost(url) {
   try { return new URL(url, window.location.href).hostname.replace(/^www\./, ""); }

@@ -1,5 +1,25 @@
 [
   {
+    "slug": "marble-machine",
+    "name": "Marble Machine",
+    "shortDescription": "A marble music machine you program and watch play itself — place pegs on the looping barrel and glass marbles drop onto tuned vibraphone bars in rhythm, then a conveyor lifts them back to the top.",
+    "category": "audio",
+    "tags": [
+      "marble-machine",
+      "music-machine",
+      "step-sequencer",
+      "vibraphone",
+      "marbles",
+      "generative-music",
+      "pentatonic",
+      "relaxing",
+      "interactive"
+    ],
+    "status": "live",
+    "path": "toys/marble-machine/",
+    "related": []
+  },
+  {
     "slug": "puffling",
     "name": "Puffling",
     "shortDescription": "A one-touch hill glider — hold to dive down the slopes and slingshot off the crests, chain perfect slides into a fever streak, and glide across candy-striped islands before the sun sets.",

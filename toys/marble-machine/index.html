@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Marble Machine — One Page Toys</title>
+    <meta name="description" content="A marble music machine you program and watch play itself. Place pegs on the looping barrel and glass marbles drop onto tuned vibraphone bars in rhythm, then a conveyor carries them back to the top. Warm, hypnotic, endlessly loopable. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/marble-machine/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0b0a0d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Marble Machine — One Page Toys" />
+    <meta property="og:description" content="Program the looping barrel and watch glass marbles drop onto tuned vibraphone bars in rhythm — then a conveyor lifts them back up. A warm, hypnotic marble music machine." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/marble-machine/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/marble-machine.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Marble Machine — One Page Toys" />
+    <meta name="twitter:description" content="Program the looping barrel and watch glass marbles drop onto tuned vibraphone bars in rhythm — then a conveyor lifts them back up. A warm, hypnotic marble music machine." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/marble-machine.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Marble Machine",
+        "url": "https://onepagetoys.com/toys/marble-machine/",
+        "description": "A marble music machine you program in the browser — place pegs on the looping barrel and glass marbles drop onto tuned vibraphone bars in rhythm, then a conveyor carries them back to the top. Pentatonic-tuned, fully synthesized.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas and Web Audio.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="controls" id="controls">
+      <button type="button" class="ctrl-btn ctrl-btn--play" id="playBtn" aria-pressed="false"><span class="lbl">Play</span></button>
+      <div class="ctrl-tempo">
+        <button type="button" class="ctrl-step" id="tempoDown" aria-label="Slower">−</button>
+        <span class="ctrl-bpm"><b id="bpm">96</b> bpm</span>
+        <button type="button" class="ctrl-step" id="tempoUp" aria-label="Faster">+</button>
+      </div>
+      <button type="button" class="ctrl-btn" id="scaleBtn">Major</button>
+      <button type="button" class="ctrl-btn" id="randBtn">Shuffle</button>
+      <button type="button" class="ctrl-btn" id="clearBtn">Clear</button>
+      <button type="button" class="ctrl-btn" id="soundBtn" aria-pressed="false">Sound: on</button>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 070</span>
+      <span class="frame__corner frame__corner--tr">Marble Machine</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint">tap the grid to place pegs &mdash; press play &mdash; drag the wood to swivel</p>
+
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>
