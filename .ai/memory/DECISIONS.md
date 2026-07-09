@@ -154,3 +154,17 @@ Standing principle: **each release should feel a notch more polished than the la
 **Decision:** Every toy — especially full-bleed canvas toys — MUST set `-webkit-tap-highlight-color: transparent` on `html, body` (it inherits page-wide on iOS), and interactive canvases should also get `-webkit-touch-callout: none` + `user-select: none`/`-webkit-user-select: none`. Applied to all 63 toys in `main 38e732d`; the copy-a-recent-toy template now carries it forward.
 
 **Why:** iOS Safari paints its translucent blue-grey tap highlight over the WHOLE tapped element. On a full-screen canvas that's a blue wash over the entire game on every press/release (Puffling bug, 2026-07-07 — read as a "scrim toggling off" at each PERFECT because taps cluster at crests). Desktop never shows it, and neither does headless Chromium — so it survives normal verification. Playwright's WebKit (`npx playwright install webkit`) is the closest reproducible check; the computed-style assert (`getComputedStyle(body).webkitTapHighlightColor === "rgba(0, 0, 0, 0)"`) is the cheap regression test.
+
+---
+
+### 2026-07-08 — Push gate + commit exclusions (promoted from session-summary folklore)
+
+**Context:** Two standing constraints lived only in Claude Code compaction summaries ("STANDING CONSTRAINT (CRITICAL, preserve verbatim)") — fragile, since summaries don't survive into fresh sessions on other machines.
+
+**Decision:**
+1. **Only commit/push when the owner explicitly says "push".** A passing build/test is not permission; iterate locally between pushes.
+2. **Exclude `.claude/settings.json` from every commit.** Stage deliberately; never blanket `git add -A`.
+
+**Rationale:** "push" is the owner's approval signal (his most-used command). Codifying here makes the rule survive any session, machine, or tool — instead of depending on summary carry-over.
+
+**Revisit if:** The owner changes the deploy gate, or `.claude/settings.json` stops being machine-local.

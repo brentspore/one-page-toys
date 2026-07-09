@@ -15,13 +15,14 @@ this file when they disagree, and note `project.md` here is from the pre-2026-06
 
 ## Current state
 
-**Last updated:** 2026-07-08 (memory compression only — no site changes) · **Latest pushed site commit:** `main 7fcce94` · **69 toys live** at onepagetoys.com.
+**Last updated:** 2026-07-08 · **Latest pushed site commit:** `main b97eedd` · **70 toys live** at onepagetoys.com.
 
-- Latest shipped round (`7fcce94`, 2026-07-07): Puffling clean shorelines (lip ends flush, island edges taper underwater) + notch-safe tip-jar/fullscreen buttons via safe-area `env()` insets across all 69 toys+tools (`tip-jar.js?v=10`/`fullscreen.js?v=3`).
-- Prior round (`7375602`): clean directory URLs site-wide (`onepagetoys.com/toys/<slug>/` canonicals/OG/JSON-LD/sitemap/registry) + Puffling mobile perf (popup sprites, DPR cap 1.75, water-layer skip).
-- Uncommitted in the working tree: an unreviewed edit to `.ai/memory/DECISIONS.md` from a prior session (left unstaged during the 2026-07-08 memory compression; review before committing).
+- Latest shipped round (`b97eedd`, 2026-07-08): **NEW 070 Marble Machine** (`toys/marble-machine/`, category `audio`) — programmable marble music machine: 8-lane × 16-step peg barrel → glass marbles fall onto tuned vibraphone bars (impact = the note) → bucket-lift returns them to the reservoir. Vibraphone voice on the Tongue-Drum bus (motor tremolo LFO, convolver hall, tempo-synced echo), Major/Minor/Akebono, pattern/bpm/scale in localStorage. **Presentation is pseudo-3D**: perspective projection (`proj`/`toPlane` in script.js), cabinet = deep shadowbox (back panel z=-55, face z=+25) with interior reveals/side walls/parallax, idle ±10° sway (16s cycle; pauses while editing), drag-the-wood manual swivel (±17°), taps inverse-projected, reduced-motion = static angle. Rendering = column-strip warp of two flat textures (yaw-only rotation keeps verticals vertical, so per-column strips are exact) + individually projected dynamics.
+- Same commit, owner-requested hub refactor: **virtual URLs** — nav/footer link `/` and `/all-toys/`; `all-toys/index.html` is a real directory page; `main.js` toy links (`toyHref()`), registry fetch (`/tools-registry.json`), and partner icons are root-relative; old `all-toys.html` = redirect stub (noindex). Versions: hub `styles.css?v=79` / `main.js?v=68`, toy `script.js?v=2`, card `?v=2`.
+- Audio note: tuned by first principles only — the owner had not play-tested sound on real hardware at push time; expect a tremolo/reverb tuning round.
+- Playwright gotcha (learned on the card shoot): force-clicking a `visibility:hidden` button silently hits the canvas underneath — use DOM `el.click()` via `evaluate` when chrome is hidden for screenshots.
 
-**Next step:** Fresh owner priorities. Backlog: Alto's-style sandboarder (marked `next`), LinkedIn-Zip-style daily path puzzle (queued). See `.ai/memory/BACKLOG.md`.
+**Next step:** Owner audio/feel feedback on Marble Machine. Backlog: Alto's-style sandboarder (marked `next`), LinkedIn-Zip-style daily path puzzle (queued). See `.ai/memory/BACKLOG.md`.
 
 ## ⚠ Live conventions (accreted from builds — bake into every new toy)
 
