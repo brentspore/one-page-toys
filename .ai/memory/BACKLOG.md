@@ -71,9 +71,11 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Marble Music Machine
 
+**Status:** done
+
 **Why it matters:** Wintergatan-style magic — marbles drop onto tuned bars and the machine plays a melody: physics + music in one loop, hypnotic to watch and inherently viral. The strongest audio idea on this list. Category `audio` (flagship).
 
-**When to revisit:** Next audio round when there's appetite for a medium-large build.
+**When to revisit:** SHIPPED 2026-07-08 as **070 Marble Machine** (`main b97eedd`, live) — a pseudo-3D swaying/swivelable cabinet: peg barrel → glass marbles strike tuned vibraphone bars → bucket-lift return; Tongue-Drum audio bus, pentatonic scales. Only open thread: an owner audio play-test / tuning round (tremolo + reverb).
 
 **Notes:** AI suggestion (2026-07-05). A marble dropper on a loop timer releases marbles down pegs/ramps onto a row of tuned vibraphone bars (pentatonic — everything sounds good); the player edits the machine: drag gates/ramps to route marbles, toggle drop columns per loop step (a physical step-sequencer). Marble hits = the note; visual bar shimmer + marble bounce physics (reuse Marble Drop's collision knowledge). Tempo control; maybe 2 marble sizes = 2 octaves. Audio bar fully loaded: warm vibraphone/kalimba-family synthesis (reverb+delay bus), wooden ramp rolls, marble clacks. Real card + OG; full pipeline.
 ---
