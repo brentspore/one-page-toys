@@ -353,9 +353,11 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Rain Stick
 
+**Status:** done
+
 **Why it matters:** Tip it and a thousand beads cascade — tactile, calming, and a rare *device-motion* toy (gyro tilt on mobile). Category `audio`/wellness.
 
-**When to revisit:** Quick-ish audio round; motion-permission UX needs care (iOS requires a user-gesture permission prompt).
+**When to revisit:** SHIPPED 2026-07-08 as **071 Rain Stick** (`main 35dd2de`, live) — glass tube of ~460 beads bouncing down ~123 thorns onto the low end; drag / device-motion tilt / Flip; sleep-system physics (settles to true silence); granular bead-shower audio. Only open thread: owner real-device test of audio timbre + gyro `gyroSign` mapping (drag works everywhere regardless).
 
 **Notes:** AI suggestion (2026-07-05). A long transparent-ish tube of beads; tilt via device orientation (with a drag-to-tilt fallback on desktop) — beads tumble past internal pins with granular bead-shower synthesis (density/pitch follows flow rate + tilt angle); full invert = the big satisfying cascade. Design: warm wood/woven tube, bead sparkle, soft desert-evening backdrop. iOS `DeviceOrientationEvent.requestPermission` behind a tap; graceful desktop mode. Real card + OG; full pipeline.
 ---
