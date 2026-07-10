@@ -37,7 +37,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Alto's-Adventure-style trick sandboarder
 
-**Status:** next
+**Status:** done — shipped 2026-07-09 as **073 Alpenglow** (`toys/alpenglow/`, commit `826e219`)
 
 **Why it matters:** A beautiful, flowy endless-runner with genuine trick depth and a famously gorgeous, moody art direction — exactly the kind of high-design-bar experience that shows off the site and photographs stunningly for card/OG. `game`/`arcade`, cozy-but-skillful lane. Strong viral/replay potential (score chase + "one more run").
 
