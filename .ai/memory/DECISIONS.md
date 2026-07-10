@@ -18,7 +18,7 @@ If a decision should apply across multiple projects, record it in `~/.ai/memory/
 
 **Revisit if:** What would make this worth reconsidering.
 
-### 2026-06-11 — AI-tool agnostic repo (no tool-specific config files)
+### 2026-06-11 — AI-tool agnostic repo (no tool-specific config files) — SUPERSEDED in part
 
 **Context:** Claude Code suggested adding a `CLAUDE.md` to persist project context across environments.
 
@@ -27,6 +27,8 @@ If a decision should apply across multiple projects, record it in `~/.ai/memory/
 **Rationale:** Keeps the repo agnostic to whichever AI assistant is in use. `.ai/memory/` travels with the code and works with any tool that follows the AI.md convention.
 
 **Revisit if:** A specific tool offers capabilities that genuinely require its own config and there's no agnostic equivalent.
+
+**Update (2026-07-10, owner-approved reconcile):** The "revisit" condition was met: Claude Code auto-loads only a root `CLAUDE.md`, and the 2026-06-22 global session-resumable rule plus the 2026-07-10 lean-session-loading decision made that file the standard project-memory entry point across the portfolio. A thin root `CLAUDE.md` that only `@`-imports `.ai/memory/` files is therefore allowed (this repo has had one since 2026-06-22). The core principle stands unchanged: no durable memory in tool-specific files — `.ai/memory/` remains canonical, and other tool dirs (`.claude/`, `.cursor/`) stay out of the repo.
 
 ---
 
