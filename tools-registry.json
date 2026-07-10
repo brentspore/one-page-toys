@@ -1,5 +1,26 @@
 [
   {
+    "slug": "sky-fortress",
+    "name": "Sky Fortress",
+    "shortDescription": "Fly a starfighter diagonally over a floating 3D fortress — climb and dive over the walls (your shadow shows your true height), duck the force fields, blast turrets and drones, and shoot fuel silos to keep flying.",
+    "category": "game",
+    "tags": [
+      "sky-fortress",
+      "zaxxon",
+      "isometric",
+      "shooter",
+      "arcade",
+      "3d",
+      "space",
+      "flying",
+      "score-chase",
+      "drag"
+    ],
+    "status": "live",
+    "path": "toys/sky-fortress/",
+    "related": []
+  },
+  {
     "slug": "rain-stick",
     "name": "Rain Stick",
     "shortDescription": "Tip the tube and hundreds of beads cascade past the pins in a soft shower of rain. Tilt your phone or drag to steer the flow, tap to shake, and flip it for the full downpour.",

@@ -160,6 +160,8 @@ const TYPE_NL_PHRASES = {
     "falling sand game powder toy cellular automaton sandbox simulation physics sand water fire plant oil stone lava acid ice gunpowder glass gas smoke steam draw elements materials burn flow melt freeze dissolve explode explosion glow heat quench obsidian pixel zen satisfying noita powder game the powder toy sandspiel",
   "beat-maker":
     "beat maker step sequencer drum machine make music loop rhythm beats grid tap groove melody synth tempo bpm pattern create song producer audio play instrument",
+  "sky-fortress":
+    "sky fortress zaxxon isometric shooter scroll shooter shmup space fortress starfighter spaceship altitude climb dive shadow force field electric barrier fuel silos turrets drones lasers pew pew arcade retro 80s sega webgl real 3d axonometric diagonal flying shooting game score chase dodge one hit endless runner gradius",
   "marble-machine":
     "marble machine marble music machine wintergatan marble run marble drop vibraphone xylophone kalimba tuned bars pegs barrel programming wheel step sequencer generative music loop rhythm melody pentatonic falling marbles conveyor lift mechanical music box orchestrion make music satisfying hypnotic relaxing physics glass marbles tap to program play",
   "rain-stick":

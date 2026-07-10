@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Sky Fortress — One Page Toys</title>
+    <meta name="description" content="Pilot a lone starfighter over a floating fortress in this real-3D isometric scroll-shooter. Climb and dive to clear the walls — your shadow shows your true height — thread the force fields, blast turrets, and shoot fuel silos to keep flying. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/sky-fortress/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#04050d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Sky Fortress — One Page Toys" />
+    <meta property="og:description" content="A real-3D isometric scroll-shooter — pilot a starfighter over a floating space fortress, use your shadow to judge altitude, thread the force fields, and keep your fuel tanks full." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/sky-fortress/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/sky-fortress.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sky Fortress — One Page Toys" />
+    <meta name="twitter:description" content="Pilot a starfighter over a floating space fortress — climb over walls, thread force fields, blast turrets, and chase your best run." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/sky-fortress.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Sky Fortress",
+        "url": "https://onepagetoys.com/toys/sky-fortress/",
+        "description": "A real-3D isometric scroll-shooter in the browser — pilot a starfighter diagonally across a floating space fortress, climbing and diving over walls (your cast shadow shows your true altitude), threading electric force fields, blasting turrets and drones, and shooting fuel silos to keep your tanks full.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires WebGL and Web Audio.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+  <body>
+    <canvas id="canvas" aria-label="A starfighter flying over a floating 3D fortress"></canvas>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+    <div class="hud" id="hud">
+      <span class="hud__score" id="score">0</span>
+      <span class="hud__best" id="best">Best —</span>
+    </div>
+
+    <div class="fuel" id="fuelWrap" aria-hidden="true">
+      <span class="fuel__label">Fuel</span>
+      <span class="fuel__track"><span class="fuel__bar" id="fuelBar"></span></span>
+    </div>
+
+    <div class="alt" id="altWrap" aria-hidden="true">
+      <span class="alt__label">Alt</span>
+      <span class="alt__track"><span class="alt__marker" id="altMarker"></span></span>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <h1 class="panel__title" id="ovTitle">Sky Fortress</h1>
+        <p class="panel__text" id="ovText">Pilot a starfighter over a fortress floating in deep space. Drag anywhere — or use the arrow keys — to steer and climb or dive; <span class="stat">your shadow on the deck shows your true height</span>. Clear the walls, thread the force fields, blast turrets and drones, and shoot the glowing fuel silos to keep your tanks full. One hit ends the run.</p>
+        <button type="button" class="play-btn" id="ovBtn">Launch</button>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 072</span>
+      <span class="frame__corner frame__corner--tr">Sky Fortress</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag to fly · climb over walls · shoot the green silos for fuel</p>
+
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=2" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>
