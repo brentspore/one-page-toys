@@ -1,5 +1,26 @@
 [
   {
+    "slug": "alpenglow",
+    "name": "Alpenglow",
+    "shortDescription": "An endless trick sandboarder in a living mountain dusk — press to jump, hold to backflip, release to land clean. Chain flips and rail grinds into combos for bursts of speed while day melts into night around you.",
+    "category": "game",
+    "tags": [
+      "alpenglow",
+      "alto",
+      "snowboard",
+      "endless-runner",
+      "tricks",
+      "one-touch",
+      "arcade",
+      "relaxing",
+      "day-night",
+      "score-chase"
+    ],
+    "status": "live",
+    "path": "toys/alpenglow/",
+    "related": []
+  },
+  {
     "slug": "sky-fortress",
     "name": "Sky Fortress",
     "shortDescription": "Fly a starfighter diagonally over a floating 3D fortress — climb and dive over the walls (your shadow shows your true height), duck the force fields, blast turrets and drones, and shoot fuel silos to keep flying.",

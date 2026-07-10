@@ -286,6 +286,15 @@ body::after {
   .hint { font-size: 0.64rem; }
 }
 
+/* short landscape phones: compact the overlay so nothing clips */
+@media (max-height: 520px) {
+  .overlay { padding: 12px; overflow-y: auto; }
+  .panel { max-width: min(640px, calc(100vw - 132px)); padding: 14px 26px 16px; border-radius: 18px; }
+  .panel__title { font-size: clamp(1.6rem, 9vh, 2.4rem); padding-bottom: 0.1em; margin-bottom: 2px; }
+  .panel__text { font-size: 0.85rem; line-height: 1.42; margin-bottom: 12px; }
+  .play-btn { padding: 10px 34px; font-size: 0.95rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fuel.is-low .fuel__bar { animation: none; }
   .panel { animation: none; }
