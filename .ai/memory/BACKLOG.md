@@ -55,6 +55,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Zaxxon-style isometric scroll-shooter
 
+**Status:** done — shipped 2026-07-09 as **072 Sky Fortress** (`toys/sky-fortress/`, commit `6a0af84`)
+
 **Why it matters:** A distinctive, nostalgic **isometric axonometric shooter** — nothing in the gallery uses a diagonal iso view or an altitude axis, so it stands out hard and photographs beautifully for a card/OG (the diagonal grid + long shadows are instantly recognizable). Score-chasey, arcade/viral lane, endlessly replayable. A natural fit for the repo's **single-file raw-WebGL** direction (Newton's Cradle / Dice Roller precedent + the DECISIONS "use 3D when it genuinely elevates the toy" rule): the whole appeal of Zaxxon IS the depth, so **real 3D earns its keep here** — this should be a showcase-quality 3D toy, not a flat iso fake.
 
 **When to revisit:** Next fun/arcade toy round, when there's appetite for a higher-effort 3D showpiece. More work than a flat toy (real-3D WebGL) — but the scaffolding already exists (Newton's Cradle / Dice Roller: mat4/quaternion libs, program/shader helpers, ACES surf shader, camera-relative light, dynamic scene, bloom RT). The meat = a fixed axonometric-feel 3D camera, batched scrolling fortress-block rendering + real ground shadows, the altitude/shadow read, and collision; scope the camera + the "clear the wall at the right height" mechanic first.
