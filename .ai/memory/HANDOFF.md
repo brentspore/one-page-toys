@@ -22,7 +22,7 @@ this file when they disagree, and note `project.md` here is from the pre-2026-06
 - Prior rounds: **071 Rain Stick** (`35dd2de`, tilt-and-pour granular rain; sleep-system physics; real-device audio + gyro test STILL OPEN — `gyroSign` may need flipping, drag works everywhere) · **070 Marble Machine** (`b97eedd`, pseudo-3D programmable marble music machine + virtual-URL hub refactor; audio play-test still open). Full detail: [archive/HANDOFF-archive-2026-07-08.md](archive/HANDOFF-archive-2026-07-08.md) + git log.
 - Playwright gotchas: force-clicking a `visibility:hidden` button silently hits the canvas underneath — use DOM `el.click()` via `evaluate` when chrome is hidden. Headless sim time vs wall time diverge (pumped rAF runs fast; setTimeout stays real) — probe internal state via a temp debug hook instead of comparing screenshots taken at different wall-times.
 
-**Next step:** Owner real-device (phone) pass on Alpenglow — touch feel + audio by ear. Rain Stick audio/gyro + Marble Machine audio real-device tests also still open. Backlog: LinkedIn-Zip-style daily path puzzle (queued next). See `.ai/memory/BACKLOG.md`.
+**Next step:** Owner real-device (phone) pass on Alpenglow — touch feel + audio by ear. Rain Stick audio/gyro + Marble Machine audio real-device tests also still open. Backlog: The Trail Game feeder toy — the daily path puzzle shipped as its own property (thetrailgame.com, repo `the-trail-game`); a stripped play+share version is queued here, gated on that site going live. See `.ai/memory/BACKLOG.md`.
 
 ## ⚠ Live conventions (accreted from builds — bake into every new toy)
 
