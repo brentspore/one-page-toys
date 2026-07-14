@@ -9,6 +9,17 @@
   var ctx = canvas.getContext("2d");
   var hintEl = document.querySelector(".hint");
   var bestChip = document.getElementById("bestChip");
+  var ctaEl = document.getElementById("pcCta");
+
+  // Reveal the on-canvas share + more-games strip once the first score lands,
+  // then leave it pinned to the bottom (no per-stroke flicker).
+  function revealCta(score) {
+    if (typeof score === "number") {
+      window.OPT_SHARE_TEXT = "I scored " + score.toFixed(1) +
+        "% on Perfect Circle — can you draw a rounder circle?";
+    }
+    if (ctaEl) ctaEl.classList.add("is-shown");
+  }
 
   var W, H, DPR, CX, CY;
   function resize() {
@@ -93,6 +104,7 @@
     r.label = labelFor(r.score);
     r.isBest = (best == null || r.score > best + 0.05);
     result = r; shown = 0;
+    revealCta(r.score);
     if (r.isBest) {
       best = r.score;
       try { localStorage.setItem("pc_best", String(best)); } catch (e) {}

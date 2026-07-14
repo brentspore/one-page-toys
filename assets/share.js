@@ -30,7 +30,9 @@
   }
 
   function init() {
-    var panel = document.querySelector("#overlay .panel");
+    // Mount into an explicit [data-opt-share] host if a toy provides one
+    // (e.g. an on-canvas result strip), else the standard overlay panel.
+    var panel = document.querySelector("[data-opt-share]") || document.querySelector("#overlay .panel");
     if (!panel || document.getElementById("opt-share-style")) return;
 
     var style = document.createElement("style");
