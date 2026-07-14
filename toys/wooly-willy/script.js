@@ -8,9 +8,10 @@
 
   // ---- TUNABLES -----------------------------------------------------------
   var N = 3400;             // number of iron filings
-  var R_FRAC = 0.115;       // magnet field radius (fraction of min screen dim)
+  var R_FRAC = 0.135;       // magnet field radius (fraction of min screen dim)
   var CORE = 12;            // wand-tip indicator radius
-  var PULL = 1.5;           // attraction accel near the wand (px/frame^2)
+  var PULL = 2.1;           // attraction accel near the wand (px/frame^2)
+  var CARRY = 0.92;         // how strongly near filings ride along with the wand's motion
   var FRICTION = 0.62;      // filing velocity retention (heavy = they settle fast)
   var SLIVER = 5;           // filing length (px, scaled)
   // -------------------------------------------------------------------------
@@ -64,18 +65,26 @@
   }
 
   // ---- simulation ---------------------------------------------------------
-  var pressing = false, mx = 0, my = 0, moveAmt = 0;
+  var pressing = false, mx = 0, my = 0, pmx = 0, pmy = 0, mvx = 0, mvy = 0, moveAmt = 0;
   function simulate() {
     var R = scale * R_FRAC, R2 = R * R;
+    // how far the wand moved this frame — near filings ride along with it (grab & carry)
+    mvx = mx - pmx; mvy = my - pmy; pmx = mx; pmy = my;
     var dragged = 0;
     for (var i = 0; i < N; i++) {
       if (pressing) {
         var dx = mx - fx[i], dy = my - fy[i], d2 = dx * dx + dy * dy;
         if (d2 < R2) {
           var d = Math.sqrt(d2) + 0.001;
-          var pull = PULL * (1 - d / R);        // pure attraction, stronger near the wand
+          var t = 1 - d / R;                    // 0 at the field edge → 1 at the wand
+          var pull = PULL * t;                  // attraction, stronger near the wand
           fvx[i] += (dx / d) * pull;
           fvy[i] += (dy / d) * pull;
+          // carry: the closer to the wand, the more the filing inherits its motion,
+          // so a drag sweeps the whole clump instead of leaving it behind
+          var carry = CARRY * t * t;
+          fvx[i] += mvx * carry;
+          fvy[i] += mvy * carry;
           fang[i] = Math.atan2(dy, dx);         // slivers align to the pole (field lines)
           dragged++;
         }
@@ -182,7 +191,7 @@
   function frame(ts) { lastTs = ts; simulate(); if (pressing) shimmer(moveAmt); render(); requestAnimationFrame(frame); }
 
   // ---- input --------------------------------------------------------------
-  function pdown(x, y) { unlock(); pressing = true; mx = x; my = y; if (hintEl) hintEl.classList.add("is-hidden"); }
+  function pdown(x, y) { unlock(); pressing = true; mx = pmx = x; my = pmy = y; if (hintEl) hintEl.classList.add("is-hidden"); }
   function pmove(x, y) { mx = x; my = y; }
   function pup() { pressing = false; if (shGain && actx) shGain.gain.setTargetAtTime(0, actx.currentTime, 0.05); }
   canvas.addEventListener("mousedown", function (e) { pdown(e.clientX, e.clientY); });
