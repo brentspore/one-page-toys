@@ -14,7 +14,7 @@
       gtag('config', 'G-VBVJ93GL8L');
     </script>
     <title>Mini Golf — One Page Toys</title>
-    <meta name="description" content="Sink the putt — drag to aim and set power, bank off the walls and bumpers, and chase a hole-in-one across an endless course. Free, no sign-up." />
+    <meta name="description" content="Sink the putt — drag to aim and set power, bank off the walls and bumpers, and play all 18 holes to an epic par-5 finale. Free, no sign-up." />
     <link rel="canonical" href="https://onepagetoys.com/toys/mini-golf/" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#14663a" />
@@ -38,7 +38,7 @@
         "@type": "WebApplication",
         "name": "Mini Golf",
         "url": "https://onepagetoys.com/toys/mini-golf/",
-        "description": "A one-hole putt-putt — drag to aim and set power, bank off walls and bumpers, and sink the ball across an endless course.",
+        "description": "An 18-hole putt-putt — drag to aim and set power, bank off walls and bumpers, and sink the ball across the course to an epic par-5 finale.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
@@ -56,7 +56,7 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=2" />
+    <link rel="stylesheet" href="styles.css?v=5" />
   </head>
   <body>
     <canvas id="canvas"></canvas>
@@ -65,11 +65,15 @@
       <span class="hud__pill" id="holePill">Hole 1</span>
       <span class="hud__pill" id="strokePill">Strokes 0</span>
       <span class="hud__pill" id="parPill">Par 3</span>
+      <span class="hud__pill" id="scorePill">Total —</span>
     </div>
 
     <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
 
     <div class="toast" id="toast" hidden></div>
+
+    <!-- designed hole / daily-course intro placard (populated by script.js) -->
+    <div class="holecard" id="holeCard" aria-hidden="true"></div>
 
     <div class="frame" aria-hidden="true">
       <span class="frame__corner frame__corner--tl">No. 057</span>
@@ -79,9 +83,20 @@
 
     <p class="hint" id="hint">drag back from the ball to aim &amp; set power — release to putt</p>
 
-    <script src="script.js?v=2" defer></script>
+    <!-- Course-complete scorecard (after 18 holes). More Games + Share auto-mount here. -->
+    <div class="overlay is-hidden" id="overlay" hidden>
+      <div class="panel">
+        <h1 class="panel__title" id="ovTitle">Clubhouse!</h1>
+        <p class="panel__text" id="ovText"></p>
+        <button type="button" class="play-btn" id="ovBtn">Play again</button>
+        <p class="panel__best" id="ovBest"></p>
+      </div>
+    </div>
+
+    <script src="script.js?v=8" defer></script>
     <script src="../../assets/tip-jar.js?v=10" defer></script>
     <script src="../../assets/fullscreen.js?v=3" defer></script>
     <script src="../../assets/more-games.js?v=4" defer></script>
+    <script src="../../assets/share.js?v=4" defer></script>
   </body>
 </html>

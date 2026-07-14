@@ -91,7 +91,7 @@ const TYPE_NL_PHRASES = {
   "theremin":
     "theremin electronic instrument music play pitch volume glide slide sine wave synth synthesizer oscillator vibrato portamento oscilloscope waveform antenna sci fi spooky eerie ethereal ondes martenot untouchable gesture hand wave make music note scale",
   "mini-golf":
-    "mini golf minigolf putt putt putting green golf ball hole cup flag aim power drag bank bumpers walls strokes par sports arcade course top down putter casual game relaxing physics",
+    "mini golf minigolf putt putt putting green golf ball hole cup flag aim power drag bank bumpers walls strokes par sports arcade course top down putter casual game relaxing physics 18 holes windmill water hazard splash sand trap bunker slope hill terrain kicker bumper mushroom tunnel culvert day night gold summit birdie eagle ace hole in one wii sports golf its always sunny putt-putt crazy golf adventure golf",
   "murmuration":
     "murmuration starlings flock birds boids flocking swarm swirl swirling dusk sky sunset silhouette formation shapes nature calming mesmerizing hypnotic relaxing sensory visual simulation cursor herd scatter school of fish",
   "blackjack":

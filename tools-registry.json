@@ -314,7 +314,7 @@
   {
     "slug": "mini-golf",
     "name": "Mini Golf",
-    "shortDescription": "Drag back to aim and set your power, then putt across a top-down green—bank off walls and bumpers to sink the cup in as few strokes as you can.",
+    "shortDescription": "An 18-hole mini golf course—sloped greens you read like real terrain, windmills, water hazards, sand traps and kicker bumpers, ending on a gold par-5 summit.",
     "category": "game",
     "tags": [
       "mini-golf",
@@ -323,7 +323,12 @@
       "aim",
       "physics",
       "putting",
-      "casual"
+      "casual",
+      "windmill",
+      "water-hazard",
+      "course",
+      "arcade",
+      "relaxing"
     ],
     "status": "live",
     "path": "toys/mini-golf/",
