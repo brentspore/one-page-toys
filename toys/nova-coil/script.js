@@ -91,10 +91,20 @@
     var t = (sv - s[lo]) / ((s[hi] - s[lo]) || 1), a = track.pts[lo], b = track.pts[hi];
     return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
   }
-  function nearestS(x, y) {
-    var best = 0, bd = 1e9, p = track.pts, s = track.s;
-    for (var i = 0; i < p.length; i += 2) { var dx = p[i].x - x, dy = p[i].y - y, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = i; } }
-    return s[best];
+  // Nearest arc-length to (x,y) but ONLY within `win` of `sc`. The spiral loops back on
+  // itself, so a global nearest-point search can snap a shot onto an arm far ahead of the
+  // ball it actually struck (making it the new leader and yanking the whole chain toward
+  // the core). Localising to the neighbourhood of the hit ball keeps insertion where the
+  // collision happened.
+  function nearestSNear(x, y, sc, win) {
+    var best = sc, bd = 1e9, p = track.pts, s = track.s;
+    for (var i = 0; i < p.length; i++) {
+      var si = s[i];
+      if (si < sc - win || si > sc + win) continue;
+      var dx = p[i].x - x, dy = p[i].y - y, d = dx * dx + dy * dy;
+      if (d < bd) { bd = d; best = si; }
+    }
+    return best;
   }
 
   function resize() {
@@ -230,7 +240,7 @@
       for (var j = 0; j < chain.length; j++) { var cp = posAt(chain[j].s), dx = cp.x - pr.x, dy = cp.y - pr.y; if (dx * dx + dy * dy < hd) { hit = j; break; } }
       var off = pr.x < -40 || pr.x > W + 40 || pr.y < -40 || pr.y > H + 40;
       if (hit >= 0) {
-        var sv = nearestS(pr.x, pr.y), idx = insertBall(pr.c, sv);
+        var sv = nearestSNear(pr.x, pr.y, chain[hit].s, D * 2.5), idx = insertBall(pr.c, sv);
         var removed2 = clearRun(idx);
         if (removed2) { combo = 1; comboT = 0.9; scorePop(removed2, 1); }
         else sndClack();
