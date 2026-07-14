@@ -445,6 +445,17 @@ Items in this file follow the structure below so that any AI tool or human editi
 - **Juice:** hit flashes, death poofs, projectile trails, gold-pop numbers, a "wave incoming" banner; synth audio (shoot/hit/enemy-death/gold/wave/lose per the audio bar).
 - ⚠ **Scope + legal:** this is FAR bigger than a typical one-page toy — plan an MVP (1 path, 2–3 tower types, 3–5 waves, 2 enemy types) then expand. Tower defense is a genre (fine); **Kingdom Rush is a specific game** — use our **own art/theme/name** (e.g. a neon/fantasy/bug-invasion skin — offer via AskUserQuestion), not its assets or branding. Category `game`. Full add-a-toy pipeline (registry/sitemap/NL/card+`:not()`/og-gen, hub cache-bust); real rendered card + OG.
 ---
+### New toy: Community draw (shared/social drawing)  ⚠ needs a backend — maybe its own project
+
+**Why it matters:** The **first multiplayer/social toy** — users draw and see each other's drawings, which gives the site the repeat-visit pull that solo toys structurally can't have (you come back to see what changed / what others made). That's a genuinely different value lane from the self-contained arcade/generative toys and worth having in the portfolio.
+
+**When to revisit:** Next new-toy build session, **once shared persistence is sorted** (i.e. once we've decided this belongs on one-page-toys vs. as a standalone project — see scope note). The owner flagged it as "for one-page-toys but maybe something bigger."
+
+**Notes:** Owner idea (from Claude mobile, 2026-07-10). ⚠ **Departs from the self-contained single-file rule** (`.ai/memory/DECISIONS.md`, 2026-07-03: one-page-toys builds are small/self-contained, no server state) — unlike every current toy, this needs a **backend for shared state**. Supabase is already in the portfolio stack (used by PulseDB), so that's the natural backend, but hosting server state on a one-page-toy breaks the site's core constraint → this may be **better as its own project**; decide that before building (same routing as Tower Defense / billiards-if-it-grows).
+- **Decide scope early — two very different products:** (a) **one shared canvas** everyone draws on together (real-time-ish collaborative surface, feels alive, but griefing is instant and total) vs. (b) a **gallery of individual submissions** (each person draws their own, browse everyone's — easier to moderate, no live-collision problem). These have almost nothing in common in build terms; pick one first.
+- ⚠ **Moderation/abuse is the main open question** for anything community-submitted — offensive drawings, spam, and (for shared-canvas) griefing/defacement. Needs at least a plan (report/flag, per-session rate limits, clear/undo, maybe review-before-public for the gallery variant) before it ships publicly. This is the real blocker, not the drawing tech.
+- Drawing surface itself is well-trodden (canvas pointer strokes, pressure/size, palette, undo) and reuses the repo's canvas/audio discipline; the hard part is entirely the shared-state + moderation layer.
+---
 ### Upgrade dice to 3D
 
 **Status:** active
