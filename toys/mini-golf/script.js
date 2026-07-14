@@ -422,11 +422,14 @@
   // read the same.
   var SLOT_PAL = ["dawn", "dawn", "dawn", "noon", "noon", "noon", "noon", "aft", "aft", "aft", "aft", "dusk", "dusk", "dusk", "night", "night", "night", "gold"];
   var TIERS =    ["open", "easy", "easy", "med",  "easy", "med",  "med",  "hard", "med", "hard", "med", "hard", "med",  "hard", "hard", "med",   "hard",  "fin"];
+  // Pools overlap on purpose: the dry terrain/obstacle holes appear across easy→hard
+  // so difficulty isn't a synonym for "water hazard." Selection (below) then spreads
+  // every hole type across the round so no template dominates.
   var POOL = {
     open: ["firstlight"],
-    easy: ["fairway", "dunes", "pinball"],
-    med:  ["terraces", "ridge", "oxbow", "puttmore"],
-    hard: ["rapids", "windmill", "culvert", "bridge"],
+    easy: ["fairway", "dunes", "pinball", "ridge"],
+    med:  ["terraces", "ridge", "oxbow", "puttmore", "dunes", "windmill"],
+    hard: ["rapids", "windmill", "culvert", "bridge", "terraces", "puttmore", "ridge", "pinball", "dunes"],
     fin:  ["finale"]
   };
   var REPRISE = {
@@ -437,6 +440,10 @@
     windmill: ["The Night Mill", "Old Sails"], culvert: ["The Underpass", "Storm Drain"],
     bridge: ["Moonlit Crossing", "The Ford"]
   };
+  // Water-hazard holes are kept a scattered minority (never back-to-back, at most a
+  // few per round) so the course doesn't read as "the water one over and over."
+  var WATER = { oxbow: 1, rapids: 1, culvert: 1, bridge: 1 };
+  var WATER_CAP = 5;
 
   var dayOverride = 0;
   function todayNum() {
@@ -454,13 +461,28 @@
   function buildPlan() {
     resize();
     var R = mulberry((todayNum() ^ 0x9e3779b9) >>> 0);
-    var used = {};
+    var used = {}, waterCount = 0;
     plan = [];
     for (var i = 0; i < 18; i++) {
-      var arr = POOL[TIERS[i]].slice();
-      if (i > 0 && arr.length > 1) { var prev = plan[i - 1].tpl; arr = arr.filter(function (t) { return t !== prev; }); }
-      var tpl = arr[(R() * arr.length) | 0];
+      var pool = POOL[TIERS[i]].slice();
+      var prev = i > 0 ? plan[i - 1].tpl : null;
+      var prevWater = i > 0 && WATER[prev];
+      // deterministic per-day shuffle so equal-score ties break differently each day
+      for (var sh = pool.length - 1; sh > 0; sh--) { var kk = (R() * (sh + 1)) | 0, tmp = pool[sh]; pool[sh] = pool[kk]; pool[kk] = tmp; }
+      // pick the least-used template in this tier, penalising an adjacent repeat,
+      // back-to-back water, or blowing the water cap — this spreads all ~13 hole
+      // types across the round and keeps water a scattered minority
+      var tpl = pool[0], bestScore = Infinity;
+      for (var c = 0; c < pool.length; c++) {
+        var t = pool[c], u = used[t] || 0, score = u * 10;
+        if (u >= 2) score += 300;                          // strongly avoid a 3rd appearance
+        if (t === prev) score += 1000;                     // never repeat adjacent
+        if (WATER[t] && prevWater) score += 100;           // no back-to-back water
+        if (WATER[t] && waterCount >= WATER_CAP) score += 500; // cap total water
+        if (score < bestScore) { bestScore = score; tpl = t; }
+      }
       var n = used[tpl] || 0; used[tpl] = n + 1;
+      if (WATER[tpl]) waterCount++;
       var name = null, flip = false;
       if (n > 0) { flip = (n % 2 === 1); var rl = REPRISE[tpl]; name = rl ? rl[(n - 1) % rl.length] : null; }
       plan.push({ tpl: tpl, pal: SLOT_PAL[i], name: name, flip: flip, seed: (R() * 1e9) | 0 });
