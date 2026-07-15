@@ -1138,7 +1138,7 @@ async function loadRegistryAndRender() {
 // each site's own meta description; favicons are hosted locally in assets/partners/.
 var PARTNER_META = {
   "symmetrygenius.com": { icon: "/assets/partners/symmetry-genius.png", blurb: "Drag shapes to solve symmetry puzzles." },
-  "five-second-game.lovable.app": { icon: "/assets/partners/five-second-game.png", blurb: "Stop the clock at exactly five seconds." },
+  "5secondgame.com": { icon: "/assets/partners/five-second-game.png", blurb: "Stop the clock at exactly five seconds." },
   "globalwar.app": { icon: "/assets/partners/global-war.png", blurb: "Turn-based world-domination strategy." },
   "meshgradientstudio.com": { icon: "/assets/partners/mesh-gradient-studio.png?v=2", blurb: "Generate lush mesh gradients, export anywhere." },
   "buildutilities.com": { icon: "/assets/partners/buildutilities.png", blurb: "Tiny, fast utilities for building software." },
