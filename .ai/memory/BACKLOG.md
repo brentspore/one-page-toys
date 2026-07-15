@@ -37,7 +37,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Alto's-Adventure-style trick sandboarder
 
-**Status:** done — shipped 2026-07-09 as **073 Alpenglow** (`toys/alpenglow/`, commit `826e219`)
+**Status:** done
 
 **Why it matters:** A beautiful, flowy endless-runner with genuine trick depth and a famously gorgeous, moody art direction — exactly the kind of high-design-bar experience that shows off the site and photographs stunningly for card/OG. `game`/`arcade`, cozy-but-skillful lane. Strong viral/replay potential (score chase + "one more run").
 
@@ -47,6 +47,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: The Trail Game, stripped (daily path puzzle feeder)
 
+**Status:** done
+
 **Why it matters:** The daily-path-puzzle idea graduated into its own property (2026-07-13: `the-trail-game` repo, thetrailgame.com, registered as a portfolio game). Owner call, same day: still build the one-page-toys version, stripped down to **play + share only**, as a traffic feeder to the full site. This is the 2026-07-03 escalation decision's "stripped MVP-for-here" pattern with the order reversed — the evolved game exists first, the toy feeds it. The gallery's search audience meets the ritual here; thetrailgame.com owns the habit loop (streaks, stats, unlimited).
 
 **When to revisit:** After thetrailgame.com is live (deploy + DNS are that repo's recorded next steps) — the feeder needs a destination before it ships. Then a one-sitting build.
@@ -55,7 +57,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Zaxxon-style isometric scroll-shooter
 
-**Status:** done — shipped 2026-07-09 as **072 Sky Fortress** (`toys/sky-fortress/`, commit `6a0af84`)
+**Status:** done
 
 **Why it matters:** A distinctive, nostalgic **isometric axonometric shooter** — nothing in the gallery uses a diagonal iso view or an altitude axis, so it stands out hard and photographs beautifully for a card/OG (the diagonal grid + long shadows are instantly recognizable). Score-chasey, arcade/viral lane, endlessly replayable. A natural fit for the repo's **single-file raw-WebGL** direction (Newton's Cradle / Dice Roller precedent + the DECISIONS "use 3D when it genuinely elevates the toy" rule): the whole appeal of Zaxxon IS the depth, so **real 3D earns its keep here** — this should be a showcase-quality 3D toy, not a flat iso fake.
 
@@ -377,8 +379,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New tool: Pomodoro Timer
 
-**Status:** done — shipped as No. 075 Pomodoro (`tools/pomodoro/`): big draining focus ring, auto-advancing focus/break phases (coral→teal), session dots, synth chime, tab-title countdown, 15/25/50 length chips.
-
 **Why it matters:** The classic focus ritual, done in the site's clean meter-family style — a genuinely useful daily-return tool (rare retention driver for the portfolio). Category `utility`.
 
 **When to revisit:** Next tools round; small scope.
@@ -387,8 +387,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New tool: Tip Splitter
 
-**Status:** done — shipped as No. 074 Tip Splitter (`tools/tip-splitter/`): drag-dial tip with soft detents, tappable person icons, per-person hero, round-up-to-even toggle.
-
 **Why it matters:** The utility everyone reaches for after dinner — bill + tip% + people = per-person amount, zero friction. Completes the money-tool family (Time Is Money, Latte Factor). Category `utility`.
 
 **When to revisit:** Quick-win tools round.
@@ -396,8 +394,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** AI suggestion (2026-07-05). Bill amount, tip presets (15/18/20/25% + custom, with a service-quality hint), split count with a big stepper; outputs per-person tip + total, rounded-up "make it even" toggle; everything updates live in a big odometer hero (meter-family style). Optionally itemized "who had what" as a stretch — probably keep v1 simple. Geist tool family, money-green sibling palette. CSS-motif card + OG; full pipeline.
 ---
 ### New tool: World Clock Overlap ("when can we call?")
-
-**Status:** done — shipped as No. 076 World Clock Overlap (`tools/world-clock/`): stacked day/night bars per city, green "everyone awake" window, draggable now-line, add/remove up to 5 cities, share via URL hash.
 
 **Why it matters:** Visual answer to the eternal remote-work/family question — pick 2-4 places, see the stacked day/night bars, and the green window where waking hours overlap. Category `utility`.
 
@@ -432,7 +428,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### Upgrade dice to 3D
 
-**Status:** done — shipped as the 3D Dice Roller (`toys/dice-roller/`, same slug No. 005): real raw-WebGL tumbling dice (d4–d20) on felt, crypto-fair via the relabel-the-faces trick, flick + Roll throw, best/streak saved.
+**Status:** active
 
 **Why it matters:** Owner idea (2026-07-05): rebuild the existing Dice Roller (toys/dice-roller/) with real tumbling 3D dice — a major glow-up for an existing toy using the proven zero-dep raw-WebGL foundation from Newton's Cradle. Rebuild IN PLACE (same slug `dice-roller`, No. 005).
 
@@ -522,4 +518,5 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Owner idea (2026-07-02): "a randomly generated maze you have to get through." Procedurally generate a **perfect maze** (recursive backtracker / DFS, or Prim's) on a grid; player navigates start→exit via swipe / arrow keys / tap-to-path; new maze each play, difficulty scales via grid size. Add tension with a subtle "fog" / limited-view radius or a minimap; **timer + best-time** in `localStorage`, confetti on a new best. Optional path-trail so you can see where you've been. Must be **interactive + a curated little world** per the design quality bar (lighting, palette, depth — not flat cells; e.g. hedge maze / stone dungeon / neon grid). Touch controls (swipe to move) for mobile. Synth footstep / wall-bump / solve voice per the audio quality bar. Real rendered card + OG; full add-a-toy pipeline (registry/sitemap/NL/card+`:not()`/og-gen, hub cache-bust).
 ---
+
 ---
