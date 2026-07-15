@@ -98,6 +98,14 @@
       "slug": "pool"
     },
     {
+      "name": "Minesweeper",
+      "tagline": "Clear the mines",
+      "url": "https://onepagetoys.com/toys/minesweeper/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230b0d10'/><rect x='4' y='4' width='24' height='24' rx='6' fill='%2320242c'/><circle cx='16' cy='16' r='10' fill='%23ff8a4d' opacity='0.14'/><g stroke='%23d9743f' stroke-width='2.2' stroke-linecap='round'><path d='M16 7.5v17'/><path d='M7.5 16h17'/><path d='M10.3 10.3l11.4 11.4'/><path d='M21.7 10.3L10.3 21.7'/></g><circle cx='16' cy='16' r='5.4' fill='%23e07b45'/><circle cx='13.9' cy='13.9' r='1.9' fill='%23ffdcbd'/></svg>",
+      "initial": "M",
+      "slug": "minesweeper"
+    },
+    {
       "name": "Random Maze",
       "tagline": "Maze runner",
       "url": "https://onepagetoys.com/toys/random-maze/",
