@@ -90,6 +90,14 @@
       "slug": "mini-golf"
     },
     {
+      "name": "Pool",
+      "tagline": "Rack 'em up",
+      "url": "https://onepagetoys.com/toys/pool/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230d5b34'/><circle cx='21' cy='20' r='5.5' fill='%23fbfaf5'/><circle cx='12' cy='12' r='6.5' fill='%23161616'/><circle cx='12' cy='12' r='3' fill='%23f7f4ec'/><text x='12' y='13.7' font-family='sans-serif' font-size='4.6' font-weight='800' text-anchor='middle' fill='%23161616'>8</text></svg>",
+      "initial": "P",
+      "slug": "pool"
+    },
+    {
       "name": "Random Maze",
       "tagline": "Maze runner",
       "url": "https://onepagetoys.com/toys/random-maze/",
