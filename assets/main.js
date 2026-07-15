@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "minesweeper":
+    "minesweeper mine sweeper mines bombs classic windows game logic puzzle deduction number grid flags flagging chord reveal squares uncover cells first click safe easy medium hard expert beginner intermediate best time flood fill brain teaser strategy solitaire single player tap long press game",
   "pool":
     "pool 8 ball eight ball billiards cue sports snooker pocket table green felt break rack cue stick chalk english spin bank shot sink pot the balls corner pocket side pocket solids stripes clear the table pass and play two player physics aim game bar pub",
   "tip-splitter":

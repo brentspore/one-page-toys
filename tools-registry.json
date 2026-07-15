@@ -1,5 +1,27 @@
 [
   {
+    "slug": "minesweeper",
+    "name": "Minesweeper",
+    "shortDescription": "The classic mine-clearing logic puzzle on a premium dark glass board. Your first tap is always safe. Reveal safe cells, flag the mines, chord a number to sweep its neighbors, and beat your best time on Easy, Medium, or Hard.",
+    "category": "game",
+    "tags": [
+      "minesweeper",
+      "puzzle",
+      "logic",
+      "grid",
+      "deduction",
+      "flags",
+      "brain-teaser",
+      "classic",
+      "tap",
+      "timer",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/minesweeper/",
+    "related": []
+  },
+  {
     "slug": "pool",
     "name": "Pool",
     "shortDescription": "A pocket pool table with real rolling physics. Drag back from the cue ball to aim and set power, add spin, and sink the balls. Play solo to clear the table in the fewest shots, or pass-and-play 8-ball with a friend.",
