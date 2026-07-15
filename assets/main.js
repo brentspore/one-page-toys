@@ -66,6 +66,12 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "tip-splitter":
+    "tip splitter tip calculator bill splitter split the bill split a check gratuity restaurant dining dinner waiter server how much to tip tip percentage 15 18 20 percent per person round up even split share the bill group money finance calculator utility tool",
+  "pomodoro":
+    "pomodoro timer focus timer tomato timer productivity focus study work deep work concentration 25 5 sprint break interval countdown session work timer study timer ring drain chime getting things done time management utility tool",
+  "world-clock":
+    "world clock overlap timezone time zone converter meeting planner when can we call best time to call world time cities time difference across time zones remote work distributed team overlap awake hours schedule a call day night bars utility tool",
   "puffling":
     "puffling tiny wings hill glider bird glide slide slope momentum one touch tap hold dive pump swoop crest launch fly perfect slide fever streak candy stripe islands sun sunset race endless arcade high score cozy cute storybook flappy alto adventure snowboard game",
   "deep-descent":

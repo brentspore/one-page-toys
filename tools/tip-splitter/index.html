@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Tip Splitter — One Page Toys</title>
+    <meta name="description" content="Split a bill in seconds. Drag the dial to set the tip, tap to add people, and see the per-person amount update live. Round up to an even split with one tap. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/tip-splitter/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f7faf8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Tip Splitter — One Page Toys" />
+    <meta property="og:description" content="Drag the dial to set the tip, tap to add people, and see the per-person amount live. Round up for an even split." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/tip-splitter/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/tip-splitter.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tip Splitter — One Page Toys" />
+    <meta name="twitter:description" content="Drag the dial to set the tip, tap to add people, see the per-person amount live." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/tip-splitter.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Tip Splitter",
+        "url": "https://onepagetoys.com/tools/tip-splitter/",
+        "description": "A visual bill and tip splitter. Drag a dial to set the tip percentage, add people, and see the per-person amount update live, with a round-up option for an even split.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 074 · Tip Splitter</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="split" aria-label="Tip splitter">
+        <p class="eyebrow" id="eyebrow">Each person pays</p>
+        <div class="hero" id="perPerson" role="text" aria-label="$0.00 each">$0.00</div>
+
+        <!-- the tip dial: drag around the ring to set the tip percentage -->
+        <div class="dialwrap">
+          <div class="dial" id="dial" role="slider" tabindex="0" aria-label="Tip percentage" aria-valuemin="0" aria-valuemax="40" aria-valuenow="20" aria-valuetext="20 percent">
+            <svg class="dial__svg" viewBox="0 0 240 240" aria-hidden="true">
+              <defs>
+                <linearGradient id="tipgrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop class="tipgrad-a" offset="0" stop-color="#2fb56a" />
+                  <stop class="tipgrad-b" offset="1" stop-color="#147a44" />
+                </linearGradient>
+              </defs>
+              <circle class="dial__track" cx="120" cy="120" r="104" />
+              <circle class="dial__fill" id="dialFill" cx="120" cy="120" r="104" transform="rotate(-90 120 120)" />
+              <g id="dialPips"></g>
+              <circle class="dial__handle" id="dialHandle" cx="120" cy="16" r="13" />
+            </svg>
+            <div class="dial__center">
+              <span class="dial__pct" id="tipPct">20<i>%</i></span>
+              <span class="dial__cap">tip · <b id="tipAmt">$0.00</b></span>
+            </div>
+          </div>
+          <div class="dialhint" aria-hidden="true">drag to tip</div>
+        </div>
+
+        <!-- bill amount: big tap-to-edit number -->
+        <div class="rows">
+          <div class="row">
+            <span class="row__key">Bill</span>
+            <div class="stepper">
+              <button type="button" class="step" data-bill="-5" aria-label="Lower the bill by five dollars">–</button>
+              <span class="row__amt">$<input id="bill" class="billinput" inputmode="decimal" value="84.00" aria-label="Bill amount in dollars" /></span>
+              <button type="button" class="step" data-bill="5" aria-label="Raise the bill by five dollars">+</button>
+            </div>
+          </div>
+
+          <!-- people: a row of person glyphs + stepper -->
+          <div class="row">
+            <span class="row__key">Split</span>
+            <div class="people" id="people" aria-hidden="true"></div>
+            <div class="stepper stepper--people">
+              <button type="button" class="step" id="peopleDown" aria-label="Remove a person">–</button>
+              <span class="row__count" id="peopleCount" aria-live="polite">4</span>
+              <button type="button" class="step" id="peopleUp" aria-label="Add a person">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footerbar">
+          <button type="button" class="roundup" id="roundup" aria-pressed="false">
+            <span class="roundup__dot" aria-hidden="true"></span> Round up to an even split
+          </button>
+          <div class="totals" id="totals">
+            <span class="chip"><b id="tipTotal">$16.80</b> tip</span>
+            <span class="chip"><b id="grandTotal">$100.80</b> total</span>
+          </div>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

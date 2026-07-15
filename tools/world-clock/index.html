@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>World Clock Overlap — One Page Toys</title>
+    <meta name="description" content="When can we talk? Pick a few cities and see stacked day and night bars line up, with the green window where everyone is awake. Drag the now-line to scrub through the day. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/world-clock/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f6f8fb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="World Clock Overlap — One Page Toys" />
+    <meta property="og:description" content="Pick a few cities and see the green window where everyone is awake. Drag the now-line to scrub the day." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/world-clock/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/world-clock.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="World Clock Overlap — One Page Toys" />
+    <meta name="twitter:description" content="See the green window where everyone across your cities is awake." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/world-clock.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "World Clock Overlap",
+        "url": "https://onepagetoys.com/tools/world-clock/",
+        "description": "A visual world-clock overlap finder. Pick a few cities and see stacked day and night bars with the window where everyone is awake, with a draggable now-line to scrub through the day.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 076 · World Clock</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="wc" aria-label="World clock overlap">
+        <p class="eyebrow">Everyone's awake</p>
+        <h1 class="headline" id="overlapText">—</h1>
+
+        <div class="chart" id="chart">
+          <div class="axis" id="axis" aria-hidden="true"></div>
+          <div class="rows" id="rows"></div>
+          <div class="overlay" id="overlay" aria-hidden="true">
+            <div class="nowline" id="nowline"><span class="nowline__grip"></span><span class="nowline__lab" id="nowLab"></span></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <label class="addcity">
+            <span class="addcity__plus" aria-hidden="true">+</span>
+            <select id="addCity" aria-label="Add a city"></select>
+          </label>
+          <button type="button" class="btn btn--ghost" id="nowBtn">Jump to now</button>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

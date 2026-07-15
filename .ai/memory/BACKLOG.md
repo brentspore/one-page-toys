@@ -417,6 +417,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New tool: Pomodoro Timer
 
+**Status:** done — shipped as No. 075 Pomodoro (`tools/pomodoro/`): big draining focus ring, auto-advancing focus/break phases (coral→teal), session dots, synth chime, tab-title countdown, 15/25/50 length chips.
+
 **Why it matters:** The classic focus ritual, done in the site's clean meter-family style — a genuinely useful daily-return tool (rare retention driver for the portfolio). Category `utility`.
 
 **When to revisit:** Next tools round; small scope.
@@ -425,6 +427,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New tool: Tip Splitter
 
+**Status:** done — shipped as No. 074 Tip Splitter (`tools/tip-splitter/`): drag-dial tip with soft detents, tappable person icons, per-person hero, round-up-to-even toggle.
+
 **Why it matters:** The utility everyone reaches for after dinner — bill + tip% + people = per-person amount, zero friction. Completes the money-tool family (Time Is Money, Latte Factor). Category `utility`.
 
 **When to revisit:** Quick-win tools round.
@@ -432,6 +436,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** AI suggestion (2026-07-05). Bill amount, tip presets (15/18/20/25% + custom, with a service-quality hint), split count with a big stepper; outputs per-person tip + total, rounded-up "make it even" toggle; everything updates live in a big odometer hero (meter-family style). Optionally itemized "who had what" as a stretch — probably keep v1 simple. Geist tool family, money-green sibling palette. CSS-motif card + OG; full pipeline.
 ---
 ### New tool: World Clock Overlap ("when can we call?")
+
+**Status:** done — shipped as No. 076 World Clock Overlap (`tools/world-clock/`): stacked day/night bars per city, green "everyone awake" window, draggable now-line, add/remove up to 5 cities, share via URL hash.
 
 **Why it matters:** Visual answer to the eternal remote-work/family question — pick 2-4 places, see the stacked day/night bars, and the green window where waking hours overlap. Category `utility`.
 
@@ -466,7 +472,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### Upgrade dice to 3D
 
-**Status:** active
+**Status:** done — shipped as the 3D Dice Roller (`toys/dice-roller/`, same slug No. 005): real raw-WebGL tumbling dice (d4–d20) on felt, crypto-fair via the relabel-the-faces trick, flick + Roll throw, best/streak saved.
 
 **Why it matters:** Owner idea (2026-07-05): rebuild the existing Dice Roller (toys/dice-roller/) with real tumbling 3D dice — a major glow-up for an existing toy using the proven zero-dep raw-WebGL foundation from Newton's Cradle. Rebuild IN PLACE (same slug `dice-roller`, No. 005).
 

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Pomodoro Timer — One Page Toys</title>
+    <meta name="description" content="A focus timer built on the Pomodoro method. Work in focused sprints, take short breaks, and watch a big ring drain down to zero. Session dots track your day; a gentle chime marks each switch. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/pomodoro/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#faf7f6" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Pomodoro Timer — One Page Toys" />
+    <meta property="og:description" content="Work in focused sprints and take short breaks. A big ring drains to zero, session dots track your day, and a gentle chime marks each switch." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/pomodoro/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/pomodoro.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pomodoro Timer — One Page Toys" />
+    <meta name="twitter:description" content="A focus timer: work in sprints, take breaks, watch the ring drain to zero." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/pomodoro.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Pomodoro Timer",
+        "url": "https://onepagetoys.com/tools/pomodoro/",
+        "description": "A focus timer using the Pomodoro method: focused work sprints alternating with short and long breaks, with a draining ring, session tracking, and a gentle chime on each switch.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body data-phase="focus">
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 075 · Pomodoro</span>
+        <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" aria-label="Sound on" title="Sound on">♪</button>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="pomo" aria-label="Pomodoro timer">
+        <p class="phase" id="phase">Focus</p>
+
+        <div class="ring" id="ring">
+          <svg class="ring__svg" viewBox="0 0 300 300" aria-hidden="true">
+            <defs>
+              <linearGradient id="pomograd" x1="0" y1="0" x2="1" y2="1">
+                <stop class="pomograd-a" offset="0" stop-color="#ff7a5c" />
+                <stop class="pomograd-b" offset="1" stop-color="#c23b28" />
+              </linearGradient>
+            </defs>
+            <circle class="ring__track" cx="150" cy="150" r="132" />
+            <circle class="ring__prog" id="ringProg" cx="150" cy="150" r="132" transform="rotate(-90 150 150)" />
+          </svg>
+          <div class="ring__center">
+            <div class="time" id="time" role="timer" aria-live="off">25:00</div>
+            <div class="dots" id="dots" aria-label="Focus sessions today"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn--primary" id="startBtn">Start</button>
+          <button type="button" class="btn btn--ghost" id="resetBtn" aria-label="Reset this timer">Reset</button>
+        </div>
+
+        <div class="lengths" id="lengths" role="group" aria-label="Focus length">
+          <button type="button" class="len" data-min="15">15 min</button>
+          <button type="button" class="len is-on" data-min="25">25 min</button>
+          <button type="button" class="len" data-min="50">50 min</button>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>
