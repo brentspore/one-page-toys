@@ -59,7 +59,26 @@
   try { best = parseInt(localStorage.getItem("pool_best"), 10) || 0; } catch (e) {}
 
   // ---- geometry ----
+  // Table-normalized coords (lengthFrac 0..1 along the long axis from the head end,
+  // widthFrac -0.5..0.5 across) let a ball survive an orientation flip: capture in
+  // the old geometry, restore in the new one so the rack re-lays instead of stranding.
+  function toNorm(b, P, port) {
+    var lf = port ? 1 - (b.y - P.y) / P.h : (b.x - P.x) / P.w;
+    var wf = port ? (b.x - (P.x + P.w / 2)) / P.w : (b.y - (P.y + P.h / 2)) / P.h;
+    return { lf: lf, wf: wf, vl: port ? -b.vy : b.vx, vw: port ? b.vx : b.vy };
+  }
+  function fromNorm(s, P, port, vr) {
+    var x = port ? P.x + P.w / 2 + s.wf * P.w : P.x + s.lf * P.w;
+    var y = port ? P.y + (1 - s.lf) * P.h : P.y + P.h / 2 + s.wf * P.h;
+    var vx = port ? s.vw * vr : s.vl * vr, vy = port ? -s.vl * vr : s.vw * vr;
+    return { x: x, y: y, vx: vx, vy: vy };
+  }
+
   function resize() {
+    // snapshot ball layout in table-normalized coords (old geometry) before we rebuild
+    var snap = (PLAY && balls.length) ? balls.map(function (b) { return { b: b, n: toNorm(b, PLAY, portrait) }; }) : null;
+    var oldLong = PLAY ? (portrait ? PLAY.h : PLAY.w) : 0;
+
     DPR = Math.min(window.devicePixelRatio || 1, 2);
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
@@ -85,6 +104,13 @@
     if (portrait) { pockets.push({ x: lx, y: PLAY.cy }, { x: rx, y: PLAY.cy }); }
     else { pockets.push({ x: PLAY.cx, y: ty }, { x: PLAY.cx, y: by }); }
     buildTable();
+
+    // re-lay the balls onto the new orientation (scale velocity by the table-size ratio)
+    if (snap) {
+      var vr = oldLong ? (portrait ? PLAY.h : PLAY.w) / oldLong : 1;
+      snap.forEach(function (s) { var p = fromNorm(s.n, PLAY, portrait, vr); s.b.x = p.x; s.b.y = p.y; s.b.vx = p.vx; s.b.vy = p.vy; });
+    }
+    aiming = false;   // cancel any in-progress aim on a flip
   }
 
   // length axis points from head end toward foot end; width axis is across
@@ -584,6 +610,7 @@
 
   // ---- boot ----
   resize(); window.addEventListener("resize", resize);
+  window.addEventListener("orientationchange", function () { setTimeout(resize, 80); });
   newGame();
   updateSpinDot();
   setTimeout(function () { if (hintEl) hintEl.classList.add("is-gone"); }, 7000);
