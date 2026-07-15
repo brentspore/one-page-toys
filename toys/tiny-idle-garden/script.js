@@ -691,7 +691,7 @@
     var cost = soilCost(S.soil);
     if (S.dew < cost) { flashBtn(soilBtn); return; }
     S.dew -= cost; S.soil++; save();
-    toast("Soil enriched — <b>plants grow faster</b> (level " + S.soil + ").");
+    toast("Soil enriched: <b>plants grow faster</b> (level " + S.soil + ").");
     track("garden_action", { action: "soil", level: S.soil });
   });
   rainBtn.addEventListener("click", function () {

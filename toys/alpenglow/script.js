@@ -1169,7 +1169,7 @@
 
   /* ============================ HUD / flow ============================ */
   function track(name) { try { if (typeof window.gtag === "function") window.gtag("event", name, {}); } catch (e) {} }
-  function renderBest() { elBest.textContent = best > 0 ? "Best " + best : "Best —"; }
+  function renderBest() { elBest.textContent = best > 0 ? "Best " + best : "Best –"; }
   renderBest();
   function hud() {
     score = banked + Math.floor((R.x - startX) / PX_PER_M);
@@ -1199,7 +1199,7 @@
     setTimeout(function () { if (elOverlay.classList.contains("is-hidden")) elOverlay.hidden = true; }, 300);
   }
   const CAUSE = {
-    landing: "Over-rotated — the mountain keeps the points.",
+    landing: "Over-rotated. The mountain keeps the points.",
     rock: "A rock at full speed.",
     fire: "Straight through a campfire.",
     chasm: "The chasm swallowed the run."
@@ -1217,7 +1217,7 @@
       Math.floor((R.x - startX) / PX_PER_M) + "m</span> and scored <span class=\"stat\">" + score + "</span>." +
       (isBest ? " <span class=\"stat\">New best!</span>" : (best > 0 ? " Best: " + best + "." : ""));
     elOvBtn.textContent = "Ride again";
-    window.OPT_SHARE_TEXT = "Alpenglow — I rode " + Math.floor((R.x - startX) / PX_PER_M) + "m and scored " + score + ". Can you beat it?";
+    window.OPT_SHARE_TEXT = "Alpenglow: I rode " + Math.floor((R.x - startX) / PX_PER_M) + "m and scored " + score + ". Can you beat it?";
     showOverlay();
     if (isBest) { burstConfetti(); sndFanfare(); }
     track("game_over");

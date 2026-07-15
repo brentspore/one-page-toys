@@ -5,7 +5,7 @@
   "use strict";
 
   var ANSWERS = [
-    "It is certain", "Without a doubt", "Yes — definitely", "You may rely on it",
+    "It is certain", "Without a doubt", "Yes, definitely", "You may rely on it",
     "As I see it, yes", "Most likely", "Outlook good", "Signs point to yes", "Yes",
     "Reply hazy, try again", "Ask again later", "Better not tell you now",
     "Cannot predict now", "Concentrate and ask again",

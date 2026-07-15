@@ -25,7 +25,7 @@
   window.addEventListener("resize", resize);
 
   // ---- water simulation (damped wave equation) ---------------------------
-  // 9-point Laplacian couples the diagonal neighbours, which kills the
+  // 9-point Laplacian couples the diagonal neighbors, which kills the
   // checkerboard sublattice instability the simple 4-point scheme suffers.
   var DAMP = 0.9955, K = 0.42;
   function stepWater() {
@@ -217,7 +217,7 @@
       ctx.closePath();
       ctx.fill();
 
-      // koi colour patches (clipped to the body)
+      // koi color patches (clipped to the body)
       if (k.kind === "koi" && k.patches.length) {
         ctx.save(); ctx.clip();
         for (var p = 0; p < k.patches.length; p++) {

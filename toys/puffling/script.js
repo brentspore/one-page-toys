@@ -67,7 +67,7 @@
 
   function bestKey() { return "puffling_best_" + daySeed; }
   try { best = parseInt(localStorage.getItem(bestKey()), 10) || 0; } catch (e) { best = 0; }
-  bestEl.textContent = best > 0 ? "Best " + best : "Best —";
+  bestEl.textContent = best > 0 ? "Best " + best : "Best –";
 
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
 
@@ -862,7 +862,7 @@
     ctx.beginPath(); ctx.ellipse(w * 0.3, h * 0.2, h * 0.18, h * 0.13, 0, 0, 6.28); ctx.fill();
     ctx.restore();
     // half-submerged: a local water strip over the bird's lower body (edge-faded so it blends seamlessly),
-    // CLAMPED to the actual water span so it never paints over the neighbouring island's slopes
+    // CLAMPED to the actual water span so it never paints over the neighboring island's slopes
     if (swim) {
       var ci = Math.floor(bird.x / SEG_W), cl = ci, cr = ci, lim = 80;
       while (gW[cl - 1] === 1 && lim-- > 0) cl--;
@@ -971,13 +971,13 @@
     if (dead) return; dead = true; running = false; holding = false; stopMusic();
     var isBest = score > best;
     if (isBest) { best = score; try { localStorage.setItem(bestKey(), String(best)); } catch (e) {} bestEl.textContent = "Best " + best; burstConfetti(); }
-    window.OPT_SHARE_TEXT = "I glided " + score + " on today's hills in Puffling before the sun set — can you beat it? 🐦";
+    window.OPT_SHARE_TEXT = "I glided " + score + " on today's hills in Puffling before the sun set. Can you beat it? 🐦";
     sndLull();
     var finalScore = score;   // freeze NOW — a quick restart resets the global before the timeout fires
     setTimeout(function () {
       if (!dead) return;      // player already flew again — don't pop a stale overlay over the new run
       ovTitle.textContent = isBest ? "New best!" : "The sun set.";
-      ovText.innerHTML = "You glided <span class='stat'>" + finalScore + "</span>" + (isBest ? " — a new best for today!" : ".") + " The puffling is having a nap." + (best > 0 ? " <span class='stat'>Best " + best + "</span>." : "");
+      ovText.innerHTML = "You glided <span class='stat'>" + finalScore + "</span>" + (isBest ? ", a new best for today!" : ".") + " The puffling is having a nap." + (best > 0 ? " <span class='stat'>Best " + best + "</span>." : "");
       ovBtn.textContent = "Fly again";
       overlay.hidden = false; overlay.classList.remove("is-hidden");
     }, 900);

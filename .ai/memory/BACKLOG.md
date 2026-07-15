@@ -209,6 +209,14 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** AI suggestion (2026-07-05). 4×4 or 5×5 letter grid (dice-distribution letter frequencies); drag through adjacent letters (incl. diagonals) to trace words; 90-second round or zen mode; scoring by length; found-words list + best score in `localStorage`. Constraint: needs a word list — a compact common-word list (~30-60k words, ~200-400KB raw, less gzipped) bundled locally keeps it self-contained; prefix-trie for live validation. Keep name/trade dress distinct from Boggle. Design: warm wooden letter tiles or glowing runes, a glowing trace line, tile pop + pentatonic pluck per letter (rises with word length), fanfare on rare long words. Real card + OG; full pipeline.
 ---
+### New toy: Daily word game (Spelling Bee / Blockle style)
+
+**Why it matters:** Owner request (2026-07-14): "Spelling bee / Blockle type game." Daily word puzzles are the most habit-forming, shareable genre on the web (NYT Spelling Bee, Wordle). The site has zero word games, and Mini Golf just proved out the date-seeded daily-challenge pattern (same puzzle for everyone today, new one tomorrow, per-day best in `localStorage`). A daily word toy slots straight into that.
+
+**When to revisit:** Next new-toy round. Shares the bundled-dictionary decision with Word Hunt above; scope that first (one compact word list + trie could serve both).
+
+**Notes:** Research first, then pick a shape (per the research-first decision): (1) Spelling-Bee style: 7 letters in a honeycomb, center letter mandatory, find as many words as possible, pangram as the jackpot; needs a curated daily letter-set generator (each day's set must yield enough words and at least one pangram). (2) Wordle/Blockle style: guess a hidden word in N tries with letter feedback, or a block/stacking twist; needs only an answer list + allowed-guess list, so it is the lighter build. Date-seed the daily via the Mini Golf mulberry pattern; share-result strip (emoji grid or score) via `share.js`; per-day best and streak in `localStorage`. Keep names and trade dress distinct from NYT/Wordle. Design bar: tactile tiles, satisfying letter pops and reveals, synth voices per the audio bar. Full add-a-toy pipeline.
+---
 ### New toy: Nonogram / Picross
 
 **Why it matters:** A beloved logic-puzzle genre (huge dedicated audience) absent from the site; solving reveals pixel-art — inherently rewarding and screenshot-friendly. Category `game`/puzzle.

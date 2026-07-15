@@ -52,15 +52,15 @@
       result.classList.add("pop");
 
       if (move === cpu) {
-        s.tie++; result.textContent = "Tie — " + cap(move) + " vs " + cap(cpu) + ".";
+        s.tie++; result.textContent = "Tie: " + cap(move) + " vs " + cap(cpu) + ".";
       } else if (BEATS[move] === cpu) {
         s.win++; s.streak++; result.classList.add("win");
         youEl.classList.add("win"); cpuEl.classList.add("lose");
-        result.textContent = cap(move) + " beats " + cpu + " — you win!";
+        result.textContent = cap(move) + " beats " + cpu + ". You win!";
       } else {
         s.loss++; s.streak = 0; result.classList.add("loss");
         cpuEl.classList.add("win"); youEl.classList.add("lose");
-        result.textContent = cap(cpu) + " beats " + move + " — CPU wins.";
+        result.textContent = cap(cpu) + " beats " + move + ". CPU wins.";
       }
       sWin.textContent = s.win; sTie.textContent = s.tie; sLoss.textContent = s.loss;
       sStreak.textContent = s.streak >= 3 ? s.streak + " 🔥" : s.streak;

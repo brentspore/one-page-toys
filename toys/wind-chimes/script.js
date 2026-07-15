@@ -35,7 +35,7 @@
       var mid = (N - 1) / 2;
       var t = 1 - Math.abs(i - mid) / mid;
       var len = maxLen * (0.6 + 0.4 * t);
-      var ox = -hangerW / 2 + i * spacing;     // offset along the bar from its centre
+      var ox = -hangerW / 2 + i * spacing;     // offset along the bar from its center
       if (tubes[i]) { tubes[i].ox = ox; tubes[i].len = len; }
       else tubes.push({
         ox: ox, len: len, theta: 0, omega: 0, freq: FREQS[i], glow: 0,
@@ -227,7 +227,7 @@
       if (hitCooldown[i] > 0) hitCooldown[i] -= dt;
     }
 
-    // --- clapper: hangs from the bar centre, leans more so it overtakes & strikes ---
+    // --- clapper: hangs from the bar center, leans more so it overtakes & strikes ---
     var ca = pivotAccel(clap, rigAx, rigAy, dt);
     if (clap !== grabbed) pendulum(clap, clapLen, ca[0], ca[1], lean * 1.6, 0.6, dt);
 

@@ -85,7 +85,7 @@
   var flames = [], embers = [], smoke = [];
   function spawnFlame() {
     var spread = (Math.min(W, H) * 0.06) * (0.6 + intensity * 0.7);
-    // bias toward the centre so the fire forms a body, not a flat row
+    // bias toward the center so the fire forms a body, not a flat row
     var x = CX + (Math.random() - 0.5) * spread * 2 * (0.4 + Math.random() * 0.6);
     var lift = (120 + Math.random() * 90) * (0.6 + intensity * 1.0 + fan * 0.6);
     flames.push({

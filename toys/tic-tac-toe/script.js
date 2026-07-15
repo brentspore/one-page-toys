@@ -138,7 +138,7 @@
     setTimeout(function () {
       var m = cpuMove();
       if (m >= 0) paint(m, "o");
-      if (!afterMove()) { active = true; statusEl.innerHTML = "Your move — you're <span class='x'>X</span>"; }
+      if (!afterMove()) { active = true; statusEl.innerHTML = "Your move. You're <span class='x'>X</span>"; }
     }, 420);
   }
 
@@ -156,7 +156,7 @@
     board = Array(9).fill(""); active = true;
     winline.classList.remove("show");
     cells.forEach(function (c) { c.innerHTML = ""; c.className = "cell"; c.disabled = false; });
-    statusEl.innerHTML = "Your move — you're <span class='x'>X</span>";
+    statusEl.innerHTML = "Your move. You're <span class='x'>X</span>";
   });
 
   document.querySelectorAll(".seg__btn").forEach(function (b) {

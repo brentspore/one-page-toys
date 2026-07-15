@@ -30,7 +30,7 @@
         || canvas.getContext("experimental-webgl", { antialias: true });
   if (!gl) {
     const f = document.createElement("p");
-    f.textContent = "This toy needs WebGL — try a different browser.";
+    f.textContent = "This toy needs WebGL. Try a different browser.";
     f.style.cssText = "position:fixed;inset:0;display:grid;place-items:center;color:#9ab;font:500 16px system-ui;text-align:center;padding:24px;z-index:9";
     document.body.appendChild(f);
     return;
@@ -610,7 +610,7 @@
 
   /* ============================ HUD / overlay ============================ */
   function track(name) { try { if (typeof window.gtag === "function") window.gtag("event", name, {}); } catch (e) {} }
-  function renderBest() { elBest.textContent = best > 0 ? "Best " + best : "Best —"; }
+  function renderBest() { elBest.textContent = best > 0 ? "Best " + best : "Best –"; }
   renderBest();
 
   function setFuelHud() {
@@ -663,7 +663,7 @@
       "m</span> and scored <span class=\"stat\">" + score + "</span>." +
       (isBest && dist > 10 ? " <span class=\"stat\">New best!</span>" : (best > 0 ? " Best: " + best + "." : ""));
     elOvBtn.textContent = "Fly again";
-    window.OPT_SHARE_TEXT = "Sky Fortress — I flew " + Math.floor(dist) + "m and scored " + score + ". Can you beat it?";
+    window.OPT_SHARE_TEXT = "Sky Fortress: I flew " + Math.floor(dist) + "m and scored " + score + ". Can you beat it?";
     showOverlay();
     if (isBest && dist > 10) { burstConfetti(); playFanfare(); }
     track("game_over");

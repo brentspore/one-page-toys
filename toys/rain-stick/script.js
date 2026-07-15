@@ -217,7 +217,7 @@
                 if (rvn < 0) { var im = rvn * 0.5; b.vu -= im * nu; b.vv -= im * nv; c.vu += im * nu; c.vv += im * nv; }
                 if (ng < sT) b.sup = true; else if (ng > -sT) c.sup = true;
               }
-            } else {                            // neighbour frozen → static wall: push b out
+            } else {                            // neighbor frozen → static wall: push b out
               b.u += nu * over; b.v += nv * over;
               var vn2 = b.vu * nu + b.vv * nv;
               if (vn2 < 0) { b.vu -= vn2 * nu; b.vv -= vn2 * nv; if (-vn2 > 85) pushHit(b, -vn2 * 0.7, cosT, sinT, panScale); }
@@ -255,7 +255,7 @@
       comp = actx.createDynamicsCompressor();
       comp.threshold.value = -18; comp.knee.value = 26; comp.ratio.value = 3.2; comp.attack.value = 0.003; comp.release.value = 0.2;
       comp.connect(mlp); mlp.connect(outGain); outGain.connect(actx.destination);
-      // hollow-wood shell colour: everything runs through a gentle body resonance
+      // hollow-wood shell color: everything runs through a gentle body resonance
       shell = actx.createBiquadFilter(); shell.type = "peaking"; shell.frequency.value = 1300; shell.Q.value = 0.8; shell.gain.value = 3;
       shell.connect(comp);
       dryBus = actx.createGain(); dryBus.gain.value = 0.9; dryBus.connect(shell);

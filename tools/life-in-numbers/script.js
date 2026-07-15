@@ -45,18 +45,18 @@
   function render() {
     var now = Date.now();
     if (birthMs == null) {
-      odo.textContent = "—";
-      elDays.textContent = elBeats.textContent = elBreaths.textContent = "—";
-      elSun.textContent = elMoons.textContent = elNext.textContent = "—";
+      odo.textContent = "–";
+      elDays.textContent = elBeats.textContent = elBreaths.textContent = "–";
+      elSun.textContent = elMoons.textContent = elNext.textContent = "–";
       sub.innerHTML = "Pick your birthday to bring your life to life.";
       setHeat(0);
       return;
     }
     if (birthMs > now) {
       odo.textContent = "0";
-      sub.innerHTML = "That's in the future — pick the day you were <em>born</em>.";
+      sub.innerHTML = "That's in the future. Pick the day you were <em>born</em>.";
       elDays.textContent = elBeats.textContent = elBreaths.textContent = "0";
-      elSun.textContent = "0"; elMoons.textContent = "0"; elNext.textContent = "—";
+      elSun.textContent = "0"; elMoons.textContent = "0"; elNext.textContent = "–";
       setHeat(0);
       return;
     }
@@ -79,7 +79,7 @@
 
     var age = Math.floor(ms / YEAR_MS);
     var born = DAYS[new Date(birthMs).getDay()];
-    sub.innerHTML = "You were born on a <strong>" + born + "</strong> — about <strong>" + age + "</strong> years, or " + fmt(Math.floor(days)) + " days, ago.";
+    sub.innerHTML = "You were born on a <strong>" + born + "</strong>, about <strong>" + age + "</strong> years, or " + fmt(Math.floor(days)) + " days, ago.";
     setHeat(Math.min(1, age / 90));   // a long life glows warmer
   }
 

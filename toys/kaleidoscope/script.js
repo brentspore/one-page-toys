@@ -5,7 +5,7 @@
   var ctx = canvas.getContext("2d");
 
   // Offscreen "object cell" — the moving shards live here; the kaleidoscope
-  // reflects a wedge of it around the centre.
+  // reflects a wedge of it around the center.
   var src = document.createElement("canvas");
   var sctx = src.getContext("2d");
 
@@ -26,7 +26,7 @@
 
   // ---- shards -------------------------------------------------------------
   // Jewel hues kept saturated & luminous; "lighter" blending mixes overlaps
-  // into fresh colours the way real glass chips do.
+  // into fresh colors the way real glass chips do.
   var HUES = [276, 318, 200, 168, 44, 14, 250, 130];
   var shards = [];
 
@@ -52,7 +52,7 @@
     var n = 16;
     for (var i = 0; i < n; i++) {
       var ang = (i / n) * Math.PI * 2 + rand(-0.5, 0.5);
-      // spread across the whole radius → concentric rings of colour in the reflection
+      // spread across the whole radius → concentric rings of color in the reflection
       var dist = rand(S * 0.05, S * 0.42);
       shards.push(makeShard(cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist, HUES[i % HUES.length]));
     }
@@ -165,7 +165,7 @@
     sctx.rotate(s.rot);
     sctx.scale(1, s.squish);
 
-    // soft outer bloom (restrained so each gem keeps its own colour)
+    // soft outer bloom (restrained so each gem keeps its own color)
     var g = sctx.createRadialGradient(0, 0, 0, 0, 0, s.r * 1.35);
     g.addColorStop(0, "hsla(" + s.hue + ",95%,62%,0.34)");
     g.addColorStop(0.55, "hsla(" + s.hue + ",92%,52%,0.13)");

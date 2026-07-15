@@ -61,7 +61,7 @@
       var canonical = document.querySelector('link[rel="canonical"]');
       var url = (canonical && canonical.href) || location.href;
       var name = (document.title || "One Page Toys").split("—")[0].trim();
-      var text = window.OPT_SHARE_TEXT || ("Come play " + name + " — a tiny free browser toy.");
+      var text = window.OPT_SHARE_TEXT || ("Come play " + name + ", a tiny free browser toy.");
       return { title: name + " — One Page Toys", text: text, url: url };
     }
 

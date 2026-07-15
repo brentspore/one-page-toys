@@ -159,7 +159,7 @@
     if (running) {
       toggleBtn.textContent = "Pause";
       toggleBtn.classList.add("btn--running");
-      statusEl.textContent = "Burning — the money is moving.";
+      statusEl.textContent = "Burning. The money is moving.";
     } else {
       toggleBtn.textContent = elapsedMs > 0 ? "Resume" : "Light the fuse";
       toggleBtn.classList.remove("btn--running");
@@ -170,7 +170,7 @@
   function pause() { elapsedMs = performance.now() - startPerf; setRunning(false); updateReadout(); }
   function reset() {
     elapsedMs = 0; setRunning(false); updateReadout();
-    statusEl.textContent = "Reset — back to zero.";
+    statusEl.textContent = "Reset. Back to zero.";
   }
 
   toggleBtn.addEventListener("click", function () { running ? pause() : start(); });

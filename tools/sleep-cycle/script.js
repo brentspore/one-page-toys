@@ -47,7 +47,7 @@
     odo.textContent = fmt(hero.t);
     odo.setAttribute("aria-label", fmt(hero.t));
     if (mode === "wake") {
-      sub.innerHTML = "Sleep now-ish and wake at <strong>" + fmt(hero.t) + "</strong> for a full " + dur(hero.n) + " — " + hero.n + " complete cycles.";
+      sub.innerHTML = "Sleep now-ish and wake at <strong>" + fmt(hero.t) + "</strong> for a full " + dur(hero.n) + " (" + hero.n + " complete cycles).";
     } else {
       sub.innerHTML = "To wake at " + fmt(base) + " rested, get to bed by <strong>" + fmt(hero.t) + "</strong> (" + dur(hero.n) + " of sleep).";
     }

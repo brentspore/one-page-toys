@@ -49,7 +49,7 @@
     // a gentle line that grows with what's ticked by
     if (w <= 0) { sub.innerHTML = "Pop in your hourly pay to start the meter."; }
     else if (secs < 8) { sub.innerHTML = "Just sitting here reading is worth <strong>" + money(earned) + "</strong> so far."; }
-    else { sub.innerHTML = "You've earned <strong>" + money(earned) + "</strong> since you opened this — " + hoursToText(secs / 3600) + " of screen time."; }
+    else { sub.innerHTML = "You've earned <strong>" + money(earned) + "</strong> since you opened this (" + hoursToText(secs / 3600) + " of screen time)."; }
     setHeat(Math.min(1, earned / (w * 0.5 + 1)));   // warms up as it climbs toward ~30 min of pay
   }
 
@@ -109,7 +109,7 @@
   });
   wageEl.addEventListener("input", function () { markPreset(); render(); });
   priceEl.addEventListener("input", render);
-  $("resetTimer").addEventListener("click", function () { startTs = performance.now(); status.textContent = "Clock reset — go again."; });
+  $("resetTimer").addEventListener("click", function () { startTs = performance.now(); status.textContent = "Clock reset. Go again."; });
 
   // ---- loop ----
   function frame() { if (mode === "earn") renderEarn(); requestAnimationFrame(frame); }

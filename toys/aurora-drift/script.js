@@ -1,6 +1,6 @@
 /* Aurora Drift — paint the northern lights.
  * Drag across the sky to summon shimmering vertical curtains; each "ray" sways
- * on a travelling wave and slowly fades. A faint aurora drifts on its own so
+ * on a traveling wave and slowly fades. A faint aurora drifts on its own so
  * the sky is alive on arrival. Snowy peaks + starfield ground the scene.
  */
 (function () {
@@ -95,7 +95,7 @@
   function drawRay(r) {
     var t = nowish, topY = r.baseY - r.h, steps = 8;
     var sat = 78, alpha = r.inten;
-    // curtain centre line follows a travelling wave
+    // curtain center line follows a traveling wave
     function cx(y) { return r.x + Math.sin(t * 0.5 * r.wob + r.phase + y * r.freq) * r.amp; }
     ctx.beginPath();
     var i, y;
@@ -188,7 +188,7 @@
     airBP.frequency.setTargetAtTime(1600 + Math.min(2400, speed * 4), actx.currentTime, 0.15);
   }
   function airSilence() { if (actx) airGain.gain.setTargetAtTime(0.0001, actx.currentTime, 0.3); }
-  // sparse high shimmer bell as colour appears
+  // sparse high shimmer bell as color appears
   var PENT = [659.25, 783.99, 880, 1046.5, 1318.5, 1567.98];
   var lastChime = -99;
   function shimmer() {

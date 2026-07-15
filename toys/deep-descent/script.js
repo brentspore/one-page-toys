@@ -23,7 +23,7 @@
 
   // ---------------- tunables ----------------
   var PR = 15;               // player radius (px)
-  var PPM = 30;              // px descended per "metre" of score
+  var PPM = 30;              // px descended per "meter" of score
   var NODE_DZ = 74;          // depth spacing of corridor control nodes
   var SPEED0 = 195, SPEEDMAX = 560, RAMP_DIST = 9200;
   var HW0 = 158, HWMIN = 72; // corridor half-width (px), start → deep
@@ -48,7 +48,7 @@
   var keyL = false, keyR = false, keyVel = 0;
 
   try { best = parseInt(localStorage.getItem("descent_best"), 10) || 0; } catch (e) { best = 0; }
-  bestEl.textContent = best > 0 ? "Best " + best + "m" : "Best —";
+  bestEl.textContent = best > 0 ? "Best " + best + "m" : "Best –";
 
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
   function lerp(a, b, t) { return a + (b - a) * t; }

@@ -218,8 +218,8 @@
     cardTitle.textContent = "Game over";
     cardBody.innerHTML = "You reached <b>" + reached + " numbers</b> in " + mode + ". " +
       (reached >= 12 ? "Frankly superhuman." :
-       reached >= CHIMP_BENCH ? "You matched a chimp — Ayumu would be impressed." :
-       "Ayumu the chimp gets to about <b>" + CHIMP_BENCH + "</b> — keep training.");
+       reached >= CHIMP_BENCH ? "You matched a chimp. Ayumu would be impressed." :
+       "Ayumu the chimp gets to about <b>" + CHIMP_BENCH + "</b>. Keep training.");
     chimp(reached >= CHIMP_BENCH ? "🙊" : "🐵", "", 600);
     startBtn.textContent = "Play again";
     overlay.classList.remove("is-hidden");

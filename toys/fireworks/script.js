@@ -75,7 +75,7 @@
         ang = (i / n) * 6.283; sp = B * 0.52;
         addSpark(x, y, Math.cos(ang) * sp, Math.sin(ang) * sp, hue, 1.15, 0.95);
       }
-    } else if (type === "double") {                  // two concentric rings, two colours
+    } else if (type === "double") {                  // two concentric rings, two colors
       var h2 = (hue + rand(120, 200)) % 360;
       n = 42; for (i = 0; i < n; i++) { ang = (i / n) * 6.283; sp = B * 0.56; addSpark(x, y, Math.cos(ang) * sp, Math.sin(ang) * sp, hue, 1.25, 0.95); }
       n = 30; for (i = 0; i < n; i++) { ang = (i / n) * 6.283 + 0.1; sp = B * 0.32; addSpark(x, y, Math.cos(ang) * sp, Math.sin(ang) * sp, h2, 1.05, 0.9); }
@@ -135,7 +135,7 @@
           hue: HUES[(Math.random() * HUES.length) | 0], type: subs[(Math.random() * subs.length) | 0]
         });
       }
-    } else { // peony / chrysanthemum — full sphere, often colour-changing + a pistil
+    } else { // peony / chrysanthemum — full sphere, often color-changing + a pistil
       n = type === "chrys" ? 124 : 96;
       var twoTone = Math.random() < 0.55, ht = (hue + rand(120, 210)) % 360;
       for (i = 0; i < n; i++) {
@@ -280,12 +280,12 @@
     for (i = 0; i < sparks.length; i++) {
       s = sparks[i];
       var k = s.life / s.max;
-      var lum = 46 + 20 * k;                 // keep saturated colour, not blown white
+      var lum = 46 + 20 * k;                 // keep saturated color, not blown white
       var a = Math.min(1, k * 1.5) * s.bright;
       // twinkle/strobe stars wink on and off; crackle flickers white near the end
       if (s.twinkle && Math.random() < 0.45) continue;
       var size = (s.trail ? 1.7 : 2.2) * (s.big ? 1.7 : 1) * (0.45 + k * 0.85);
-      // colour-changing stars drift from their start hue toward hue2 as they burn
+      // color-changing stars drift from their start hue toward hue2 as they burn
       var hue = s.hue2 === s.hue ? s.hue : (s.hue2 + (s.hue - s.hue2) * k);
       var col;
       if (s.crk && Math.random() < 0.5) col = "rgba(255,255,255," + a.toFixed(3) + ")";

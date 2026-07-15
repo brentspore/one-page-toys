@@ -70,7 +70,7 @@
   diffBtn.textContent = DIFFS[diffIdx].name;
 
   function bestKey() { return "maze_best_" + DIFFS[diffIdx].short; }
-  function loadBest() { try { var v = parseFloat(localStorage.getItem(bestKey())); best = isFinite(v) ? v : null; } catch (e) { best = null; } bestEl.textContent = best == null ? "Best —" : "Best " + fmt(best); }
+  function loadBest() { try { var v = parseFloat(localStorage.getItem(bestKey())); best = isFinite(v) ? v : null; } catch (e) { best = null; } bestEl.textContent = best == null ? "Best –" : "Best " + fmt(best); }
 
   function fmt(sec) {
     var m = Math.floor(sec / 60), s = sec - m * 60;
@@ -90,7 +90,7 @@
     mazeCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
     layout();
     renderMaze();
-    // keep the player pinned to its cell centre after a resize
+    // keep the player pinned to its cell center after a resize
     player.px = cx(player.x); player.py = cy(player.y);
     if (target) { target = null; glideDir = null; path = []; }
   }
@@ -192,7 +192,7 @@
   }
   function startRun() { if (!running && !won) { running = true; startT = perfNow() - elapsed * 1000; } }
 
-  // choose the next cell to glide toward once we arrive at a centre
+  // choose the next cell to glide toward once we arrive at a center
   function pickNext() {
     if (path.length) { target = path.shift(); glideDir = null; return; }
     var x = player.x, y = player.y;

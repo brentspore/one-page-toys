@@ -563,7 +563,7 @@
     strokePill.textContent = "Strokes " + strokes;
     parPill.textContent = "Par " + par;
     var d = totalStrokes - parSoFar;
-    scorePill.textContent = "Total " + (parSoFar === 0 ? "—" : (d === 0 ? "E" : (d > 0 ? "+" + d : String(d))));
+    scorePill.textContent = "Total " + (parSoFar === 0 ? "–" : (d === 0 ? "E" : (d > 0 ? "+" + d : String(d))));
   }
 
   function showToast(msg, ms) {
@@ -694,7 +694,7 @@
     if (cur.tunnel) { tryTunnel(); if (transit) return; }
 
     // ---- the hole: a funnel draws a good lag in; the flagstick (pin) at the
-    // centre BOUNCES a fast ball off (dead-on → straight back, off-centre →
+    // center BOUNCES a fast ball off (dead-on → straight back, off-center →
     // ricochets at an angle); the outer rim lets a fast graze SLIDE around the
     // edge and roll on. A slow ball simply nestles in. ----
     var dx = ball.x - cup.x, dy = ball.y - cup.y, d = Math.hypot(dx, dy) || 0.0001;
@@ -912,10 +912,10 @@
     var isBest = !best || totalStrokes < best;
     if (isBest) { try { localStorage.setItem(dkey, String(totalStrokes)); } catch (e) {} }
     ovTitle.textContent = "Round complete!";
-    ovText.innerHTML = "<b>" + dayLabel() + "</b>'s course, all 18 holes in <b>" + totalStrokes + "</b> strokes — <b>" + vs +
+    ovText.innerHTML = "<b>" + dayLabel() + "</b>'s course, all 18 holes in <b>" + totalStrokes + "</b> strokes, <b>" + vs +
       "</b>." + (aces ? " With <b>" + aces + "</b> hole-in-one" + (aces > 1 ? "s" : "") + "." : "") + " A brand-new course drops tomorrow.";
-    ovBest.textContent = isBest ? "★ NEW BEST TODAY — " + totalStrokes + " strokes" : "Today's best: " + best + " · this round: " + totalStrokes;
-    window.OPT_SHARE_TEXT = "I played today's Mini Golf course (par " + coursePar + ") in " + totalStrokes + " strokes — " + vs + ". Can you beat it?";
+    ovBest.textContent = isBest ? "★ NEW BEST TODAY: " + totalStrokes + " strokes" : "Today's best: " + best + " · this round: " + totalStrokes;
+    window.OPT_SHARE_TEXT = "I played today's Mini Golf course (par " + coursePar + ") in " + totalStrokes + " strokes, " + vs + ". Can you beat it?";
     overlay.removeAttribute("hidden");
     requestAnimationFrame(function () { overlay.classList.remove("is-hidden"); });
   }
@@ -1592,141 +1592,240 @@
   function frame(ts) {
     var dt = last ? Math.min((ts - last) / 1000, 0.05) : 0; last = ts;
     var sdt = dt * timeScale;
-    step(sdt); updateFx(dt); render();
+    step(sdt); updateFx(dt); updateRoll(); render();
     requestAnimationFrame(frame);
   }
 
   // ============================ AUDIO ============================
-  var actx = null, master = null, outGain = null, convo = null, wet = null;
+  // Physically-grounded voices (transient + body + tail), stereo-panned by
+  // on-course position, glued by a bus compressor and silked by a master
+  // lowpass; a smoothed convolver hall gives the hits air. Headless can't
+  // audition any of this — built for realism, final judgment by ear.
+  var actx = null, master = null, outGain = null, convo = null, comp = null, silk = null;
+  var rollGain = null, rollFilt = null, rollPan = null;
   function initAudio() {
     if (actx) return;
     try {
       actx = new (window.AudioContext || window.webkitAudioContext)();
       outGain = actx.createGain(); outGain.gain.value = soundOn ? 1 : 0;
-      master = actx.createGain(); master.gain.value = 0.9;
-      convo = actx.createConvolver(); convo.buffer = makeImpulse(1.0, 3);
-      wet = actx.createGain(); wet.gain.value = 0.12;
-      master.connect(outGain); wet.connect(convo); convo.connect(outGain); outGain.connect(actx.destination);
+      outGain.connect(actx.destination);
+      silk = actx.createBiquadFilter(); silk.type = "lowpass"; silk.frequency.value = 9500; silk.connect(outGain);
+      comp = actx.createDynamicsCompressor();
+      comp.threshold.value = -15; comp.ratio.value = 3; comp.attack.value = 0.003; comp.release.value = 0.25;
+      comp.connect(silk);
+      master = actx.createGain(); master.gain.value = 0.9; master.connect(comp);
+      convo = actx.createConvolver(); convo.buffer = makeImpulse(1.9, 2.6); convo.connect(comp);
+      // felt-roll bed: looped brown noise, gain/brightness keyed to ball speed
+      var rb = actx.createBuffer(1, actx.sampleRate * 2, actx.sampleRate), rd = rb.getChannelData(0), lastB = 0;
+      for (var i = 0; i < rd.length; i++) { var w = Math.random() * 2 - 1; lastB = (lastB + 0.02 * w) / 1.02; rd[i] = lastB * 3.5; }
+      var rsrc = actx.createBufferSource(); rsrc.buffer = rb; rsrc.loop = true;
+      rollFilt = actx.createBiquadFilter(); rollFilt.type = "lowpass"; rollFilt.frequency.value = 400;
+      rollGain = actx.createGain(); rollGain.gain.value = 0;
+      rsrc.connect(rollFilt); rollFilt.connect(rollGain);
+      var rTail = rollGain;
+      if (actx.createStereoPanner) { rollPan = actx.createStereoPanner(); rollGain.connect(rollPan); rTail = rollPan; }
+      rTail.connect(master); rsrc.start(0);
     } catch (e) { actx = null; }
   }
+  // smooth hall impulse: progressively low-passed noise (no grainy tail) with
+  // the lows filtered back out so the reverb never muddies the knocks
   function makeImpulse(dur, decay) {
     var n = Math.floor(actx.sampleRate * dur), buf = actx.createBuffer(2, n, actx.sampleRate);
-    for (var ch = 0; ch < 2; ch++) { var d = buf.getChannelData(ch); for (var i = 0; i < n; i++) { var t = i / n; d[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, decay); } }
+    for (var ch = 0; ch < 2; ch++) {
+      var d = buf.getChannelData(ch), lp = 0, hp = 0;
+      for (var i = 0; i < n; i++) {
+        var t = i / n;
+        var raw = (Math.random() * 2 - 1) * Math.pow(1 - t, decay);
+        lp += (raw - lp) * 0.22;
+        hp += (lp - hp) * 0.012;
+        d[i] = (lp - hp) * 1.7;
+      }
+    }
     return buf;
   }
   function unlock() { initAudio(); if (actx && actx.state === "suspended") actx.resume(); if (actx) { var b = actx.createBuffer(1, 1, 22050), s = actx.createBufferSource(); s.buffer = b; s.connect(actx.destination); s.start(0); } }
-  function bus(g) { g.connect(master); g.connect(wet); }
+  function panOf(x) { return Math.max(-0.8, Math.min(0.8, ((x / W) - 0.5) * 1.1)); }
+  // route a voice: pan by course position, dry to master, wetAmt into the hall
+  function bus(g, x, wetAmt) {
+    var tail = g;
+    if (x != null && actx.createStereoPanner) { var p = actx.createStereoPanner(); p.pan.value = panOf(x); g.connect(p); tail = p; }
+    tail.connect(master);
+    var w = actx.createGain(); w.gain.value = wetAmt == null ? 0.12 : wetAmt;
+    tail.connect(w); w.connect(convo);
+  }
   function noise(dur) { var n = Math.floor(actx.sampleRate * dur), b = actx.createBuffer(1, n, actx.sampleRate), d = b.getChannelData(0); for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; var s = actx.createBufferSource(); s.buffer = b; return s; }
+  // one damped resonant mode of a struck object
+  function mode(t, freq, drop, dur, vol, type, x, wetAmt, atk) {
+    var o = actx.createOscillator(); o.type = type || "sine"; o.frequency.setValueAtTime(freq, t);
+    if (drop && drop !== 1) o.frequency.exponentialRampToValueAtTime(freq * drop, t + dur);
+    var g = actx.createGain(); g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + (atk || 0.004));
+    g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+    o.connect(g); bus(g, x, wetAmt); o.start(t); o.stop(t + dur + 0.03);
+  }
+  // the contact transient: a short filtered burst of noise
+  function click(t, freq, q, dur, vol, x, wetAmt, type) {
+    var s = noise(dur + 0.01), f = actx.createBiquadFilter(); f.type = type || "bandpass"; f.frequency.value = freq; f.Q.value = q;
+    var g = actx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    s.connect(f); f.connect(g); bus(g, x, wetAmt); s.start(t); s.stop(t + dur + 0.02);
+  }
+
+  // putter face on a solid ball: bright contact click + hollow shell knock + low face thump
   function sndPutt(f) {
     if (!actx || !soundOn) return;
-    var t = actx.currentTime;
-    var o = actx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(240 + f * 120, t); o.frequency.exponentialRampToValueAtTime(120, t + 0.09);
-    var g = actx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12 + f * 0.12, t + 0.006); g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
-    o.connect(g); bus(g); o.start(t); o.stop(t + 0.15);
-    var s = noise(0.03), bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1800;
-    var g2 = actx.createGain(); g2.gain.setValueAtTime(0.08 + f * 0.06, t); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
-    s.connect(bp); bp.connect(g2); bus(g2); s.start(t); s.stop(t + 0.04);
+    var t = actx.currentTime, x = ball.x, v = rnd(0.96, 1.04);
+    click(t, 2600 + f * 1600, 1.1, 0.02, 0.10 + f * 0.14, x, 0.05);
+    mode(t, 870 * v, 0.72, 0.05, 0.05 + f * 0.09, "triangle", x, 0.05);
+    mode(t, 195 * v, 0.6, 0.07, 0.09 + f * 0.11, "sine", x, 0.06);
   }
+  // painted timber rail: woody knock — two inharmonic wood modes, brighter when fast
   var lastWall = 0;
   function sndWall() {
-    if (!actx || !soundOn) return; var now = actx.currentTime; if (now - lastWall < 0.04) return; lastWall = now;
+    if (!actx || !soundOn) return; var now = actx.currentTime; if (now - lastWall < 0.045) return; lastWall = now;
     var spd = Math.min(1, Math.hypot(ball.vx, ball.vy) / 900);
     if (spd < 0.05) return;
-    var s = noise(0.04), bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 380; bp.Q.value = 2;
-    var g = actx.createGain(); g.gain.setValueAtTime(0.12 * spd, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-    s.connect(bp); bp.connect(g); bus(g); s.start(now); s.stop(now + 0.06);
+    var x = ball.x, v = rnd(0.95, 1.05);
+    mode(now, 305 * v, 0.9, 0.09, 0.13 * spd, "sine", x, 0.08);
+    mode(now, 640 * v, 0.85, 0.05, 0.05 * spd, "triangle", x, 0.08);
+    click(now, 1500 + spd * 900, 1.4, 0.012, 0.06 * spd, x, 0.06);
+    if (spd > 0.5) mode(now, 130, 0.7, 0.05, 0.1 * (spd - 0.5), "sine", x, 0.05);
   }
+  // ball chattering on the cup lip: shallow metallic clank
   function sndRim(v) {
     if (!actx || !soundOn) return;
-    var now = actx.currentTime; if (sndRim._t && now - sndRim._t < 0.05) return; sndRim._t = now;
-    var o = actx.createOscillator(); o.type = "triangle"; o.frequency.setValueAtTime(430, now); o.frequency.exponentialRampToValueAtTime(250, now + 0.05);
-    var g = actx.createGain(); g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.05 + v * 0.07, now + 0.005); g.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
-    o.connect(g); bus(g); o.start(now); o.stop(now + 0.08);
-    var s = noise(0.03), bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 2500; bp.Q.value = 3;
-    var g2 = actx.createGain(); g2.gain.setValueAtTime(0.05 * v, now); g2.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-    s.connect(bp); bp.connect(g2); bus(g2); s.start(now); s.stop(now + 0.04);
+    var now = actx.currentTime; if (sndRim._t && now - sndRim._t < 0.06) return; sndRim._t = now;
+    var x = cup.x, d = rnd(0.96, 1.04);
+    click(now, 3100, 2.5, 0.012, 0.05 * v, x, 0.08);
+    mode(now, 460 * d, 0.94, 0.09, 0.06 + v * 0.06, "triangle", x, 0.1);
+    mode(now, 1280 * d, 0.9, 0.05, 0.035 * v, "sine", x, 0.1);
+    mode(now, 2540 * d, 0.9, 0.03, 0.02 * v, "sine", x, 0.1);
   }
+  // hollow aluminum flagstick: bright ping with real tube partials (1 : 2.76 : 5.40)
   function sndPin(v) {
     if (!actx || !soundOn) return;
-    var now = actx.currentTime; if (sndPin._t && now - sndPin._t < 0.05) return; sndPin._t = now;
-    // hollow metal flagstick knock: a short pitched body + a bright tick
-    var o = actx.createOscillator(); o.type = "triangle"; o.frequency.setValueAtTime(660, now); o.frequency.exponentialRampToValueAtTime(330, now + 0.06);
-    var g = actx.createGain(); g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.06 + v * 0.1, now + 0.004); g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-    o.connect(g); bus(g); o.start(now); o.stop(now + 0.14);
-    var s = noise(0.02), bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 3400; bp.Q.value = 4;
-    var g2 = actx.createGain(); g2.gain.setValueAtTime(0.06 * v, now); g2.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-    s.connect(bp); bp.connect(g2); bus(g2); s.start(now); s.stop(now + 0.03);
+    var now = actx.currentTime; if (sndPin._t && now - sndPin._t < 0.06) return; sndPin._t = now;
+    var x = cup.x, f0 = 640 * rnd(0.97, 1.03);
+    click(now, 4200, 2, 0.01, 0.06 * v, x, 0.1);
+    mode(now, f0, 0.985, 0.22, 0.07 + v * 0.09, "sine", x, 0.16);
+    mode(now, f0 * 2.76, 0.985, 0.14, 0.04 + v * 0.05, "sine", x, 0.16);
+    mode(now, f0 * 5.40, 0.985, 0.07, 0.025 * v, "sine", x, 0.16);
   }
+  // mushroom kicker: rubbery spring — pitch wobbles through a few cycles as it recoils
   function sndBoing(f) {
     if (!actx || !soundOn) return;
-    var t = actx.currentTime;
+    var t = actx.currentTime, x = ball.x;
     var penta = [0, 3, 5, 7, 10];
-    var st = penta[Math.min(4, Math.floor(f * 5))];
+    var f0 = 330 * Math.pow(2, penta[Math.min(4, Math.floor(f * 5))] / 12) * rnd(0.98, 1.02);
+    click(t, 900, 1, 0.015, 0.06 + f * 0.05, x, 0.08, "lowpass");
     var o = actx.createOscillator(); o.type = "sine";
-    var f0 = 340 * Math.pow(2, st / 12);
-    o.frequency.setValueAtTime(f0 * 0.8, t); o.frequency.exponentialRampToValueAtTime(f0 * 1.18, t + 0.03); o.frequency.exponentialRampToValueAtTime(f0, t + 0.1);
-    var g = actx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.14 + f * 0.1, t + 0.008); g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-    o.connect(g); bus(g); o.start(t); o.stop(t + 0.24);
+    o.frequency.setValueAtTime(f0 * 0.72, t);
+    o.frequency.exponentialRampToValueAtTime(f0 * 1.28, t + 0.05);
+    o.frequency.exponentialRampToValueAtTime(f0 * 0.9, t + 0.11);
+    o.frequency.exponentialRampToValueAtTime(f0 * 1.06, t + 0.16);
+    o.frequency.exponentialRampToValueAtTime(f0, t + 0.22);
+    var g = actx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.13 + f * 0.09, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
+    o.connect(g); bus(g, x, 0.14); o.start(t); o.stop(t + 0.28);
+    mode(t, f0 * 2.02, 0.95, 0.08, 0.03 + f * 0.03, "triangle", x, 0.14);
   }
+  // boulder: dense stone knock — dead, low, no ring
   function sndThunk() {
     if (!actx || !soundOn) return;
-    var t = actx.currentTime;
-    var o = actx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(190, t); o.frequency.exponentialRampToValueAtTime(90, t + 0.08);
-    var g = actx.createGain(); g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-    o.connect(g); bus(g); o.start(t); o.stop(t + 0.14);
-    var s = noise(0.03), bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 300; bp.Q.value = 1.6;
-    var g2 = actx.createGain(); g2.gain.setValueAtTime(0.16, t); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
-    s.connect(bp); bp.connect(g2); bus(g2); s.start(t); s.stop(t + 0.05);
+    var t = actx.currentTime, x = ball.x, v = rnd(0.95, 1.05);
+    click(t, 360, 1, 0.01, 0.14, x, 0.04, "lowpass");
+    mode(t, 138 * v, 0.8, 0.06, 0.18, "sine", x, 0.04);
+    mode(t, 226 * v, 0.8, 0.045, 0.08, "sine", x, 0.04);
   }
+  // pond plunk: deep impact thud + rising cavity "bloop" + splash wash + after-drips
   function sndSplash() {
     if (!actx || !soundOn) return;
-    var t = actx.currentTime;
-    var s = noise(0.3), lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.setValueAtTime(2200, t); lp.frequency.exponentialRampToValueAtTime(320, t + 0.28);
-    var g = actx.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-    s.connect(lp); lp.connect(g); bus(g); s.start(t); s.stop(t + 0.32);
-    var o = actx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(520, t + 0.05); o.frequency.exponentialRampToValueAtTime(170, t + 0.24);
-    var g2 = actx.createGain(); g2.gain.setValueAtTime(0.0001, t + 0.05); g2.gain.exponentialRampToValueAtTime(0.1, t + 0.08); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
-    o.connect(g2); bus(g2); o.start(t + 0.05); o.stop(t + 0.28);
+    var t = actx.currentTime, x = ball.x;
+    mode(t, 150, 0.39, 0.12, 0.16, "sine", x, 0.12);
+    var o = actx.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(230, t + 0.03); o.frequency.exponentialRampToValueAtTime(560, t + 0.17);
+    var g = actx.createGain(); g.gain.setValueAtTime(0.0001, t + 0.03); g.gain.exponentialRampToValueAtTime(0.12, t + 0.06); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    o.connect(g); bus(g, x, 0.16); o.start(t + 0.03); o.stop(t + 0.22);
+    var s = noise(0.3), bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 0.8;
+    bp.frequency.setValueAtTime(1050, t); bp.frequency.exponentialRampToValueAtTime(560, t + 0.26);
+    var g2 = actx.createGain(); g2.gain.setValueAtTime(0.001, t); g2.gain.exponentialRampToValueAtTime(0.12, t + 0.03); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    s.connect(bp); bp.connect(g2); bus(g2, x, 0.18); s.start(t); s.stop(t + 0.32);
+    for (var i = 0; i < 2; i++) {
+      var tt = t + 0.16 + i * 0.09 + rnd(0, 0.04), fd = rnd(800, 1300);
+      var od = actx.createOscillator(); od.type = "sine";
+      od.frequency.setValueAtTime(fd, tt); od.frequency.exponentialRampToValueAtTime(fd * 1.6, tt + 0.045);
+      var gd = actx.createGain(); gd.gain.setValueAtTime(0.0001, tt); gd.gain.exponentialRampToValueAtTime(0.03, tt + 0.012); gd.gain.exponentialRampToValueAtTime(0.001, tt + 0.05);
+      od.connect(gd); bus(gd, x, 0.2); od.start(tt); od.stop(tt + 0.07);
+    }
   }
+  // culvert: hollow pipe whoosh + resonant mouth
   function sndTunnel(exit) {
     if (!actx || !soundOn) return;
-    var t = actx.currentTime;
-    var o = actx.createOscillator(); o.type = "sine";
-    if (exit) { o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(300, t + 0.1); }
-    else { o.frequency.setValueAtTime(300, t); o.frequency.exponentialRampToValueAtTime(120, t + 0.12); }
-    var g = actx.createGain(); g.gain.setValueAtTime(0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
-    o.connect(g); bus(g); o.start(t); o.stop(t + 0.18);
+    var t = actx.currentTime, x = ball.x;
+    var s = noise(0.2), lp = actx.createBiquadFilter(); lp.type = "lowpass";
+    if (exit) { lp.frequency.setValueAtTime(340, t); lp.frequency.exponentialRampToValueAtTime(1200, t + 0.16); }
+    else { lp.frequency.setValueAtTime(1200, t); lp.frequency.exponentialRampToValueAtTime(340, t + 0.16); }
+    var g = actx.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.1, t + 0.03); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    s.connect(lp); lp.connect(g); bus(g, x, 0.14);
+    s.start(t); s.stop(t + 0.22);
+    click(t, 285, 9, 0.18, 0.05, x, 0.14);
+    mode(t, 235, 0.9, 0.05, 0.08, "sine", x, 0.1);
   }
+  // THE cup sound: the ball drops in, knocks the plastic bottom, rebounds
+  // smaller, and rattles to rest inside the hollow cavity
   function sndSink() {
     if (!actx || !soundOn) return;
-    var t = actx.currentTime;
-    var o = actx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(520, t); o.frequency.exponentialRampToValueAtTime(180, t + 0.18);
-    var g = actx.createGain(); g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-    o.connect(g); bus(g); o.start(t); o.stop(t + 0.24);
-    var s = noise(0.05), bp = actx.createBiquadFilter(); bp.type = "lowpass"; bp.frequency.value = 500;
-    var g2 = actx.createGain(); g2.gain.setValueAtTime(0.1, t + 0.02); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
-    s.connect(bp); bp.connect(g2); bus(g2); s.start(t + 0.02); s.stop(t + 0.12);
+    var t = actx.currentTime, x = cup.x;
+    function knock(tt, m) {
+      click(tt, 800, 1, 0.01, 0.11 * m, x, 0.16, "lowpass");
+      mode(tt, 425 * rnd(0.97, 1.05), 0.9, 0.07, 0.13 * m, "triangle", x, 0.2);
+      mode(tt, 152, 0.75, 0.05, 0.11 * m, "sine", x, 0.1);
+    }
+    knock(t, 1);
+    knock(t + 0.07 + rnd(0, 0.015), 0.55);
+    knock(t + 0.13 + rnd(0, 0.02), 0.3);
+    for (var i = 0; i < 4; i++) {
+      var tt = t + 0.18 + i * 0.026 + rnd(0, 0.012);
+      click(tt, rnd(1150, 1750), 3, 0.008, 0.028 * Math.pow(0.6, i), x, 0.18);
+    }
+  }
+  // celebratory voice: fundamental + chorus detune + soft octave, blooming in the hall
+  function pluck(tt, f0, vol, dur) {
+    var o = actx.createOscillator(); o.type = "triangle"; o.frequency.value = f0;
+    var o2 = actx.createOscillator(); o2.type = "triangle"; o2.frequency.value = f0 * Math.pow(2, 4 / 1200);
+    var o3 = actx.createOscillator(); o3.type = "sine"; o3.frequency.value = f0 * 2;
+    [[o, vol], [o2, vol * 0.4], [o3, vol * 0.28]].forEach(function (p) {
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(p[1], tt + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0008, tt + dur);
+      p[0].connect(g); bus(g, null, 0.3); p[0].start(tt); p[0].stop(tt + dur + 0.03);
+    });
   }
   function sndAce() {
     if (!actx || !soundOn) return;
     var t = actx.currentTime, notes = [0, 4, 7, 12, 16];
-    notes.forEach(function (st, i) { var o = actx.createOscillator(); o.type = "triangle"; o.frequency.value = 523.25 * Math.pow(2, st / 12); var g = actx.createGain(); var tt = t + 0.14 + i * 0.08; g.gain.setValueAtTime(0, tt); g.gain.linearRampToValueAtTime(0.16, tt + 0.01); g.gain.exponentialRampToValueAtTime(0.001, tt + 0.45); o.connect(g); bus(g); o.start(tt); o.stop(tt + 0.47); });
+    notes.forEach(function (st, i) { pluck(t + 0.14 + i * 0.08, 523.25 * Math.pow(2, st / 12), 0.13, 0.5); });
   }
   function sndFanfare() {
     if (!actx || !soundOn) return;
     var t = actx.currentTime;
     var seq = [0, 4, 7, 12, 7, 12, 16, 19];
-    seq.forEach(function (st, i) {
-      var o = actx.createOscillator(); o.type = "triangle"; o.frequency.value = 392 * Math.pow(2, st / 12);
-      var o2 = actx.createOscillator(); o2.type = "sine"; o2.frequency.value = 392 * Math.pow(2, st / 12) * 2;
-      var g = actx.createGain(); var tt = t + i * 0.11;
-      g.gain.setValueAtTime(0, tt); g.gain.linearRampToValueAtTime(0.15, tt + 0.02); g.gain.exponentialRampToValueAtTime(0.001, tt + 0.55);
-      var g2 = actx.createGain(); g2.gain.setValueAtTime(0, tt); g2.gain.linearRampToValueAtTime(0.04, tt + 0.02); g2.gain.exponentialRampToValueAtTime(0.001, tt + 0.4);
-      o.connect(g); bus(g); o2.connect(g2); bus(g2); o.start(tt); o.stop(tt + 0.57); o2.start(tt); o2.stop(tt + 0.42);
-    });
+    seq.forEach(function (st, i) { pluck(t + i * 0.11, 392 * Math.pow(2, st / 12), 0.12, 0.6); });
+    [0, 4, 7, 12].forEach(function (st) { pluck(t + seq.length * 0.11 + 0.1, 392 * Math.pow(2, st / 12), 0.07, 1.3); });
     var b = actx.createOscillator(); b.type = "sine"; b.frequency.setValueAtTime(196, t); b.frequency.exponentialRampToValueAtTime(261.6, t + 0.9);
-    var bg = actx.createGain(); bg.gain.setValueAtTime(0.0001, t); bg.gain.exponentialRampToValueAtTime(0.2, t + 0.06); bg.gain.exponentialRampToValueAtTime(0.001, t + 1.3);
-    b.connect(bg); bus(bg); b.start(t); b.stop(t + 1.35);
+    var bg = actx.createGain(); bg.gain.setValueAtTime(0.0001, t); bg.gain.exponentialRampToValueAtTime(0.16, t + 0.06); bg.gain.exponentialRampToValueAtTime(0.001, t + 1.3);
+    b.connect(bg); bus(bg, null, 0.25); b.start(t); b.stop(t + 1.35);
+  }
+  // continuous felt-roll bed: the quiet rumble of the ball on carpet, going
+  // gritty and bright over sand; keyed to speed, panned with the ball
+  function updateRoll() {
+    if (!actx || !rollGain) return;
+    var now = actx.currentTime;
+    var moving = !settled && sinking <= 0 && !transit && splashHide <= 0 && !done;
+    var sp = moving ? Math.min(1, Math.hypot(ball.vx, ball.vy) / 800) : 0;
+    if (sp < 0.05) sp = 0;
+    var sand = sp > 0 && inList(cur.sand, ball.x, ball.y, 0);
+    rollGain.gain.setTargetAtTime(!soundOn || sp === 0 ? 0 : (sand ? 0.05 + sp * 0.05 : sp * 0.045), now, 0.07);
+    rollFilt.frequency.setTargetAtTime(sand ? 1500 + sp * 600 : 320 + sp * 620, now, 0.09);
+    if (rollPan) rollPan.pan.setTargetAtTime(panOf(ball.x), now, 0.12);
   }
 
   // ---------- boot ----------

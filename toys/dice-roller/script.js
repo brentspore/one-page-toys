@@ -33,7 +33,7 @@
         || canvas.getContext("experimental-webgl", { antialias: true });
   if (!gl) {
     var f = document.createElement("p");
-    f.textContent = "This toy needs WebGL — try a different browser.";
+    f.textContent = "This toy needs WebGL. Try a different browser.";
     f.style.cssText = "position:fixed;inset:0;display:grid;place-items:center;color:#9aa;font:500 16px system-ui;text-align:center;padding:24px";
     document.body.appendChild(f);
     return;
@@ -495,7 +495,7 @@
   function setupThrow(d, i, count, rng, flick) {
     var lane = (count === 1) ? (rng() - 0.5) * 0.5 : (i / (count - 1) - 0.5) * 0.9;
     d.p = [lane * TRAY_X, 1.8 + rng() * 1.6, TRAY_ZF * 0.66 - rng() * 0.4];
-    var toFront = 6.2 + rng() * 2.4;   // travel forward to settle around table centre
+    var toFront = 6.2 + rng() * 2.4;   // travel forward to settle around table center
     d.v = [(rng() - 0.5) * 2.6 + flick[0], -1 - rng() * 2, toFront + flick[1]];
     d.w = [(rng() - 0.5) * 26, (rng() - 0.5) * 26, (rng() - 0.5) * 26];
     d.q = qNorm([rng() - 0.5, rng() - 0.5, rng() - 0.5, rng() - 0.5]);
@@ -566,7 +566,7 @@
     if (hasCrit) critCeremony(); else if (hasFumble && vals.length === 1) fumbleCeremony();
     playSettleChime(hasCrit);
   }
-  function renderBest() { if (elBest) elBest.textContent = "Best " + (best || "—") + (bestStreak ? "  ·  Streak " + bestStreak : ""); }
+  function renderBest() { if (elBest) elBest.textContent = "Best " + (best || "–") + (bestStreak ? "  ·  Streak " + bestStreak : ""); }
   function critCeremony() { if (elFlash) { elFlash.className = "flash flash--gold on"; setTimeout(function () { elFlash.className = "flash flash--gold"; }, 460); } burstConfetti(); }
   function fumbleCeremony() { if (elFlash) { elFlash.className = "flash flash--red on"; setTimeout(function () { elFlash.className = "flash flash--red"; }, 420); } }
   function burstConfetti() {
@@ -748,7 +748,7 @@
   clearBtn.addEventListener("click", function () { elHistory.innerHTML = ""; streak = 0; resetReadout(); renderBest(); });
   function resetReadout() {
     targetTotal = -1; countUpT = 1; displayTotal = 0;
-    if (elTotal) elTotal.textContent = "—";
+    if (elTotal) elTotal.textContent = "–";
     if (elLabel) elLabel.textContent = curCount > 1 ? "Total" : "Roll";
     if (elDetail) elDetail.textContent = curCount > 1 ? ("roll " + curCount + "d" + curSides) : ("roll a d" + curSides);
   }

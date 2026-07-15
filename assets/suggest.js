@@ -80,7 +80,7 @@
       '<form class="opt-suggest__form" novalidate>' +
         '<button type="button" class="opt-suggest__x" aria-label="Close">×</button>' +
         '<h2 class="opt-suggest__title" id="optSugTitle">Suggest a toy</h2>' +
-        '<p class="opt-suggest__sub">Got an idea for a toy or tool? Send it over — every suggestion is read.</p>' +
+        '<p class="opt-suggest__sub">Got an idea for a toy or tool? Send it over. Every suggestion is read.</p>' +
         '<label class="opt-suggest__label" for="optSugMsg">Your idea</label>' +
         '<textarea class="opt-suggest__ta" id="optSugMsg" maxlength="2000" placeholder="I’d love a toy that…"></textarea>' +
         '<label class="opt-suggest__label" for="optSugEmail">Email <span>(optional, for a reply)</span></label>' +
@@ -163,7 +163,7 @@
     if (msg.length < 4) { showErr("Please add a little more detail."); return; }
     var token = "";
     if (window.turnstile && widgetId !== null) { try { token = window.turnstile.getResponse(widgetId) || ""; } catch (x) {} }
-    if (!token) { showErr("Just a moment — finishing the spam check…"); loadTurnstile(); return; }
+    if (!token) { showErr("Just a moment, finishing the spam check…"); loadTurnstile(); return; }
     clearErr();
     sending = true;
     var send = dlg.querySelector(".opt-suggest__send");
@@ -182,11 +182,11 @@
         } else {
           sending = false; send.disabled = false; send.textContent = "Send suggestion";
           if (window.turnstile && widgetId !== null) { try { window.turnstile.reset(widgetId); } catch (x) {} }
-          showErr(res.j && res.j.error === "rate" ? "You’ve sent a few already — try again in a bit." : "Something went wrong sending that. Please try again.");
+          showErr(res.j && res.j.error === "rate" ? "You’ve sent a few already. Try again in a bit." : "Something went wrong sending that. Please try again.");
         }
       }).catch(function () {
         sending = false; send.disabled = false; send.textContent = "Send suggestion";
-        showErr("Network error — please try again.");
+        showErr("Network error. Please try again.");
       });
   }
 

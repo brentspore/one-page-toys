@@ -139,7 +139,7 @@
       var sp = 0.4 + speed * 0.16;
       var ps = this.parts, n = ps.length;
       var sepR = 26, sepR2 = sepR * sepR;
-      // separation — neighbours repel at close range, so the flock stays a
+      // separation — neighbors repel at close range, so the flock stays a
       // living, breathing cloud instead of collapsing into a single dot.
       for (var i = 0; i < n; i++) {
         var a = ps[i];
@@ -156,7 +156,7 @@
       for (i = 0; i < n; i++) {
         var p = ps[i];
         var dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy) + 1;
-        var pull = sp * Math.min(1, d / 130);              // attraction eases off near the centre
+        var pull = sp * Math.min(1, d / 130);              // attraction eases off near the center
         p.vx += (dx / d) * pull + (-dy / d) * sp * 0.34;    // pull toward target + perpendicular swirl
         p.vy += (dy / d) * pull + (dx / d) * sp * 0.34;
         p.vx += (Math.random() - 0.5) * 0.3; p.vy += (Math.random() - 0.5) * 0.3;

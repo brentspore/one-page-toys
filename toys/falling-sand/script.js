@@ -281,7 +281,7 @@
   }
 
   function acidStep(i, x, y) {
-    // dissolve a solid neighbour; acid is used up sometimes
+    // dissolve a solid neighbor; acid is used up sometimes
     var nb = [x > 0 ? i - 1 : -1, x < cols - 1 ? i + 1 : -1, y > 0 ? i - cols : -1, y < rows - 1 ? i + cols : -1];
     for (var j = 0; j < 4; j++) {
       var t = nb[j]; if (t < 0) continue;

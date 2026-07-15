@@ -215,7 +215,7 @@
     var mx = maxVal();
     setTimeout(function () {
       ovTitle.textContent = "No moves left";
-      ovText.innerHTML = "Biggest tile <b>" + mx + "</b> · score <b>" + score.toLocaleString() + "</b>. Nicely done — try to beat it.";
+      ovText.innerHTML = "Biggest tile <b>" + mx + "</b> · score <b>" + score.toLocaleString() + "</b>. Nicely done. Try to beat it.";
       ovBtn.textContent = "Play again";
       overlay.hidden = false;
       overlay.classList.remove("is-hidden");

@@ -1,5 +1,5 @@
 /* Lava Lamp — warm metaball blobs that rise, merge, and sink across the whole
- * viewport. The blur+contrast on the .goo layer fuses neighbouring blobs; motion
+ * viewport. The blur+contrast on the .goo layer fuses neighboring blobs; motion
  * is a slow vertical convection loop (heat at the bottom, cool at the top).
  * Interactive: drag / move over the lava to stir it — blobs are pushed away from
  * your pointer and then flow back into their convection path.

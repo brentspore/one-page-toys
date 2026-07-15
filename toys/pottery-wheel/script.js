@@ -30,8 +30,8 @@
   var ctx = canvas.getContext("2d");
   var hintEl = document.querySelector(".hint");
   var palette = document.getElementById("palette");
-  var HINT_THROW = "drag up & down the clay to shape it — then fire it to finish";
-  var HINT_PAINT = "pick a colour and drag to paint your pot";
+  var HINT_THROW = "drag up & down the clay to shape it, then fire it to finish";
+  var HINT_PAINT = "pick a color and drag to paint your pot";
 
   var W, H, DPR, cx, baseY, rimY, potH, R0, MINR, MAXR, WHEEL_R;
   var rad = new Float32Array(ROWS);     // current radius of each row (px)
@@ -49,7 +49,7 @@
   var speckles = [];            // seeded fixed speckle positions for speckled glazes
   var captionT = 0, captionText = "";
 
-  // decorating: a paint palette + wrap-around marks (angle a, row r, colour c)
+  // decorating: a paint palette + wrap-around marks (angle a, row r, color c)
   var PAINTS = [
     ["Ink", [40, 38, 44]], ["White", [238, 236, 230]], ["Cobalt", [44, 72, 152]],
     ["Gold", [208, 160, 66]], ["Coral", [198, 80, 62]], ["Sage", [120, 150, 116]], ["Plum", [122, 66, 122]]
@@ -64,7 +64,7 @@
   function lerpMat(a, b, t) {
     return { shadow: lerp3(a.shadow, b.shadow, t), base: lerp3(a.base, b.base, t), lit: lerp3(a.lit, b.lit, t), gloss: a.gloss + (b.gloss - a.gloss) * t };
   }
-  // incandescent colour of clay at firing temperature h (0..1): dull red -> orange -> yellow-white
+  // incandescent color of clay at firing temperature h (0..1): dull red -> orange -> yellow-white
   function incand(h) {
     if (h < 0.45) return lerp3([54, 8, 2], [184, 44, 8], h / 0.45);
     if (h < 0.78) return lerp3([184, 44, 8], [255, 124, 24], (h - 0.45) / 0.33);
@@ -72,13 +72,13 @@
   }
 
   // build the horizontal shading ramp for a material (shadow -> base -> lit).
-  // matte clay rides the colour ramp (never toward white); glossy glazes add a
+  // matte clay rides the color ramp (never toward white); glossy glazes add a
   // tighter, whiter specular so fired pieces read as glazed ceramic.
   function buildShade(mat) {
     shade = [];
     var gloss = mat.gloss || 0;
     var specP = 3 + gloss * 11;           // a crisp narrow glint when glossier
-    var specAmt = 0.10 + gloss * 0.30;    // restrained so the glaze colour still reads
+    var specAmt = 0.10 + gloss * 0.30;    // restrained so the glaze color still reads
     var tR = 210 + 45 * gloss, tG = 180 + 75 * gloss, tB = 150 + 105 * gloss;  // warm -> white
     var Lx = -0.55, Lz = 0.84;            // light from upper-left, toward viewer
     for (var k = 0; k <= 14; k++) {
@@ -225,7 +225,7 @@
       btn.type = "button";
       btn.className = "swatch" + (idx === 0 ? " is-active" : "");
       btn.style.background = "rgb(" + p[1][0] + "," + p[1][1] + "," + p[1][2] + ")";
-      btn.title = p[0]; btn.setAttribute("aria-label", "Paint colour: " + p[0]);
+      btn.title = p[0]; btn.setAttribute("aria-label", "Paint color: " + p[0]);
       btn.addEventListener("click", function () {
         paintCol = p[1]; unlock();
         var all = palette.querySelectorAll(".swatch");
@@ -506,7 +506,7 @@
       if (fireT < HEAT_UP) { heat = fireT / HEAT_UP; matMix = 0; }
       else if (fireT < HEAT_UP + SOAK) { heat = 1; matMix = 0.12 * ((fireT - HEAT_UP) / SOAK); }
       else if (fireT < HEAT_UP + SOAK + COOL) { var c = (fireT - HEAT_UP - SOAK) / COOL; heat = 1 - c; matMix = 0.12 + 0.88 * c; }
-      else { heat = 0; matMix = 1; captionText = "— " + glaze.name + " —"; captionT = 2.8; chime(); enterPainting(); }
+      else { heat = 0; matMix = 1; captionText = "– " + glaze.name + " –"; captionT = 2.8; chime(); enterPainting(); }
     }
     if (captionT > 0) captionT = Math.max(0, captionT - dt);
 

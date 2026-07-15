@@ -1,5 +1,5 @@
 /* Gravity Orbits — a little gravity sandbox.
- * A massive star sits at the centre; fling planets and they fall into orbit,
+ * A massive star sits at the center; fling planets and they fall into orbit,
  * tracing glowing elliptical trails, slingshotting off each other and merging.
  * Star-dominant + softened mutual gravity, semi-implicit Euler. Canvas 2D.
  */

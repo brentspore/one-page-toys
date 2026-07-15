@@ -14,7 +14,7 @@
   var W = 0, H = 0, DPR = 1;
 
   // tunables
-  var PERC = 66, SEP = 17, FEAR = 140;      // radii (px): neighbour / separation / cursor influence
+  var PERC = 66, SEP = 17, FEAR = 140;      // radii (px): neighbor / separation / cursor influence
   var MAXSPD = 205, MINSPD = 95, MAXF = 300;// px/s and px/s^2
   var W_SEP = 1.5, W_ALI = 1.35, W_COH = 1.5, W_CURSOR = 3.8, W_EDGE = 2.6;
   var EDGE = 90;                             // steer inward within this margin

@@ -22,7 +22,7 @@
   var GRAV = 2600;             // fall acceleration (px/s^2)
   var PERFECT = 0.05;          // |offset|/w below this = perfect
   var MISS = 0.86;             // |offset|/w above this = slides off (game over)
-  var PLACE_PENALTY = 0.42;    // instability added per unit off-centre
+  var PLACE_PENALTY = 0.42;    // instability added per unit off-center
   var PERFECT_HEAL = 0.10;     // instability removed on a perfect
   var HEIGHT_CREEP = 0.004;    // instability added each floor (slow ramp)
   var DROP_INHERIT = 0.4;      // how much of the crane's swing velocity the drop keeps
@@ -30,14 +30,14 @@
   var SWAY_FULL = 16;          // floors to reach full sway (difficulty ramps in over the first ~16)
   var SWAY_BASE = 0.010;       // base oscillation amplitude (radians) at full height
   var SWAY_INST = 0.075;       // extra amplitude per unit instability (a shaky tower sways more)
-  var COM_LEAN = 0.14;         // static lean (rad) per block-width of height-weighted centre-of-mass offset
+  var COM_LEAN = 0.14;         // static lean (rad) per block-width of height-weighted center-of-mass offset
   var SWAY_MAX = 0.16;         // hard cap on total tilt (~9°) so the top never leaves the screen
 
   var BW = 160, BH = 66;       // block size (set in resize)
   var GROUND_Y = 0;            // world y of the ground surface (bottom of base block)
 
   // state
-  var blocks = [];             // {x, y, w, h, hue} — y is world centre, up = smaller y
+  var blocks = [];             // {x, y, w, h, hue} — y is world center, up = smaller y
   var falling = null;          // {x, y, vy, w, h, hue}
   var crane = null;            // pendulum: {pivotX, pivotY, len, angMax, phase, ang, speed, x, y, w, h, hue}
   var camY = 0, camTarget = 0;
@@ -97,14 +97,14 @@
     spawnCrane();
   }
   function topBlock() { return blocks[blocks.length - 1]; }
-  function topY() { return topBlock().y - BH; }   // world y of the surface to land on (centre of the next block)
+  function topY() { return topBlock().y - BH; }   // world y of the surface to land on (center of the next block)
 
   function spawnCrane() {
     var t = topBlock();
     var speed = 1.35 + blocks.length * 0.035;      // swings faster as you climb
-    var yLow = t.y - BH * 2.2;                      // lowest point of the swing (block centre)
+    var yLow = t.y - BH * 2.2;                      // lowest point of the swing (block center)
     var len = Math.max(BH * 3, H * 0.6 - BH * 1.2 - 44);  // rope length → pivot sits near the top of screen
-    var pivotY = yLow - len;                        // fixed pivot, directly above the stack centre
+    var pivotY = yLow - len;                        // fixed pivot, directly above the stack center
     crane = {
       pivotX: W / 2, pivotY: pivotY, len: len, angMax: 0.95,   // fixed overhead pivot — rises with the tower, never drifts sideways
       phase: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.5),  // start part-way through a swing
@@ -126,7 +126,7 @@
     unlock();
     // inherit the crane's pendulum velocity so the block arcs with the swing:
     // released at a swing extreme it drops nearly straight; released through the
-    // centre it carries sideways momentum — so timing the release is the skill.
+    // center it carries sideways momentum — so timing the release is the skill.
     var craneVel = crane.len * Math.cos(crane.ang) * crane.angMax * Math.cos(crane.phase) * crane.speed;
     falling = { x: crane.x, y: crane.y, vy: 0, vx: craneVel * DROP_INHERIT, w: crane.w, h: crane.h, style: crane.style };
     crane = null;
@@ -223,7 +223,7 @@
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
 
   // The tower tilts on its base axis: a static lean toward its heavy side (from the
-  // height-weighted centre-of-mass offset — its "shape") plus an oscillating sway
+  // height-weighted center-of-mass offset — its "shape") plus an oscillating sway
   // that grows with height and instability. Capped so it never leaves the screen.
   function towerTheta() {
     var n = blocks.length;
@@ -262,7 +262,7 @@
       falling.vy += GRAV * dt;
       falling.y += falling.vy * dt;
       falling.x += (falling.vx || 0) * dt;    // horizontal momentum carried from the swing
-      var landY = topBlock().y - BH;          // centre y when resting on the stack
+      var landY = topBlock().y - BH;          // center y when resting on the stack
       if (falling.y >= landY) { falling.y = landY; place(); }
     }
 

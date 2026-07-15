@@ -313,7 +313,7 @@
     show(dealBtn, betting); show(clearBtn, betting && betTotal() > 0);
     dealBtn.disabled = betTotal() <= 0;
     dealBtn.style.opacity = betTotal() > 0 ? "1" : "0.5";
-    dealBtn.textContent = betTotal() > 0 ? "Deal — " + money(betTotal()) : "Place a bet";
+    dealBtn.textContent = betTotal() > 0 ? "Deal " + money(betTotal()) : "Place a bet";
     show(hitBtn, player); show(standBtn, player);
     show(dblBtn, player && curHand() && curHand().cards.length === 2 && bankroll >= curHand().bet);
     show(splitBtn, player && canSplit(curHand()));

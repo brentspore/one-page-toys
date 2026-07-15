@@ -182,7 +182,7 @@
   }
   function glowOverlay(tn, x1, y1, x2, y2) {
     if (tn.glow <= 0.01) return;
-    // soft warm bloom centred on the struck tongue (fades) — reads clearly as "this
+    // soft warm bloom centered on the struck tongue (fades) — reads clearly as "this
     // petal rang", instead of a flat additive wedge that blows toward white.
     var mx = (x1 + x2) / 2, my = (y1 + y2) / 2, len = Math.hypot(x2 - x1, y2 - y1);
     ctx.save(); ctx.globalCompositeOperation = "lighter"; capsule(x1, y1, x2, y2, tongueW); ctx.clip();

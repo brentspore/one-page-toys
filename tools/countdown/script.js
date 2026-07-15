@@ -68,7 +68,7 @@
   function render() {
     var d = targetDate();
     var name = (titleEl.value || "the big moment").trim();
-    if (!d) { odo.textContent = "—"; hh.textContent = mm.textContent = ss.textContent = "00"; sub.innerHTML = "Pick a target date &amp; time to start the countdown."; setHeat(0); return; }
+    if (!d) { odo.textContent = "–"; hh.textContent = mm.textContent = ss.textContent = "00"; sub.innerHTML = "Pick a target date &amp; time to start the countdown."; setHeat(0); return; }
 
     var diff = d.getTime() - Date.now(), past = diff < 0, a = Math.abs(diff);
     var days = Math.floor(a / 86400000), hrs = Math.floor(a / 3600000) % 24,
@@ -83,13 +83,13 @@
       sub.innerHTML = "🎉 <strong>" + name + "</strong> is basically here!";
       setHeat(1);
     } else if (past && a < 86400000) {
-      sub.innerHTML = "🎉 <strong>" + name + "</strong> is happening — it began " + fmtDate(d) + ".";
+      sub.innerHTML = "🎉 <strong>" + name + "</strong> is happening. It began " + fmtDate(d) + ".";
       setHeat(0.9);
     } else if (past) {
-      sub.innerHTML = "<strong>" + name + "</strong> was " + fmtDate(d) + " — " + days.toLocaleString("en-US") + " days ago.";
+      sub.innerHTML = "<strong>" + name + "</strong> was " + fmtDate(d) + " (" + days.toLocaleString("en-US") + " days ago).";
       setHeat(0.15);
     } else {
-      sub.innerHTML = "Until <strong>" + name + "</strong> — " + fmtDate(d) + ".";
+      sub.innerHTML = "Until <strong>" + name + "</strong>: " + fmtDate(d) + ".";
       setHeat(Math.max(0.2, Math.min(0.85, 1 - days / 120)));   // warmer as it approaches
     }
   }
@@ -220,7 +220,7 @@
   $("copyBtn").addEventListener("click", function () {
     writeHash();
     var url = location.href;
-    var done = function () { status.textContent = "Link copied — share your countdown!"; };
+    var done = function () { status.textContent = "Link copied. Share your countdown!"; };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, done);
     else { try { var t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); done(); } catch (e) { status.textContent = "Copy the address bar to share."; } }
   });

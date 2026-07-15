@@ -78,7 +78,7 @@
 
     statusEl.innerHTML = won
       ? "🏆 You won by " + (doSwitch ? "switching" : "staying") + "!"
-      : "🐐 No prize — you " + (doSwitch ? "switched" : "stayed") + ".";
+      : "🐐 No prize. You " + (doSwitch ? "switched" : "stayed") + ".";
     if (won) {
       var r = doors[prize].getBoundingClientRect();
       confetti(r.left + r.width / 2, r.top + r.height / 2);
@@ -102,11 +102,11 @@
     }
   }
 
-  function pct(w, p) { return p ? Math.round((w / p) * 100) + "%" : "—"; }
+  function pct(w, p) { return p ? Math.round((w / p) * 100) + "%" : "–"; }
   function renderStats() {
     playsEl.textContent = st.plays;
-    switchRateEl.textContent = st.switchPlays ? pct(st.switchWins, st.switchPlays) + " (" + st.switchPlays + ")" : "—";
-    stayRateEl.textContent = st.stayPlays ? pct(st.stayWins, st.stayPlays) + " (" + st.stayPlays + ")" : "—";
+    switchRateEl.textContent = st.switchPlays ? pct(st.switchWins, st.switchPlays) + " (" + st.switchPlays + ")" : "–";
+    stayRateEl.textContent = st.stayPlays ? pct(st.stayWins, st.stayPlays) + " (" + st.stayPlays + ")" : "–";
   }
 
   doors.forEach(function (d) { d.addEventListener("click", function () { pick(+d.dataset.i); }); });

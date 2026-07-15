@@ -84,7 +84,7 @@
     var c = dotAt(mx, my); if (!c) return;
     var last = chain[chain.length - 1];
     if (c.x === last.x && c.y === last.y) { loop = false; loopClose = null; return; }
-    if (Math.abs(c.x - last.x) + Math.abs(c.y - last.y) !== 1) return;   // must be an orthogonal neighbour
+    if (Math.abs(c.x - last.x) + Math.abs(c.y - last.y) !== 1) return;   // must be an orthogonal neighbor
     if (grid[c.x][c.y].c !== chainC) return;                             // same color only
     var idx = inChain(c.x, c.y);
     if (idx >= 0) {

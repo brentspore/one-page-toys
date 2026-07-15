@@ -16,7 +16,7 @@
         || canvas.getContext("experimental-webgl", { antialias: true });
   if (!gl) {
     var f = document.createElement("p");
-    f.textContent = "This toy needs WebGL — try a different browser.";
+    f.textContent = "This toy needs WebGL. Try a different browser.";
     f.style.cssText = "position:fixed;inset:0;display:grid;place-items:center;color:#9aa;font:500 16px system-ui;text-align:center;padding:24px";
     document.body.appendChild(f);
     return;
@@ -62,7 +62,7 @@
         // (1) POSITION — balls may never overlap (prevents pass-through, even a held ball)
         var overlap = theta[i] - theta[i + 1];
         if (overlap > 1e-5) {
-          if (pi) theta[i + 1] = theta[i];              // a held ball is fixed → move the free neighbour
+          if (pi) theta[i + 1] = theta[i];              // a held ball is fixed → move the free neighbor
           else if (pj) theta[i] = theta[i + 1];
           else { var m = 0.5 * overlap; theta[i] -= m; theta[i + 1] += m; }
           any = true;
@@ -71,7 +71,7 @@
         if (theta[i] >= theta[i + 1] - 0.002) {
           var closing = omega[i] - omega[i + 1];
           if (closing > 1e-4) {
-            if (pi) { if (omega[i + 1] < 0) omega[i + 1] = 0; }        // free neighbour can't push into the held ball
+            if (pi) { if (omega[i + 1] < 0) omega[i + 1] = 0; }        // free neighbor can't push into the held ball
             else if (pj) { if (omega[i] > 0) omega[i] = 0; }
             else {
               if (closing > CLICK_MIN && pinned < 0) click(closing, i); // silent while ANY ball is held (no jostle static)
@@ -243,7 +243,7 @@
     "  float m=dot(d,L);",
     "  float lit=clamp(m*0.5+0.5,0.0,1.0);",
     "  float grad=pow(lit,4.5)*0.14;",          // barely any fill — keep the body dark & reflective
-    "  float broad=pow(max(m,0.0),24.0)*1.4;",  // tighter soft key (no grey wash across the ball)
+    "  float broad=pow(max(m,0.0),24.0)*1.4;",  // tighter soft key (no gray wash across the ball)
     "  float hot=pow(max(m,0.0),90.0)*7.0;",    // bright defined highlight
     "  float core=pow(max(m,0.0),1100.0)*18.0;",// blown-white source
     "  vec3 base=vec3(0.0025,0.003,0.005);",    // near-black reflective body",

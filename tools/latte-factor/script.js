@@ -1,5 +1,5 @@
 /* The Latte Factor — what a small daily habit really costs.
- * A daily amount, totalled over the years — flip to "invested at 7%" to see the
+ * A daily amount, totaled over the years — flip to "invested at 7%" to see the
  * future value if you'd put it in the market instead (ordinary annuity).
  * Vanilla, self-contained, theme-aware. */
 (function () {
@@ -45,7 +45,7 @@
     } else if (invest) {
       sub.innerHTML = "That daily " + habitName + ", invested, could grow to <strong>" + money(over(30)) + "</strong> in 30 years.";
     } else {
-      sub.innerHTML = "Your daily " + habitName + " runs <strong>" + money(yearly) + "</strong> a year — " + money(yearly / 12) + " a month.";
+      sub.innerHTML = "Your daily " + habitName + " runs <strong>" + money(yearly) + "</strong> a year (" + money(yearly / 12) + " a month).";
     }
     setHeat(Math.min(1, ten / 200000));
   }

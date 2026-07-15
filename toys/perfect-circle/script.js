@@ -16,7 +16,7 @@
   function revealCta(score) {
     if (typeof score === "number") {
       window.OPT_SHARE_TEXT = "I scored " + score.toFixed(1) +
-        "% on Perfect Circle — can you draw a rounder circle?";
+        "% on Perfect Circle. Can you draw a rounder circle?";
     }
     if (ctaEl) ctaEl.classList.add("is-shown");
   }
@@ -43,7 +43,7 @@
   updateBestChip();
 
   function updateBestChip() {
-    if (bestChip) bestChip.textContent = "BEST " + (best == null ? "—" : best.toFixed(1) + "%");
+    if (bestChip) bestChip.textContent = "BEST " + (best == null ? "–" : best.toFixed(1) + "%");
   }
 
   function rand(a, b) { return a + Math.random() * (b - a); }

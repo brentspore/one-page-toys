@@ -102,7 +102,7 @@
     simon.classList.remove("is-locked");
     hubLabel.textContent = "Your turn";
     hub.classList.add("is-pulse");
-    setStatus("Your turn — repeat the pattern", "good");
+    setStatus("Your turn: repeat the pattern", "good");
   }
   function gameOver() {
     state = "over"; clearTimers();
@@ -114,7 +114,7 @@
     hubBest.textContent = "Best " + best;
     hubNum.textContent = "✕";
     hubLabel.textContent = "Retry";
-    setStatus("Game over — you reached " + reached + ". Tap the center to try again.", "bad");
+    setStatus("Game over. You reached " + reached + ". Tap the center to try again.", "bad");
     track("echo_over", { reached: reached, best: best });
   }
   function handlePad(i) {
@@ -127,7 +127,7 @@
         state = "show";
         simon.classList.add("is-locked");
         hub.classList.remove("is-pulse");
-        setStatus("Nice — next round", "good");
+        setStatus("Nice. Next round", "good");
         later(nextRound, 760);
       }
     } else {
