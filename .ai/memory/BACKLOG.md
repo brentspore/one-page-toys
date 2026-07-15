@@ -161,22 +161,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** AI suggestion (2026-07-05). A glass globe (specular + refraction-ish distortion of the tiny scene) over a carved base; shake via drag-flick (or device motion) — hundreds of snow particles swirl with fluid-ish turbulence then settle drift-by-drift; tiny scene inside (cabin + pines, lantern-lit; maybe 2-3 scenes to cycle). Glass glints, warm interior glow, falling-settled snow accumulates. Audio: soft glass-muffled swirl, twinkling music-box phrase that plays as snow falls (reuse Music Box voice), settling hush. Real card + OG; full pipeline.
 ---
-### New toy: Fireflies at Dusk
-
-**Why it matters:** Catch-and-release fireflies in a jar on a summer evening — nostalgia distilled; gentle, luminous, and quietly interactive. Category `wellness`.
-
-**When to revisit:** Cozy round (summer feature).
-
-**Notes:** AI suggestion (2026-07-05). A dusk meadow-edge scene; fireflies drift and blink in organic patterns (synchronizing waves occasionally — real firefly behavior); move a cupped-hand/jar cursor to gently catch them (they glow inside the jar, lighting your corner of the scene); open the lid to release a swirl of light. No score — just the ritual. Audio: cricket bed, soft jar clink, a warm swell when the jar glows bright. Design: deep blue-hour palette, bloom on every lantern-belly. Real card + OG; full pipeline.
----
-### New toy: Thunderstorm Maker
-
-**Why it matters:** The classic ambient-mixer, done to this site's audio bar — layer rain, thunder, wind, and distance into your perfect storm and just… stay a while. Enormous cozy appeal. Category `wellness`.
-
-**When to revisit:** Next wellness round; small-medium scope (audio-first build).
-
-**Notes:** AI suggestion (2026-07-05). Elegant sliders/dials: rain intensity (drizzle→downpour), thunder frequency + distance (delay + lowpass = far rumbles vs. near cracks), wind, rain-on-surface character (leaves/tin roof/window). All synthesized per the audio bar (layered filtered noise beds, the Rain-on-a-Window + Fireworks boom know-how). Visual: a living storm vignette that matches the mix — clouds darken, rain streaks thicken, lightning flashes precede thunder by the right distance-delay, wind bends the trees. A "sleep" dim mode. Real card + OG; full pipeline.
----
 ### New toy: Minesweeper
 
 **Why it matters:** A beloved classic logic game missing from the collection — instantly recognized, deeply replayable, quick to build well. Category `game`/puzzle.
@@ -305,22 +289,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** AI suggestion (2026-07-05). Tap the ground to plant; the tree grows branch-by-branch (animated L-system with slight randomness); sliders/chips for branch angle, lushness, and season (spring blossom / summer green / autumn fire / winter bare + snow); drag to bend the wind through the canopy (leaves flutter, petals fall). Multiple trees compose a grove scene. Audio: soft creak/rustle that follows wind strength, birdsong at full bloom. Real card + OG; full pipeline.
 ---
-### New toy: Grass Field in Wind
-
-**Why it matters:** Drag gusts through a golden meadow and watch waves roll across it — the pure "touch the landscape" fantasy; wind made visible. Category `wellness`/visual.
-
-**When to revisit:** Next wellness/visual round.
-
-**Notes:** AI suggestion (2026-07-05). Thousands of grass blades (instanced strokes with per-blade phase; canvas-2D batched or WebGL for density) swaying to a wind field; drag = a gust that bends a traveling wave through the field (blades bow + shimmer as it passes); ambient breeze keeps it alive; fireflies or seeds drift at dusk; time-of-day tint chip (noon gold / dusk rose / night silver). Audio: wind bed that follows gust strength + soft grass hiss (bandpassed noise), distant birds by day, crickets at night. Real card + OG; full pipeline.
----
-### New toy: Tide Pool
-
-**Why it matters:** Waves washing over sand — foam lines, retreating shimmer, and small discoveries (shells, anemones that shy from touch). A beach in a browser tab. Category `wellness`.
-
-**When to revisit:** Next wellness round.
-
-**Notes:** AI suggestion (2026-07-05). A gentle shoreline loop: waves slide up the sand (translucent water edge + foam lace that decays), retreat leaving wet-sand sheen that dries; tap the water to splash, touch anemones to make them shy closed, flip small shells; maybe write in the wet sand with a finger and watch the next wave erase it (the poetic hook). Audio: the wave cycle (approach hiss, wash, retreating fizz — layered noise beds), gull far off. Real card + OG; full pipeline.
----
 ### New toy: Bonsai Pruning
 
 **Why it matters:** The Pottery Wheel of plants — slow, deliberate shaping of a living thing; snip a branch, watch it heal and regrow, care for it across a sitting. Deeply calm. Category `wellness`.
@@ -352,14 +320,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 **When to revisit:** Next tools round; small scope, high virality.
 
 **Notes:** AI suggestion (2026-07-05). Editable option list (2-12 entries) → a colorful wheel; drag-flick to spin with real angular momentum + friction + a ticking flapper (pointer physics against pegs); dramatic slow-down, winner celebration. Presets: dinner picker, chore assigner, yes/no/maybe. **Share via URL hash** (like Countdown) so a specific wheel is linkable; last wheel in `localStorage`. Geist tool-family styling (light/dark) OR full-bleed toy treatment — decide at build. Audio: accelerating tick-tick-tick that slows to the verdict, fanfare. CSS-motif or rendered card + OG; full pipeline.
----
-### New toy: Radio Dial (numbers station)
-
-**Why it matters:** Pure atmosphere — turn a heavy analog dial through synthesized static and drift past ghost stations (a numbers voice? a distant waltz? morse?). Unique mood-piece unlike anything on the site. Category `audio`.
-
-**When to revisit:** Next audio/mood round.
-
-**Notes:** AI suggestion (2026-07-05). A beautiful vintage radio face; drag the needle across the band — filtered-noise static whose texture shifts, with stations at hidden frequencies that fade in through the crackle as you approach (synthesized: shortwave interval tones, a lonely piano loop, morse bursts, a "numbers" pattern via synthesized vocal-ish formants or tone-coded digits, whale-song-like sweeps). Fine-tuning knob narrows the crackle; signal-strength meter twitches. All audio synthesized (no samples, per the audio bar) — bandpassed noise beds, heterodyne whistles, AM warble. Design: warm dial lamp glow, brushed metal + bakelite, VU needle physics. Easter-egg station log in `localStorage`. Real card + OG; full pipeline.
 ---
 ### New toy: Rain Stick
 
@@ -561,4 +521,5 @@ Items in this file follow the structure below so that any AI tool or human editi
 **When to revisit:** Next time we're building new toys (owner picks candidates via AskUserQuestion). Quick, satisfying build.
 
 **Notes:** Owner idea (2026-07-02): "a randomly generated maze you have to get through." Procedurally generate a **perfect maze** (recursive backtracker / DFS, or Prim's) on a grid; player navigates start→exit via swipe / arrow keys / tap-to-path; new maze each play, difficulty scales via grid size. Add tension with a subtle "fog" / limited-view radius or a minimap; **timer + best-time** in `localStorage`, confetti on a new best. Optional path-trail so you can see where you've been. Must be **interactive + a curated little world** per the design quality bar (lighting, palette, depth — not flat cells; e.g. hedge maze / stone dungeon / neon grid). Touch controls (swipe to move) for mobile. Synth footstep / wall-bump / solve voice per the audio quality bar. Real rendered card + OG; full add-a-toy pipeline (registry/sitemap/NL/card+`:not()`/og-gen, hub cache-bust).
+---
 ---
