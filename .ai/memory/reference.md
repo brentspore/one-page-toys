@@ -13,10 +13,10 @@ type: reference
   - Scaffold new tool: `node scripts/implement-new-25.js` (references new25-impls-{a,b}.cjs templates)
   - Verify changes: Playwright is a devDependency — drive headless Chromium with `NODE_PATH="$(pwd)/node_modules" node <script>` to screenshot pages
 - **External systems:**
-  - Hosting: GitHub Pages (CNAME → onepagetoys.com); no CI — push to main deploys automatically
+  - Hosting: **Vercel** (migrated off GitHub Pages ~2026-07-14; the leftover GitHub `pages-build-deployment` action still runs but does NOT serve the live site — ignore it). Push to `main` → Vercel auto-deploys (~1-2 min, no build step for this static site). The apex **onepagetoys.com 308-redirects to www.onepagetoys.com** — so **live-verify against `https://www.onepagetoys.com/…`** (or `curl -L`); grepping the bare apex returns only the redirect stub, which reads as "stale"/empty.
   - Analytics: Google Analytics GA-4 (G-VBVJ93GL8L) on every page
   - Fonts: Google Fonts (Outfit, Plus Jakarta Sans)
   - No database, no backend, no auth, no email, no API keys in codebase
 - **Secrets/env:** None. No .env file, no server-side secrets.
-- **Deployment notes:** Push to main branch → GitHub Pages deploys automatically. No build step required.
+- **Deployment notes:** Push to `main` → **Vercel** auto-deploys (~1-2 min). No build step (static site). Verify live at **www.onepagetoys.com** (apex redirects to www). The GitHub Pages action is a legacy leftover; don't rely on its "success" to mean the live site updated.
 - **Builder/sync notes:** Hand-coded HTML/CSS/JS. Not Lovable-generated. Built with Gemini AI assistance. No builder sync.
