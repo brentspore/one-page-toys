@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "pool":
+    "pool 8 ball eight ball billiards cue sports snooker pocket table green felt break rack cue stick chalk english spin bank shot sink pot the balls corner pocket side pocket solids stripes clear the table pass and play two player physics aim game bar pub",
   "tip-splitter":
     "tip splitter tip calculator bill splitter split the bill split a check gratuity restaurant dining dinner waiter server how much to tip tip percentage 15 18 20 percent per person round up even split share the bill group money finance calculator utility tool",
   "pomodoro":

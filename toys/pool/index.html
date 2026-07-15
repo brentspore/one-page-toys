@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Pool — One Page Toys</title>
+    <meta name="description" content="A pocket pool table with real rolling physics. Drag back from the cue ball to aim and set power, add spin, and sink the balls. Play solo to clear the table in the fewest shots, or pass-and-play 8-ball with a friend. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/pool/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0b1a12" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Pool — One Page Toys" />
+    <meta property="og:description" content="Real rolling physics on green felt. Drag back to aim, add spin, and sink the balls. Solo clear-the-table or pass-and-play 8-ball." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/pool/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/pool.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pool — One Page Toys" />
+    <meta name="twitter:description" content="Real rolling physics on green felt. Drag back to aim, add spin, and sink the balls." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/pool.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Pool",
+        "url": "https://onepagetoys.com/toys/pool/",
+        "description": "A top-down pocket pool table with real 2D rolling physics. Drag back from the cue ball to aim and set power, add spin, and sink the balls. Solo clear-the-table mode or pass-and-play 8-ball.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud">
+      <span class="hud__msg" id="hudMsg">Break</span>
+      <span class="hud__sub" id="hudSub"></span>
+    </div>
+
+    <div class="topbtns">
+      <button type="button" class="pill" id="modeBtn" aria-label="Switch mode">Solo</button>
+      <button type="button" class="pill" id="newBtn" aria-label="New game">Rerack</button>
+      <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+    </div>
+
+    <!-- spin picker: tap the cue-ball diagram to set contact point -->
+    <div class="spin" id="spin" aria-label="Cue ball spin">
+      <div class="spin__ball" id="spinBall"><span class="spin__dot" id="spinDot"></span></div>
+      <span class="spin__cap">spin</span>
+    </div>
+
+    <div class="overlay" id="overlay" hidden>
+      <div class="panel">
+        <h1 class="panel__title" id="ovTitle">Pool</h1>
+        <p class="panel__text" id="ovText">Drag back from the cue ball to aim and set power, then release to shoot. Tap the small ball to add spin. Solo: clear the table in as few shots as you can. Or switch to pass-and-play 8-ball for two.</p>
+        <button type="button" class="play-btn" id="ovBtn">Rack 'em</button>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 077</span>
+      <span class="frame__corner frame__corner--tr">Pool</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag back from the cue ball to aim &amp; power · release to shoot</p>
+
+    <script src="script.js?v=4" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=4" defer></script>
+  </body>
+</html>

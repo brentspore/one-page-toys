@@ -1,5 +1,27 @@
 [
   {
+    "slug": "pool",
+    "name": "Pool",
+    "shortDescription": "A pocket pool table with real rolling physics. Drag back from the cue ball to aim and set power, add spin, and sink the balls. Play solo to clear the table in the fewest shots, or pass-and-play 8-ball with a friend.",
+    "category": "game",
+    "tags": [
+      "pool",
+      "8-ball",
+      "eight-ball",
+      "billiards",
+      "cue-sports",
+      "break",
+      "table",
+      "physics",
+      "aim",
+      "pass-and-play",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/pool/",
+    "related": []
+  },
+  {
     "slug": "world-clock",
     "name": "World Clock Overlap",
     "shortDescription": "See when everyone is awake. Pick a few cities and stacked day and night bars show the green window where your waking hours overlap. Drag the now-line to scrub through the day and read every local time at once.",
