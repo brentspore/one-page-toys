@@ -67,6 +67,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Pool / 8-Ball (billiards)
 
+**Status:** done
+
 **Why it matters:** A beloved classic with instantly satisfying physics — the crack of the break, balls rolling true, the corner-pocket drop. Broad appeal, endless replay, and it photographs beautifully (green felt + gloss balls). Category `game`.
 
 **When to revisit:** Next game round with appetite for a medium-large physics build (ball-ball collision + pockets + cue feel are the meat).
@@ -164,6 +166,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** AI suggestion (2026-07-05). A glass globe (specular + refraction-ish distortion of the tiny scene) over a carved base; shake via drag-flick (or device motion) — hundreds of snow particles swirl with fluid-ish turbulence then settle drift-by-drift; tiny scene inside (cabin + pines, lantern-lit; maybe 2-3 scenes to cycle). Glass glints, warm interior glow, falling-settled snow accumulates. Audio: soft glass-muffled swirl, twinkling music-box phrase that plays as snow falls (reuse Music Box voice), settling hush. Real card + OG; full pipeline.
 ---
 ### New toy: Minesweeper
+
+**Status:** done
 
 **Why it matters:** A beloved classic logic game missing from the collection — instantly recognized, deeply replayable, quick to build well. Category `game`/puzzle.
 
