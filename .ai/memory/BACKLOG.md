@@ -103,6 +103,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Mandelbrot Infinite Zoom (WebGL)
 
+**Status:** next
+
 **Why it matters:** The definitive mesmerizing math-visual — smooth infinite-feeling zoom into the fractal with flowing palettes. A perfect fit for the proven zero-dep WebGL capability (fragment-shader compute). Category `visual`.
 
 **When to revisit:** Next visual round; medium scope (precision handling is the crux).
