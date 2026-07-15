@@ -8,7 +8,7 @@ type: reference
 - **Remote repo:** https://github.com/brentspore/one-page-toys
 - **Commands:**
   - Dev server: `python3 -m http.server 3000` (no build pipeline; serve static files)
-  - Sync registry paths: `node scripts/sync-registry-paths.cjs` (auto-sets `path` field in tools-registry.json from category)
+  - ⚠ DO NOT RUN `node scripts/sync-registry-paths.cjs` — it is a **one-off migration**, not a routine command: it alphabetically SORTS the registry (breaks newest-first), rewrites every `path` to `/index.html` form (convention is dir-form `tools/<slug>/`), and injects stale hardcoded entries. It corrupted the registry once (2026-07-14); to add a toy just prepend the entry by hand. Only `build-sitemap.cjs` is safe/routine.
   - Rebuild sitemap: `node scripts/build-sitemap.cjs` (regenerates sitemap.xml from registry)
   - Scaffold new tool: `node scripts/implement-new-25.js` (references new25-impls-{a,b}.cjs templates)
   - Verify changes: Playwright is a devDependency — drive headless Chromium with `NODE_PATH="$(pwd)/node_modules" node <script>` to screenshot pages
