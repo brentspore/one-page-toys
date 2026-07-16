@@ -1168,6 +1168,7 @@ var PARTNER_META = {
   "5secondgame.com": { icon: "/assets/partners/five-second-game.png", blurb: "Stop the clock at exactly five seconds." },
   "globalwar.app": { icon: "/assets/partners/global-war.png", blurb: "Turn-based world-domination strategy." },
   "thetrailgame.com": { icon: "/assets/partners/the-trail-game.png", blurb: "One line, every dot: the daily path puzzle." },
+  "spellingblocks.com": { icon: "/assets/partners/spelling-blocks.png", blurb: "Twelve letter blocks, use every one daily." },
   "meshgradientstudio.com": { icon: "/assets/partners/mesh-gradient-studio.png?v=2", blurb: "Generate lush mesh gradients, export anywhere." },
   "buildutilities.com": { icon: "/assets/partners/buildutilities.png", blurb: "Tiny, fast utilities for building software." },
   "thisstuffisamazing.com": { icon: "/assets/partners/this-stuff-is-amazing.png", blurb: "Genuinely great picks from trusted voices." },
