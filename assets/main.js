@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "spelling-blocks":
+    "spelling blocks word game anagram scramble unscramble letters build words vocabulary spelling puzzle wooden letter blocks alphabet tiles make words word builder daily word puzzle beat par no leftovers use every letter cozy relaxing brain teaser spellingblocks practice word search wordle-like letter sort partition twelve blocks",
   "trail-game":
     "trail game the trail game zip linkedin zip one line path puzzle daily number path fill the grid hamiltonian connect the dots in order logic puzzle brain teaser deduction single line snake path draw a line thetrailgame practice number chain flow one stroke unicursal grid game word game adjacent",
   "slime-mold":

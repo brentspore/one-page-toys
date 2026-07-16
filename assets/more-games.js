@@ -34,6 +34,14 @@
       "slug": "trail-game"
     },
     {
+      "name": "Spelling Blocks",
+      "tagline": "Anagram word puzzle",
+      "url": "https://onepagetoys.com/toys/spelling-blocks/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23ece0c2'/><rect x='5' y='5' width='10' height='10' rx='2.5' fill='%232b59c3'/><rect x='17' y='5' width='10' height='10' rx='2.5' fill='%23c7402d'/><rect x='5' y='17' width='10' height='10' rx='2.5' fill='%233e8a4e'/><rect x='17' y='17' width='10' height='10' rx='2.5' fill='%23f2b63c'/><g font-family='sans-serif' font-size='7' font-weight='800' text-anchor='middle'><text x='10' y='12.6' fill='%23f1e7d0'>W</text><text x='22' y='12.6' fill='%23f1e7d0'>O</text><text x='10' y='24.6' fill='%23f1e7d0'>R</text><text x='22' y='24.6' fill='%2326221b'>D</text></g></svg>",
+      "initial": "S",
+      "slug": "spelling-blocks"
+    },
+    {
       "name": "Alpenglow",
       "tagline": "Mountain glow",
       "url": "https://onepagetoys.com/toys/alpenglow/",

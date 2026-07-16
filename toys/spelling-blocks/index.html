@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Spelling Blocks — Practice Puzzles — One Page Toys</title>
+    <meta name="description" content="Practice Spelling Blocks: sort twelve lettered blocks into real words until none are left, and beat par. Endless random word puzzles here — then play today's daily challenge, the same blocks for everyone worldwide, at spellingblocks.com. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/spelling-blocks/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#c7402d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Spelling Blocks — Practice Puzzles" />
+    <meta property="og:description" content="Sort twelve lettered blocks into real words until none are left. Endless random practice puzzles — then play today's daily against everyone at spellingblocks.com." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/spelling-blocks/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/spelling-blocks.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Spelling Blocks — Practice Puzzles" />
+    <meta name="twitter:description" content="Twelve blocks, no leftovers. Build every letter into a word. Endless random practice — then play today's daily at spellingblocks.com." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/spelling-blocks.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "GameApplication",
+        "name": "Spelling Blocks — Practice",
+        "url": "https://onepagetoys.com/toys/spelling-blocks/",
+        "description": "A random-puzzle practice edition of Spelling Blocks: sort twelve lettered blocks into real English words until every block is used, and finish at or under par. The daily challenge — the same blocks for everyone — is at spellingblocks.com.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" />
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="../../">Spelling Blocks<span class="brand__tag">Practice</span></a>
+        <div class="controls">
+          <button type="button" id="diffBtn" class="btn pill-btn" aria-label="Change difficulty">Medium</button>
+          <button type="button" id="newBtn" class="btn pill-btn" aria-label="New puzzle">New</button>
+          <button type="button" id="helpBtn" class="btn icon-btn" title="How to play">?</button>
+          <button type="button" id="soundBtn" class="btn icon-btn" aria-pressed="true" title="Toggle sound">♪</button>
+          <button type="button" id="themeBtn" class="btn icon-btn" title="Toggle theme">☀</button>
+        </div>
+      </header>
+
+      <a class="daily-cta" id="dailyCta" href="https://spellingblocks.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=blocks_practice" target="_blank" rel="noopener">
+        <span class="daily-cta__body">
+          <span class="daily-cta__main">Today's daily — same blocks, everyone, worldwide</span>
+          <span class="daily-cta__count">a fresh puzzle drops in <b class="js-countdown">00:00:00</b></span>
+        </span>
+        <span class="daily-cta__go">Play&nbsp;→</span>
+      </a>
+
+      <main class="stage">
+        <div class="meta">
+          <span class="meta__mode" id="metaMode">Practice · par 3</span>
+          <span class="meta__time" id="timeVal">0:00</span>
+          <span class="badge clean" id="cleanBadge">Clean</span>
+        </div>
+
+        <div class="tray" id="tray" aria-label="Letter blocks"></div>
+
+        <div class="builder-wrap">
+          <div class="builder" id="builder" aria-label="Word you are building"></div>
+          <div class="msg" id="msg" aria-live="polite"></div>
+          <div class="actions">
+            <button type="button" class="btn ghost sq" id="shuffleBtn" title="Shuffle blocks" aria-label="Shuffle blocks">⇄</button>
+            <button type="button" class="btn ghost sq" id="clearBtn" title="Clear word" aria-label="Clear word">⌫</button>
+            <button type="button" class="btn place" id="placeBtn" disabled>Place word</button>
+            <button type="button" class="btn ghost sq" id="hintBtn" title="Hint" aria-label="Hint">💡</button>
+          </div>
+        </div>
+
+        <div class="wall" id="wall" aria-label="Words you have built">
+          <div class="wall__empty" id="wallEmpty">
+            <div class="wall__ghost" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <span>your wall builds here</span>
+          </div>
+        </div>
+      </main>
+
+      <p class="hint" id="hint">Tap blocks to spell a word · use every block · no leftovers</p>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <canvas id="confetti" aria-hidden="true"></canvas>
+
+    <div class="intro" id="intro" hidden>
+      <div class="intro__panel">
+        <p class="intro__eyebrow">Spelling Blocks · Practice</p>
+        <h1 class="intro__title">Twelve blocks. No leftovers.</h1>
+        <ol class="intro__steps">
+          <li><span class="intro__n">1</span><span class="intro__t">Tap blocks to spell a word — <b>three letters or more</b>.</span></li>
+          <li><span class="intro__n">2</span><span class="intro__t"><b>Place word</b> to lock it onto your wall.</span></li>
+          <li><span class="intro__n">3</span><span class="intro__t">Use <b>every block</b> — finish at or under <b>par</b> for a clean solve.</span></li>
+        </ol>
+        <button type="button" class="intro__go" id="introBtn">Play</button>
+      </div>
+    </div>
+
+    <div class="solved is-hidden" id="solved">
+      <div class="solved__panel">
+        <div class="solved__badge">Solved</div>
+        <div class="solved__time" id="solvedTime">0:00</div>
+        <p class="solved__sub" id="solvedSub"></p>
+        <a class="solved__cta" id="solvedCta" href="https://spellingblocks.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=blocks_solved" target="_blank" rel="noopener">
+          <span id="solvedCtaLabel">Play today's daily against everyone →</span>
+          <small><span id="solvedCtaSub">same blocks worldwide</span> · new set in <b class="js-countdown">00:00:00</b></small>
+        </a>
+        <div class="solved__actions">
+          <button type="button" class="btn" id="shareBtn">Share</button>
+          <button type="button" class="btn" id="againBtn">New practice</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="data.js?v=1"></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

@@ -1,5 +1,15 @@
 [
   {
+    "slug": "spelling-blocks",
+    "name": "Spelling Blocks",
+    "shortDescription": "Sort twelve lettered blocks into real words until none are left, and beat par. A cozy anagram word puzzle. Endless random practice puzzles here, then play today's daily challenge (the same blocks for everyone, worldwide) at spellingblocks.com.",
+    "category": "game",
+    "tags": ["spelling-blocks", "word", "anagram", "spelling", "vocabulary", "letters", "word-puzzle", "daily", "brain-teaser", "cozy", "game"],
+    "status": "live",
+    "path": "toys/spelling-blocks/",
+    "related": []
+  },
+  {
     "slug": "trail-game",
     "name": "The Trail Game",
     "shortDescription": "Draw one line that fills the whole grid and threads every numbered dot in order without crossing a wall — a zip-style logic puzzle. Endless random practice puzzles here, then play today's daily challenge (the same puzzle for everyone, worldwide) at thetrailgame.com.",
