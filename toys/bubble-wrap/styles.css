@@ -16,7 +16,7 @@ body {
 /* a discrete sheet of bubble wrap, centred with room for the HUD + hint */
 .sheet {
   position: fixed;
-  top: clamp(52px, 9vh, 88px);
+  top: clamp(66px, 10vh, 92px);
   bottom: clamp(50px, 8vh, 78px);
   left: 50%;
   transform: translateX(-50%);
@@ -111,7 +111,7 @@ body {
 /* HUD */
 .hud {
   position: fixed;
-  top: clamp(14px, 3vw, 24px);
+  top: clamp(40px, 7vw, 58px);   /* stacked below the top-right "Bubble Wrap" frame label */
   right: clamp(18px, 3.5vw, 34px);
   z-index: 10;
   font-size: 0.68rem;
