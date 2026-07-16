@@ -13,10 +13,10 @@ type: reference
   - Scaffold new tool: `node scripts/implement-new-25.js` (references new25-impls-{a,b}.cjs templates)
   - Verify changes: Playwright is a devDependency — drive headless Chromium with `NODE_PATH="$(pwd)/node_modules" node <script>` to screenshot pages
 - **External systems:**
-  - Hosting: **Vercel** (migrated off GitHub Pages ~2026-07-14; the leftover GitHub `pages-build-deployment` action still runs but does NOT serve the live site — ignore it). Push to `main` → Vercel auto-deploys (~1-2 min, no build step for this static site). The apex **onepagetoys.com 308-redirects to www.onepagetoys.com** — so **live-verify against `https://www.onepagetoys.com/…`** (or `curl -L`); grepping the bare apex returns only the redirect stub, which reads as "stale"/empty.
+  - Hosting: **Vercel** (migrated off GitHub Pages ~2026-07-14; the leftover GitHub `pages-build-deployment` action still runs but does NOT serve the live site — ignore it). Push to `main` → Vercel auto-deploys (~1-2 min, no build step for this static site). ⚠ **Redirect direction (observed 2026-07-15, the REVERSE of the earlier note):** **`www.onepagetoys.com` 307-redirects to the apex `onepagetoys.com`** — the apex is the canonical serving host now. So **live-verify against `https://onepagetoys.com/…`** (or always use `curl -L`); grepping bare **www** returns only the redirect stub ("Redirecting…"), which reads as "stale"/empty. Whichever host you hit, `curl -L` follows to the 200 and is the safe default.
   - Analytics: Google Analytics GA-4 (G-VBVJ93GL8L) on every page
   - Fonts: Google Fonts (Outfit, Plus Jakarta Sans)
   - No database, no backend, no auth, no email, no API keys in codebase
 - **Secrets/env:** None. No .env file, no server-side secrets.
-- **Deployment notes:** Push to `main` → **Vercel** auto-deploys (~1-2 min). No build step (static site). Verify live at **www.onepagetoys.com** (apex redirects to www). The GitHub Pages action is a legacy leftover; don't rely on its "success" to mean the live site updated.
+- **Deployment notes:** Push to `main` → **Vercel** auto-deploys (~1-2 min). No build step (static site). Verify live at **onepagetoys.com** (apex is canonical; **www 307-redirects to apex** as of 2026-07-15 — use `curl -L` to be safe). The GitHub Pages action is a legacy leftover; don't rely on its "success" to mean the live site updated.
 - **Builder/sync notes:** Hand-coded HTML/CSS/JS. Not Lovable-generated. Built with Gemini AI assistance. No builder sync.
