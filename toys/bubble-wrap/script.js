@@ -11,6 +11,7 @@
   var bubbles = [];
   var popped = 0;
   var actx = null;
+  var bus = null;
   var dragging = false;
   var lastPopped = null;
 
@@ -20,6 +21,11 @@
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     actx = new AC();
+    /* master bus: a gentle compressor so rapid drag-pops stay punchy and never clip */
+    var comp = actx.createDynamicsCompressor();
+    comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = 0.002; comp.release.value = 0.12;
+    bus = actx.createGain(); bus.gain.value = 0.85;
+    bus.connect(comp); comp.connect(actx.destination);
     /* iOS silent buffer unlock */
     try {
       var b = actx.createBuffer(1, 1, 22050);
@@ -31,50 +37,49 @@
     if (actx.state === "suspended") actx.resume();
   }
 
+  /* A real bubble-wrap pop, layered: a crisp plastic SNAP (short high-passed noise
+     click) + a resonant pitch-dropping BODY (the membrane releasing) + a low air
+     THUNK for weight. Slight per-pop jitter so a fast drag never sounds machine-gun. */
   function popSound(pitch) {
-    if (!actx) return;
-    /* Short bandpass-filtered noise burst — the classic bubble-wrap snap */
+    if (!actx || !bus) return;
     var now = actx.currentTime;
-    var bufLen = actx.sampleRate * 0.06;
-    var buf = actx.createBuffer(1, bufLen, actx.sampleRate);
-    var data = buf.getChannelData(0);
-    for (var i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+    var v = pitch || 0;
+    var jit = 0.9 + Math.random() * 0.22;
 
-    var src = actx.createBufferSource();
-    src.buffer = buf;
+    /* 1) crisp snap — a ~6ms high-passed noise click */
+    var clkLen = Math.floor(actx.sampleRate * 0.006);
+    var cbuf = actx.createBuffer(1, clkLen, actx.sampleRate);
+    var cd = cbuf.getChannelData(0);
+    for (var i = 0; i < clkLen; i++) cd[i] = (Math.random() * 2 - 1) * (1 - i / clkLen);
+    var csrc = actx.createBufferSource(); csrc.buffer = cbuf;
+    var chp = actx.createBiquadFilter(); chp.type = "highpass"; chp.frequency.value = 2400;
+    var cg = actx.createGain(); cg.gain.value = 0.34;
+    csrc.connect(chp); chp.connect(cg); cg.connect(bus);
+    csrc.start(now); csrc.stop(now + 0.02);
 
-    var bp = actx.createBiquadFilter();
-    bp.type = "bandpass";
-    bp.frequency.value = 900 + (pitch || 0) * 120;
-    bp.Q.value = 3.5;
+    /* 2) resonant body — a triangle that snaps down in pitch */
+    var bf = (600 + v * 85) * jit;
+    var bo = actx.createOscillator(); bo.type = "triangle";
+    bo.frequency.setValueAtTime(bf, now);
+    bo.frequency.exponentialRampToValueAtTime(bf * 0.42, now + 0.045);
+    var bg = actx.createGain();
+    bg.gain.setValueAtTime(0.0001, now);
+    bg.gain.exponentialRampToValueAtTime(0.5, now + 0.003);
+    bg.gain.exponentialRampToValueAtTime(0.0001, now + 0.075);
+    bo.connect(bg); bg.connect(bus);
+    bo.start(now); bo.stop(now + 0.09);
 
-    var hp = actx.createBiquadFilter();
-    hp.type = "highpass";
-    hp.frequency.value = 400;
-
-    var gain = actx.createGain();
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.linearRampToValueAtTime(0.55, now + 0.003);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
-
-    src.connect(bp);
-    bp.connect(hp);
-    hp.connect(gain);
-    gain.connect(actx.destination);
-    src.start(now);
-    src.stop(now + 0.08);
-
-    /* tonal "snap": a fast pitch-dropping pip = the membrane releasing — gives the pop its body */
-    var po = actx.createOscillator(), pg = actx.createGain();
-    po.type = "sine";
-    var pf = 760 + (pitch || 0) * 110;
-    po.frequency.setValueAtTime(pf, now);
-    po.frequency.exponentialRampToValueAtTime(pf * 0.45, now + 0.04);
-    pg.gain.setValueAtTime(0.0001, now);
-    pg.gain.exponentialRampToValueAtTime(0.32, now + 0.004);
-    pg.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
-    po.connect(pg); pg.connect(actx.destination);
-    po.start(now); po.stop(now + 0.07);
+    /* 3) low air-release thunk for body/weight */
+    var lf = 150 * jit;
+    var lo = actx.createOscillator(); lo.type = "sine";
+    lo.frequency.setValueAtTime(lf * 1.9, now);
+    lo.frequency.exponentialRampToValueAtTime(lf, now + 0.04);
+    var lg = actx.createGain();
+    lg.gain.setValueAtTime(0.0001, now);
+    lg.gain.exponentialRampToValueAtTime(0.26, now + 0.004);
+    lg.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+    lo.connect(lg); lg.connect(bus);
+    lo.start(now); lo.stop(now + 0.075);
   }
 
   /* grid */
