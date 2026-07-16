@@ -625,13 +625,20 @@ function formatTagLabel(tag) {
     .join(" ");
 }
 
+// Per-category landing pages (e.g. /all-toys/visual/) declare their category via a
+// data-cat body attribute so social crawlers get a category-specific og:image while the
+// gallery still pre-filters for human visitors.
+function forcedCategory() {
+  return ((document.body && document.body.getAttribute("data-cat")) || "").toLowerCase().trim();
+}
+
 function syncURL() {
   const qEl = document.getElementById("toolsSearch");
   const q = (qEl && qEl.value.trim()) || "";
   const params = new URLSearchParams();
   if (q) params.set("q", q);
   if (activeTag) params.set("tag", activeTag);
-  if (activeCategory) params.set("cat", activeCategory);
+  if (activeCategory && activeCategory !== forcedCategory()) params.set("cat", activeCategory);
   const sortEl = document.getElementById("toolsSort");
   if (sortEl && sortEl.value === "category") params.set("sort", "category");
   const qs = params.toString();
@@ -1125,7 +1132,7 @@ async function loadRegistryAndRender() {
     } else {
       if (searchEl) searchEl.value = urlState.q;
       activeTag = urlState.tag;
-      activeCategory = urlState.cat;
+      activeCategory = urlState.cat || forcedCategory();
       const sortEl = document.getElementById("toolsSort");
       if (sortEl) {
         sortEl.value = urlState.sort === "category" ? "category" : "name";

@@ -111,7 +111,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Mandelbrot Infinite Zoom (WebGL)
 
-**Status:** next
+**Status:** done
 
 **Why it matters:** The definitive mesmerizing math-visual — smooth infinite-feeling zoom into the fractal with flowing palettes. A perfect fit for the proven zero-dep WebGL capability (fragment-shader compute). Category `visual`.
 
@@ -121,6 +121,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Slime Mold (Physarum) (generative visual)
 
+**Status:** done
+
 **Why it matters:** Mesmerizing emergent behavior — thousands of tiny agents lay down glowing trails and follow each other, self-organizing into living vein-like networks. High "watch it come alive" appeal; a genre-distinct generative toy.
 
 **When to revisit:** Next generative-visual round. Meaty-ish (agent sim + a trail map with diffuse/decay), but well-understood (Physarum / Jeff Jones model).
@@ -128,6 +130,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** Owner idea (2026-07-03, from the generative-visual shortlist). Model: N agents each with position + heading; each senses the trail map ahead (3 sensors L/C/R), steers toward the strongest, moves, and deposits trail; the trail map **diffuses + decays** each frame → emergent networks. Interactive: **tap/drag to drop "food"/attractant** the agents swarm toward; maybe a palette + a "reset" and a density/behavior slider. GPU would be ideal but a CPU version at ~20–60k agents on a downscaled trail grid is doable in vanilla JS/typed arrays (keep the trail grid modest, cap agents for mobile). Glowing on dark. Real card + OG; full pipeline. Category `visual`.
 ---
 ### New toy: Particle Life (generative visual)
+
+**Status:** done
 
 **Why it matters:** Surprisingly alive — a few colors of particles governed by simple asymmetric attraction/repulsion rules self-assemble into cells, chasers, membranes, and drifting "creatures." Endlessly fascinating emergent life from tiny rules; a standout generative toy.
 
@@ -137,6 +141,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Flow Field (generative visual)
 
+**Status:** done
+
 **Why it matters:** Silky, elegant generative art — thousands of particles ride a hidden Perlin-noise vector field, painting layered flowing ribbons. The quintessential "flow field" generative aesthetic; gorgeous stills for a card.
 
 **When to revisit:** Next generative-visual round. Light-to-moderate build (particles + a noise field; the classic generative-coding sketch).
@@ -144,6 +150,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** Owner idea (2026-07-03, from the generative-visual shortlist). A hidden vector field from layered value/Perlin noise (evolving slowly over time); thousands of particles sample the field at their position and steer along it, drawing thin fading trails → silky ribbons. Interactive: **drag to disturb/push** the field near the cursor, **tap to reseed** the field (a whole new pattern), palette + trail-length/persistence controls. Additive glow on dark; particles recycle when off-screen or aged. Real card + OG; full pipeline. Category `visual`.
 ---
 ### New toy: Reaction-Diffusion (Turing patterns) (generative visual)
+
+**Status:** done
 
 **Why it matters:** Hypnotic organic patterns — spots, stripes, mazes, and coral-like growth that morph endlessly (Gray-Scott model). A classic generative-art centerpiece; deeply satisfying to watch and tweak.
 
@@ -153,6 +161,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Ink Marbling (generative visual)
 
+**Status:** done
+
 **Why it matters:** Calm, gorgeous, endlessly satisfying generative visual — drop and swirl blooming clouds of color into dark water (paper-marbling). Cozy lane, photographs beautifully, strong "just watch / gently play" appeal. Distinct from the existing visual toys.
 
 **When to revisit:** Next generative-visual round. Moderate build (a lightweight fluid/advection or a bloom-and-comb particle model — doesn't need a full Navier-Stokes solver like Vapor).
@@ -160,6 +170,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** Owner idea (2026-07-03, from the generative-visual shortlist; was also a runner-up when Ferrofluid was replaced). Drop ink (tap) → a bloom of color expands and mixes into the "water"; drag to **comb/rake** the currents (the classic marbling gesture) so blooms stretch into feathered veins; palette options (jewel / monochrome ink / metallic gold). Calm, no fail. Reuse Vapor's dye-advection ideas OR a simpler concentric-ring + comb-displacement model. Real card + OG; full add-a-toy pipeline. Category `visual`.
 ---
 ### New toy: Voronoi Stained Glass
+
+**Status:** done
 
 **Why it matters:** Interactive geometry that reads as art — shatter a glowing stained-glass window into living cells that grow, merge, and recolor under your finger. Category `visual`/generative.
 
