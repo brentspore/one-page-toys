@@ -111,7 +111,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Mandelbrot Infinite Zoom (WebGL)
 
-**Status:** done
+**Status:** next
 
 **Why it matters:** The definitive mesmerizing math-visual — smooth infinite-feeling zoom into the fractal with flowing palettes. A perfect fit for the proven zero-dep WebGL capability (fragment-shader compute). Category `visual`.
 
@@ -121,7 +121,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Slime Mold (Physarum) (generative visual)
 
-**Status:** done
+**Status:** next
 
 **Why it matters:** Mesmerizing emergent behavior — thousands of tiny agents lay down glowing trails and follow each other, self-organizing into living vein-like networks. High "watch it come alive" appeal; a genre-distinct generative toy.
 
@@ -131,7 +131,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Particle Life (generative visual)
 
-**Status:** done
+**Status:** next
 
 **Why it matters:** Surprisingly alive — a few colors of particles governed by simple asymmetric attraction/repulsion rules self-assemble into cells, chasers, membranes, and drifting "creatures." Endlessly fascinating emergent life from tiny rules; a standout generative toy.
 
@@ -141,7 +141,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Flow Field (generative visual)
 
-**Status:** done
+**Status:** next
 
 **Why it matters:** Silky, elegant generative art — thousands of particles ride a hidden Perlin-noise vector field, painting layered flowing ribbons. The quintessential "flow field" generative aesthetic; gorgeous stills for a card.
 
@@ -151,7 +151,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Reaction-Diffusion (Turing patterns) (generative visual)
 
-**Status:** done
+**Status:** next
 
 **Why it matters:** Hypnotic organic patterns — spots, stripes, mazes, and coral-like growth that morph endlessly (Gray-Scott model). A classic generative-art centerpiece; deeply satisfying to watch and tweak.
 
@@ -161,7 +161,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### New toy: Ink Marbling (generative visual)
 
-**Status:** done
+**Status:** next
 
 **Why it matters:** Calm, gorgeous, endlessly satisfying generative visual — drop and swirl blooming clouds of color into dark water (paper-marbling). Cozy lane, photographs beautifully, strong "just watch / gently play" appeal. Distinct from the existing visual toys.
 
