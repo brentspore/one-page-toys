@@ -18,6 +18,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 ---
 ### Polish: make the fruit look better on Slice It
 
+**Status:** done
+
 **Why it matters:** Owner note (2026-07-15) — the fruit on Slice It (`toys/slice-it/`) reads as flat/underwhelming and drags down an otherwise juicy toy. The design bar wants each object rendered as its real self (material, lighting, shadow), so better-looking fruit is a direct quality lift on a popular arcade toy.
 
 **When to revisit:** Next polish/juice round, or when next touching Slice It.

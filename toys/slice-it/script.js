@@ -154,12 +154,12 @@
 
   // ============================ FRUIT TYPES ============================
   var TYPES = [
-    { skin: ["#5fce5a", "#2e8b38", "#154a1e"], flesh: "#ff5b7a", core: "#ffd0da", seeds: "#20140c", note: 0.2 },   // watermelon
-    { skin: ["#ffc061", "#ff8c1a", "#c85e08"], flesh: "#ffbf6e", core: "#fff0d0", seeds: null, note: 0.5 },         // orange
-    { skin: ["#c6f05a", "#7cc72c", "#3f7d16"], flesh: "#e2f2a4", core: "#f5ffd6", seeds: null, note: 0.75 },        // lime
-    { skin: ["#ffe863", "#ffcf1f", "#d8a000"], flesh: "#fff2a8", core: "#fffbe0", seeds: null, note: 0.9 },         // lemon
-    { skin: ["#ff7580", "#e63950", "#9c1c30"], flesh: "#ff9fb0", core: "#ffe0e6", seeds: "#ffe08a", note: 0.35 },   // strawberry
-    { skin: ["#b47ce0", "#6f3ba8", "#3c1f66"], flesh: "#e6c6ff", core: "#f6e8ff", seeds: null, note: 0.6 }          // plum
+    { kind: "melon",  skin: ["#7ee06a", "#3fa348", "#1f6b2a", "#124a1c"], stripe: "#0f3d18", flesh: "#ff5b7a", core: "#ffd7df", seeds: "#241a10", note: 0.2 },  // watermelon
+    { kind: "citrus", skin: ["#ffd27a", "#ff9c2e", "#e06f10", "#a8500a"], flesh: "#ff9d3a", core: "#ffd98a", seeds: null, note: 0.5 },                          // orange
+    { kind: "citrus", skin: ["#d6f56a", "#8fd12f", "#5a9e1c", "#3c7014"], flesh: "#c9ec6f", core: "#eefcbe", seeds: null, note: 0.75 },                         // lime
+    { kind: "citrus", skin: ["#fff07a", "#ffd42a", "#e0a800", "#b07d00"], flesh: "#ffe98a", core: "#fffbdc", seeds: null, note: 0.9 },                          // lemon
+    { kind: "berry",  skin: ["#ff8a8f", "#ee3a54", "#b31f38", "#7a132a"], flesh: "#ff9fb0", core: "#fff2f4", seeds: "#ffdf7a", calyx: "#4aa54a", note: 0.35 },  // strawberry
+    { kind: "stone",  skin: ["#c99cf0", "#7c48b8", "#4a2680", "#2e1656"], flesh: "#f0c86a", core: "#ffe9a8", seeds: null, note: 0.6 }                            // plum
   ];
 
   // ============================ STATE ============================
@@ -351,34 +351,107 @@
   }
 
   // ============================ DRAWING ============================
-  function drawFruit(type, r) {
-    var g = ctx.createRadialGradient(-r * 0.32, -r * 0.34, r * 0.1, 0, 0, r);
-    g.addColorStop(0, type.skin[0]); g.addColorStop(0.55, type.skin[1]); g.addColorStop(1, type.skin[2]);
+  // per-fruit skin texture (drawn clipped to the fruit body)
+  function surfaceDetail(type, r) {
+    if (type.kind === "melon") {                 // watermelon rind stripes
+      ctx.strokeStyle = type.stripe; ctx.lineWidth = r * 0.14; ctx.lineCap = "round"; ctx.globalAlpha = 0.6;
+      for (var s = -2; s <= 2; s++) {
+        var x = s * r * 0.44;
+        ctx.beginPath(); ctx.moveTo(x, -r * 1.1);
+        ctx.quadraticCurveTo(x + (s === 0 ? 0 : (s > 0 ? 1 : -1)) * r * 0.16, 0, x, r * 1.1); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    } else if (type.kind === "citrus") {          // pores + a navel dimple
+      ctx.fillStyle = "rgba(0,0,0,0.09)";
+      for (var i = 0; i < 26; i++) {
+        var a = i * 2.399, rr = r * (0.18 + ((i * 7) % 5) * 0.16);
+        ctx.beginPath(); ctx.arc(Math.cos(a) * rr, Math.sin(a) * rr, r * 0.028, 0, 6.283); ctx.fill();
+      }
+      ctx.fillStyle = "rgba(0,0,0,0.16)"; ctx.beginPath(); ctx.arc(r * 0.04, r * 0.52, r * 0.09, 0, 6.283); ctx.fill();
+    } else if (type.kind === "berry") {           // achene seed pits, staggered rows
+      ctx.fillStyle = type.seeds || "#ffe08a";
+      for (var row = 0; row < 6; row++) {
+        for (var c = -2; c <= 2; c++) {
+          var yy = -r * 0.62 + row * r * 0.26, xx = c * r * 0.32 + (row % 2 ? r * 0.16 : 0);
+          if (xx * xx + yy * yy < r * r * 0.74) {
+            ctx.save(); ctx.translate(xx, yy); ctx.rotate(0.5);
+            ctx.beginPath(); ctx.ellipse(0, 0, r * 0.04, r * 0.075, 0, 0, 6.283); ctx.fill(); ctx.restore();
+          }
+        }
+      }
+    } else if (type.kind === "stone") {           // plum seam
+      ctx.strokeStyle = "rgba(0,0,0,0.24)"; ctx.lineWidth = r * 0.05;
+      ctx.beginPath(); ctx.moveTo(r * 0.03, -r * 1.05); ctx.quadraticCurveTo(-r * 0.16, 0, r * 0.03, r * 1.05); ctx.stroke();
+    }
+  }
+  function drawFruit(type, r, isHalf) {
+    // lit sphere: highlight top-left, deep tone + ambient occlusion at the rim
+    var g = ctx.createRadialGradient(-r * 0.34, -r * 0.4, r * 0.05, r * 0.14, r * 0.18, r * 1.14);
+    g.addColorStop(0, type.skin[0]); g.addColorStop(0.5, type.skin[1]);
+    g.addColorStop(0.86, type.skin[2]); g.addColorStop(1, type.skin[3] || type.skin[2]);
     ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.283); ctx.fillStyle = g; ctx.fill();
-    // rim shadow
-    ctx.lineWidth = r * 0.08; ctx.strokeStyle = "rgba(0,0,0,0.18)"; ctx.stroke();
-    // specular
-    var sg = ctx.createRadialGradient(-r * 0.36, -r * 0.4, 0, -r * 0.36, -r * 0.4, r * 0.7);
-    sg.addColorStop(0, "rgba(255,255,255,0.5)"); sg.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.beginPath(); ctx.arc(-r * 0.3, -r * 0.34, r * 0.5, 0, 6.283); ctx.fillStyle = sg; ctx.fill();
+    // surface texture, clipped to the body
+    ctx.save(); ctx.clip(); surfaceDetail(type, r); ctx.restore();
+    // ambient-occlusion rim darkening (roundness)
+    var ao = ctx.createRadialGradient(0, 0, r * 0.62, 0, 0, r);
+    ao.addColorStop(0, "rgba(0,0,0,0)"); ao.addColorStop(1, "rgba(0,0,0,0.34)");
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.283); ctx.fillStyle = ao; ctx.fill();
+    // warm bounce light on the shadow edge
+    var bl = ctx.createRadialGradient(r * 0.44, r * 0.5, 0, r * 0.44, r * 0.5, r * 0.72);
+    bl.addColorStop(0, "rgba(255,238,214,0.18)"); bl.addColorStop(1, "rgba(255,238,214,0)");
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.283); ctx.fillStyle = bl; ctx.fill();
+    // specular: broad sheen + tight hotspot
+    var sg = ctx.createRadialGradient(-r * 0.36, -r * 0.42, 0, -r * 0.36, -r * 0.42, r * 0.72);
+    sg.addColorStop(0, "rgba(255,255,255,0.4)"); sg.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.beginPath(); ctx.arc(-r * 0.3, -r * 0.36, r * 0.52, 0, 6.283); ctx.fillStyle = sg; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-r * 0.37, -r * 0.44, r * 0.15, r * 0.09, -0.6, 0, 6.283);
+    ctx.fillStyle = "rgba(255,255,255,0.82)"; ctx.fill();
+    // strawberry calyx (leaves + stem stick out past the body; whole fruit only)
+    if (type.kind === "berry" && !isHalf) {
+      ctx.fillStyle = type.calyx;
+      for (var L = 0; L < 5; L++) {
+        ctx.save(); ctx.rotate(-1.571 + (L - 2) * 0.44);
+        ctx.beginPath(); ctx.moveTo(0, -r * 0.86);
+        ctx.quadraticCurveTo(r * 0.13, -r * 1.12, 0, -r * 1.3);
+        ctx.quadraticCurveTo(-r * 0.13, -r * 1.12, 0, -r * 0.86); ctx.fill(); ctx.restore();
+      }
+      ctx.fillStyle = "#5a7a2a"; ctx.beginPath(); ctx.arc(0, -r * 1.12, r * 0.06, 0, 6.283); ctx.fill();
+    }
   }
   function drawHalfFace(type, r) {
-    // flat cross-section along local x-axis, flesh in y>=0 (clipped by caller)
-    ctx.beginPath(); ctx.ellipse(0, 0, r * 0.94, r * 0.94, 0, 0, 6.283);
-    var fg = ctx.createRadialGradient(0, r * 0.1, r * 0.1, 0, 0, r);
-    fg.addColorStop(0, type.core); fg.addColorStop(0.7, type.flesh); fg.addColorStop(1, type.skin[1]);
-    ctx.fillStyle = fg; ctx.fill();
-    // rind ring
-    ctx.lineWidth = r * 0.12; ctx.strokeStyle = type.skin[2]; ctx.stroke();
-    // seeds
-    if (type.seeds) {
+    // flat cross-section (full circle drawn; caller clips to the lower half-moon)
+    var R = r * 0.95;
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, 6.283); ctx.fillStyle = type.skin[2]; ctx.fill();     // skin band
+    var pith = type.kind === "citrus" ? "#fff6e8" : (type.kind === "melon" ? "#eafbe6" : type.core);
+    ctx.beginPath(); ctx.arc(0, 0, R * 0.9, 0, 6.283); ctx.fillStyle = pith; ctx.fill();        // pith / rind lining
+    var fr = R * (type.kind === "citrus" ? 0.8 : 0.86);
+    var fg = ctx.createRadialGradient(0, -r * 0.12, r * 0.05, 0, 0, fr);
+    fg.addColorStop(0, type.core); fg.addColorStop(0.5, type.flesh); fg.addColorStop(1, type.flesh);
+    ctx.beginPath(); ctx.arc(0, 0, fr, 0, 6.283); ctx.fillStyle = fg; ctx.fill();               // flesh
+    if (type.kind === "citrus") {                 // juicy radial segments + pith spokes
+      ctx.strokeStyle = "rgba(255,250,235,0.75)"; ctx.lineWidth = r * 0.032;
+      for (var i = 0; i < 9; i++) {
+        var a = (i / 9) * 6.283;
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * fr, Math.sin(a) * fr); ctx.stroke();
+      }
+      ctx.fillStyle = "rgba(255,246,232,0.92)"; ctx.beginPath(); ctx.arc(0, 0, r * 0.08, 0, 6.283); ctx.fill();
+    } else if (type.kind === "stone") {           // plum pit
+      var pg = ctx.createRadialGradient(-r * 0.06, -r * 0.08, 0, 0, 0, r * 0.3);
+      pg.addColorStop(0, "#a06a3c"); pg.addColorStop(1, "#5c3418");
+      ctx.fillStyle = pg; ctx.beginPath(); ctx.ellipse(0, 0, r * 0.22, r * 0.3, 0, 0, 6.283); ctx.fill();
+    }
+    if (type.seeds && type.kind !== "citrus" && type.kind !== "stone") {   // melon / berry pips
       ctx.fillStyle = type.seeds;
-      for (var i = 0; i < 7; i++) {
-        var a = (i / 7) * Math.PI - Math.PI, rr = r * 0.55;
-        var sx = Math.cos(a) * rr * 0.8, sy = Math.abs(Math.sin(a)) * rr * 0.55 + r * 0.12;
-        ctx.beginPath(); ctx.ellipse(sx, sy, r * 0.06, r * 0.1, a, 0, 6.283); ctx.fill();
+      for (var s = 0; s < 8; s++) {
+        var aa = (s / 8) * 6.283, rr2 = fr * (0.42 + ((s * 5) % 3) * 0.18);
+        ctx.save(); ctx.translate(Math.cos(aa) * rr2, Math.sin(aa) * rr2); ctx.rotate(aa + 1.571);
+        ctx.beginPath(); ctx.ellipse(0, 0, r * 0.045, r * 0.085, 0, 0, 6.283); ctx.fill(); ctx.restore();
       }
     }
+    // wet glossy sheen across the cut face
+    var wg = ctx.createLinearGradient(-R, -R * 0.6, R, R * 0.6);
+    wg.addColorStop(0, "rgba(255,255,255,0.24)"); wg.addColorStop(0.5, "rgba(255,255,255,0)");
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, 6.283); ctx.fillStyle = wg; ctx.fill();
   }
   function drawBomb(o) {
     var r = o.r;
@@ -522,8 +595,11 @@
 
     // juice particles
     for (var k = 0; k < juices.length; k++) {
-      var p = juices[k]; ctx.globalAlpha = clamp(p.life, 0, 1); ctx.fillStyle = p.col;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (0.5 + p.life * 0.5), 0, 6.283); ctx.fill();
+      var p = juices[k], jr = p.r * (0.5 + p.life * 0.5), ja = clamp(p.life, 0, 1);
+      ctx.globalAlpha = ja; ctx.fillStyle = p.col;
+      ctx.beginPath(); ctx.arc(p.x, p.y, jr, 0, 6.283); ctx.fill();
+      ctx.globalAlpha = ja * 0.7; ctx.fillStyle = "rgba(255,255,255,0.75)";
+      ctx.beginPath(); ctx.arc(p.x - jr * 0.32, p.y - jr * 0.32, jr * 0.34, 0, 6.283); ctx.fill();
     }
     ctx.globalAlpha = 1;
 
@@ -532,14 +608,22 @@
       var h = halves[j]; ctx.save(); ctx.globalAlpha = clamp(h.life, 0, 1);
       ctx.translate(h.x, h.y); ctx.rotate(h.rot);
       ctx.beginPath(); ctx.rect(-h.r - 4, 0, h.r * 2 + 8, h.r + 6); ctx.clip();
-      drawFruit(h.type, h.r);
+      drawFruit(h.type, h.r, true);
       drawHalfFace(h.type, h.r);
       ctx.restore();
     }
 
     // whole objects
     for (var i = 0; i < objs.length; i++) {
-      var o = objs[i]; ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(o.rot);
+      var o = objs[i];
+      if (!o.bomb) {                              // soft drop shadow (world-space, doesn't tumble)
+        ctx.save(); ctx.translate(o.x, o.y);
+        var osh = ctx.createRadialGradient(o.r * 0.12, o.r * 0.3, 0, o.r * 0.12, o.r * 0.3, o.r * 1.25);
+        osh.addColorStop(0, "rgba(0,0,0,0.4)"); osh.addColorStop(0.65, "rgba(0,0,0,0.16)"); osh.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = osh; ctx.beginPath(); ctx.arc(o.r * 0.12, o.r * 0.3, o.r * 1.25, 0, 6.283); ctx.fill();
+        ctx.restore();
+      }
+      ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(o.rot);
       if (o.bomb) drawBomb(o); else drawFruit(o.type, o.r);
       ctx.restore();
     }
