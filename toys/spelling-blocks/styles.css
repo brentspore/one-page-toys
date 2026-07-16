@@ -1,37 +1,41 @@
-/* Spelling Blocks — practice feeder. Look mirrors spellingblocks.com: a warm paper tabletop
-   (light) / walnut tabletop (dark) with physical, beveled letter blocks in four toy colours.
+/* Spelling Blocks — practice feeder. A cool slate tabletop (light paper-grey / dark blue-charcoal)
+   with physical, beveled letter blocks in four toy colours — the neutral surface is deliberate, so
+   the saturated blocks are the only colour on screen.
    Block face + bevel ported from the spelling-blocks repo (src/styles.css .sb-block). */
 *, *::before, *::after { box-sizing: border-box; }
 
 :root, :root[data-theme="light"] {
-  --tabletop: #ecdfc0;
-  --paper: #f1e7d0;
-  --ink: #26221b;
-  --muted: #6a6152;
+  --tabletop: #eceef1;
+  --paper: #f5f6f8;
+  --ink: #1c2027;
+  --muted: #626b78;
   --accent: #c7402d;
-  --accent-fg: #f6efe4;
-  --border: #d8cbad;
-  --slot: rgba(38,34,27,0.30);
-  --field: rgba(38,34,27,0.05);
-  --shadow: 0 18px 44px -22px rgba(38,34,27,0.5);
+  --accent-fg: #f7f8fa;
+  --border: #d3d8df;
+  --slot: rgba(28,32,39,0.30);
+  --field: rgba(28,32,39,0.05);
+  --shadow: 0 18px 44px -22px rgba(20,26,34,0.5);
   --grain-op: 0.5;
-  --blk-border: #26221b;
-  --blk-edge: #26221b;
+  --sheen: rgba(255,255,255,0.55);
+  --blk-border: #1c2027;
+  --blk-edge: #1c2027;
 }
 :root[data-theme="dark"] {
-  --tabletop: #201c16;
-  --paper: #2b261e;
-  --ink: #f1e7d0;
-  --muted: #a9a08d;
+  --tabletop: #1b1e24;
+  --paper: #242830;
+  --ink: #eceef1;
+  --muted: #9aa3b0;
   --accent: #e5624a;
-  --accent-fg: #201c16;
-  --border: #443c2f;
-  --slot: rgba(241,231,208,0.24);
-  --field: rgba(241,231,208,0.05);
+  --accent-fg: #1b1e24;
+  --border: #363c46;
+  --slot: rgba(236,238,241,0.24);
+  --field: rgba(236,238,241,0.05);
   --shadow: 0 22px 52px -22px rgba(0,0,0,0.7);
   --grain-op: 0.32;
-  --blk-border: #17140f;
-  --blk-edge: #100e0a;
+  /* a heavy sheen here washes the slate out to grey — keep it a whisper */
+  --sheen: rgba(255,255,255,0.05);
+  --blk-border: #12141a;
+  --blk-edge: #0d0f13;
 }
 
 html, body {
@@ -40,18 +44,13 @@ html, body {
   color: var(--ink);
   background-color: var(--tabletop);
   background-image:
-    radial-gradient(135% 95% at 50% -4%, rgba(255,255,255,0.55), rgba(255,255,255,0) 62%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.149 0 0 0 0 0.133 0 0 0 0 0.106 0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    radial-gradient(135% 95% at 50% -4%, var(--sheen), rgba(255,255,255,0) 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.110 0 0 0 0 0.125 0 0 0 0 0.153 0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat, repeat;
   background-attachment: fixed;
   font-family: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased; touch-action: manipulation; overscroll-behavior: none;
   user-select: none; -webkit-user-select: none;
-}
-:root[data-theme="dark"] body::after {
-  /* lift grain a touch on the dark table */
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(130% 100% at 50% -10%, rgba(255,255,255,0.05), transparent 60%);
 }
 .display { font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif; }
 
@@ -119,7 +118,7 @@ html, body {
   width: var(--bs); height: var(--bs); flex: 0 0 auto;
   display: inline-flex; align-items: center; justify-content: center;
   font-family: "Archivo Black", sans-serif; font-size: calc(var(--bs) * 0.5); line-height: 1;
-  color: var(--blk-text, #f1e7d0);
+  color: var(--blk-text, #eceef1);
   border: 2px solid var(--blk-border); border-radius: 14px;
   background:
     linear-gradient(158deg, rgba(255,255,255,0.32), rgba(255,255,255,0) 46%),
@@ -134,7 +133,7 @@ html, body {
   cursor: pointer; padding: 0; appearance: none;
 }
 .blk:focus-visible { outline: none; box-shadow: inset 0 3px 0 rgba(255,255,255,0.32), inset 0 -5px 0 rgba(0,0,0,0.18), 0 6px 0 var(--blk-edge), 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent); }
-.blk.is-butter { --blk-text: #26221b; text-shadow: 0 1px 0 rgba(255,255,255,0.4); }
+.blk.is-butter { --blk-text: #1c2027; text-shadow: 0 1px 0 rgba(255,255,255,0.4); }
 .blk.tap:active { transform: rotate(var(--rot,0deg)) translateY(4px) scale(0.98);
   box-shadow: inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -2px 0 rgba(0,0,0,0.2), 0 2px 0 var(--blk-edge), 0 3px 6px rgba(0,0,0,0.28); }
 

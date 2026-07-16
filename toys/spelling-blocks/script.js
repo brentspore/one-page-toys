@@ -571,7 +571,7 @@
   function burstConfetti() {
     if (!confCtx || REDMO) return;
     var cxp = window.innerWidth / 2, cyp = window.innerHeight * 0.42;
-    var cols = ["#2b59c3", "#3e8a4e", "#f2b63c", "#c7402d", "#f1e7d0"];
+    var cols = ["#2b59c3", "#3e8a4e", "#f2b63c", "#c7402d", "#eceef1"];
     for (var i = 0; i < 150; i++) {
       var a = Math.random() * Math.PI * 2, sp = 3 + Math.random() * 9.5;
       confParts.push({ x: cxp + (Math.random() - 0.5) * 90, y: cyp, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 7 - Math.random() * 4, w: 6 + Math.random() * 7, h: 8 + Math.random() * 9, rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.4, col: cols[i % cols.length], life: 1 });
