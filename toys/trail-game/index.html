@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>The Trail Game — Practice Puzzles — One Page Toys</title>
+    <meta name="description" content="Practice The Trail Game: draw one line that fills the grid and connects every numbered dot in order without crossing a wall. Endless random puzzles here — then play today's daily challenge, the same puzzle for everyone worldwide, at thetrailgame.com. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/trail-game/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#a51d1d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="The Trail Game — Practice Puzzles" />
+    <meta property="og:description" content="Draw one line that fills the grid and threads every numbered dot in order. Endless random practice puzzles — then play today's daily against everyone at thetrailgame.com." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/trail-game/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/trail-game.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Trail Game — Practice Puzzles" />
+    <meta name="twitter:description" content="One line, every dot, every square. Endless random practice — then play today's daily against everyone at thetrailgame.com." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/trail-game.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "GameApplication",
+        "name": "The Trail Game — Practice",
+        "url": "https://onepagetoys.com/toys/trail-game/",
+        "description": "A random-puzzle practice edition of The Trail Game: draw a single continuous line that fills a 6x6 grid and passes through every numbered dot in order without crossing a wall. The daily challenge — the same puzzle for everyone — is at thetrailgame.com.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="../../">The Trail Game<span class="brand__tag">Practice</span></a>
+        <div class="controls">
+          <button type="button" id="diffBtn" class="btn pill-btn" aria-label="Change difficulty">Medium</button>
+          <button type="button" id="newBtn" class="btn pill-btn" aria-label="New puzzle">New</button>
+          <button type="button" id="helpBtn" class="btn icon-btn" title="How to play">?</button>
+          <button type="button" id="soundBtn" class="btn icon-btn" aria-pressed="true" title="Toggle sound">♪</button>
+          <button type="button" id="themeBtn" class="btn icon-btn" title="Toggle theme">☀</button>
+        </div>
+      </header>
+
+      <a class="daily-cta" id="dailyCta" href="https://thetrailgame.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=trail_practice" target="_blank" rel="noopener">
+        <span class="daily-cta__body">
+          <span class="daily-cta__main">Today's daily — one puzzle, everyone, worldwide</span>
+          <span class="daily-cta__count">a fresh challenge drops in <b class="js-countdown">00:00:00</b></span>
+        </span>
+        <span class="daily-cta__go">Play&nbsp;→</span>
+      </a>
+
+      <main class="stage">
+        <div class="board-card">
+          <svg id="board" viewBox="0 0 100 100" aria-label="Trail puzzle grid"></svg>
+        </div>
+        <div class="dash">
+          <div class="tearoff" role="img" aria-label="Squares covered">
+            <div class="tearoff__top" aria-hidden="true"></div>
+            <div class="tearoff__perf" aria-hidden="true"></div>
+            <div class="tearoff__num serif" id="dashCount">0</div>
+            <div class="tearoff__of">of 36</div>
+          </div>
+          <div class="dash__main">
+            <div class="dash__row">
+              <div class="dot-track" id="dotTrack" aria-label="Dots hit"></div>
+              <div class="dash__time" id="timeVal" aria-label="Solve time">0:00</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar"><div class="bar__fill" id="barFill"></div></div>
+              <span class="badge clean" id="cleanBadge">Clean</span>
+            </div>
+            <div class="status" id="status" aria-live="polite"></div>
+          </div>
+        </div>
+      </main>
+
+      <p class="hint" id="hint">Start on 1 · connect every dot in order · fill every square</p>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <canvas id="confetti" aria-hidden="true"></canvas>
+
+    <div class="intro" id="intro" hidden>
+      <div class="intro__panel">
+        <p class="intro__eyebrow">The Trail Game · Practice</p>
+        <h1 class="intro__title serif">One line. Every dot. Every square.</h1>
+        <ol class="intro__steps">
+          <li><span class="intro__n">1</span> Start on the dot marked <b>1</b>.</li>
+          <li><span class="intro__n">2</span> Drag one continuous line, hitting the dots <b>in order</b> (1&nbsp;→&nbsp;2&nbsp;→&nbsp;3&nbsp;…).</li>
+          <li><span class="intro__n">3</span> <b>Fill every square</b> — and never cross a wall.</li>
+        </ol>
+        <button type="button" class="intro__go" id="introBtn">Play</button>
+      </div>
+    </div>
+
+    <div class="solved is-hidden" id="solved">
+      <div class="solved__panel">
+        <div class="solved__badge">Solved</div>
+        <div class="solved__time serif" id="solvedTime">0:00</div>
+        <p class="solved__sub" id="solvedSub"></p>
+        <a class="solved__cta" id="solvedCta" href="https://thetrailgame.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=trail_solved" target="_blank" rel="noopener">
+          <span id="solvedCtaLabel">Play today's daily against everyone →</span>
+          <small><span id="solvedCtaSub">same puzzle worldwide</span> · new one in <b class="js-countdown">00:00:00</b></small>
+        </a>
+        <div class="solved__actions">
+          <button type="button" class="btn" id="shareBtn">Share</button>
+          <button type="button" class="btn" id="againBtn">New practice</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

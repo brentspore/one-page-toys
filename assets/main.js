@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "trail-game":
+    "trail game the trail game zip linkedin zip one line path puzzle daily number path fill the grid hamiltonian connect the dots in order logic puzzle brain teaser deduction single line snake path draw a line thetrailgame practice number chain flow one stroke unicursal grid game word game adjacent",
   "slime-mold":
     "slime mold physarum generative emergent agents trails pheromone network veins self organizing organism colony fungus mold biology alife artificial life simulation mesmerizing hypnotic screensaver ambient dark glowing bioluminescent swarm food attractant vascular emergence",
   "particle-life":

@@ -27,11 +27,11 @@
     },
     {
       "name": "The Trail Game",
-      "tagline": "Wilderness survival",
-      "url": "https://thetrailgame.com",
-      "favicon": "https://thetrailgame.com/favicon.ico",
+      "tagline": "One-line path puzzle",
+      "url": "https://onepagetoys.com/toys/trail-game/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2314171f'/><path d='M8 24V13h8v6h8V9' fill='none' stroke='%23c91d2b' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/><circle cx='8' cy='24' r='2.6' fill='%23f2efe9'/><circle cx='24' cy='9' r='2.6' fill='%23f2efe9'/></svg>",
       "initial": "T",
-      "slug": null
+      "slug": "trail-game"
     },
     {
       "name": "Alpenglow",

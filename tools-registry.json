@@ -1,5 +1,15 @@
 [
   {
+    "slug": "trail-game",
+    "name": "The Trail Game",
+    "shortDescription": "Draw one line that fills the whole grid and threads every numbered dot in order without crossing a wall — a zip-style logic puzzle. Endless random practice puzzles here, then play today's daily challenge (the same puzzle for everyone, worldwide) at thetrailgame.com.",
+    "category": "game",
+    "tags": ["trail-game", "zip", "logic", "path", "puzzle", "daily", "one-line", "brain-teaser", "connect-the-dots", "game"],
+    "status": "live",
+    "path": "toys/trail-game/",
+    "related": []
+  },
+  {
     "slug": "stained-glass",
     "name": "Stained Glass",
     "shortDescription": "A living leaded-glass cathedral window of glowing jewel-tone panes, backlit by a slowly-moving sun. Tap to add a pane, drag to herd the glass, and settle it into elegant cells. A mesmerizing Voronoi mosaic.",

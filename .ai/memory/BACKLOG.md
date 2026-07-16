@@ -223,7 +223,9 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** AI suggestion (2026-07-05). 4×4 or 5×5 letter grid (dice-distribution letter frequencies); drag through adjacent letters (incl. diagonals) to trace words; 90-second round or zen mode; scoring by length; found-words list + best score in `localStorage`. Constraint: needs a word list — a compact common-word list (~30-60k words, ~200-400KB raw, less gzipped) bundled locally keeps it self-contained; prefix-trie for live validation. Keep name/trade dress distinct from Boggle. Design: warm wooden letter tiles or glowing runes, a glowing trace line, tile pop + pentatonic pluck per letter (rises with word length), fanfare on rare long words. Real card + OG; full pipeline.
 ---
-### New toy: Daily word game (Spelling Bee / Blockle style)
+### New game: Spelling Blocks — daily word game (spellingblocks.com)
+
+**Owner update (2026-07-15):** the game is named **"Spelling Blocks"** and the domain **SPELLINGBLOCKS.COM is already purchased** → it's headed to its **own standalone property**, mirroring The Trail Game (thetrailgame.com). Plan: build the full daily word game as its **own project on spellingblocks.com** (its own repo, deploy, memory scaffold — bootstrap it when starting); the one-page-toys version becomes a **stripped play + share feeder** gated on the standalone site going live (same shape as the Trail Game feeder item; per the 2026-07-03 escalate-evolved-games decision). Keep the name/branding "Spelling Blocks" (distinct from NYT Spelling Bee / Wordle).
 
 **Why it matters:** Owner request (2026-07-14): "Spelling bee / Blockle type game." Daily word puzzles are the most habit-forming, shareable genre on the web (NYT Spelling Bee, Wordle). The site has zero word games, and Mini Golf just proved out the date-seeded daily-challenge pattern (same puzzle for everyone today, new one tomorrow, per-day best in `localStorage`). A daily word toy slots straight into that.
 
