@@ -1,5 +1,86 @@
 [
   {
+    "slug": "stained-glass",
+    "name": "Stained Glass",
+    "shortDescription": "A living leaded-glass cathedral window of glowing jewel-tone panes, backlit by a slowly-moving sun. Tap to add a pane, drag to herd the glass, and settle it into elegant cells. A mesmerizing Voronoi mosaic.",
+    "category": "visual",
+    "tags": ["stained-glass", "voronoi", "generative", "mosaic", "cathedral", "glass", "mesmerizing", "screensaver", "jewel", "visual"],
+    "status": "live",
+    "path": "toys/stained-glass/",
+    "related": []
+  },
+  {
+    "slug": "ink-marbling",
+    "name": "Ink Marbling",
+    "shortDescription": "Drop and swirl blooming clouds of color into dark water, then rake them into feathered veins — the ancient art of paper marbling. Calm, gorgeous, endlessly satisfying. Tap to drop ink, drag to comb.",
+    "category": "visual",
+    "tags": ["ink-marbling", "marbling", "paper-marbling", "generative", "fluid", "relaxing", "satisfying", "cozy", "screensaver", "visual"],
+    "status": "live",
+    "path": "toys/ink-marbling/",
+    "related": []
+  },
+  {
+    "slug": "reaction-diffusion",
+    "name": "Reaction Diffusion",
+    "shortDescription": "Organic Turing patterns that grow and morph forever — spots, mazes, worms, and coral-like veins from the Gray-Scott model. Drag to seed new growth and switch between regimes and lush palettes.",
+    "category": "visual",
+    "tags": ["reaction-diffusion", "turing-patterns", "gray-scott", "generative", "organic", "mesmerizing", "screensaver", "morphing", "simulation", "visual"],
+    "status": "live",
+    "path": "toys/reaction-diffusion/",
+    "related": []
+  },
+  {
+    "slug": "flow-field",
+    "name": "Flow Field",
+    "shortDescription": "Thousands of particles ride a hidden, slowly-drifting noise field, painting silky glowing ribbons of light. Drag to stir the current, tap to reseed a whole new pattern, and switch between lush palettes.",
+    "category": "visual",
+    "tags": ["flow-field", "generative", "perlin-noise", "particles", "ribbons", "mesmerizing", "screensaver", "flow", "ambient", "visual"],
+    "status": "live",
+    "path": "toys/flow-field/",
+    "related": []
+  },
+  {
+    "slug": "particle-life",
+    "name": "Particle Life",
+    "shortDescription": "A few colors of particles follow simple attraction rules and self-assemble into cells, chasers, membranes, and drifting creatures. Tap to spawn, drag to stir, reroll the rules for a whole new ecosystem.",
+    "category": "visual",
+    "tags": ["particle-life", "generative", "emergence", "artificial-life", "particles", "simulation", "mesmerizing", "screensaver", "swarm", "visual"],
+    "status": "live",
+    "path": "toys/particle-life/",
+    "related": []
+  },
+  {
+    "slug": "slime-mold",
+    "name": "Slime Mold",
+    "shortDescription": "Thousands of tiny agents lay down glowing trails and follow each other, self-organizing into living, ever-rewiring vein networks. Drop food with a tap and watch the colony swarm and rebuild. A hypnotic Physarum simulation.",
+    "category": "visual",
+    "tags": ["slime-mold", "physarum", "generative", "emergence", "agents", "simulation", "mesmerizing", "screensaver", "network", "visual"],
+    "status": "live",
+    "path": "toys/slime-mold/",
+    "related": []
+  },
+  {
+    "slug": "mandelbrot",
+    "name": "Mandelbrot",
+    "shortDescription": "Zoom deep into the Mandelbrot set, a fractal of endlessly repeating self-similar detail. Pan and dive through glowing spirals, switch between lush color palettes, morph a live Julia set, or sit back and watch a cinematic auto-journey.",
+    "category": "visual",
+    "tags": [
+      "mandelbrot",
+      "fractal",
+      "infinite-zoom",
+      "julia-set",
+      "generative",
+      "math",
+      "psychedelic",
+      "mesmerizing",
+      "explore",
+      "visual"
+    ],
+    "status": "live",
+    "path": "toys/mandelbrot/",
+    "related": []
+  },
+  {
     "slug": "minesweeper",
     "name": "Minesweeper",
     "shortDescription": "The classic mine-clearing logic puzzle on a premium dark glass board. Your first tap is always safe. Reveal safe cells, flag the mines, chord a number to sweep its neighbors, and beat your best time on Easy, Medium, or Hard.",

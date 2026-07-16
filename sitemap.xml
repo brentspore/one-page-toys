@@ -12,6 +12,41 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://onepagetoys.com/toys/stained-glass/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/ink-marbling/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/reaction-diffusion/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/flow-field/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/particle-life/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/slime-mold/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://onepagetoys.com/toys/mandelbrot/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://onepagetoys.com/toys/minesweeper/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Reaction Diffusion — One Page Toys</title>
+    <meta name="description" content="Watch living Turing patterns grow, split, and morph forever — a real Gray-Scott reaction-diffusion simulation. Drag to seed new growth, switch regimes (coral, mitosis, worms, spots, maze) and lush palettes, or sit back and let it drift. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/reaction-diffusion/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#04060a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Reaction Diffusion — One Page Toys" />
+    <meta property="og:description" content="A living Gray-Scott reaction-diffusion simulation. Organic Turing patterns grow, split, and morph endlessly. Drag to seed new growth, switch regimes and lush palettes, or just watch it breathe." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/reaction-diffusion/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/reaction-diffusion.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Reaction Diffusion — One Page Toys" />
+    <meta name="twitter:description" content="A living Gray-Scott reaction-diffusion simulation. Organic Turing patterns grow, split, and morph endlessly. Drag to seed, switch regimes and palettes, or just watch." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/reaction-diffusion.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "MultimediaApplication",
+        "name": "Reaction Diffusion",
+        "url": "https://onepagetoys.com/toys/reaction-diffusion/",
+        "description": "An interactive Gray-Scott reaction-diffusion simulation that grows endlessly morphing organic Turing patterns. Drag to seed new growth, switch between coral, mitosis, worms, spots and maze regimes, choose from curated color palettes, and adjust the flow speed.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" aria-live="polite">
+      <span class="hud__stat" id="fkStat"><span class="hud__ico" aria-hidden="true">∿</span><span id="fkVal">F 0.055 · k 0.062</span></span>
+    </div>
+
+    <div class="topbtns">
+      <button type="button" class="pill" id="regimeBtn" aria-label="Change reaction regime">Coral</button>
+      <button type="button" class="pill" id="paletteBtn" aria-label="Change color palette">Emerald</button>
+      <button type="button" class="pill" id="speedBtn" aria-label="Change flow speed">Flow</button>
+      <button type="button" class="iconbtn" id="resetBtn" title="Reset & reseed">↻</button>
+      <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <h1 class="panel__title" id="ovTitle">Reaction Diffusion</h1>
+        <p class="panel__text" id="ovText">Two chemicals, one simple rule — and life-like patterns bloom out of nowhere. Drag anywhere to seed new growth and watch it spread. Switch regimes for coral, splitting cells, worms, spots or mazes, and pick a palette. Then just breathe.</p>
+        <button type="button" class="play-btn" id="ovBtn">Begin</button>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 083</span>
+      <span class="frame__corner frame__corner--tr">Reaction Diffusion</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag to seed new growth · switch regimes & palettes above</p>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

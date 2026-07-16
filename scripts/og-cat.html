@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head><meta charset="utf-8" />
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Geist+Mono:wght@500&family=Inter:wght@400;500;600&display=swap");
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ width:1200px; height:630px; }
+  .og{ width:1200px; height:630px; position:relative; overflow:hidden; font-family:"Archivo",sans-serif; color:#fff; }
+  .bg{ position:absolute; inset:0; }
+  .grain{ position:absolute; inset:0; opacity:.045; background-image:radial-gradient(rgba(255,255,255,.8) .5px, transparent .6px); background-size:3px 3px; mix-blend-mode:overlay; }
+  .wm{ position:absolute; top:48px; left:60px; display:flex; align-items:center; gap:13px; font-size:19px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.92); z-index:3; }
+  .wm__mark{ width:22px; height:22px; border:2px solid #fff; border-radius:6px; background:linear-gradient(90deg,#fff 0 50%, transparent 50% 100%); }
+  .corner{ position:absolute; top:52px; right:60px; font-family:"Geist Mono",monospace; font-size:15px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.55); z-index:3; }
+  .text{ position:absolute; left:60px; top:0; bottom:0; width:560px; display:flex; flex-direction:column; justify-content:center; z-index:2; }
+  .eyebrow{ font-family:"Geist Mono",monospace; font-size:17px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; }
+  .name{ font-weight:900; line-height:.9; letter-spacing:-.03em; font-size:118px; }
+  .desc{ margin-top:26px; font-family:"Inter",sans-serif; font-weight:400; font-size:27px; line-height:1.4; color:rgba(255,255,255,.76); max-width:500px; }
+  .fan{ position:absolute; right:20px; top:50%; transform:translateY(-50%); width:560px; height:560px; z-index:2; }
+  .fan img{ position:absolute; width:300px; height:300px; object-fit:cover; border-radius:26px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), 0 30px 70px rgba(0,0,0,.55); }
+  .fan img:nth-child(1){ left:70px;  top:60px;  transform:rotate(-9deg); z-index:1; }
+  .fan img:nth-child(2){ left:150px; top:150px; transform:rotate(3deg);  z-index:3; }
+  .fan img:nth-child(3){ left:250px; top:250px; transform:rotate(11deg); z-index:2; }
+  .foot{ position:absolute; bottom:48px; left:60px; right:60px; display:flex; justify-content:space-between; font-family:"Geist Mono",monospace; font-size:16px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.5); z-index:3; }
+</style></head>
+<body>
+  <div class="og">
+    <div class="bg" id="bg"></div>
+    <div class="grain"></div>
+    <div class="wm"><span class="wm__mark"></span><span>One Page Toys</span></div>
+    <div class="corner" id="corner">The Gallery</div>
+    <div class="text">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="name" id="name"></h1>
+      <p class="desc" id="desc"></p>
+    </div>
+    <div class="fan" id="fan"></div>
+    <div class="foot"><span>onepagetoys.com</span><span>Browse the gallery →</span></div>
+  </div>
+<script>
+function img(slug){ return '<img src="../assets/cards/'+slug+'.png" alt="">'; }
+var DATA = {
+  "visual":     { name:"Visual",     count:15, accent:"#bd93ff", desc:"Generative art, fractals, and mesmerizing motion you can play with.", bg:"radial-gradient(120% 100% at 30% 25%, #3a1a5e 0%, #1a1030 55%, #0a0614 100%)", cards:["plasma-ball","mandelbrot","kaleidoscope"] },
+  "game":       { name:"Games",      count:34, accent:"#ff9a5c", desc:"Arcade classics, puzzles, and score-chases. One tab, no sign-up.",       bg:"radial-gradient(120% 100% at 30% 25%, #5e2a1a 0%, #301410 55%, #140806 100%)", cards:["pool","minesweeper","nova-coil"] },
+  "audio":      { name:"Audio",      count:9,  accent:"#5ad6c4", desc:"Playable instruments and soundscapes, all synthesized in your browser.",  bg:"radial-gradient(120% 100% at 30% 25%, #133f3a 0%, #0c2622 55%, #06120f 100%)", cards:["tongue-drum","kalimba","marble-machine"] },
+  "wellness":   { name:"Wellness",   count:7,  accent:"#84dd94", desc:"Calm, cozy corners to breathe, fidget, and gently unwind.",              bg:"radial-gradient(120% 100% at 30% 25%, #1f4a2e 0%, #123020 55%, #06140d 100%)", cards:["aurora-drift","campfire","floating-lanterns"] },
+  "utility":    { name:"Utilities",  count:9,  accent:"#5aa4ff", desc:"Handy little tools: timers, splitters, and everyday helpers.",           bg:"radial-gradient(120% 100% at 30% 25%, #17304f 0%, #0e1c30 55%, #060c16 100%)", cards:["pomodoro","world-clock","tip-splitter"] },
+  "simulation": { name:"Simulation", count:5,  accent:"#e9b45c", desc:"Real physics you can flick, drop, and set in motion.",                    bg:"radial-gradient(120% 100% at 30% 25%, #4a3312 0%, #2a1e0c 55%, #140e06 100%)", cards:["newtons-cradle","gravity-orbits","double-pendulum"] }
+};
+function render(){
+  var key = (location.hash || "#visual").slice(1);
+  var d = DATA[key] || DATA["visual"];
+  document.documentElement.style.setProperty("--accent", d.accent);
+  document.getElementById("bg").style.background = d.bg;
+  document.getElementById("eyebrow").textContent = "The Gallery · " + d.count + " Toys";
+  document.getElementById("name").textContent = d.name;
+  document.getElementById("desc").textContent = d.desc;
+  document.getElementById("fan").innerHTML = d.cards.map(img).join("");
+}
+render();
+window.addEventListener("hashchange", render);
+</script>
+</body></html>

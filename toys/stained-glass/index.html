@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Stained Glass — One Page Toys</title>
+    <meta name="description" content="A living leaded-glass window — glowing Voronoi panes in jewel tones with dark leading, backlit by a slow-moving sun. Tap to add panes, drag to herd the glass, and settle them into elegant shapes. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/stained-glass/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0708" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Stained Glass — One Page Toys" />
+    <meta property="og:description" content="A living cathedral window of glowing jewel-tone panes and dark leading, backlit by a slow-moving sun. Tap to add panes, drag to herd the glass, and settle them into elegant shapes." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/stained-glass/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/stained-glass.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Stained Glass — One Page Toys" />
+    <meta name="twitter:description" content="A living cathedral window of glowing jewel-tone panes and dark leading, backlit by a slow-moving sun. Tap to add panes, drag to herd, settle to even them out." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/stained-glass.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "MultimediaApplication",
+        "name": "Stained Glass",
+        "url": "https://onepagetoys.com/toys/stained-glass/",
+        "description": "A generative stained-glass window: glowing Voronoi panes in curated jewel-tone palettes with dark leading, backlit by a slowly moving sun. Tap to add panes, drag to herd the glass, and run a Settle relaxation to even the panes into elegant shapes.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires WebGL.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" aria-live="polite">
+      <span class="hud__stat"><span class="hud__ico" aria-hidden="true">&#9672;</span><span id="paneVal">—</span> panes</span>
+    </div>
+
+    <div class="topbtns">
+      <button type="button" class="pill" id="paletteBtn" aria-label="Change glass palette">Cathedral</button>
+      <button type="button" class="pill" id="settleBtn" aria-label="Settle the panes into even shapes">Settle</button>
+      <button type="button" class="iconbtn" id="resetBtn" title="New window">&#8635;</button>
+      <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <h1 class="panel__title" id="ovTitle">Stained Glass</h1>
+        <p class="panel__text" id="ovText">A living leaded-glass window. Jewel-tone panes glow as the sun drifts behind them. Tap to add a pane, drag to herd the glass, and hit Settle to even them into elegant shapes.</p>
+        <button type="button" class="play-btn" id="ovBtn">Enter the window</button>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 085</span>
+      <span class="frame__corner frame__corner--tr">Stained Glass</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">tap to add a pane · drag to herd the glass · Settle to even them out</p>
+
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

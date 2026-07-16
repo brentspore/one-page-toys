@@ -1,0 +1,133 @@
+/* Particle Life — a full-bleed generative swarm of glowing particles over deep space. */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  margin: 0; height: 100%; overflow: hidden;
+  background: #06070f;
+  font-family: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  touch-action: none; overscroll-behavior: none;
+}
+
+#canvas {
+  position: fixed; inset: 0; width: 100%; height: 100%; display: block;
+  cursor: crosshair; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none;
+  touch-action: none;
+}
+#canvas.is-stirring { cursor: grabbing; }
+
+/* ---------- HUD (active species swatches) ---------- */
+.hud {
+  position: fixed; top: max(12px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left));
+  z-index: 5; display: inline-flex; align-items: center; gap: 9px; pointer-events: none; flex-wrap: wrap;
+  height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(10,12,22,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px -10px rgba(0,0,0,0.8);
+}
+.hud__label {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(220,226,240,0.5);
+}
+.hud__dots { display: inline-flex; align-items: center; gap: 6px; }
+.hud__dots .dot {
+  width: 11px; height: 11px; border-radius: 50%;
+  transition: background 500ms ease, box-shadow 500ms ease, transform 300ms ease;
+}
+
+/* ---------- Top buttons ---------- */
+.topbtns {
+  position: fixed; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right));
+  z-index: 6; display: inline-flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: flex-end;
+  max-width: calc(100vw - 24px);
+}
+.pill, .iconbtn {
+  appearance: none; font-family: inherit; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.12); background: rgba(14,16,28,0.62);
+  color: #e9ecf2; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease, transform 120ms ease;
+}
+.pill { height: 34px; padding: 0 15px; border-radius: 999px; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.02em; }
+.iconbtn { width: 34px; height: 34px; border-radius: 50%; font-size: 0.98rem; display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
+.pill:hover, .iconbtn:hover { border-color: rgba(255,255,255,0.34); background: rgba(24,26,44,0.7); }
+.pill:active, .iconbtn:active { transform: translateY(1px); }
+.pill:focus-visible, .iconbtn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(120,150,255,0.5); }
+.iconbtn[aria-pressed="false"] { color: rgba(233,236,242,0.34); }
+#paletteBtn { min-width: 76px; }
+#rulesBtn { color: #cfe0ff; border-color: rgba(120,150,255,0.4); background: rgba(24,34,66,0.5); }
+#rulesBtn.is-flash { border-color: rgba(150,200,255,0.85); background: rgba(40,60,110,0.7); }
+
+/* ---------- overlay ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 8; display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: radial-gradient(120% 90% at 50% 42%, rgba(10,14,34,0.68), rgba(3,4,10,0.94));
+  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  transition: opacity 320ms ease;
+}
+.overlay[hidden] { display: none; }
+.overlay.is-hidden { opacity: 0; pointer-events: none; }
+.panel {
+  text-align: center; max-width: 452px; padding: 34px 30px 30px; border-radius: 24px;
+  background: rgba(13,15,28,0.9); border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 34px 90px -22px rgba(0,0,0,0.85), inset 0 1px 0 0 rgba(255,255,255,0.05);
+  color: #c7cdd7;
+  animation: pop 340ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+@keyframes pop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.panel__title {
+  margin: 0 0 10px; font-size: clamp(2.3rem, 9vw, 3.5rem); font-weight: 900; letter-spacing: -0.03em; line-height: 0.96;
+  background: linear-gradient(176deg, #7dffd0 0%, #35d0ff 38%, #7b8cff 72%, #c88cff 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+  filter: drop-shadow(0 4px 24px rgba(92,150,255,0.3));
+}
+.panel__text { margin: 0 0 22px; font-size: clamp(0.95rem, 3.2vw, 1.04rem); line-height: 1.55; font-weight: 500; color: #aeb6c2; }
+.play-btn {
+  appearance: none; font-family: inherit; font-size: 1.05rem; font-weight: 800; color: #08131e;
+  background: linear-gradient(180deg, #8ff0d8, #6c9cf0); border: 0; padding: 15px 44px; border-radius: 999px;
+  cursor: pointer; box-shadow: 0 12px 32px -8px rgba(92,150,255,0.6);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.play-btn:hover { transform: translateY(-2px); box-shadow: 0 18px 42px -10px rgba(92,150,255,0.72); }
+.play-btn:active { transform: translateY(0); }
+.play-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(92,150,255,0.5); }
+
+/* ---------- frame + hint ---------- */
+.frame { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+.frame__corner {
+  position: absolute; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(200, 208, 222, 0.42);
+}
+.frame__corner--tl { display: none; } /* top-left holds the HUD */
+.frame__corner--tr { display: none; } /* top-right holds the controls */
+.frame__corner--bl { bottom: 14px; left: 16px; }
+.frame__corner a { color: inherit; text-decoration: none; pointer-events: auto; }
+.frame__corner a:hover { color: #8fb4ff; }
+
+.hint {
+  position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); z-index: 4; margin: 0;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; color: rgba(200, 208, 222, 0.5);
+  pointer-events: none; white-space: nowrap; transition: opacity 400ms ease; max-width: 92vw; text-align: center;
+}
+.hint.is-gone { opacity: 0; }
+
+@media (max-width: 680px) {
+  .frame__corner--bl { display: none; }
+  .hint { font-size: 0.66rem; letter-spacing: 0.02em; }
+  .pill { padding: 0 12px; font-size: 0.74rem; }
+  .hud__label { display: none; }
+}
+@media (max-width: 430px) {
+  .hint { white-space: normal; line-height: 1.4; bottom: 10px; }
+}
+
+/* Dock the shared tip-jar / fullscreen badges bottom-right (default is right-CENTRE,
+   which would sit over the swarm). Doubled classes out-specify the components'
+   injected styles; silence the right-centre entrance nudge. */
+.opt-tipjar.opt-tipjar {
+  top: auto; bottom: max(14px, env(safe-area-inset-bottom)); transform: none;
+}
+.opt-fs.opt-fs {
+  top: auto; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 54px); transform: none;
+}
+.opt-tipjar.opt-tipjar.tj-nudge { animation: none; }

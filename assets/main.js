@@ -66,6 +66,20 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "slime-mold":
+    "slime mold physarum generative emergent agents trails pheromone network veins self organizing organism colony fungus mold biology alife artificial life simulation mesmerizing hypnotic screensaver ambient dark glowing bioluminescent swarm food attractant vascular emergence",
+  "particle-life":
+    "particle life generative emergent artificial life alife particles attraction repulsion rules matrix self organizing cells clusters creatures swarm ecosystem emergent behavior simulation mesmerizing hypnotic screensaver ambient dark glowing physics reroll clusterluck",
+  "flow-field":
+    "flow field generative art perlin noise vector field particles flowing ribbons streamlines silk silky curl noise generative coding sketch mesmerizing hypnotic screensaver ambient dark glowing aurora flowing lines wind currents streams",
+  "reaction-diffusion":
+    "reaction diffusion gray scott turing patterns generative organic morphing spots stripes maze coral cells mitosis worms chemistry simulation mesmerizing hypnotic screensaver ambient dark glowing emergent growth membrane biological alan turing",
+  "ink-marbling":
+    "ink marbling paper marbling ebru suminagashi water ink swirl comb rake bloom fluid paint dye generative art relaxing satisfying calm cozy meditative mesmerizing screensaver ambient dark water jewel tones drop swirl feathered veins",
+  "stained-glass":
+    "stained glass voronoi mosaic cathedral church window leaded glass jewel tones panes cells generative art backlit sun light relaxing mesmerizing hypnotic screensaver ambient dark glowing gem colors tiling lloyd relaxation",
+  "mandelbrot":
+    "mandelbrot set fractal fractals infinite zoom deep zoom julia set mandelbrot brot self similar recursion complex numbers math maths visual generative art psychedelic trippy mesmerizing hypnotic kaleidoscopic spirals seahorse valley elephant valley minibrot escape time smooth coloring color palette palettes cycling explore pan zoom pinch chaos theory benoit mandelbrot fractal explorer visualizer visual",
   "minesweeper":
     "minesweeper mine sweeper mines bombs classic windows game logic puzzle deduction number grid flags flagging chord reveal squares uncover cells first click safe easy medium hard expert beginner intermediate best time flood fill brain teaser strategy solitaire single player tap long press game",
   "pool":
@@ -1142,6 +1156,7 @@ var PARTNER_META = {
   "symmetrygenius.com": { icon: "/assets/partners/symmetry-genius.png", blurb: "Drag shapes to solve symmetry puzzles." },
   "5secondgame.com": { icon: "/assets/partners/five-second-game.png", blurb: "Stop the clock at exactly five seconds." },
   "globalwar.app": { icon: "/assets/partners/global-war.png", blurb: "Turn-based world-domination strategy." },
+  "thetrailgame.com": { icon: "/assets/partners/the-trail-game.png", blurb: "One line, every dot: the daily path puzzle." },
   "meshgradientstudio.com": { icon: "/assets/partners/mesh-gradient-studio.png?v=2", blurb: "Generate lush mesh gradients, export anywhere." },
   "buildutilities.com": { icon: "/assets/partners/buildutilities.png", blurb: "Tiny, fast utilities for building software." },
   "thisstuffisamazing.com": { icon: "/assets/partners/this-stuff-is-amazing.png", blurb: "Genuinely great picks from trusted voices." },

@@ -16,6 +16,14 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
+### Polish: make the fruit look better on Slice It
+
+**Why it matters:** Owner note (2026-07-15) — the fruit on Slice It (`toys/slice-it/`) reads as flat/underwhelming and drags down an otherwise juicy toy. The design bar wants each object rendered as its real self (material, lighting, shadow), so better-looking fruit is a direct quality lift on a popular arcade toy.
+
+**When to revisit:** Next polish/juice round, or when next touching Slice It.
+
+**Notes:** Improve the fruit rendering — dimensional shading (radial gradient body + rim light + specular highlight), a soft contact/drop shadow, richer per-fruit palettes and silhouettes (watermelon/orange/lime/apple/etc. that read instantly), juicy sliced-face interior (pulp/rind/seeds) on the cut halves, and a wetter splatter. Keep it vanilla Canvas 2D, single-file. Look at the strongest object-rendering toys for the material bar. Regenerate the card/OG if the look changes materially.
+---
 ### New toy: Tiny-Wings-style hill glider
 
 **Status:** done
