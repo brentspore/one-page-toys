@@ -192,3 +192,21 @@ html, body {
   .frame__corner--bl { display: none; }
   .frame__corner--tr { display: none; }
 }
+
+/* You drag paths anywhere on the board, so the shared tip-jar / fullscreen badges
+   docked at right-CENTRE sit right in the play field and swallow drags near the
+   right edge. Dock them in the bottom-right corner (out of the way) for this toy
+   only. Doubled classes out-specify the components' own injected styles. */
+.opt-tipjar.opt-tipjar {
+  top: auto;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  transform: none;
+}
+.opt-fs.opt-fs {
+  top: auto;
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 54px);
+  transform: none;
+}
+/* the attention nudge assumes the right-centre translateY(-50%); silence it here so the
+   badge doesn't leap out of the corner mid-wiggle */
+.opt-tipjar.opt-tipjar.tj-nudge { animation: none; }

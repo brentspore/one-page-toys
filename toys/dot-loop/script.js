@@ -270,4 +270,31 @@
   fillBoard();
   overlay.hidden = false;
   requestAnimationFrame(frame);
+
+  // The tip-jar + fullscreen badges are relocated to the bottom-right corner on
+  // this toy (their usual right-center dock sits in the drag field). Announce
+  // the move: on load they slide from the center dock down to the corner, so
+  // players see where they went. Reusable pattern — pair with the CSS override
+  // block in styles.css on any toy that relocates the badges.
+  (function () {
+    var frames = 0;
+    (function wait() {
+      var tip = document.querySelector(".opt-tipjar"), fs = document.querySelector(".opt-fs");
+      if ((!tip || !fs) && ++frames < 600) return requestAnimationFrame(wait);
+      if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      [[tip, 0], [fs, -56]].forEach(function (pair) {
+        var el = pair[0];
+        if (!el) return;
+        var r = el.getBoundingClientRect();
+        var dy = (window.innerHeight / 2 + pair[1]) - (r.top + r.height / 2); // old center dock → new corner
+        el.style.transition = "none";
+        el.style.transform = "translateY(" + dy + "px)";
+        requestAnimationFrame(function () { requestAnimationFrame(function () {
+          el.style.transition = "transform 900ms cubic-bezier(0.6, 0.05, 0.28, 1) 700ms";
+          el.style.transform = "translateY(0)";
+          setTimeout(function () { el.style.transition = ""; el.style.transform = ""; }, 1900);
+        }); });
+      });
+    })();
+  })();
 })();
