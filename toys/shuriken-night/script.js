@@ -65,7 +65,10 @@
 
   var BEST_KEY = "shuriken_best";
   var SOUND_KEY = "shuriken_sound";
-  var MODE_KEY = "shuriken_mode";
+  // v2 key: the default moved from "turn" to "static", and anyone who had
+  // already played carried a saved "turn" that silently beat the new default.
+  // Bumping the key retires those once, then choices persist as before.
+  var MODE_KEY = "shuriken_mode2";
 
   var COL = {
     ink: "#05070f",
@@ -84,7 +87,7 @@
 
   var W = 0, H = 0, DPR = 1, focal = 0, horizon = 0, fov = 1.25;
   var yaw = 0, yawVel = 0;
-  var mode = "turn"; // "turn" | "static"
+  var mode = "static"; // "turn" | "static" — first-timers start on Hold the line
 
   var running = false, over = false, started = false;
   var score = 0, best = 0, wave = 0, life = 3;
@@ -866,11 +869,15 @@
 
   /* --------------------------------------------------------------- enemies */
 
+  // `gear` drives the silhouette in drawNinjaShape. These are flat black bodies
+  // against a night sky, so the ONLY way one type reads as different from
+  // another is its outline — hence a sheathed sword, a bandolier, pauldrons and
+  // a horned brow, or a trailing cloak, rather than colour or detail.
   var TYPES = {
-    runner: { speed: 3.4, hp: 1, h: 1.78, points: 100, w: 1 },
-    thrower: { speed: 2.8, hp: 1, h: 1.74, points: 150, w: 1, stop: [9, 14], fire: 3.1 },
-    brute: { speed: 2.15, hp: 2, h: 2.08, points: 250, w: 1.32 },
-    dropper: { speed: 4.3, hp: 1, h: 1.72, points: 200, w: 1 }
+    runner: { speed: 3.4, hp: 1, h: 1.78, points: 100, w: 1, gear: "sword" },
+    thrower: { speed: 2.8, hp: 1, h: 1.74, points: 150, w: 1, stop: [9, 14], fire: 3.1, gear: "pouch" },
+    brute: { speed: 2.15, hp: 2, h: 2.08, points: 250, w: 1.32, gear: "odachi" },
+    dropper: { speed: 4.3, hp: 1, h: 1.72, points: 200, w: 1, gear: "cloak" }
   };
 
   function waveMix(n) {
@@ -950,6 +957,22 @@
   function syncPos(e) {
     e.x = Math.sin(e.ang) * e.dist;
     e.z = Math.cos(e.ang) * e.dist;
+  }
+
+  // Break sideways for a beat before turning in. Rate is derived from a real
+  // lateral speed over the current radius, so a dropper landing at 9m and a
+  // runner entering at 18m both cross the ground at a believable pace instead
+  // of the near one whipping around.
+  function beginFlank(e, dur) {
+    e.state = "flank";
+    e.t = 0;
+    // Bay angles arrive in [0, 2pi), so a ninja standing on your LEFT carries
+    // ang 5.7, not -0.58. Fold to signed here or the static-stance clamp below
+    // reads 5.7 as "past the right edge" and teleports it across the courtyard.
+    e.ang = angDiff(e.ang, 0);
+    e.flankDir = Math.random() < 0.5 ? -1 : 1;
+    e.flankT = dur;
+    e.flankRate = rand(1.9, 3.2) / Math.max(4, e.dist);
   }
 
   /* ------------------------------------------------------------ projectiles */
@@ -1159,6 +1182,11 @@
     mode = m;
     modeTurn.classList.toggle("is-on", m === "turn");
     modeStatic.classList.toggle("is-on", m === "static");
+    // Hold the line cannot turn, so listing the turn keys there is a lie.
+    ovKeys.innerHTML = (m === "turn"
+      ? "Drag or A / D to turn &nbsp;·&nbsp; hold to charge a fan of three<br />"
+      : "Tap to throw &nbsp;·&nbsp; hold to charge a fan of three<br />")
+      + "Shift or right-click for focus &nbsp;·&nbsp; space for ninja magic";
     try { localStorage.setItem(MODE_KEY, m); } catch (e) {}
   }
   modeTurn.addEventListener("click", function () { setMode("turn"); });
@@ -1242,6 +1270,15 @@
     if (e.state === "dead") return;
     e.state = "dead";
     e.dead = 0;
+    // How this one goes down. A head-shot overrides type: it drops instantly
+    // wherever it was, which is the whole point of hitting the head.
+    e.deathKind = headshot ? "snap"
+      : e.type === "brute" ? "topple"
+        : e.type === "thrower" ? "stagger"
+          : "tumble";
+    e.deathDur = e.deathKind === "topple" ? 1.5 : e.deathKind === "stagger" ? 1.25 : 1.1;
+    e.deathDir = Math.random() < 0.5 ? -1 : 1;
+    e.dustDone = false;
     var def = TYPES[e.type];
     combo++;
     comboT = 2.2;
@@ -1389,15 +1426,39 @@
 
       if (e.state === "dead") {
         e.dead += dt;
-        if (e.dead > 1.1) enemies.splice(i, 1);
+        var ddur = e.deathDur || 1.1;
+        // dust where the body actually lands, not at the moment of the hit
+        if (!e.dustDone && e.dead > ddur * 0.66) {
+          e.dustDone = true;
+          if (e.deathKind === "topple" || e.deathKind === "tumble") {
+            ring(e.x, 0.05, e.z, "rgba(158,168,190,0.3)", false);
+          }
+        }
+        if (e.dead > ddur) enemies.splice(i, 1);
+        continue;
+      }
+
+      if (e.state === "flank") {
+        // Crossing the courtyard before committing. Without this every ninja
+        // walks the exact radius it entered on, so the whole wave reads as
+        // spokes converging on you.
+        e.ang += e.flankDir * e.flankRate * dt;
+        e.dist -= e.speed * 0.3 * dt; // drift in slightly: a curve, not a sidestep
+        if (mode !== "turn") {
+          // Locked-forward stance can't chase them, so they must stay in frame.
+          var lim = staticArc();
+          if (e.ang > lim) { e.ang = lim; e.flankDir = -1; }
+          else if (e.ang < -lim) { e.ang = -lim; e.flankDir = 1; }
+        }
+        if (e.t >= e.flankT) { e.state = "walk"; e.t = 0; }
+        syncPos(e);
         continue;
       }
 
       if (e.state === "shoji") {
         // Backlit silhouette behind the paper, then it tears through.
         if (e.t > 1.15) {
-          e.state = "walk";
-          e.t = 0;
+          beginFlank(e, rand(0.85, 1.5));
           if (e.bay) {
             e.bay.sil = null;
             e.bay.broken = 1;
@@ -1424,7 +1485,12 @@
 
       if (e.state === "drop") {
         e.y -= dt * 7.5;
-        if (e.y <= 0) { e.y = 0; e.state = "walk"; e.t = 0; ring(e.x, 0.05, e.z, "rgba(190,210,255,0.4)", false); }
+        if (e.y <= 0) {
+          e.y = 0;
+          ring(e.x, 0.05, e.z, "rgba(190,210,255,0.4)", false);
+          // lands, breaks sideways out of the landing, then comes for you
+          beginFlank(e, rand(0.4, 0.8));
+        }
         syncPos(e);
         continue;
       }
@@ -2102,16 +2168,42 @@
   function drawNinjaShape(c, x, footY, h, e, flat, growth) {
     var t = e ? e.t : 0;
     var bulk = e && e.w ? e.w : 1;
-    var headR = h * 0.073;
-    var hipY = footY - h * 0.48;
-    var shoulderY = footY - h * 0.795;
-    var headY = footY - h * 0.9;
-    var shoulderHalf = h * 0.104 * bulk;
-    var hipHalf = h * 0.074 * bulk;
+    // Wider shoulders over a narrower waist and hips: the taper is what stops
+    // the body reading as a slab, which is most of what made these look like
+    // skittles rather than people.
+    var headR = h * 0.067;
+    var hipY = footY - h * 0.47;
+    var shoulderY = footY - h * 0.8;
+    var headY = footY - h * 0.905;
+    var shoulderHalf = h * 0.116 * bulk;
+    var hipHalf = h * 0.072 * bulk;
 
+    var type = e && e.type ? e.type : "runner";
+    var gear = TYPES[type] ? TYPES[type].gear : "sword";
     var attacking = e && e.state === "attack";
-    var moving = !e || e.state === "walk" || e.state === "drop";
+    var falling = e && e.state === "drop";
+    var moving = !e || e.state === "walk" || e.state === "flank" || falling;
     var ph = e ? e.phase : 0;
+
+    // A body that keeps its running pose and just rotates stiffly is the
+    // "tipping dummy" look. So death folds the figure instead: the legs give
+    // out, the hips sink, the arms fling, the head lolls. `fold` is the amount
+    // of collapse, curved differently per death so a brute's knees go slowly
+    // and a head-shot drops instantly.
+    var dp = e && e.state === "dead" ? clamp(e.dead / (e.deathDur || 1.1), 0, 1) : 0;
+    var dk = e && e.deathKind ? e.deathKind : "tumble";
+    var fold = 0, armFling = 0;
+    if (dp > 0) {
+      if (dk === "stagger") fold = clamp((dp - 0.3) / 0.7, 0, 1);
+      else if (dk === "topple") fold = dp * dp;
+      else if (dk === "snap") fold = clamp(dp * 1.7, 0, 1);
+      else fold = clamp(dp * 1.3, 0, 1);
+      // Peaks early and RETURNS to zero: the arms are thrown out by the blow,
+      // then hang as dead weight. Holding the fling open left them locked
+      // horizontal, which reads as a scarecrow rather than a corpse.
+      armFling = Math.sin(clamp(dp * 3, 0, 1) * Math.PI);
+    }
+
     // Cadence follows how fast this one actually runs, so a brute lumbers and
     // a dropper sprints instead of every type sharing one gait.
     var cadence = 7.4 + (e && e.speed ? e.speed : 3.2) * 0.75;
@@ -2125,17 +2217,34 @@
     var lean = (moving ? h * 0.035 : 0) + lunge * h * 0.075;
     shoulderY -= lunge * h * 0.02;
     headY -= lunge * h * 0.03;
-    var leanX = lean;
+    // Crossing the courtyard sideways shears the body into the slide, so a
+    // flanking ninja reads as moving across rather than marching on the spot.
+    var strafe = e && e.state === "flank" ? (e.flankDir || 0) : 0;
+    var leanX = lean + strafe * h * 0.05;
 
-    var stride = h * 0.115;
-    var legW = h * 0.055 * bulk;
-    var kneeDrop = h * 0.24;
+    // the collapse: hips drop toward the feet, everything above follows
+    if (fold > 0) {
+      var sink = fold * h * 0.36;
+      hipY += sink; shoulderY += sink * 1.12; headY += sink * 1.2;
+      leanX += (e && e.deathDir ? e.deathDir : 1) * fold * h * 0.05;
+    }
+
+    var stride = h * 0.13 * (1 - fold * 0.75);
+    var legW = h * 0.042 * bulk;
+    var kneeDrop = h * (0.24 - fold * 0.13);
+    // brutes plant wider and sit lower — a heavy stance, not just a bigger one
+    // A brute plants wider and sits lower, but takes SHORTER steps — full
+    // stride on that stance splayed it into a starfish.
+    if (gear === "odachi") { hipHalf *= 1.1; kneeDrop *= 1.08; stride *= 0.78; }
 
     // legs, with a knee so they bend rather than scissor
+    // As the body folds the knees have to break OUTWARD. Just shortening the
+    // legs made a corpse look like it was sinking into the floor in a lift.
+    var kneeOut = fold * h * 0.11;
     for (var L = 0; L < 2; L++) {
       var g = L === 0 ? gait : gait2;
       var hx = x + (L === 0 ? -hipHalf * 0.72 : hipHalf * 0.72);
-      var kx = hx + g * stride * 0.5;
+      var kx = hx + g * stride * 0.5 + (L === 0 ? -kneeOut : kneeOut);
       var fx = hx + g * stride;
       var ky = hipY + kneeDrop;
       var lift = Math.max(0, g) * h * 0.03;
@@ -2147,14 +2256,22 @@
       c.fill();
     }
 
-    // torso: wedge from shoulders to hips, leaning forward into the run
+    // Torso: shoulders out, waist pinched IN, hips narrow. The old control
+    // points sat OUTSIDE the shoulder line, which bulged the ribs wider than
+    // the shoulders and produced the slab.
     var sx0 = x + leanX;
+    var waistY = hipY - h * 0.11;
+    var waistHalf = shoulderHalf * 0.6;
     c.beginPath();
     c.moveTo(sx0 - shoulderHalf, shoulderY);
-    c.quadraticCurveTo(x - shoulderHalf * 1.04, hipY - h * 0.13, x - hipHalf, hipY + h * 0.02);
+    c.quadraticCurveTo(x - waistHalf * 1.05, waistY, x - hipHalf, hipY + h * 0.02);
     c.lineTo(x + hipHalf, hipY + h * 0.02);
-    c.quadraticCurveTo(x + shoulderHalf * 1.04, hipY - h * 0.13, sx0 + shoulderHalf, shoulderY);
-    c.quadraticCurveTo(sx0, shoulderY - h * 0.028, sx0 - shoulderHalf, shoulderY);
+    c.quadraticCurveTo(x + waistHalf * 1.05, waistY, sx0 + shoulderHalf, shoulderY);
+    // sloped shoulder line rather than a flat plank across the top
+    c.quadraticCurveTo(sx0 + shoulderHalf * 0.45, shoulderY - h * 0.026,
+      sx0, shoulderY - h * 0.03);
+    c.quadraticCurveTo(sx0 - shoulderHalf * 0.45, shoulderY - h * 0.026,
+      sx0 - shoulderHalf, shoulderY);
     c.closePath();
     c.fill();
     // sash at the waist
@@ -2165,9 +2282,23 @@
 
     // arms
     var throwing = e && e.throwAnim > 0;
-    var armW = h * 0.05 * bulk;
+    var armW = h * 0.04 * bulk;
     var armLen = h * 0.17;
-    if (attacking) {
+    if (dp > 0) {
+      // dying: the arms go where the blow threw them, then hang dead
+      var fdir = e && e.deathDir ? e.deathDir : 1;
+      var flA = armFling * (dk === "snap" ? 1.15 : 0.85);
+      for (var A = 0; A < 2; A++) {
+        var side = A === 0 ? -1 : 1;
+        var shx = sx0 + shoulderHalf * 0.86 * side;
+        var ax1 = shx + side * armLen * (0.3 + flA * 0.5);
+        var ay1 = shoulderY + armLen * (0.88 - flA * 0.6);
+        var ax2 = ax1 + side * armLen * (0.12 + flA * 0.28) + fdir * armLen * 0.12;
+        var ay2 = ay1 + armLen * (1.02 - flA * 0.35);
+        taper(c, shx, shoulderY + h * 0.015, ax1, ay1, armW, armW * 0.82);
+        taper(c, ax1, ay1, ax2, ay2, armW * 0.82, armW * 0.6);
+      }
+    } else if (attacking) {
       // Blade cocked high, both arms up — the readable "about to swing" tell.
       var rise = Math.sin(lunge * Math.PI * 0.75);
       var bx = sx0 + shoulderHalf * (1.05 + rise * 0.5);
@@ -2199,8 +2330,9 @@
       }
     }
 
-    // short blade in the near hand for the melee types
-    if (e && e.type !== "thrower" && !throwing && !attacking) {
+    // short blade in the near hand — the light melee types only; a brute
+    // carries the odachi below instead
+    if (e && type !== "thrower" && type !== "brute" && !throwing && !attacking && fold < 0.4) {
       var nSwing = gait * 0.5;
       var handX = x + shoulderHalf * 0.8 + nSwing * h * 0.12;
       var handY = shoulderY + armLen * 2;
@@ -2208,40 +2340,94 @@
       taper(c, handX - h * 0.018, handY + h * 0.012, handX + h * 0.022, handY - h * 0.012, h * 0.014, h * 0.014);
     }
 
-    // neck
-    taper(c, x, shoulderY + h * 0.005, hx0, headY + headR * 0.6, h * 0.028, h * 0.03);
+    /* ---- per-type gear: at night this outline IS the character design ---- */
+    var geared = fold < 0.45; // kit is lost as the body folds
+    if (gear === "sword" && geared) {
+      // katana sheathed across the back, handle standing over the shoulder
+      taper(c, x - hipHalf * 0.3, hipY - h * 0.05, sx0 + shoulderHalf * 0.9, shoulderY - h * 0.07, h * 0.015, h * 0.012);
+      taper(c, sx0 + shoulderHalf * 0.9, shoulderY - h * 0.07, sx0 + shoulderHalf * 1.35, shoulderY - h * 0.17, h * 0.012, h * 0.01);
+    } else if (gear === "pouch" && geared) {
+      // bandolier across the chest and a star pouch riding the hip
+      taper(c, sx0 - shoulderHalf * 0.8, shoulderY + h * 0.03, x + hipHalf, hipY - h * 0.04, h * 0.012, h * 0.012);
+      c.beginPath();
+      c.ellipse(x - hipHalf * 1.25, hipY + h * 0.005, h * 0.038, h * 0.03, 0.2, 0, 6.283);
+      c.fill();
+    } else if (gear === "odachi") {
+      // pauldrons — the wide, armoured read that says "this one takes two"
+      for (var pd = 0; pd < 2; pd++) {
+        c.beginPath();
+        c.ellipse(sx0 + shoulderHalf * (pd ? 1.02 : -1.02), shoulderY + h * 0.022,
+          h * 0.055 * bulk, h * 0.038 * bulk, 0, 0, 6.283);
+        c.fill();
+      }
+      if (geared && !attacking) {
+        // A blade crossing the torso is invisible — same black on black — so
+        // only the ends read. Carry it low-left and sweep it well past the
+        // right shoulder so what shows is a long blade, not a plank.
+        var obY = shoulderY + h * 0.16;
+        taper(c, x - hipHalf * 0.9, obY + h * 0.06, x + shoulderHalf * 1.95, obY - h * 0.34, h * 0.019, h * 0.005);
+        taper(c, x - hipHalf * 0.9, obY + h * 0.06, x - hipHalf * 1.8, obY + h * 0.16, h * 0.013, h * 0.011);
+      }
+    } else if (gear === "cloak") {
+      // Cloak trails BEHIND rather than wrapping all the way round — a full
+      // skirt just swallowed the body and read as a robe, not a ninja.
+      var flare = falling ? 1 : 0.3 + Math.abs(Math.sin(t * 4.2 + ph)) * 0.22;
+      var clw = shoulderHalf * (0.9 + flare * 1.05);
+      var clh = h * (0.2 + flare * 0.26) * (1 - fold * 0.5);
+      var clx = x - shoulderHalf * 0.35; // hangs off the trailing shoulder
+      c.beginPath();
+      c.moveTo(sx0 - shoulderHalf * 0.9, shoulderY - h * 0.005);
+      c.quadraticCurveTo(clx - clw, shoulderY + clh * 0.5, clx - clw * 0.8, shoulderY + clh);
+      c.quadraticCurveTo(clx - clw * 0.2, shoulderY + clh * 0.72, clx + shoulderHalf * 0.5, shoulderY + clh * 0.5);
+      c.quadraticCurveTo(sx0 - shoulderHalf * 0.1, shoulderY + clh * 0.2, sx0 - shoulderHalf * 0.9, shoulderY - h * 0.005);
+      c.closePath();
+      c.fill();
+    }
 
     // hooded head, carried forward by the lean
     var hx0 = x + leanX * 1.35;
+
+    // neck (this ran BEFORE hx0 existed, so it drew to undefined and silently
+    // vanished — every ninja was a floating head above shoulders)
+    taper(c, x, shoulderY + h * 0.005, hx0, headY + headR * 0.6, h * 0.028, h * 0.03);
     c.beginPath();
     c.arc(hx0, headY, headR, 0, 6.283);
     c.fill();
+    // Hood hugs the skull and gathers to a knot at the BACK, instead of the old
+    // symmetrical dome that ballooned wider than the head and read as a bell.
     c.beginPath();
-    c.moveTo(hx0 - headR * 1.12, headY + headR * 0.62);
-    c.quadraticCurveTo(hx0 - headR * 1.2, headY - headR * 1.15, hx0, headY - headR * 1.28);
-    c.quadraticCurveTo(hx0 + headR * 1.2, headY - headR * 1.15, hx0 + headR * 1.12, headY + headR * 0.62);
-    c.quadraticCurveTo(hx0, headY + headR * 1.1, hx0 - headR * 1.12, headY + headR * 0.62);
+    c.moveTo(hx0 - headR * 1.02, headY + headR * 0.66);
+    c.quadraticCurveTo(hx0 - headR * 1.12, headY - headR * 0.95, hx0 - headR * 0.1, headY - headR * 1.12);
+    c.quadraticCurveTo(hx0 + headR * 0.95, headY - headR * 1.0, hx0 + headR * 1.0, headY - headR * 0.1);
+    c.quadraticCurveTo(hx0 + headR * 1.02, headY + headR * 0.5, hx0 + headR * 0.7, headY + headR * 0.78);
+    c.quadraticCurveTo(hx0, headY + headR * 1.05, hx0 - headR * 1.02, headY + headR * 0.66);
     c.closePath();
     c.fill();
 
-    // two thin trailing ribbons off the hood knot — the motion tell
-    var swing = Math.sin(t * 5.5 + ph);
+    // a brute wears a horned menpo brow, so the two-hit enemy is readable from
+    // its head alone even when the body is edge-on or half off-screen
+    if (gear === "odachi") {
+      for (var hn = 0; hn < 2; hn++) {
+        var hs = hn ? 1 : -1;
+        taper(c, hx0 + hs * headR * 0.72, headY - headR * 0.72,
+          hx0 + hs * headR * 1.7, headY - headR * 1.85, headR * 0.2, headR * 0.06);
+      }
+    }
+
+    // two thin trailing ribbons off the hood knot — the motion tell. They stop
+    // flying and hang the moment the body goes down.
+    var swing = Math.sin(t * 5.5 + ph) * (1 - fold * 0.85);
+    // The lean carries the body toward +x, so cloth trails -x. These used to
+    // stream FORWARD across the face as broad filled wedges, which at any real
+    // size read as a fin bolted to the head.
     for (var rb = 0; rb < 2; rb++) {
-      var amp = rb === 0 ? 1 : 0.62;
-      var len = h * (rb === 0 ? 0.17 : 0.12) * amp;
-      var y0 = headY + headR * (0.35 + rb * 0.42);
-      c.beginPath();
-      c.moveTo(hx0 + headR * 0.75, y0);
-      c.quadraticCurveTo(
-        hx0 + headR * 0.8 + len * 0.6, y0 + swing * h * 0.035 - h * 0.01,
-        hx0 + headR * 0.8 + len, y0 + swing * h * 0.06 + h * 0.012
-      );
-      c.quadraticCurveTo(
-        hx0 + headR * 0.8 + len * 0.55, y0 + swing * h * 0.03 + h * 0.022,
-        hx0 + headR * 0.7, y0 + h * 0.022
-      );
-      c.closePath();
-      c.fill();
+      var len = h * (rb === 0 ? 0.115 : 0.082);
+      var ry0 = headY + headR * (0.1 + rb * 0.5);
+      var rx0 = hx0 - headR * 0.85;
+      var rmx = rx0 - len * 0.55, rmy = ry0 + swing * h * 0.022 + h * 0.012;
+      var rex = rx0 - len, rey = ry0 + swing * h * 0.04 + h * 0.03;
+      taper(c, rx0, ry0, rmx, rmy, h * 0.011, h * 0.008);
+      taper(c, rmx, rmy, rex, rey, h * 0.008, h * 0.003);
     }
   }
 
@@ -2253,10 +2439,43 @@
 
     ctx.save();
     if (dying) {
-      var k = clamp(e.dead / 1.1, 0, 1);
-      ctx.globalAlpha = 1 - k;
-      ctx.translate(p.x, footY);
-      ctx.rotate(k * 1.15);
+      // Each type goes down its own way. The pose folding happens inside
+      // drawNinjaShape; this is the whole-body travel on top of it.
+      var k = clamp(e.dead / (e.deathDur || 1.1), 0, 1);
+      var ddir = e.deathDir || 1;
+      var rot = 0, slideX = 0, slideY = 0, squash = 1;
+      // Rotation stays well under horizontal on purpose. The body pivots at the
+      // FEET, so a full 90 degrees leaves it floating sideways off the ankles
+      // like a felled mannequin; going part-way and sinking reads as a man
+      // going down, and the fade covers the rest.
+      if (e.deathKind === "topple") {
+        // heavy: hangs a beat on dead legs, then goes over all at once
+        var tk = k * k;
+        rot = ddir * tk * 1.25;
+        slideY = tk * h * 0.12;
+      } else if (e.deathKind === "stagger") {
+        // driven back a step, then the knees go
+        var st = clamp((k - 0.3) / 0.7, 0, 1);
+        slideX = -ddir * h * 0.1 * Math.min(1, k / 0.3);
+        rot = -ddir * st * st * 1.1;
+        slideY = st * h * 0.1;
+      } else if (e.deathKind === "snap") {
+        // head-shot: dropped where it stood, a whip back and straight down
+        rot = -ddir * Math.sin(Math.min(1, k * 3) * Math.PI) * 0.2;
+        slideY = k * h * 0.09;
+        squash = 1 - k * 0.14;
+      } else {
+        // tumble: its own momentum carries it over its feet
+        rot = ddir * k * 1.2;
+        slideX = ddir * h * 0.14 * k;
+        slideY = k * k * h * 0.1;
+      }
+      // Hold the body, THEN fade — but be fully gone by the end, so the last
+      // and least convincing frames of the fall are never actually seen.
+      ctx.globalAlpha = 1 - clamp((k - 0.62) / 0.38, 0, 1);
+      ctx.translate(p.x + slideX, footY + slideY);
+      ctx.rotate(rot);
+      if (squash !== 1) ctx.scale(1, squash);
       ctx.translate(-p.x, -footY);
     }
 
@@ -2293,11 +2512,12 @@
 
     // brutes wear a faint red sash so the two-hit enemy is legible
     if (e.type === "brute" && !dying) {
-      ctx.strokeStyle = "rgba(224,69,75,0.55)";
-      ctx.lineWidth = Math.max(1, h * 0.022);
+      // a sash tied shoulder-to-hip, not a bar laid across the chest
+      ctx.strokeStyle = "rgba(224,69,75,0.5)";
+      ctx.lineWidth = Math.max(1, h * 0.013);
       ctx.beginPath();
-      ctx.moveTo(p.x - h * 0.1, footY - h * 0.6);
-      ctx.lineTo(p.x + h * 0.1, footY - h * 0.52);
+      ctx.moveTo(p.x - h * 0.085, footY - h * 0.76);
+      ctx.lineTo(p.x + h * 0.06, footY - h * 0.49);
       ctx.stroke();
       if (e.hp === 1) {
         ctx.strokeStyle = "rgba(255,183,101,0.5)";
@@ -2309,28 +2529,54 @@
     ctx.restore();
   }
 
+  // The star flies FLAT — a horizontal plate spinning about the VERTICAL axis,
+  // the way a shuriken is actually thrown. So it is not a screen-plane rotation:
+  // the eight points are spun in the ground plane and the depth axis is
+  // foreshortened, which is what makes it read as a plate seen near edge-on
+  // rather than a wheel facing the camera.
   function drawStar(s, p) {
     var r = Math.max(2.4, p.s * 0.16);
+    var spin = s.spin + performance.now() * 0.03;
+    // Squash of the depth axis = how far off eye level the blade sits. Floored,
+    // because a star at exactly eye height is geometrically a hairline and would
+    // strobe out of existence every throw.
+    var dist = Math.sqrt(s.x * s.x + s.z * s.z) || 0.001;
+    var tilt = Math.min(0.6, Math.max(0.22, Math.abs(EYE - s.y) / dist + 0.2));
+    var i, a, rr;
     ctx.save();
     ctx.translate(p.x, p.y);
-    ctx.rotate(s.spin + performance.now() * 0.03);
-    var g = ctx.createLinearGradient(-r, -r, r, r);
+    // plate thickness — a dark copy a hair below gives the blade an edge, so it
+    // still reads as steel when the points sweep through side-on
+    var th = Math.max(0.7, r * 0.1);
+    ctx.fillStyle = "rgba(24,31,52,0.9)";
+    ctx.beginPath();
+    for (i = 0; i < 8; i++) {
+      a = (i / 8) * 6.283 + spin;
+      rr = i % 2 === 0 ? r : r * 0.34;
+      var ex = Math.cos(a) * rr, ey = Math.sin(a) * rr * tilt + th;
+      if (i === 0) ctx.moveTo(ex, ey); else ctx.lineTo(ex, ey);
+    }
+    ctx.closePath();
+    ctx.fill();
+    // Gradient stays fixed in SCREEN space (the canvas is never rotated now), so
+    // the moon sits still and the blades glint as they sweep under it.
+    var g = ctx.createLinearGradient(-r, -r * tilt, r, r * tilt);
     g.addColorStop(0, "#ffffff");
     g.addColorStop(0.45, "#c8d6f0");
     g.addColorStop(1, "#6d7c9c");
     ctx.fillStyle = g;
     ctx.beginPath();
-    for (var i = 0; i < 8; i++) {
-      var a = (i / 8) * 6.283;
-      var rr = i % 2 === 0 ? r : r * 0.34;
-      var px = Math.cos(a) * rr, py = Math.sin(a) * rr;
+    for (i = 0; i < 8; i++) {
+      a = (i / 8) * 6.283 + spin;
+      rr = i % 2 === 0 ? r : r * 0.34;
+      var px = Math.cos(a) * rr, py = Math.sin(a) * rr * tilt;
       if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     }
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = "rgba(10,14,30,0.85)";
     ctx.beginPath();
-    ctx.arc(0, 0, r * 0.17, 0, 6.283);
+    ctx.ellipse(0, 0, r * 0.17, r * 0.17 * tilt, 0, 0, 6.283);
     ctx.fill();
     ctx.restore();
     // glint
@@ -2794,10 +3040,8 @@
   resize();
   buildWorld();
   setSound(soundOn);
-  setMode(mode);
+  setMode(mode); // also writes the key hints, which depend on the stance
   document.body.classList.add("is-menu");
-  ovKeys.innerHTML =
-    "Drag or A / D to turn &nbsp;·&nbsp; hold to charge a fan of three<br />Shift or right-click for focus &nbsp;·&nbsp; space for ninja magic";
   updateHud();
   requestAnimationFrame(frame);
 
@@ -2806,4 +3050,5 @@
     if (!started && !REDMO) yaw += 0.0009;
     setTimeout(idle, 16);
   })();
+
 })();
