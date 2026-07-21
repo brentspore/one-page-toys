@@ -209,7 +209,10 @@
     ".mg-card:focus-visible{outline:2px solid var(--mg-ring);outline-offset:2px}" +
     ".mg-icon{width:20px;height:20px;border-radius:5px;flex:0 0 auto;object-fit:cover}" +
     ".mg-icon--fb{color:var(--mg-fg);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:var(--mg-fb)}" +
-    ".mg-body{display:flex;flex-direction:column;min-width:0;line-height:1.18}" +
+    // text-align is set explicitly: most host panels are centred, and inheriting
+    // that centred the short title inside a box sized by the longer subtitle,
+    // so the two lines never lined up.
+    ".mg-body{display:flex;flex-direction:column;align-items:flex-start;min-width:0;line-height:1.18;text-align:left}" +
     ".mg-name{font-size:12px;font-weight:600;color:var(--mg-fg);overflow:hidden;" +
       "display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2}" +
     ".mg-tag{font-size:10px;color:var(--mg-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +

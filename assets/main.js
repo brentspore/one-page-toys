@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "shuriken-night":
+    "shuriken night ninja star throwing game first person shooter fps ninja stars throwing stars kunai shinobi samurai japan japanese castle courtyard moonlit night paper screens shoji wave defense wave survival arcade action aim aiming target practice throw deflect parry slow motion bullet time ninja magic stealth assassin martial arts katana blade rooftop dojo horde survive",
   "spelling-blocks":
     "spelling blocks word game anagram scramble unscramble letters build words vocabulary spelling puzzle wooden letter blocks alphabet tiles make words word builder daily word puzzle beat par no leftovers use every letter cozy relaxing brain teaser spellingblocks practice word search wordle-like letter sort partition twelve blocks",
   "trail-game":
