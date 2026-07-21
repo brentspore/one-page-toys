@@ -3408,9 +3408,25 @@
     ctx.translate(0, slide);
 
     var big = Math.min(46, W * 0.085);
+
+    // A scrim behind the whole banner. The subtitle is amber and the wall it
+    // lands on is a row of amber-lit paper screens, so it was amber on amber
+    // and effectively unreadable. Darkening the plate first fixes it for any
+    // background, and gives the number something to sit on.
+    var scH = big * 2.2;
+    var sc = ctx.createRadialGradient(W / 2, cy + big * 0.25, 0, W / 2, cy + big * 0.25, Math.max(W * 0.4, big * 7));
+    sc.addColorStop(0, "rgba(3,5,14,0.82)");
+    sc.addColorStop(0.5, "rgba(3,5,14,0.5)");
+    sc.addColorStop(1, "rgba(3,5,14,0)");
+    ctx.fillStyle = sc;
+    ctx.fillRect(0, cy - scH, W, scH * 2.1);
+
+    ctx.shadowColor = "rgba(2,4,10,0.95)";
+    ctx.shadowBlur = Math.max(6, big * 0.35);
     ctx.fillStyle = COL.paper;
     ctx.font = "700 " + big + "px 'Geist', system-ui, sans-serif";
     ctx.fillText(waveBannerText, W / 2, cy);
+    ctx.shadowBlur = 0;
 
     // seal stroke under the number
     var sw = Math.max(34, big * 1.1);
@@ -3432,11 +3448,19 @@
     ctx.fillStyle = grR;
     ctx.fillRect(W / 2 + sw / 2 + 10, ry, rw - 10, 1);
 
+    // Subtitle: scales with the viewport (it was pinned at 11px, so on a big
+    // screen it was a whisper), heavier weight, and its own dark halo so it
+    // survives landing on a lit screen.
     ctx.globalAlpha = clamp(a, 0, 1);
+    var sub = clamp(W * 0.0115, 11, 16);
+    ctx.font = "700 " + sub.toFixed(1) + "px 'Geist Mono', ui-monospace, monospace";
+    ctx.letterSpacing = (sub * 0.32).toFixed(1) + "px";
+    ctx.shadowColor = "rgba(2,4,10,0.95)";
+    ctx.shadowBlur = 7;
     ctx.fillStyle = COL.amber;
-    ctx.font = "600 11px 'Geist Mono', ui-monospace, monospace";
-    ctx.letterSpacing = "4px";
     ctx.fillText("THE SHADOWS RISE", W / 2, cy + big * 0.95);
+    ctx.shadowBlur = 0;
+    ctx.letterSpacing = "0px";
     ctx.restore();
     ctx.globalAlpha = 1;
   }
