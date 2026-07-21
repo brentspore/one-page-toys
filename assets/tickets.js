@@ -576,6 +576,33 @@
     listeners.push(function () {
       wrap.classList.add("is-fresh");
     });
+    dock();
+    window.addEventListener("resize", dock);
+    window.addEventListener("orientationchange", dock);
+  }
+
+  // 78 toy pages park their "onepagetoys.com" back-link in the bottom-left
+  // corner — exactly where this pill sits — so it printed straight over the
+  // URL. Measure whatever is down there and sit above it rather than hard-
+  // coding a lift, because the corner text wraps to two lines on narrow
+  // screens and safe-area insets move it again on a notched phone.
+  function dock() {
+    var el = UI.el;
+    if (!el) return;
+    el.style.bottom = "";
+    var occupants = document.querySelectorAll(".frame__corner--bl, [data-tickets-avoid]");
+    var pill = el.querySelector(".opt-tickets__pill");
+    var pr = (pill || el).getBoundingClientRect();
+    var vh = window.innerHeight || 0;
+    var lift = 0;
+    for (var i = 0; i < occupants.length; i++) {
+      var r = occupants[i].getBoundingClientRect();
+      if (!r.width || !r.height) continue;              // hidden
+      if (r.top > vh - 4 || r.bottom < vh - 160) continue; // not in the bottom band
+      if (r.left > pr.right + 10) continue;             // not in our column
+      lift = Math.max(lift, vh - r.top + 10);
+    }
+    if (lift > 0) el.style.bottom = Math.round(lift) + "px";
   }
 
   /* ------------------------------------------------------------------ API */

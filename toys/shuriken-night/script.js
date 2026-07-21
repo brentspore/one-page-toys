@@ -99,7 +99,7 @@
   var timeScale = 1, focusT = 0, focusMeter = 0, magic = MAGIC_START;
   var waveBanner = 0, waveBannerText = "";
   var enemies = [], stars = [], kunais = [], fx = [], petals = [], shards = [];
-  var bays = [], skyStars = [], lanterns = [], stoneLanterns = [], hillProfile = [];
+  var bays = [], skyStars = [], lanterns = [], stoneLanterns = [], hillProfile = [], embers = [];
   var spawnQueue = 0, spawnTimer = 0, betweenWaves = 0;
 
   var aim = { x: 0, y: 0, has: false };
@@ -174,15 +174,57 @@
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    // Narrower screens get a slightly wider lens so the courtyard still reads.
+    // World scale is keyed to the LONG edge, not the width. Keying it to width
+    // shrank the whole courtyard to a thin strip in portrait (small W = small
+    // focal = tiny wall) while still cramming five windows across. Keying to
+    // the long edge keeps `focal` — and therefore enemy size, spawn distance
+    // and difficulty — constant when the phone rotates; portrait simply shows
+    // a NARROWER horizontal slice (about 2-3 windows) of the same world.
     var aspect = W / H;
-    fov = clamp(1.3 + (1.35 - clamp(aspect, 0.5, 1.9)) * 0.28, 1.25, 1.55);
-    focal = W * 0.5 / Math.tan(fov * 0.5);
-    horizon = H * 0.47;
+    var longEdge = Math.max(W, H);
+    var FOV_LONG = 1.34; // ~77 degrees across the long edge
+    focal = longEdge * 0.5 / Math.tan(FOV_LONG * 0.5);
+    // The true horizontal field of view for THIS orientation — what staticArc,
+    // the drag sensitivity and the edge-threat test all read.
+    fov = 2 * Math.atan(W / (2 * focal));
+    // Portrait has height to spare, so drop the horizon a touch to sit the wall
+    // and the action lower and cut the dead sky above it.
+    horizon = H * (aspect < 0.85 ? 0.52 : 0.47);
     if (!aim.has) { aim.x = W * 0.5; aim.y = H * 0.5; }
+    else { aim.x = clamp(aim.x, 0, W); aim.y = clamp(aim.y, 0, H); } // keep the reticle in frame after a rotate
+
+    // Rotating into portrait narrows the horizontal FOV. In Hold-the-line you
+    // cannot turn, so any enemy that spawned at a wide angle under the old lens
+    // would now be stuck off-screen and unkillable while it walks in to hit
+    // you. Pull the active ones back inside the new visible arc so the fight
+    // stays fair through a rotation.
+    if (mode !== "turn" && typeof enemies !== "undefined") {
+      var lim = staticArc();
+      for (var ri = 0; ri < enemies.length; ri++) {
+        var re = enemies[ri];
+        if (re.state === "shoji" || re.state === "dead") continue;
+        var sa = angDiff(re.ang, 0);
+        if (sa > lim) re.ang = lim;
+        else if (sa < -lim) re.ang = -lim;
+        if (re.x !== undefined) syncPos(re);
+      }
+    }
   }
   window.addEventListener("resize", resize);
-  window.addEventListener("orientationchange", function () { setTimeout(resize, 60); });
+  // iOS Safari often reports the OLD innerWidth/innerHeight for a beat after
+  // an orientationchange fires, so a single immediate resize() locks in stale
+  // dimensions and the canvas ends up letterboxed until the next touch. Re-run
+  // it a few times across the rotation settle, and again when the visual
+  // viewport itself changes (address bar, split view).
+  window.addEventListener("orientationchange", function () {
+    resize();
+    setTimeout(resize, 120);
+    setTimeout(resize, 320);
+    setTimeout(resize, 600);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", resize);
+  }
 
   /* ------------------------------------------------------------ world seed */
 
@@ -236,6 +278,28 @@
     petals = [];
     var nP = REDMO ? 24 : 70;
     for (var p = 0; p < nP; p++) petals.push(newPetal(true));
+
+    // Embers hang near the lanterns rather than drifting the whole yard, so a
+    // handful reads as heat off the flames instead of generic floating dust.
+    embers = [];
+    if (!REDMO) {
+      var nE = 26;
+      for (var em = 0; em < nE; em++) {
+        var host = stoneLanterns.length
+          ? stoneLanterns[(Math.random() * stoneLanterns.length) | 0]
+          : { ang: rand(0, Math.PI * 2), r: 12 };
+        embers.push({
+          ang: host.ang + rand(-0.09, 0.09),
+          r: host.r + rand(-1.1, 1.1),
+          y: rand(0.4, 3.2),
+          vy: rand(0.16, 0.5),
+          drift: rand(-0.05, 0.05),
+          a: rand(0.25, 0.75),
+          life: rand(1.5, 5),
+          host: host
+        });
+      }
+    }
   }
 
   function newPetal(anywhere) {
@@ -1665,6 +1729,20 @@
       p.sp += p.spd * dt;
       if (p.y < 0) { petals[i] = newPetal(false); }
     }
+    // Embers ride the same tick: rise, fade, then respawn at their own lantern.
+    for (var j = 0; j < embers.length; j++) {
+      var em = embers[j];
+      em.y += em.vy * dt;
+      em.ang += em.drift * dt * 0.1;
+      em.life -= dt;
+      if (em.life <= 0 || em.y > 4.6) {
+        em.y = rand(0.35, 0.8);
+        em.ang = em.host.ang + rand(-0.09, 0.09);
+        em.r = em.host.r + rand(-1.1, 1.1);
+        em.life = rand(1.5, 5);
+        em.a = rand(0.25, 0.75);
+      }
+    }
   }
 
   /* ---------------------------------------------------------------- render */
@@ -1682,6 +1760,7 @@
     drawHills();
     drawWall();
     drawGround();
+    drawLightPass(); // light landing on the floor, under the fixtures themselves
     drawLanterns();
 
     // Everything in the round, depth sorted far to near.
@@ -1990,16 +2069,10 @@
       ctx.restore();
     }
 
-    // warm spill onto the ground
-    if (lit > 0.05) {
-      ctx.save();
-      var spill = ctx.createRadialGradient(x, botY, 2, x, botY, halfW * 2.6);
-      spill.addColorStop(0, "rgba(255,175,90," + (0.16 * lit) + ")");
-      spill.addColorStop(1, "rgba(255,175,90,0)");
-      ctx.fillStyle = spill;
-      ctx.fillRect(x - halfW * 2.6, botY - halfW * 0.4, halfW * 5.2, halfW * 2.4);
-      ctx.restore();
-    }
+    // NOTE: a warm ground-spill gradient used to live here. It could never be
+    // seen — drawBay runs inside drawWall, and drawGround then paints an opaque
+    // floor straight over it — so it cost a gradient per lit bay per frame and
+    // drew nothing. The real spill is in drawLightPass(), after the floor.
   }
 
   function drawGround() {
@@ -2091,13 +2164,12 @@
       ctx.lineTo(sp.x + u * 2.4, sp.y - u * 6.6);
       ctx.closePath();
       ctx.fill();
-      // the flame inside
-      var fg = ctx.createRadialGradient(sp.x, sp.y - u * 5.5, u * 0.2, sp.x, sp.y - u * 5.5, u * 7);
-      fg.addColorStop(0, "rgba(255,186,104,0.5)");
-      fg.addColorStop(0.3, "rgba(255,150,70,0.14)");
-      fg.addColorStop(1, "rgba(255,140,60,0)");
-      ctx.fillStyle = fg;
-      ctx.beginPath(); ctx.arc(sp.x, sp.y - u * 5.5, u * 7, 0, 6.283); ctx.fill();
+      // the flame inside — stamped, not a fresh gradient every frame
+      var flick = 0.86 + Math.sin(performance.now() * 0.006 + S.ang * 9) * 0.14;
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      blot(GLOW_WARM, sp.x, sp.y - u * 5.5, u * 7, u * 7, 0.5 * flick);
+      ctx.restore();
       ctx.fillStyle = "rgba(255,214,150,0.9)";
       ctx.fillRect(sp.x - u * 1.1, sp.y - u * 6.2, u * 2.2, u * 1.5);
     }
@@ -2112,12 +2184,10 @@
       if (!p || p.x < -90 || p.x > W + 90) continue;
       // Cap the size: a distant lantern must stay a point of light, not a blob.
       var s = Math.min(p.s * L.sz, 26);
-      var gl = ctx.createRadialGradient(p.x, p.y, s * 0.2, p.x, p.y, s * 6);
-      gl.addColorStop(0, "rgba(255,180,95,0.3)");
-      gl.addColorStop(0.4, "rgba(255,150,70,0.09)");
-      gl.addColorStop(1, "rgba(255,140,60,0)");
-      ctx.fillStyle = gl;
-      ctx.beginPath(); ctx.arc(p.x, p.y, s * 6, 0, 6.283); ctx.fill();
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      blot(GLOW_WARM, p.x, p.y, s * 6, s * 6, 0.32);
+      ctx.restore();
 
       // cord up to the eave
       ctx.strokeStyle = "rgba(10,14,28,0.9)";
@@ -2579,13 +2649,21 @@
     ctx.ellipse(0, 0, r * 0.17, r * 0.17 * tilt, 0, 0, 6.283);
     ctx.fill();
     ctx.restore();
-    // glint
+    // Glint, plus a short motion trail back along the flight — a blade moving
+    // this fast should smear, and it also makes the star readable at range.
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
-    ctx.fillStyle = "rgba(200,220,255,0.16)";
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, r * 2.1, 0, 6.283);
-    ctx.fill();
+    if (GLOW_MOON) {
+      var back = project(s.px, s.py, s.pz);
+      if (back) {
+        for (var tr = 1; tr <= 3; tr++) {
+          var f = tr / 4;
+          blot(GLOW_MOON, p.x + (back.x - p.x) * f, p.y + (back.y - p.y) * f,
+            r * (1.7 - f * 0.7), r * (1.7 - f * 0.7), 0.13 * (1 - f));
+        }
+      }
+      blot(GLOW_MOON, p.x, p.y, r * 2.4, r * 2.4, 0.3);
+    }
     ctx.restore();
   }
 
@@ -2683,6 +2761,95 @@
     ctx.fillText(f.text, p.x, p.y - k * 16);
     ctx.restore();
     ctx.globalAlpha = 1;
+  }
+
+  /* ------------------------------------------------------------- lighting */
+
+  // ONE radial-glow sprite per tint, built once, then stamped with drawImage.
+  // Every glow in this scene used to build a fresh createRadialGradient every
+  // frame, which is the single most expensive thing you can do per-light in
+  // Canvas 2D. Stamping a cached sprite costs a blit, so the light pass below
+  // adds a dozen new lights and still comes out cheaper than what it replaced.
+  function makeGlow(r, g, b) {
+    var c = document.createElement("canvas");
+    var S = 128;
+    c.width = c.height = S;
+    var x = c.getContext("2d");
+    var gr = x.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    gr.addColorStop(0, "rgba(" + r + "," + g + "," + b + ",1)");
+    gr.addColorStop(0.32, "rgba(" + r + "," + g + "," + b + ",0.3)");
+    gr.addColorStop(0.65, "rgba(" + r + "," + g + "," + b + ",0.07)");
+    gr.addColorStop(1, "rgba(" + r + "," + g + "," + b + ",0)");
+    x.fillStyle = gr;
+    x.fillRect(0, 0, S, S);
+    return c;
+  }
+  var GLOW_WARM = null, GLOW_MOON = null;
+
+  // Caller is responsible for setting "lighter" once around a run of these.
+  function blot(img, x, y, rx, ry, a) {
+    if (a <= 0.004 || rx <= 0 || ry <= 0) return;
+    ctx.globalAlpha = a;
+    ctx.drawImage(img, x - rx, y - ry, rx * 2, ry * 2);
+  }
+
+  // Light actually landing on the world: warm spill from each lit paper screen
+  // onto the flagstones, pools under every lantern, and a few embers drifting
+  // in the warm air. Before this, the screens and lanterns glowed but never
+  // touched the courtyard, which is what kept the floor reading as flat paint.
+  function drawLightPass() {
+    if (!GLOW_WARM) return;
+    var baseY = cylY(0, R_WALL);
+    var floor = H - baseY;
+    if (floor <= 0) return;
+    var i, x, p;
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+
+    // spill from the lit screens
+    var halfW = (focal * 1.5) / R_WALL;
+    for (i = 0; i < bays.length; i++) {
+      var bay = bays[i];
+      var lit = bay.glow * (1 - bay.broken * 0.55);
+      if (lit <= 0.02) continue;
+      x = bearingX(bay.ang);
+      if (x === null || x < -W * 0.4 || x > W * 1.4) continue;
+      // Two stamps, not three: these are big additive fills and the cost here
+      // is pure fill-rate, so the wide throw and a hotter core at the foot of
+      // the screen carry it — a third overlapping smear cost real milliseconds
+      // and was doing almost nothing the core wasn't already doing.
+      blot(GLOW_WARM, x, baseY + floor * 0.12, halfW * 2.6, floor * 0.4, 0.3 * lit);
+      blot(GLOW_WARM, x, baseY + floor * 0.04, halfW * 1.15, floor * 0.12, 0.42 * lit);
+    }
+
+    // pools under the stone lanterns
+    for (i = 0; i < stoneLanterns.length; i++) {
+      var S = stoneLanterns[i];
+      p = project(Math.sin(S.ang) * S.r, 0, Math.cos(S.ang) * S.r);
+      if (!p || p.x < -140 || p.x > W + 140) continue;
+      blot(GLOW_WARM, p.x, p.y, p.s * 1.15, p.s * 0.4, 0.46);
+    }
+
+    // pools under the hanging lanterns
+    for (i = 0; i < lanterns.length; i++) {
+      var L = lanterns[i];
+      var sway = Math.sin(performance.now() * 0.0007 + L.sw) * 0.035;
+      p = project(Math.sin(L.ang + sway) * L.r, 0, Math.cos(L.ang + sway) * L.r);
+      if (!p || p.x < -140 || p.x > W + 140) continue;
+      blot(GLOW_WARM, p.x, p.y, p.s * 0.8, p.s * 0.27, 0.32);
+    }
+
+    // embers loafing in the warm air near the lanterns
+    for (i = 0; i < embers.length; i++) {
+      var em = embers[i];
+      p = project(Math.sin(em.ang) * em.r, em.y, Math.cos(em.ang) * em.r);
+      if (!p || p.x < -30 || p.x > W + 30) continue;
+      var er = Math.max(1.1, p.s * 0.021);
+      blot(GLOW_WARM, p.x, p.y, er * 3.2, er * 3.2, 0.5 * em.a);
+    }
+
+    ctx.restore();
   }
 
   function drawFog() {
@@ -3037,6 +3204,8 @@
 
   /* ----------------------------------------------------------------- boot */
 
+  GLOW_WARM = makeGlow(255, 176, 96);
+  GLOW_MOON = makeGlow(186, 210, 255);
   resize();
   buildWorld();
   setSound(soundOn);
