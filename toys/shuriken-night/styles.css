@@ -64,11 +64,14 @@ body.is-menu #canvas { cursor: default; }
 .frame__corner--bl a:hover { color: var(--amber); }
 .frame__corner--bl a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
+/* Sits ABOVE the ability row. At the bottom edge it printed straight over the
+ * "onepagetoys.com" back-link on a phone, where the centred line is wide
+ * enough to reach the left corner. */
 .hint {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: max(14px, env(safe-area-inset-bottom));
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 92px);
   margin: 0;
   font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
@@ -85,65 +88,135 @@ body.is-menu #canvas { cursor: default; }
 
 /* -------------------------------------------------------------------- HUD */
 
+/* "Ink & seal": the three readings a player needs mid-fight are pushed to
+ * three separate corners so they never crowd each other — the wave brushed
+ * vertically down the left margin, the score stamped centre under a vermillion
+ * seal stroke, and life carried top-right as steel shuriken that burn out as
+ * they are spent. The old version stacked all three in one centred cluster,
+ * which collided with the frame corners on a phone and buried the score. */
 .hud {
   position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* wave — brushed down the left margin, under the No. mark */
+.hud__wave {
+  position: absolute;
+  top: calc(max(14px, env(safe-area-inset-top)) + 30px);
+  left: max(18px, env(safe-area-inset-left));
+  writing-mode: vertical-rl;
+  padding-top: 13px;
+  font-size: 9.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(244, 236, 216, 0.44);
+}
+.hud__wave::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 10px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--blood), rgba(224, 69, 75, 0));
+}
+
+/* score — the stamped mark */
+.hud__mark {
+  position: absolute;
   top: max(14px, env(safe-area-inset-top));
   left: 50%;
   transform: translateX(-50%);
-  z-index: 5;
-  pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
-  text-align: center;
-}
-.hud__top {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-.hud__wave {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(244, 236, 216, 0.48);
 }
 .hud__score {
-  font-size: 30px;
+  font-size: clamp(30px, 5vw, 42px);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  line-height: 1;
   color: var(--paper);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 2px 18px rgba(8, 11, 28, 0.9);
-  line-height: 1;
+  text-shadow: 0 2px 26px rgba(6, 8, 20, 0.95);
+}
+/* the seal stroke — a vermillion stamp rule under the number */
+.hud__seal {
+  display: block;
+  width: 40px;
+  height: 2px;
+  margin: 7px 0 6px;
+  border-radius: 1px;
+  background: var(--blood);
+  box-shadow: 0 0 12px rgba(224, 69, 75, 0.6);
+  transform-origin: 50% 50%;
+}
+/* each kill stamps the number */
+.hud__mark.is-hit .hud__score { animation: sealScore 0.34s ease-out 1; }
+.hud__mark.is-hit .hud__seal { animation: sealRule 0.34s ease-out 1; }
+@keyframes sealScore {
+  0% { transform: scale(1.13); }
+  100% { transform: scale(1); }
+}
+@keyframes sealRule {
+  0% { transform: scaleX(1.7); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 1; }
 }
 .hud__best {
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(244, 236, 216, 0.4);
-  font-variant-numeric: tabular-nums;
-}
-.hud__life { display: flex; gap: 6px; }
-.hud__life i {
-  width: 20px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--blood);
-  box-shadow: 0 0 12px rgba(224, 69, 75, 0.55);
-  transition: background 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
-}
-.hud__life i.is-out { background: rgba(244, 236, 216, 0.16); box-shadow: none; }
-.hud__combo {
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--amber);
-  text-shadow: 0 0 16px rgba(255, 183, 101, 0.55);
+  color: rgba(244, 236, 216, 0.38);
+  font-variant-numeric: tabular-nums;
 }
+.hud__combo {
+  margin-top: 5px;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  text-shadow: 0 0 16px rgba(255, 183, 101, 0.6);
+}
+.hud__combo[hidden] { display: none; }
+
+/* life — three steel shuriken, top right */
+.hud__life {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(18px, env(safe-area-inset-right));
+  display: flex;
+  gap: 9px;
+}
+.hud__life i {
+  width: 17px;
+  height: 17px;
+  background: linear-gradient(150deg, #fdfaf2 0%, #c3d0ee 52%, #6d7c9c 100%);
+  /* eight points = a four-blade throwing star read at any size */
+  clip-path: polygon(50% 0%, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0% 50%, 35% 35%);
+  filter: drop-shadow(0 0 7px rgba(190, 214, 255, 0.45));
+  transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+}
+/* spent: dimmed, tipped and shrunk so it reads as thrown, not merely off */
+.hud__life i.is-out {
+  background: rgba(244, 236, 216, 0.22);
+  filter: none;
+  opacity: 0.45;
+  transform: rotate(24deg) scale(0.78);
+}
+.hud__life.is-struck i:not(.is-out) { animation: lifeHit 0.45s ease-out 1; }
+@keyframes lifeHit {
+  0%, 100% { filter: drop-shadow(0 0 7px rgba(190, 214, 255, 0.45)); }
+  25% { filter: drop-shadow(0 0 12px rgba(224, 69, 75, 0.95)); }
+}
+
+/* The toy name lives in the top-right frame corner, which is exactly where
+ * life now sits. It is decorative, so retire it once play starts. */
+body:not(.is-menu) .frame__corner--tr { opacity: 0; }
+.frame__corner--tr { transition: opacity 0.3s ease; }
 
 /* -------------------------------------------------------------- abilities */
 
@@ -204,8 +277,42 @@ body.is-menu #canvas { cursor: default; }
   color: var(--amber);
   font-variant-numeric: tabular-nums;
 }
-.ab.is-ready { border-color: rgba(111, 215, 192, 0.6); color: var(--paper); }
-.ab.is-ready .ab__glyph { color: var(--jade); text-shadow: 0 0 14px rgba(111, 215, 192, 0.75); }
+/* Focus charges mid-fight, when your eyes are on the courtyard and not on the
+ * HUD — a jade border alone was far too quiet to notice. A ready button now
+ * carries a halo, pulses a ring outward, and pops once on the rising edge so
+ * the moment it becomes usable is impossible to miss. */
+.ab.is-ready {
+  border-color: rgba(111, 215, 192, 0.85);
+  color: var(--paper);
+  box-shadow: 0 0 20px rgba(111, 215, 192, 0.3), inset 0 0 12px rgba(111, 215, 192, 0.12);
+}
+.ab.is-ready .ab__glyph {
+  color: var(--jade);
+  text-shadow: 0 0 14px rgba(111, 215, 192, 0.85);
+}
+.ab.is-ready .ab__label { opacity: 1; color: var(--jade); }
+.ab.is-ready::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 15px;
+  border: 1px solid rgba(111, 215, 192, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  animation: abReadyRing 1.9s ease-out infinite;
+}
+@keyframes abReadyRing {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  70% { transform: scale(1.16); opacity: 0; }
+  100% { transform: scale(1.16); opacity: 0; }
+}
+/* one-shot flourish the instant it arms */
+.ab.just-ready { animation: abArm 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1; }
+@keyframes abArm {
+  0% { transform: scale(1); }
+  38% { transform: scale(1.16); }
+  100% { transform: scale(1); }
+}
 
 /* ------------------------------------------------------------ sound button */
 
@@ -262,8 +369,12 @@ body.is-menu #canvas { cursor: default; }
   /* share.js and more-games.js both read an explicit color from the panel */
   color: var(--paper);
 }
+/* Eyebrow carries the same vermillion seal stroke as the in-game score, so
+ * the menu and the HUD read as one piece of design rather than two. */
 .panel__eyebrow {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
+  padding-top: 15px;
+  position: relative;
   font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 9.5px;
   letter-spacing: 0.24em;
@@ -271,8 +382,19 @@ body.is-menu #canvas { cursor: default; }
   color: var(--amber);
   opacity: 0.85;
 }
+.panel__eyebrow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 11px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: linear-gradient(180deg, var(--blood), rgba(224, 69, 75, 0));
+}
 .panel__title {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-size: clamp(30px, 7vw, 42px);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -394,6 +516,11 @@ body.is-menu #canvas { cursor: default; }
   .ab { width: 70px; }
   .hint { font-size: 9px; letter-spacing: 0.12em; }
   .abilities { bottom: calc(max(14px, env(safe-area-inset-bottom)) + 24px); }
+  .hint { bottom: calc(max(14px, env(safe-area-inset-bottom)) + 102px); }
+  /* the wide tracking is what forces this line into four ragged rows here */
+  .panel__keys { letter-spacing: 0.06em; font-size: 9px; line-height: 1.75; }
+  .hud__life i { width: 15px; height: 15px; }
+  .hud__life { gap: 7px; }
 }
 
 /* Landscape phones: the panel must not overflow a 320px-tall viewport. */
@@ -414,4 +541,7 @@ body.is-menu #canvas { cursor: default; }
   .overlay { animation: none; }
   .ab, .play-btn, .mode, .sound-btn { transition: none; }
   .hint { transition: none; }
+  /* Keep the ready state loud, just hold it still instead of pulsing. */
+  .ab.is-ready::after { animation: none; opacity: 0.95; transform: scale(1.04); }
+  .ab.just-ready { animation: none; }
 }

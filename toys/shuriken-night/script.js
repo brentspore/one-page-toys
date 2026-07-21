@@ -20,6 +20,7 @@
   var bestEl = document.getElementById("best");
   var lifeEl = document.getElementById("life");
   var comboEl = document.getElementById("combo");
+  var markEl = document.querySelector(".hud__mark");
   var abilitiesEl = document.getElementById("abilities");
   var focusBtn = document.getElementById("focusBtn");
   var focusFill = document.getElementById("focusFill");
@@ -38,6 +39,10 @@
   var hintEl = document.getElementById("hint");
 
   var REDMO = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Touch-primary device: there is no Shift / right-click / space, so the key
+  // hints must point at the on-screen Focus/Magic buttons instead.
+  var COARSE = (window.matchMedia && window.matchMedia("(pointer: coarse)").matches)
+    || ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
 
   /* ------------------------------------------------------------- constants */
 
@@ -97,6 +102,8 @@
   var LOOM = { t: 0, phase: 0, state: "attack", type: "runner", w: 1.15, throwAnim: 0, y: 0, h: 1.8 };
   var dying = false; // fatal blow playing out; gameplay is frozen behind it
   var timeScale = 1, focusT = 0, focusMeter = 0, magic = MAGIC_START;
+  var focusWasReady = false; // rising-edge latch for the "focus is ready" flourish
+  var hudScore = -1, hudLife = -1; // last values the HUD painted, so animations fire on change only
   var waveBanner = 0, waveBannerText = "";
   var enemies = [], stars = [], kunais = [], fx = [], petals = [], shards = [];
   var bays = [], skyStars = [], lanterns = [], stoneLanterns = [], hillProfile = [], embers = [];
@@ -190,6 +197,7 @@
     // Portrait has height to spare, so drop the horizon a touch to sit the wall
     // and the action lower and cut the dead sky above it.
     horizon = H * (aspect < 0.85 ? 0.52 : 0.47);
+    GROUND_TEX = null; WALL_TEX = null; // geometry moved: baked layers must be rebuilt
     if (!aim.has) { aim.x = W * 0.5; aim.y = H * 0.5; }
     else { aim.x = clamp(aim.x, 0, W); aim.y = clamp(aim.y, 0, H); } // keep the reticle in frame after a rotate
 
@@ -1246,11 +1254,16 @@
     mode = m;
     modeTurn.classList.toggle("is-on", m === "turn");
     modeStatic.classList.toggle("is-on", m === "static");
-    // Hold the line cannot turn, so listing the turn keys there is a lie.
-    ovKeys.innerHTML = (m === "turn"
-      ? "Drag or A / D to turn &nbsp;·&nbsp; hold to charge a fan of three<br />"
-      : "Tap to throw &nbsp;·&nbsp; hold to charge a fan of three<br />")
-      + "Shift or right-click for focus &nbsp;·&nbsp; space for ninja magic";
+    // Two lies to avoid: Hold-the-line cannot turn, and a phone has no
+    // Shift / right-click / space — on touch the abilities live on the
+    // on-screen ◎ Focus and 卍 Magic buttons, so point at those instead.
+    var line1 = m === "turn"
+      ? (COARSE ? "Drag to turn" : "Drag or A / D to turn") + " &nbsp;·&nbsp; hold to charge a fan of three<br />"
+      : "Tap to throw &nbsp;·&nbsp; hold to charge a fan of three<br />";
+    var line2 = COARSE
+      ? "Tap ◎ to focus &nbsp;·&nbsp; tap 卍 for ninja magic"
+      : "Shift or right-click for focus &nbsp;·&nbsp; space for ninja magic";
+    ovKeys.innerHTML = line1 + line2;
     try { localStorage.setItem(MODE_KEY, m); } catch (e) {}
   }
   modeTurn.addEventListener("click", function () { setMode("turn"); });
@@ -1261,6 +1274,9 @@
     buildWorld();
     score = 0; wave = 0; life = 3; combo = 0; comboT = 0;
     magic = MAGIC_START; focusMeter = 0; focusT = 0; timeScale = 1;
+    focusWasReady = false; // so a new run gets the flourish again
+    hudScore = -1; hudLife = -1; // repaint the HUD clean, without firing the change animations
+    focusBtn.classList.remove("just-ready", "is-ready");
     enemies = []; stars = []; kunais = []; fx = []; shards = [];
     yaw = 0; yawVel = 0;
     spawnQueue = 0; spawnTimer = 0; betweenWaves = 0.9;
@@ -1882,25 +1898,54 @@
     ctx.fill();
   }
 
+
+  // The wall face never moves in screen space (only the joints that track yaw
+  // do), so its gradient, plaster grain and raking moonlight are baked once.
+  function buildWallTex(topY, plinthY, baseY) {
+    var hgt = Math.max(1, Math.ceil(baseY - topY) + 2);
+    var c = document.createElement("canvas");
+    c.width = Math.max(1, Math.ceil(W));
+    c.height = hgt;
+    var x = c.getContext("2d");
+    var pl = plinthY - topY;
+
+    var g = x.createLinearGradient(0, 0, 0, pl);
+    g.addColorStop(0, "#0b1124");
+    g.addColorStop(0.55, "#090e1f");
+    g.addColorStop(1, "#070b18");
+    x.fillStyle = g;
+    x.fillRect(0, 0, c.width, pl + 2);
+
+    if (PLASTER) {
+      x.save();
+      x.globalAlpha = 0.5;
+      x.fillStyle = x.createPattern(PLASTER, "repeat");
+      x.fillRect(0, 0, c.width, pl + 2);
+      x.restore();
+      var rake = x.createLinearGradient(c.width, 0, c.width * 0.25, 0);
+      rake.addColorStop(0, "rgba(150,178,240,0.07)");
+      rake.addColorStop(1, "rgba(150,178,240,0)");
+      x.fillStyle = rake;
+      x.fillRect(0, 0, c.width, pl + 2);
+    }
+
+    var pg = x.createLinearGradient(0, pl, 0, baseY - topY);
+    pg.addColorStop(0, "#0e1428");
+    pg.addColorStop(1, "#080c1a");
+    x.fillStyle = pg;
+    x.fillRect(0, pl, c.width, hgt - pl);
+    WALL_TEX = c;
+  }
+
   function drawWall() {
     var topY = cylY(WALL_H, R_WALL);
     var baseY = cylY(0, R_WALL);
     var plinthY = cylY(1.5, R_WALL); // top of the stone base course
 
-    // plaster upper wall
-    var g = ctx.createLinearGradient(0, topY, 0, plinthY);
-    g.addColorStop(0, "#0b1124");
-    g.addColorStop(0.55, "#090e1f");
-    g.addColorStop(1, "#070b18");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, topY, W, plinthY - topY + 2);
-
-    // stone plinth, darker and heavier
-    var pg = ctx.createLinearGradient(0, plinthY, 0, baseY);
-    pg.addColorStop(0, "#0e1428");
-    pg.addColorStop(1, "#080c1a");
-    ctx.fillStyle = pg;
-    ctx.fillRect(0, plinthY, W, baseY - plinthY + 2);
+    // Plaster face and stone plinth are screen-static, so they are baked with
+    // the grain and blitted — same reason as the floor.
+    if (!WALL_TEX) buildWallTex(topY, plinthY, baseY);
+    ctx.drawImage(WALL_TEX, 0, topY);
 
     // stone block courses — a few horizontals plus staggered joints
     ctx.strokeStyle = "rgba(150,175,235,0.07)";
@@ -1942,25 +1987,47 @@
     ctx.lineTo(W + 20, eaveY + 8);
     ctx.lineTo(-20, eaveY + 8);
     ctx.closePath();
+    // The roof used to sit at #070c1a — so close to the night sky that it read
+    // as empty air, and the only thing you could see was a row of thin light
+    // ribs, which looked like fence wire. It is now a real tiled mass: lifted
+    // in value so it separates from the sky, with rounded pantiles that carry a
+    // lit side and a shadowed side, and horizontal courses across the slope.
     var rg = ctx.createLinearGradient(0, ridgeY, 0, eaveY + 8);
-    rg.addColorStop(0, "#070c1a");
-    rg.addColorStop(1, "#03050c");
+    rg.addColorStop(0, "#1a2340");
+    rg.addColorStop(0.55, "#111834");
+    rg.addColorStop(1, "#080d1e");
     ctx.fillStyle = rg;
     ctx.fill();
 
-    // moonlit rim along the ridge
     ctx.save();
     ctx.clip();
-    ctx.strokeStyle = "rgba(160,190,250,0.16)";
-    ctx.lineWidth = 1;
-    // tile ribs running down the roof slope
+    // pantiles: each rib is a rounded tile, lit on the moon side and shadowed
+    // on the other, which is what makes the slope read as ceramic
     var ribStep = bayW / 9;
+    var ribW = Math.max(1, (focal * 0.06) / R_WALL);
     for (var ra = Math.floor((yaw - 1.45) / ribStep) * ribStep; ra <= yaw + 1.45; ra += ribStep) {
       var rx = bearingX(ra);
-      if (rx === null) continue;
-      ctx.beginPath(); ctx.moveTo(rx, ridgeY); ctx.lineTo(rx, eaveY + 8); ctx.stroke();
+      if (rx === null || rx < -40 || rx > W + 40) continue;
+      ctx.fillStyle = "rgba(170,198,255,0.13)";
+      ctx.fillRect(rx - ribW * 0.5, ridgeY, ribW, eaveY + 8 - ridgeY);
+      ctx.fillStyle = "rgba(2,4,12,0.5)";
+      ctx.fillRect(rx + ribW * 0.5, ridgeY, ribW * 1.1, eaveY + 8 - ridgeY);
+    }
+    // courses running across the slope
+    ctx.strokeStyle = "rgba(3,5,14,0.5)";
+    ctx.lineWidth = 1;
+    for (var cc = 1; cc < 4; cc++) {
+      var cy2 = ridgeY + ((eaveY + 8 - ridgeY) * cc) / 4;
+      ctx.beginPath(); ctx.moveTo(0, cy2); ctx.lineTo(W, cy2); ctx.stroke();
     }
     ctx.restore();
+
+    // deep shadow the eave throws down onto the wall face
+    var esh = ctx.createLinearGradient(0, eaveY + 4, 0, eaveY + 4 + (plinthY - topY) * 0.3);
+    esh.addColorStop(0, "rgba(2,4,10,0.75)");
+    esh.addColorStop(1, "rgba(2,4,10,0)");
+    ctx.fillStyle = esh;
+    ctx.fillRect(0, eaveY + 4, W, (plinthY - topY) * 0.3);
 
     // bright ridge highlight
     ctx.beginPath();
@@ -2007,18 +2074,26 @@
     var lit = bay.glow;
     var broken = bay.broken;
 
-    // recessed frame
+    // recessed frame — a dark reveal, with the timber post catching moonlight
     ctx.fillStyle = "#05080f";
     ctx.fillRect(x - halfW - 3, topY - 4, halfW * 2 + 6, h + 8);
+    ctx.fillStyle = "rgba(150,175,235,0.07)";
+    ctx.fillRect(x - halfW - 3, topY - 4, 1.2, h + 8);
 
-    // paper, lit from behind
+    // the paper itself — a real washi sheet, dimmed to how lit this bay is
     var warm = 0.2 + lit * 0.8;
-    var pg = ctx.createLinearGradient(x, topY, x, botY);
-    pg.addColorStop(0, "rgba(255,206,140," + (0.14 + warm * 0.5) + ")");
-    pg.addColorStop(0.55, "rgba(255,183,101," + (0.1 + warm * 0.42) + ")");
-    pg.addColorStop(1, "rgba(190,120,60," + (0.06 + warm * 0.26) + ")");
-    ctx.fillStyle = pg;
-    ctx.fillRect(x - halfW, topY, halfW * 2, h);
+    if (SHOJI) {
+      ctx.save();
+      ctx.globalAlpha = clamp(0.3 + warm * 0.7, 0, 1);
+      ctx.drawImage(SHOJI, x - halfW, topY, halfW * 2, h);
+      // a lamp-lit sheet spills a little light past its own edges
+      if (lit > 0.25 && GLOW_WARM) {
+        ctx.globalCompositeOperation = "lighter";
+        ctx.globalAlpha = 0.1 * lit;
+        ctx.drawImage(GLOW_WARM, x - halfW * 1.7, topY - h * 0.35, halfW * 3.4, h * 1.7);
+      }
+      ctx.restore();
+    }
 
     // the silhouette waiting behind the paper
     if (bay.sil && bay.sil.state === "shoji") {
@@ -2036,19 +2111,13 @@
       ctx.globalAlpha = 1;
     }
 
-    // lattice
-    ctx.strokeStyle = "rgba(20,14,10," + (0.35 + lit * 0.4) + ")";
-    ctx.lineWidth = Math.max(1, halfW * 0.045);
-    ctx.beginPath();
-    for (var c = 1; c < 4; c++) {
-      var cx = x - halfW + (halfW * 2 * c) / 4;
-      ctx.moveTo(cx, topY); ctx.lineTo(cx, botY);
+    // kumiko lattice, drawn OVER the silhouette because it sits on our side
+    if (KUMIKO) {
+      ctx.save();
+      ctx.globalAlpha = clamp(0.55 + lit * 0.45, 0, 1);
+      ctx.drawImage(KUMIKO, x - halfW, topY, halfW * 2, h);
+      ctx.restore();
     }
-    for (var r = 1; r < 5; r++) {
-      var ry = topY + (h * r) / 5;
-      ctx.moveTo(x - halfW, ry); ctx.lineTo(x + halfW, ry);
-    }
-    ctx.stroke();
 
     // torn hole after the burst
     if (broken > 0) {
@@ -2075,17 +2144,71 @@
     // drew nothing. The real spill is in drawLightPass(), after the floor.
   }
 
-  function drawGround() {
+  // Everything about the floor that does NOT move with the camera — the value
+  // gradient, the stone grain, the concentric courses, the gravel and the
+  // contact shadow — is baked once per resize and blitted as a single image.
+  // Painting them live cost ~4ms a frame in large fills for pixels that were
+  // identical every time. Only the moon pool and the radial joints, which do
+  // track yaw, are still drawn per frame.
+  function buildGroundTex() {
     var baseY = cylY(0, R_WALL);
-    // Lighter than the wall so the courtyard floor reads as swept stone under a
-    // full moon, not as a void. Near ground is brightest (closest to the eye).
-    var g = ctx.createLinearGradient(0, baseY, 0, H);
+    var fh = Math.max(1, Math.ceil(H - baseY) + 2);
+    var c = document.createElement("canvas");
+    c.width = Math.max(1, Math.ceil(W));
+    c.height = fh;
+    var x = c.getContext("2d");
+
+    var g = x.createLinearGradient(0, 0, 0, fh);
     g.addColorStop(0, "#131a35");
     g.addColorStop(0.3, "#1a2242");
     g.addColorStop(0.7, "#212b50");
     g.addColorStop(1, "#28345e");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, baseY - 1, W, H - baseY + 2);
+    x.fillStyle = g;
+    x.fillRect(0, 0, c.width, fh);
+
+    if (PLASTER) {
+      x.save();
+      x.globalAlpha = 0.42;
+      x.fillStyle = x.createPattern(PLASTER, "repeat");
+      x.fillRect(0, 0, c.width, fh);
+      x.restore();
+    }
+
+    // concentric flagstone courses, in world units so the compression is real
+    x.strokeStyle = "rgba(196,216,255,0.1)";
+    x.lineWidth = 1;
+    for (var d = 2.2; d < R_WALL; d *= 1.28) {
+      var yy = cylY(0, d) - baseY;
+      if (yy < -1 || yy > fh) continue;
+      x.globalAlpha = clamp(yy / fh * 1.6, 0.15, 1);
+      x.beginPath(); x.moveTo(0, yy); x.lineTo(c.width, yy); x.stroke();
+    }
+    x.globalAlpha = 1;
+
+    // gravel, densest near the eye where stones would be legible
+    x.fillStyle = "rgba(210,226,255,0.055)";
+    for (var s2 = 0; s2 < 260; s2++) {
+      var sx2 = ((s2 * 7919) % 1000) / 1000 * c.width;
+      var f = ((s2 * 104729) % 1000) / 1000;
+      var sy2 = Math.pow(f, 0.55) * fh;
+      var rr = 0.5 + (sy2 / fh) * 1.8;
+      x.fillRect(sx2, sy2, rr, rr);
+    }
+
+    // dark contact band at the wall so the floor does not float
+    var cg = x.createLinearGradient(0, 0, 0, fh * 0.14);
+    cg.addColorStop(0, "rgba(5,8,18,0.75)");
+    cg.addColorStop(1, "rgba(5,8,18,0)");
+    x.fillStyle = cg;
+    x.fillRect(0, 0, c.width, fh * 0.14);
+
+    GROUND_TEX = c;
+  }
+
+  function drawGround() {
+    var baseY = cylY(0, R_WALL);
+    if (!GROUND_TEX) buildGroundTex();
+    ctx.drawImage(GROUND_TEX, 0, baseY - 1);
 
     // moonlight pooling across the yard
     var mx = bearingX(2.35);
@@ -2098,21 +2221,6 @@
       ctx.fillStyle = sg;
       ctx.fillRect(0, baseY, W, H - baseY);
     }
-
-    // Concentric flagstone courses. Spacing is in world units, so the
-    // perspective compression toward the wall is real rather than faked.
-    ctx.strokeStyle = "rgba(196,216,255,0.1)";
-    ctx.lineWidth = 1;
-    for (var d = 2.2; d < R_WALL; d *= 1.28) {
-      var y = cylY(0, d);
-      if (y < baseY - 1 || y > H) continue;
-      ctx.globalAlpha = clamp((y - baseY) / (H - baseY) * 1.6, 0.15, 1);
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
 
     // Radial joints. A radial line has a constant bearing, so it projects to a
     // vertical line — no convergence maths needed.
@@ -2128,22 +2236,6 @@
       ctx.stroke();
     }
 
-    // Gravel speckle, densest close to the eye where stones would be legible.
-    ctx.fillStyle = "rgba(210,226,255,0.055)";
-    for (var s2 = 0; s2 < 260; s2++) {
-      var sx2 = (s2 * 7919) % 1000 / 1000 * W;
-      var f = ((s2 * 104729) % 1000) / 1000;
-      var sy2 = baseY + Math.pow(f, 0.55) * (H - baseY);
-      var rr = 0.5 + (sy2 - baseY) / (H - baseY) * 1.8;
-      ctx.fillRect(sx2, sy2, rr, rr);
-    }
-
-    // dark contact band right at the wall so the floor doesn't float
-    var cg = ctx.createLinearGradient(0, baseY, 0, baseY + (H - baseY) * 0.14);
-    cg.addColorStop(0, "rgba(5,8,18,0.75)");
-    cg.addColorStop(1, "rgba(5,8,18,0)");
-    ctx.fillStyle = cg;
-    ctx.fillRect(0, baseY, W, (H - baseY) * 0.14);
   }
 
   function drawLanterns() {
@@ -2785,6 +2877,143 @@
     return c;
   }
   var GLOW_WARM = null, GLOW_MOON = null;
+  var SHOJI = null, SHOJI_REF = null, KUMIKO = null, PLASTER = null, GROUND_TEX = null, WALL_TEX = null;
+  // createPattern allocates; building it every frame for the wall AND the floor
+  // cost ~6ms. Built once, reused.
+  var PLASTER_PAT = null;
+
+  /* The wall materials are built ONCE into offscreen canvases and then blitted.
+   * Drawing washi fibre, kumiko relief and plaster mottling with primitives
+   * every frame would be far too expensive, which is exactly why the original
+   * screens were a flat gradient plus a five-line grid — and why they read as
+   * brown boxes rather than lamplit paper. */
+
+  // Backlit rice paper: warm falloff from the lamp behind, washi fibre, blotchy
+  // mottling where the sheet is thicker, and a darker edge into the frame.
+  function makeShoji() {
+    var c = document.createElement("canvas");
+    var w = 200, h = 190;
+    c.width = w; c.height = h;
+    var x = c.getContext("2d");
+
+    // the lamp sits low and behind, so the glow blooms from below centre
+    var g = x.createRadialGradient(w * 0.5, h * 0.66, w * 0.05, w * 0.5, h * 0.62, w * 0.78);
+    g.addColorStop(0, "#ffe0b0");
+    g.addColorStop(0.42, "#f6bd7c");
+    g.addColorStop(0.78, "#c88a4e");
+    g.addColorStop(1, "#8d5c33");
+    x.fillStyle = g;
+    x.fillRect(0, 0, w, h);
+
+    // blotchy thickness variation in the sheet
+    for (var b = 0; b < 26; b++) {
+      var bx = Math.random() * w, by = Math.random() * h, br = 14 + Math.random() * 40;
+      var bg = x.createRadialGradient(bx, by, 0, bx, by, br);
+      var warmUp = Math.random() < 0.5;
+      bg.addColorStop(0, warmUp ? "rgba(255,225,175,0.09)" : "rgba(120,74,40,0.09)");
+      bg.addColorStop(1, "rgba(0,0,0,0)");
+      x.fillStyle = bg;
+      x.fillRect(bx - br, by - br, br * 2, br * 2);
+    }
+
+    // washi fibre — long fine strands, mostly horizontal
+    for (var f = 0; f < 240; f++) {
+      var horiz = Math.random() < 0.72;
+      var fx = Math.random() * w, fy = Math.random() * h;
+      var len = (horiz ? 12 + Math.random() * 46 : 8 + Math.random() * 26);
+      x.strokeStyle = "rgba(255,236,205," + (0.03 + Math.random() * 0.07) + ")";
+      x.lineWidth = Math.random() < 0.25 ? 1.4 : 0.7;
+      x.beginPath();
+      x.moveTo(fx, fy);
+      x.lineTo(fx + (horiz ? len : (Math.random() - 0.5) * 5), fy + (horiz ? (Math.random() - 0.5) * 3 : len));
+      x.stroke();
+    }
+
+    // the sheet darkens where it meets the frame
+    var eg = x.createLinearGradient(0, 0, 0, h);
+    eg.addColorStop(0, "rgba(40,22,10,0.5)");
+    eg.addColorStop(0.16, "rgba(40,22,10,0)");
+    eg.addColorStop(0.84, "rgba(40,22,10,0)");
+    eg.addColorStop(1, "rgba(40,22,10,0.55)");
+    x.fillStyle = eg;
+    x.fillRect(0, 0, w, h);
+    var eg2 = x.createLinearGradient(0, 0, w, 0);
+    eg2.addColorStop(0, "rgba(40,22,10,0.45)");
+    eg2.addColorStop(0.14, "rgba(40,22,10,0)");
+    eg2.addColorStop(0.86, "rgba(40,22,10,0)");
+    eg2.addColorStop(1, "rgba(40,22,10,0.45)");
+    x.fillStyle = eg2;
+    x.fillRect(0, 0, w, h);
+    return c;
+  }
+
+  // The kumiko lattice on OUR side of the paper: each bar catches moonlight on
+  // its top edge and drops a soft shadow onto the sheet behind it.
+  function makeKumiko() {
+    var c = document.createElement("canvas");
+    var w = 200, h = 190;
+    c.width = w; c.height = h;
+    var x = c.getContext("2d");
+    var cols = 5, rows = 6;
+    var bar = 3.4;
+
+    function slat(bx, by, bw, bh) {
+      x.fillStyle = "rgba(6,8,15,0.34)";           // shadow cast on the paper
+      x.fillRect(bx + 1.6, by + 1.8, bw, bh);
+      x.fillStyle = "#221a12";                      // the timber
+      x.fillRect(bx, by, bw, bh);
+      x.fillStyle = "rgba(214,190,152,0.20)";       // lit top-left arris
+      x.fillRect(bx, by, bw, Math.min(1, bh * 0.5));
+      if (bw > bh) x.fillRect(bx, by, Math.min(1, bw), bh);
+    }
+    for (var i = 1; i < cols; i++) slat(Math.round((w * i) / cols - bar / 2), 0, bar, h);
+    for (var j = 1; j < rows; j++) slat(0, Math.round((h * j) / rows - bar / 2), w, bar);
+    // outer stile and rail, heavier than the inner lattice
+    var ob = 6;
+    slat(0, 0, w, ob); slat(0, h - ob, w, ob);
+    slat(0, 0, ob, h); slat(w - ob, 0, ob, h);
+    return c;
+  }
+
+  // The screen as it appears reflected in the flagstones: mirrored top-to-bottom
+  // and pre-faded toward the far end, so it can be stamped straight down with no
+  // canvas-wide masking (which would erase the floor along with it).
+  function makeShojiReflection(src) {
+    var c = document.createElement("canvas");
+    c.width = src.width; c.height = src.height;
+    var x = c.getContext("2d");
+    x.translate(0, src.height);
+    x.scale(1, -1);
+    x.drawImage(src, 0, 0);
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    // wet stone smears the image as it recedes
+    var g = x.createLinearGradient(0, 0, 0, c.height);
+    g.addColorStop(0, "rgba(0,0,0,0.25)");
+    g.addColorStop(0.35, "rgba(0,0,0,0.72)");
+    g.addColorStop(1, "rgba(0,0,0,1)");
+    x.globalCompositeOperation = "destination-out";
+    x.fillStyle = g;
+    x.fillRect(0, 0, c.width, c.height);
+    return c;
+  }
+
+  // Tiling plaster noise for the wall face.
+  function makePlaster() {
+    var c = document.createElement("canvas");
+    var s = 128;
+    c.width = c.height = s;
+    var x = c.getContext("2d");
+    for (var i = 0; i < 900; i++) {
+      var px = Math.random() * s, py = Math.random() * s;
+      var v = Math.random();
+      x.fillStyle = v < 0.5
+        ? "rgba(150,175,235," + (0.012 + Math.random() * 0.03) + ")"
+        : "rgba(0,0,0," + (0.02 + Math.random() * 0.05) + ")";
+      var r = 0.6 + Math.random() * 2.4;
+      x.fillRect(px, py, r, r);
+    }
+    return c;
+  }
 
   // Caller is responsible for setting "lighter" once around a run of these.
   function blot(img, x, y, rx, ry, a) {
@@ -2807,8 +3036,27 @@
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
 
-    // spill from the lit screens
+    // Reflections of the lit screens in the flagstones. A mirrored, squashed,
+    // faded copy of the paper itself — far more convincing than a soft blob,
+    // and it is what makes the courtyard read as polished stone rather than a
+    // flat painted floor.
     var halfW = (focal * 1.5) / R_WALL;
+    if (SHOJI_REF) {
+      for (i = 0; i < bays.length; i++) {
+        var rb = bays[i];
+        var rlit = rb.glow * (1 - rb.broken * 0.6);
+        if (rlit <= 0.06) continue;
+        var rx = bearingX(rb.ang);
+        if (rx === null || rx < -W * 0.4 || rx > W * 1.4) continue;
+        var rh = Math.min(floor * 0.5, (cylY(0, R_WALL) - cylY(3.05, R_WALL)) * 1.15);
+        ctx.globalAlpha = 0.17 * rlit;
+        // SHOJI_REF is already mirrored and faded, so no canvas-wide mask is
+        // needed. Masking the frame with destination-out ate the FLOOR too.
+        ctx.drawImage(SHOJI_REF, rx - halfW * 0.96, baseY, halfW * 1.92, rh);
+      }
+    }
+
+    // spill from the lit screens
     for (i = 0; i < bays.length; i++) {
       var bay = bays[i];
       var lit = bay.glow * (1 - bay.broken * 0.55);
@@ -3151,13 +3399,44 @@
     ctx.save();
     ctx.globalAlpha = clamp(a, 0, 1);
     ctx.textAlign = "center";
+    var cy = H * 0.42;
+    // The banner used to be two loose lines of text floating in the middle of
+    // the courtyard. It now carries the same ink-and-seal furniture as the HUD:
+    // a vermillion seal stroke, hairline rules running out to either side, and
+    // the whole thing sliding up as it lands.
+    var slide = (1 - Math.min(1, k / 0.35)) * 14;
+    ctx.translate(0, slide);
+
+    var big = Math.min(46, W * 0.085);
+    ctx.fillStyle = COL.paper;
+    ctx.font = "700 " + big + "px 'Geist', system-ui, sans-serif";
+    ctx.fillText(waveBannerText, W / 2, cy);
+
+    // seal stroke under the number
+    var sw = Math.max(34, big * 1.1);
+    ctx.fillStyle = COL.blood;
+    ctx.globalAlpha = clamp(a, 0, 1) * 0.95;
+    ctx.fillRect(W / 2 - sw / 2, cy + big * 0.28, sw, 2);
+
+    // hairline rules reaching out to the edges of the frame
+    var rw = Math.min(W * 0.3, 260);
+    var ry = cy + big * 0.29;
+    var grL = ctx.createLinearGradient(W / 2 - sw / 2 - rw, 0, W / 2 - sw / 2, 0);
+    grL.addColorStop(0, "rgba(244,236,216,0)");
+    grL.addColorStop(1, "rgba(244,236,216,0.34)");
+    ctx.fillStyle = grL;
+    ctx.fillRect(W / 2 - sw / 2 - rw, ry, rw - 10, 1);
+    var grR = ctx.createLinearGradient(W / 2 + sw / 2, 0, W / 2 + sw / 2 + rw, 0);
+    grR.addColorStop(0, "rgba(244,236,216,0.34)");
+    grR.addColorStop(1, "rgba(244,236,216,0)");
+    ctx.fillStyle = grR;
+    ctx.fillRect(W / 2 + sw / 2 + 10, ry, rw - 10, 1);
+
+    ctx.globalAlpha = clamp(a, 0, 1);
     ctx.fillStyle = COL.amber;
     ctx.font = "600 11px 'Geist Mono', ui-monospace, monospace";
     ctx.letterSpacing = "4px";
-    ctx.fillText("THE SHADOWS RISE", W / 2, H * 0.36);
-    ctx.fillStyle = COL.paper;
-    ctx.font = "700 " + Math.min(46, W * 0.09) + "px 'Geist', system-ui, sans-serif";
-    ctx.fillText(waveBannerText, W / 2, H * 0.44);
+    ctx.fillText("THE SHADOWS RISE", W / 2, cy + big * 0.95);
     ctx.restore();
     ctx.globalAlpha = 1;
   }
@@ -3168,9 +3447,31 @@
     scoreEl.textContent = score.toLocaleString();
     bestEl.textContent = "Best " + best.toLocaleString();
     waveEl.textContent = "Wave " + Math.max(1, wave);
-    var pips = "";
-    for (var i = 0; i < 3; i++) pips += '<i class="' + (i < life ? "" : "is-out") + '"></i>';
-    lifeEl.innerHTML = pips;
+
+    // Stamp the score on the rising edge only — updateHud runs ~10x a second,
+    // so replaying the animation every tick would read as a permanent judder.
+    if (score !== hudScore) {
+      if (score > hudScore && hudScore >= 0 && markEl) {
+        markEl.classList.remove("is-hit");
+        void markEl.offsetWidth; // reflow so the animation actually replays
+        markEl.classList.add("is-hit");
+      }
+      hudScore = score;
+    }
+
+    // Rebuild the shuriken row only when the count actually changes; blowing
+    // away innerHTML 10x a second would restart every CSS transition on it.
+    if (life !== hudLife) {
+      var pips = "";
+      for (var i = 0; i < 3; i++) pips += '<i class="' + (i < life ? "" : "is-out") + '"></i>';
+      lifeEl.innerHTML = pips;
+      if (life < hudLife) {
+        lifeEl.classList.remove("is-struck");
+        void lifeEl.offsetWidth;
+        lifeEl.classList.add("is-struck");
+      }
+      hudLife = life;
+    }
     if (combo > 1) {
       comboEl.hidden = false;
       comboEl.textContent = "×" + (1 + (combo - 1) * 0.25).toFixed(2).replace(/0+$/, "").replace(/\.$/, "") + " chain";
@@ -3178,8 +3479,18 @@
     magicCountEl.textContent = magic;
     magicBtn.disabled = magic <= 0;
     focusFill.style.width = (focusMeter * 100).toFixed(0) + "%";
-    focusBtn.classList.toggle("is-ready", focusMeter >= 1 && focusT <= 0);
-    focusBtn.disabled = focusMeter < 1 || focusT > 0;
+    var focusReady = focusMeter >= 1 && focusT <= 0;
+    focusBtn.classList.toggle("is-ready", focusReady);
+    focusBtn.disabled = !focusReady;
+    // Fire the one-shot flourish only on the RISING edge. updateHud runs ~10x a
+    // second, so re-adding the class every tick would restart the animation
+    // forever and it would read as a permanent judder rather than a moment.
+    if (focusReady && !focusWasReady) {
+      focusBtn.classList.remove("just-ready");
+      void focusBtn.offsetWidth; // reflow, so the animation actually replays
+      focusBtn.classList.add("just-ready");
+    }
+    focusWasReady = focusReady;
   }
 
   /* ----------------------------------------------------------------- loop */
@@ -3206,6 +3517,11 @@
 
   GLOW_WARM = makeGlow(255, 176, 96);
   GLOW_MOON = makeGlow(186, 210, 255);
+  SHOJI = makeShoji();
+  SHOJI_REF = makeShojiReflection(SHOJI);
+  KUMIKO = makeKumiko();
+  PLASTER = makePlaster();
+  PLASTER_PAT = ctx.createPattern(PLASTER, "repeat");
   resize();
   buildWorld();
   setSound(soundOn);
@@ -3213,6 +3529,7 @@
   document.body.classList.add("is-menu");
   updateHud();
   requestAnimationFrame(frame);
+
 
   // Slow idle drift on the menu so the courtyard feels alive before you start.
   (function idle() {
