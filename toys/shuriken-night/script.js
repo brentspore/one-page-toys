@@ -83,6 +83,8 @@
   var FOCUS_SCALE = 0.34;
   var FOCUS_TIME = 3.6;
   var MAGIC_START = 2;
+  var MAGIC_FX_TIME = 1.2;
+  var MAGIC_READY_TIME = 2.35;
 
   var BEST_KEY = "shuriken_best";
   var SOUND_KEY = "shuriken_sound";
@@ -114,6 +116,7 @@
   var score = 0, best = 0, wave = 0, life = 3;
   var combo = 0, comboT = 0;
   var shake = 0, flashHurt = 0, flashMagic = 0;
+  var magicFx = null;
   var strike = null; // the incoming attack currently being animated
   var LOOM = { t: 0, phase: 0, state: "attack", type: "runner", w: 1.15, throwAnim: 0, y: 0, h: 1.8 };
   var dying = false; // fatal blow playing out; gameplay is frozen behind it
@@ -121,6 +124,7 @@
   var focusWasReady = false; // rising-edge latch for the "focus is ready" flourish
   var hudScore = -1, hudLife = -1; // last values the HUD painted, so animations fire on change only
   var waveBanner = 0, waveBannerText = "";
+  var magicReadyT = 0;
   var enemies = [], stars = [], kunais = [], fx = [], petals = [], shards = [];
   var bays = [], skyStars = [], lanterns = [], stoneLanterns = [], hillProfile = [], embers = [], garden = [];
   var spawnQueue = 0, spawnTimer = 0, betweenWaves = 0;
@@ -128,6 +132,47 @@
   var aim = { x: 0, y: 0, has: false };
   var charging = false, chargeT = 0, cooldown = 0;
   var soundOn = true;
+  var handAnim = 0, handX = 0;
+
+  // Illustrated atlases are decoded once and then drawn as ordinary Canvas
+  // images. They replace hundreds of per-frame path operations with one blit,
+  // so the visual upgrade is cheaper than the procedural figure it succeeds.
+  // The old vector renderer remains as a load/failure fallback.
+  function artImage(src) {
+    var img = new Image();
+    img.decoding = "async";
+    img.src = src;
+    return img;
+  }
+  function artFrames(name, count) {
+    var out = [];
+    for (var i = 0; i < count; i++) out.push(artImage("assets/" + name + "-" + i + ".webp"));
+    return out;
+  }
+  // Individual padded frames prevent wide sprint/weapon poses from sampling a
+  // neighbour when Canvas scales the artwork near the edge of the viewport.
+  var NINJA_RUNNER_ART = artFrames("ninja-runner", 6);
+  var NINJA_BRUTE_ART = artFrames("ninja-brute", 6);
+  var NINJA_RUNNER_APPROACH = artFrames("ninja-runner-approach", 4);
+  var NINJA_BRUTE_APPROACH = artFrames("ninja-brute-approach", 4);
+  var NINJA_RUNNER_ATTACK = artFrames("ninja-runner-attack", 4);
+  var NINJA_BRUTE_ATTACK = artFrames("ninja-brute-attack", 4);
+  var NINJA_THROWER_ART = artFrames("ninja-thrower", 6);
+  var NINJA_THROWER_APPROACH = artFrames("ninja-thrower-approach", 4);
+  var NINJA_THROWER_THROW = artFrames("ninja-thrower-throw", 4);
+  var NINJA_DROPPER_ART = artFrames("ninja-dropper", 6);
+  var NINJA_DROPPER_APPROACH = artFrames("ninja-dropper-approach", 4);
+  var NINJA_DROPPER_ATTACK = artFrames("ninja-dropper-attack", 4);
+  var PLAYER_HAND_ART = artFrames("player-hand", 3);
+  var PROP_V2 = {
+    stoneLantern: artImage("assets/prop-v2-stone-lantern.webp"),
+    hangingLantern: artImage("assets/prop-v2-hanging-lantern.webp"),
+    pine: artImage("assets/prop-v2-pine.webp"),
+    shrub: artImage("assets/prop-v2-shrub.webp"),
+    rock: artImage("assets/prop-v2-rock.webp"),
+    basin: artImage("assets/prop-v2-basin.webp"),
+    step: artImage("assets/prop-v2-steps.webp")
+  };
 
   try {
     best = parseInt(localStorage.getItem(BEST_KEY), 10) || 0;
@@ -310,12 +355,12 @@
     for (var gi = 0; gi < 26; gi++) {
       var ga = (gi / 26) * Math.PI * 2 + rand(-0.06, 0.06);
       var roll = Math.random();
-      var kind = roll < 0.34 ? "rock" : roll < 0.62 ? "shrub" : roll < 0.9 ? "step" : "pine";
+      var kind = roll < 0.28 ? "rock" : roll < 0.52 ? "shrub" : roll < 0.74 ? "step" : roll < 0.9 ? "pine" : "basin";
       garden.push({
         ang: ga,
         r: kind === "step" ? rand(11.5, 14.5) : rand(15.2, 16.6),
         kind: kind,
-        sz: kind === "pine" ? rand(0.85, 1.25) : kind === "shrub" ? rand(0.45, 0.75) : rand(0.3, 0.58),
+        sz: kind === "pine" ? rand(0.85, 1.25) : kind === "shrub" ? rand(0.45, 0.75) : kind === "basin" ? rand(0.48, 0.68) : rand(0.3, 0.58),
         sk: rand(0.75, 1.3),
         ph: rand(0, 6.283)
       });
@@ -362,7 +407,8 @@
   /* ----------------------------------------------------------------- audio */
 
   var AC = null, master = null, busComp = null, busLP = null, reverb = null, outGain = null;
-  var ambGain = null, ambNodes = [];
+  var ambGain = null, musicGain = null, ambNodes = [];
+  var ambientPhrase = 0;
 
   function initAudio() {
     if (AC) return;
@@ -646,6 +692,31 @@
     n.connect(hp); hp.connect(ng); n.start(t); n.stop(t + 0.06);
   }
 
+  // A star glancing off scenery: much shorter and drier than the rewarded
+  // steel-on-steel kunai deflect, with a softer rustle for foliage.
+  function sndPropDeflect(kind, pan) {
+    if (!AC || !soundOn) return;
+    var t = AC.currentTime;
+    var foliage = kind === "pine" || kind === "shrub";
+    var lantern = kind === "stoneLantern" || kind === "hangingLantern";
+    var n = AC.createBufferSource(), g = voice(null, pan, foliage ? 0.08 : 0.18);
+    n.buffer = noiseBuf();
+    n.playbackRate.value = foliage ? rand(0.75, 0.95) : rand(1.1, 1.4);
+    var bp = AC.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.Q.value = foliage ? 0.8 : 2.6;
+    bp.frequency.setValueAtTime(foliage ? 1150 : 2600, t);
+    bp.frequency.exponentialRampToValueAtTime(foliage ? 430 : 720, t + 0.08);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(foliage ? 0.2 : 0.28, t + 0.003);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + (foliage ? 0.13 : 0.09));
+    n.connect(bp); bp.connect(g); n.start(t); n.stop(t + 0.15);
+    if (!foliage) {
+      metalRes(lantern ? 1850 : 1450, lantern ? 12 : 7, lantern ? 0.055 : 0.035,
+        lantern ? 0.16 : 0.1, t + 0.006, pan, lantern ? 0.28 : 0.12);
+    }
+  }
+
 
   // Paper screen bursting: a tear plus the wooden lattice cracking.
   function sndShoji(pan) {
@@ -848,6 +919,21 @@
     n.connect(bp); bp.connect(ng); n.start(t); n.stop(t + 0.82);
   }
 
+  function sndMagicReady() {
+    if (!AC || !soundOn) return;
+    var t = AC.currentTime + 0.08;
+    var notes = [523.25, 659.25, 987.77];
+    for (var i = 0; i < notes.length; i++) {
+      var o = AC.createOscillator(), g = voice(null, 0, 0.22);
+      o.type = i === 2 ? "sine" : "triangle";
+      o.frequency.setValueAtTime(notes[i], t + i * 0.09);
+      g.gain.setValueAtTime(0.0001, t + i * 0.09);
+      g.gain.exponentialRampToValueAtTime(i === 2 ? 0.17 : 0.11, t + i * 0.09 + 0.018);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.09 + 0.48);
+      o.connect(g); o.start(t + i * 0.09); o.stop(t + i * 0.09 + 0.5);
+    }
+  }
+
   function sndFocus(on) {
     if (!AC || !soundOn) return;
     var t = AC.currentTime;
@@ -905,7 +991,9 @@
     }
   }
 
-  // Night bed: wind, crickets, and an occasional distant temple bell.
+  // Night bed: wind, crickets, a restrained musical layer, and an occasional
+  // distant temple bell. Everything is synthesized once the player has made a
+  // gesture, so the ambience adds no downloaded audio and very little CPU.
   function startAmbience() {
     if (!AC || ambGain) return;
     ambGain = AC.createGain();
@@ -925,8 +1013,92 @@
     wind.start(); lfo.start();
     ambNodes.push(wind, lfo);
 
+    startAmbientMusic();
     scheduleCricket();
     scheduleBell();
+  }
+
+  // A nearly subliminal D/A drone under sparse minor-pentatonic phrases. The
+  // long envelopes keep it atmospheric instead of turning combat into a song.
+  function startAmbientMusic() {
+    musicGain = AC.createGain();
+    musicGain.gain.value = 0.34;
+    musicGain.connect(ambGain);
+
+    var droneFilter = AC.createBiquadFilter();
+    droneFilter.type = "lowpass";
+    droneFilter.frequency.value = 310;
+    droneFilter.Q.value = 0.45;
+    droneFilter.connect(musicGain);
+
+    var droneGain = AC.createGain();
+    droneGain.gain.setValueAtTime(0.0001, AC.currentTime);
+    droneGain.gain.exponentialRampToValueAtTime(0.026, AC.currentTime + 5);
+    droneGain.connect(droneFilter);
+
+    var roots = [73.42, 110]; // D2 and A2
+    for (var i = 0; i < roots.length; i++) {
+      var o = AC.createOscillator();
+      o.type = i ? "sine" : "triangle";
+      o.frequency.value = roots[i];
+      o.detune.value = i ? 3 : -3;
+      var og = AC.createGain();
+      og.gain.value = i ? 0.34 : 0.52;
+      o.connect(og); og.connect(droneGain); o.start();
+      ambNodes.push(o);
+    }
+
+    playAmbientPhrase(AC.currentTime + 1.4);
+    scheduleAmbientPhrase();
+  }
+
+  function ambientTone(freq, t, dur, pan, amp) {
+    var o = AC.createOscillator(), overtone = AC.createOscillator();
+    var og = AC.createGain(), g = AC.createGain();
+    var lp = AC.createBiquadFilter();
+    var p = AC.createStereoPanner ? AC.createStereoPanner() : null;
+    var wet = AC.createGain();
+
+    o.type = "sine"; o.frequency.value = freq;
+    overtone.type = "triangle"; overtone.frequency.value = freq * 2;
+    og.gain.value = 0.075;
+    lp.type = "lowpass"; lp.frequency.value = 1050; lp.Q.value = 0.5;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(amp, t + 0.42);
+    g.gain.setValueAtTime(amp, t + Math.max(0.5, dur - 1.4));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+    o.connect(lp); overtone.connect(og); og.connect(lp); lp.connect(g);
+    if (p) { p.pan.value = pan; g.connect(p); p.connect(musicGain); }
+    else g.connect(musicGain);
+    wet.gain.value = 0.72;
+    g.connect(wet); wet.connect(reverb);
+    o.start(t); overtone.start(t);
+    o.stop(t + dur + 0.05); overtone.stop(t + dur + 0.05);
+  }
+
+  function playAmbientPhrase(t) {
+    if (!AC || !soundOn || !musicGain) return;
+    var scale = [146.83, 174.61, 196, 220, 261.63]; // D minor pentatonic
+    var phrases = [
+      [0, 2, 1],
+      [3, 2, 0],
+      [1, 4, 3],
+      [2, 1, 0]
+    ];
+    var notes = phrases[ambientPhrase++ % phrases.length];
+    for (var i = 0; i < notes.length; i++) {
+      ambientTone(scale[notes[i]], t + i * 1.55, 3.8, -0.32 + i * 0.32, 0.026 - i * 0.003);
+    }
+  }
+
+  function scheduleAmbientPhrase() {
+    setTimeout(function () {
+      if (AC && soundOn && musicGain && document.visibilityState === "visible") {
+        playAmbientPhrase(AC.currentTime + 0.15);
+      }
+      scheduleAmbientPhrase();
+    }, rand(9000, 14000));
   }
 
   function scheduleCricket() {
@@ -986,13 +1158,23 @@
     dropper: { speed: 4.3, hp: 1, h: 1.72, points: 200, w: 1, gear: "cloak" }
   };
 
-  function waveMix(n) {
-    var t = [];
-    for (var i = 0; i < 6; i++) t.push("runner");
-    if (n >= 2) for (var j = 0; j < Math.min(5, n); j++) t.push("thrower");
-    if (n >= 4) for (var k = 0; k < Math.min(3, n - 3); k++) t.push("brute");
-    if (n >= 6) for (var m = 0; m < Math.min(3, n - 5); m++) t.push("dropper");
-    return t;
+  // Stable tier mixes: once a new enemy joins the cast, later waves keep the
+  // same readable proportions instead of silently drifting as arrays grow.
+  function pickWaveType(n) {
+    var roll = Math.random();
+    if (n >= 6) {
+      if (roll < 0.40) return "runner";
+      if (roll < 0.73) return "thrower";
+      if (roll < 0.93) return "brute";
+      return "dropper";
+    }
+    if (n >= 4) {
+      if (roll < 0.55) return "runner";
+      if (roll < 0.91) return "thrower";
+      return "brute";
+    }
+    if (n >= 2) return roll < 0.75 ? "runner" : "thrower";
+    return "runner";
   }
 
   // In the static stance you cannot turn, so anything that spawns outside the
@@ -1017,7 +1199,7 @@
   }
 
   function spawnEnemy() {
-    var type = pick(waveMix(wave));
+    var type = pickWaveType(wave);
     var def = TYPES[type];
     var e = {
       type: type,
@@ -1088,10 +1270,8 @@
   /* ------------------------------------------------------------ projectiles */
 
   // launchX: screen x the star should appear to leave from, at the bottom edge.
-  // The PHYSICS still start on the camera ray, so aiming stays exact; only the
-  // first ~0.14s of rendering is eased up from the bottom of the screen. Moving
-  // the real spawn point down there instead would throw off close-range shots,
-  // because the parallax between hand and eye only cancels at one distance.
+  // The physics still start on the camera ray, so aiming stays exact; only the
+  // first moments of rendering ease up from the bottom of the screen.
   function throwStar(dir, spreadAng, launchX) {
     var d = dir;
     if (spreadAng) {
@@ -1122,10 +1302,11 @@
     var T = d / KUNAI_SPEED; // horizontal flight time
     kunais.push({
       x: e.x, y: startY, z: e.z,
+      px: e.x, py: startY, pz: e.z,
       vx: (dx / d) * KUNAI_SPEED,
       vy: (targetY - startY) / T + 0.5 * KUNAI_G * T,
       vz: (dz / d) * KUNAI_SPEED,
-      spin: rand(0, 6.283), alive: true, life: 4
+      spin: rand(0, 6.283), age: 0, alive: true, life: 4
     });
   }
 
@@ -1171,14 +1352,9 @@
   var pointerDown = false, dragging = false, downX = 0, downY = 0, downT = 0, lastX = 0;
   var keyTurn = 0;
   var DRAG_PX = 12;
-  var SWIPE_MIN = 24; // travel before a touch gesture commits to an intent
+  var SWIPE_MIN = 24;
   var gestKind = null; // "turn" | "throw", decided by the dominant axis
-  var isTouch = COARSE; // seeded from the device, then corrected by real pointer events
-  // Positive evidence that a real mouse exists on this machine. The crosshair
-  // is opt-IN on this rather than opt-out of touch detection: a phone never
-  // produces a mouse event, so it can never show the crosshair no matter what
-  // pointerType or the media query happen to report on that device.
-  var sawMouse = false;
+  var isTouch = COARSE; // seeded from the device, corrected by real pointers
 
   function pointerPos(ev) {
     return { x: ev.clientX, y: ev.clientY };
@@ -1188,14 +1364,10 @@
     if (!running) return;
     ev.preventDefault();
     initAudio();
-    // Capture is a nicety, not a requirement — and it throws if the pointer is
-    // already gone. Letting it throw here would abort the whole handler before
-    // the gesture state is even set up.
     try { canvas.setPointerCapture && canvas.setPointerCapture(ev.pointerId); } catch (e) {}
     var p = pointerPos(ev);
     pointerDown = true; dragging = false; gestKind = null;
     isTouch = ev.pointerType !== "mouse";
-    if (ev.pointerType === "mouse") sawMouse = true;
     downX = p.x; downY = p.y; lastX = p.x; downT = performance.now();
     aim.x = p.x; aim.y = p.y; aim.has = true;
     if (ev.button === 2) return;
@@ -1206,15 +1378,12 @@
     var p = pointerPos(ev);
     if (!pointerDown) {
       // Desktop hover aims directly.
-      if (ev.pointerType === "mouse") { sawMouse = true; isTouch = false; aim.x = p.x; aim.y = p.y; aim.has = true; }
+      if (ev.pointerType === "mouse") { aim.x = p.x; aim.y = p.y; aim.has = true; }
       return;
     }
     var dx = p.x - lastX;
 
     if (isTouch) {
-      // On touch, the gesture's dominant axis decides what it means: a mostly
-      // sideways drag turns the view, anything else is a throwing swipe. That
-      // keeps both gestures available without a mode button.
       var tx = p.x - downX, ty = p.y - downY;
       if (!gestKind && (Math.abs(tx) > SWIPE_MIN || Math.abs(ty) > SWIPE_MIN)) {
         gestKind = mode === "turn" && Math.abs(tx) > Math.abs(ty) * 1.25 ? "turn" : "throw";
@@ -1231,7 +1400,6 @@
       return;
     }
 
-    // Mouse: drag still turns, everything else aims.
     if (!dragging && Math.abs(p.x - downX) > DRAG_PX && ev.buttons === 2) {
       dragging = true;
       charging = false;
@@ -1256,16 +1424,9 @@
     if (!running || over) return;
 
     if (isTouch) {
-      if (kind === "throw") {
-        // Swipe: the star leaves from the bottom of the screen, under the
-        // start of the swipe, and flies out along the line you drew.
-        swipeThrow(downX, downY, aim.x, aim.y);
-      } else if (wasCharging && chargeT >= CHARGE_TIME) {
-        fireFan(downX);
-      } else {
-        // A plain tap still throws, launched from below the tap.
-        fire(aim.x);
-      }
+      if (kind === "throw") swipeThrow(downX, downY, aim.x, aim.y);
+      else if (wasCharging && chargeT >= CHARGE_TIME) fireFan(downX);
+      else fire(aim.x);
       chargeT = 0;
       return;
     }
@@ -1293,10 +1454,16 @@
     if ((k === "arrowright" || k === "d") && keyTurn === 1) keyTurn = 0;
   });
 
+  function showThrowHand(x) {
+    handAnim = 0.24;
+    handX = clamp(typeof x === "number" ? x : aim.x, W * 0.18, W * 0.82);
+  }
+
   function fire(launchX) {
     if (cooldown > 0 || !running || over) return;
     cooldown = THROW_COOLDOWN;
     throwStar(unproject(aim.x, aim.y), 0, launchX);
+    showThrowHand(launchX);
     sndThrow(panOf(aim.x));
     hideHint();
   }
@@ -1308,27 +1475,22 @@
     throwStar(d, -FAN_SPREAD, launchX);
     throwStar(d, 0, launchX);
     throwStar(d, FAN_SPREAD, launchX);
+    showThrowHand(launchX);
     sndThrow(panOf(aim.x));
     setTimeout(function () { sndThrow(panOf(aim.x)); }, 45);
     hideHint();
   }
 
-  // A swipe throws along the line drawn on screen. The end of the swipe is the
-  // aim point (you flick toward what you want to hit) and the star launches
-  // from the bottom edge beneath where the swipe began.
   function swipeThrow(x0, y0, x1, y1) {
     if (cooldown > 0 || !running || over) return;
     var dx = x1 - x0, dy = y1 - y0;
     var len = Math.sqrt(dx * dx + dy * dy);
     if (len < 1) return;
-    // Aim exactly where the swipe ended. An earlier version extrapolated past
-    // the fingertip to be "helpful" and pushed the aim above the horizon, so
-    // every star sailed over the courtyard.
-    var tx = x1, ty = y1;
-    aim.x = tx; aim.y = ty; aim.has = true;
+    aim.x = x1; aim.y = y1; aim.has = true;
     cooldown = THROW_COOLDOWN;
-    throwStar(unproject(tx, ty), 0, x0);
-    sndThrow(panOf(tx));
+    throwStar(unproject(x1, y1), 0, x0);
+    showThrowHand(x0);
+    sndThrow(panOf(x1));
     hideHint();
   }
 
@@ -1339,11 +1501,44 @@
     sndFocus(true);
   }
 
+  function beginMagicFx() {
+    var marks = [];
+    for (var i = 0; i < enemies.length; i++) {
+      var e = enemies[i];
+      if (e.state === "dead") continue;
+      var p = project(e.x, e.y + e.h * 0.56, e.z);
+      if (!p || p.x < -W * 0.12 || p.x > W * 1.12) continue;
+      var points = [];
+      var sx = W * 0.5, sy = H * 0.47;
+      var segments = REDMO ? 3 : 6;
+      for (var j = 0; j <= segments; j++) {
+        var u = j / segments;
+        var edge = Math.sin(u * Math.PI);
+        points.push({
+          x: lerp(sx, p.x, u) + rand(-W * 0.022, W * 0.022) * edge,
+          y: lerp(sy, p.y, u) + rand(-H * 0.025, H * 0.025) * edge
+        });
+      }
+      marks.push({
+        x: p.x, y: p.y,
+        r: clamp(p.s * e.h * 0.34, 20, H * 0.13),
+        delay: Math.min(0.18, marks.length * 0.018),
+        rot: rand(0, 6.283),
+        points: points
+      });
+      // The spell still clears every enemy; this cap only bounds the brief
+      // full-screen lightning overlay during extremely crowded late waves.
+      if (marks.length >= (REDMO ? 6 : 14)) break;
+    }
+    magicFx = { age: 0, rot: rand(0, 6.283), marks: marks };
+  }
+
   function useMagic() {
     if (!running || over || magic <= 0 || enemies.length === 0) return;
     magic--;
     flashMagic = 1;
-    shake = Math.max(shake, REDMO ? 3 : 16);
+    beginMagicFx();
+    shake = Math.max(shake, REDMO ? 3 : 18);
     sndMagic();
     for (var i = enemies.length - 1; i >= 0; i--) {
       var e = enemies[i];
@@ -1403,8 +1598,9 @@
     yaw = 0; yawVel = 0;
     spawnQueue = 0; spawnTimer = 0; betweenWaves = 0.9;
     running = true; over = false; started = true;
-    shake = 0; flashHurt = 0; flashMagic = 0;
-    strike = null; dying = false;
+    shake = 0; flashHurt = 0; flashMagic = 0; magicFx = null; magicReadyT = 0;
+    magicBtn.classList.remove("magic-earned");
+    strike = null; dying = false; handAnim = 0;
     overlay.hidden = true;
     hudEl.hidden = false;
     abilitiesEl.hidden = false;
@@ -1426,7 +1622,14 @@
     waveBannerText = "Wave " + wave;
     if (wave > 1) {
       sndWave();
-      if (wave % 3 === 0) { magic++; }
+      if (wave % 3 === 0) {
+        magic++;
+        magicReadyT = MAGIC_READY_TIME;
+        magicBtn.classList.remove("magic-earned");
+        void magicBtn.offsetWidth;
+        magicBtn.classList.add("magic-earned");
+        sndMagicReady();
+      }
     }
     updateHud();
   }
@@ -1498,19 +1701,29 @@
     e.stuckX = rand(-0.22, 0.22);
     e.stuckSpin = rand(0, 6.283);
     var sp = project(e.x, hy, e.z);
-    // blood: a heavy arterial spray plus a finer, faster mist over the top
-    burst(e.x, hy, e.z, headshot ? 20 : 13, "#a81e28", 2.9, headshot);
-    burst(e.x, hy, e.z, headshot ? 11 : 6, "#e2515a", 3.7, headshot);
-    burst(e.x, hy, e.z, headshot ? 7 : 5, "#101a30", 2.4, headshot); // torn cloth
-    ring(e.x, e.y + e.h * 0.5, e.z, headshot ? "rgba(255,183,101,0.85)" : "rgba(190,210,255,0.6)", headshot);
+    if (byMagic) {
+      // Magic pulls the figure apart into cold moonlit ink rather than reusing
+      // an ordinary weapon hit. It is cleaner, more graphic, and makes the
+      // screen-clear read as one supernatural event.
+      burst(e.x, hy, e.z, REDMO ? 7 : 16, "#bfeaff", 3.5, false);
+      burst(e.x, hy, e.z, REDMO ? 5 : 12, "#746ee8", 2.8, false);
+      burst(e.x, hy, e.z, REDMO ? 4 : 9, "#071124", 2.2, false);
+      ring(e.x, e.y + e.h * 0.5, e.z, "rgba(155,220,255,0.92)", true);
+    } else {
+      // blood: a heavy arterial spray plus a finer, faster mist over the top
+      burst(e.x, hy, e.z, headshot ? 20 : 13, "#a81e28", 2.9, headshot);
+      burst(e.x, hy, e.z, headshot ? 11 : 6, "#e2515a", 3.7, headshot);
+      burst(e.x, hy, e.z, headshot ? 7 : 5, "#101a30", 2.4, headshot); // torn cloth
+      ring(e.x, e.y + e.h * 0.5, e.z, headshot ? "rgba(255,183,101,0.85)" : "rgba(190,210,255,0.6)", headshot);
+    }
     floater(e.x, e.y + e.h * 0.95, e.z, (headshot ? "HEAD " : "") + "+" + pts, headshot ? COL.amber : COL.paper);
-    if (sp) sndHit(panOf(sp.x), headshot);
+    if (sp && !byMagic) sndHit(panOf(sp.x), headshot);
     updateHud();
   }
 
   // kind: "melee" (a ninja's blade) or "blade" (a thrown kunai). The third and
   // final hit plays a longer, weapon-specific finish before the end screen.
-  function hurtPlayer(kind, srcX) {
+  function hurtPlayer(kind, srcX, attackerType) {
     if (over || dying) return;
     life--;
     combo = 0; comboT = 0;
@@ -1523,6 +1736,7 @@
       t: 0,
       dur: fatal ? (REDMO ? 1.1 : 2.0) : 0.55,
       sx: typeof srcX === "number" ? srcX : W * 0.5,
+      enemyType: attackerType || "runner",
       ended: false
     };
     // The weapon that hit you sounds first, then the blow itself.
@@ -1540,14 +1754,25 @@
 
   function update(dt) {
     var wdt = dt * timeScale;
+    if (handAnim > 0) handAnim = Math.max(0, handAnim - dt);
 
     if (cooldown > 0) cooldown -= dt;
     if (charging) chargeT += dt;
     if (comboT > 0) { comboT -= dt; if (comboT <= 0) { combo = 0; updateHud(); } }
     if (shake > 0) shake = Math.max(0, shake - dt * 42);
     if (flashHurt > 0) flashHurt = Math.max(0, flashHurt - dt * 3.4);
-    if (flashMagic > 0) flashMagic = Math.max(0, flashMagic - dt * 1.8);
+    if (magicFx) {
+      magicFx.age += dt;
+      flashMagic = clamp(1 - magicFx.age / MAGIC_FX_TIME, 0, 1);
+      if (magicFx.age >= MAGIC_FX_TIME) { magicFx = null; flashMagic = 0; }
+    } else if (flashMagic > 0) {
+      flashMagic = Math.max(0, flashMagic - dt / MAGIC_FX_TIME);
+    }
     if (waveBanner > 0) waveBanner -= dt;
+    if (magicReadyT > 0) {
+      magicReadyT = Math.max(0, magicReadyT - dt);
+      if (magicReadyT === 0) magicBtn.classList.remove("magic-earned");
+    }
 
     if (focusT > 0 && !dying) {
       focusT -= dt;
@@ -1692,7 +1917,7 @@
         if (e.t >= ATTACK_WINDUP) {
           var sp = project(e.x, e.y + e.h * 0.6, e.z);
           enemies.splice(i, 1);
-          hurtPlayer("melee", sp ? sp.x : W * 0.5);
+          hurtPlayer("melee", sp ? sp.x : W * 0.5, e.type);
         }
         continue;
       }
@@ -1766,6 +1991,114 @@
     }
   }
 
+  function segmentCylinderT(ax, ay, az, bx, by, bz, cx, cz, radius, y0, y1) {
+    var dx = bx - ax, dy = by - ay, dz = bz - az;
+    var ox = ax - cx, oz = az - cz;
+    var qa = dx * dx + dz * dz;
+    var qb = 2 * (ox * dx + oz * dz);
+    var qc = ox * ox + oz * oz - radius * radius;
+    var ht0 = 0, ht1 = 1;
+    if (qa < 0.0000001) {
+      if (qc > 0) return null;
+    } else {
+      var disc = qb * qb - 4 * qa * qc;
+      if (disc < 0) return null;
+      var root = Math.sqrt(disc);
+      ht0 = (-qb - root) / (2 * qa);
+      ht1 = (-qb + root) / (2 * qa);
+      if (ht0 > ht1) { var swap = ht0; ht0 = ht1; ht1 = swap; }
+    }
+    var vt0 = 0, vt1 = 1;
+    if (Math.abs(dy) < 0.0000001) {
+      if (ay < y0 || ay > y1) return null;
+    } else {
+      vt0 = (y0 - ay) / dy;
+      vt1 = (y1 - ay) / dy;
+      if (vt0 > vt1) { var vswap = vt0; vt0 = vt1; vt1 = vswap; }
+    }
+    var enter = Math.max(0, ht0, vt0);
+    var leave = Math.min(1, ht1, vt1);
+    return enter <= leave ? enter : null;
+  }
+
+  function nearerPropHit(best, ax, ay, az, bx, by, bz, cx, cz, radius, y0, y1, kind) {
+    var t = segmentCylinderT(ax, ay, az, bx, by, bz, cx, cz, radius, y0, y1);
+    if (t !== null && (!best || t < best.t)) return { t: t, kind: kind };
+    return best;
+  }
+
+  function firstPropHit(ax, ay, az, bx, by, bz) {
+    var best = null;
+    for (var i = 0; i < garden.length; i++) {
+      var G = garden[i];
+      if (G.kind === "step") continue; // flat enough to throw over
+      var gx = Math.sin(G.ang) * G.r, gz = Math.cos(G.ang) * G.r;
+      if (G.kind === "pine") {
+        // Narrow trunk below, broad layered foliage above.
+        best = nearerPropHit(best, ax, ay, az, bx, by, bz, gx, gz,
+          0.24 * G.sz, 0, 3.25 * G.sz, "pine");
+        best = nearerPropHit(best, ax, ay, az, bx, by, bz, gx, gz,
+          1.28 * G.sz * G.sk, 1.35 * G.sz, 3.85 * G.sz, "pine");
+      } else if (G.kind === "rock") {
+        best = nearerPropHit(best, ax, ay, az, bx, by, bz, gx, gz,
+          1.35 * G.sz * G.sk, 0, 1.75 * G.sz, "rock");
+      } else if (G.kind === "shrub") {
+        best = nearerPropHit(best, ax, ay, az, bx, by, bz, gx, gz,
+          1.42 * G.sz * G.sk, 0, 1.95 * G.sz, "shrub");
+      } else if (G.kind === "basin") {
+        best = nearerPropHit(best, ax, ay, az, bx, by, bz, gx, gz,
+          1.28 * G.sz * G.sk, 0, 2.45 * G.sz, "basin");
+      }
+    }
+    for (var s = 0; s < stoneLanterns.length; s++) {
+      var S = stoneLanterns[s];
+      best = nearerPropHit(best, ax, ay, az, bx, by, bz,
+        Math.sin(S.ang) * S.r, Math.cos(S.ang) * S.r, 0.46, 0, 1.55, "stoneLantern");
+    }
+    var now = performance.now();
+    for (var h = 0; h < lanterns.length; h++) {
+      var L = lanterns[h];
+      var sway = Math.sin(now * 0.0007 + L.sw) * 0.035;
+      best = nearerPropHit(best, ax, ay, az, bx, by, bz,
+        Math.sin(L.ang + sway) * L.r, Math.cos(L.ang + sway) * L.r,
+        0.3, L.h - 0.44, L.h + 0.44, "hangingLantern");
+    }
+    return best;
+  }
+
+  function firstEnemyHit(ax, ay, az, bx, by, bz) {
+    var best = null;
+    for (var i = 0; i < enemies.length; i++) {
+      var e = enemies[i];
+      if (e.state === "dead" || e.state === "shoji") continue;
+      var t = segmentCylinderT(ax, ay, az, bx, by, bz, e.x, e.z,
+        ENEMY_R * e.w + 0.1, e.y - 0.05, e.y + e.h);
+      if (t !== null && (!best || t < best.t)) best = { t: t, enemy: e };
+    }
+    return best;
+  }
+
+  function propImpact(s, kind) {
+    var foliage = kind === "pine" || kind === "shrub";
+    var warm = kind === "hangingLantern";
+    var at = project(s.x, s.y, s.z);
+    var before = project(s.x - s.vx * 0.025, s.y - s.vy * 0.025, s.z - s.vz * 0.025);
+    var rot = at && before ? Math.atan2(at.y - before.y, at.x - before.x) : rand(0, 6.283);
+    fx.push({
+      kind: "ricochet", x: s.x, y: s.y, z: s.z,
+      t: 0, life: foliage ? 0.2 : 0.24, rot: rot,
+      col: warm ? "#ffbd72" : foliage ? "#8ba6c4" : "#d9e7f7",
+      foliage: foliage
+    });
+    burst(s.x, s.y, s.z, REDMO ? 4 : 8,
+      warm ? "#ffbd72" : foliage ? "#354d70" : "#7f91ae", foliage ? 1.3 : 1.8);
+    burst(s.x, s.y, s.z, REDMO ? 2 : 4,
+      foliage ? "#111b31" : "#202a40", 1.05);
+    ring(s.x, s.y, s.z,
+      warm ? "rgba(255,183,101,0.72)" : "rgba(165,190,225,0.55)", false);
+    if (at) sndPropDeflect(kind, panOf(at.x));
+  }
+
   function updateStars(dt) {
     for (var i = stars.length - 1; i >= 0; i--) {
       var s = stars[i];
@@ -1776,19 +2109,24 @@
       var hit = false;
       for (var k = 0; k < steps && !hit; k++) {
         var sdt = dt / steps;
+        var ax = s.x, ay = s.y, az = s.z;
         s.x += s.vx * sdt;
         s.y += s.vy * sdt;
         s.z += s.vz * sdt;
         s.vy -= 2.6 * sdt; // gentle drop, keeps aim honest at range
 
-        // vs enemies
-        for (var j = 0; j < enemies.length; j++) {
-          var e = enemies[j];
-          if (e.state === "dead" || e.state === "shoji") continue;
-          var dx = s.x - e.x, dz = s.z - e.z;
-          var r = ENEMY_R * e.w + 0.1;
-          if (dx * dx + dz * dz < r * r && s.y > e.y - 0.05 && s.y < e.y + e.h) {
-            hit = true;
+        var propHit = firstPropHit(ax, ay, az, s.x, s.y, s.z);
+        var enemyHit = firstEnemyHit(ax, ay, az, s.x, s.y, s.z);
+        var firstT = propHit && (!enemyHit || propHit.t <= enemyHit.t) ? propHit.t : enemyHit ? enemyHit.t : null;
+        if (firstT !== null) {
+          s.x = lerp(ax, s.x, firstT);
+          s.y = lerp(ay, s.y, firstT);
+          s.z = lerp(az, s.z, firstT);
+          hit = true;
+          if (propHit && (!enemyHit || propHit.t <= enemyHit.t)) {
+            propImpact(s, propHit.kind);
+          } else {
+            var e = enemyHit.enemy;
             var headshot = s.y > e.y + e.h * 0.76;
             e.hp -= headshot ? 2 : 1;
             e.hurtT = 0.18;
@@ -1798,7 +2136,6 @@
               var pp = project(s.x, s.y, s.z);
               if (pp) sndHit(panOf(pp.x), false);
             }
-            break;
           }
         }
         if (hit) break;
@@ -1840,11 +2177,15 @@
     for (var i = kunais.length - 1; i >= 0; i--) {
       var k = kunais[i];
       var px = k.x, py = k.y, pz = k.z;
+      k.px = px; k.py = py; k.pz = pz;
       k.x += k.vx * dt;
       k.y += k.vy * dt;
       k.z += k.vz * dt;
       k.vy -= KUNAI_G * dt;
-      k.spin += dt * 14;
+      // Visual roll around the kunai's own long axis. Its point-first screen
+      // orientation is derived from the projected trajectory in drawKunai.
+      k.spin += dt * 9;
+      k.age += dt;
       k.life -= dt;
 
       // Swept test against the player's cylinder. A per-frame point check let a
@@ -1935,9 +2276,8 @@
     drawWall();
     drawGround();
     drawEngawa();    // the raised veranda the screens actually sit behind
-    drawLightPass(); // light landing on the floor, under the fixtures themselves
-    drawGarden();    // rocks, shrubs, stepping stones and pines along the yard
-    drawLanterns();
+    drawLightPass(); // light landing on the floor, under the depth-sorted fixtures
+    drawGroundSteps(); // flat floor decals always remain beneath moving actors
 
     // Everything in the round, depth sorted far to near.
     var items = [];
@@ -1947,6 +2287,26 @@
       if (e.state === "shoji") continue; // drawn on its paper screen
       p = project(e.x, e.y, e.z);
       if (p) items.push({ z: p.z, draw: drawEnemy, a: e, p: p });
+    }
+    // Props share the same painter's queue as attackers. This is the crucial
+    // difference between decoration and scenery: a nearer pine or stone lantern
+    // now correctly occludes an enemy crossing behind it.
+    for (i = 0; i < garden.length; i++) {
+      var gd = garden[i];
+      if (gd.kind === "step") continue;
+      p = project(Math.sin(gd.ang) * gd.r, 0, Math.cos(gd.ang) * gd.r);
+      if (p && p.x >= -160 && p.x <= W + 160) items.push({ z: p.z, draw: drawGardenDepth, a: gd, p: p });
+    }
+    for (i = 0; i < stoneLanterns.length; i++) {
+      var sl = stoneLanterns[i];
+      p = project(Math.sin(sl.ang) * sl.r, 0, Math.cos(sl.ang) * sl.r);
+      if (p && p.x >= -160 && p.x <= W + 160) items.push({ z: p.z, draw: drawStoneLanternDepth, a: sl, p: p });
+    }
+    for (i = 0; i < lanterns.length; i++) {
+      var hl = lanterns[i];
+      var hsway = Math.sin(performance.now() * 0.0007 + hl.sw) * 0.035;
+      p = project(Math.sin(hl.ang + hsway) * hl.r, hl.h, Math.cos(hl.ang + hsway) * hl.r);
+      if (p && p.x >= -100 && p.x <= W + 100) items.push({ z: p.z, draw: drawHangingLanternDepth, a: hl, p: p });
     }
     for (i = 0; i < petals.length; i++) {
       p = project(petals[i].x, petals[i].y, petals[i].z);
@@ -1968,7 +2328,11 @@
     for (i = 0; i < fx.length; i++) {
       var f = fx[i];
       p = project(f.x, f.y, f.z);
-      if (p) items.push({ z: p.z, draw: f.kind === "txt" ? drawFloater : f.kind === "ring" ? drawRing : drawParticle, a: f, p: p });
+      if (p) items.push({
+        z: p.z,
+        draw: f.kind === "txt" ? drawFloater : f.kind === "ring" ? drawRing : f.kind === "ricochet" ? drawRicochet : drawParticle,
+        a: f, p: p
+      });
     }
     items.sort(function (a, b) { return b.z - a.z; });
     for (i = 0; i < items.length; i++) items[i].draw(items[i].a, items[i].p);
@@ -1976,16 +2340,13 @@
     drawFog();
     ctx.restore();
 
+    drawPlayerHand();
     drawEdgeThreats();
-    // Mouse only, and gated on having actually SEEN a mouse. The crosshair
-    // exists to show where a mouse is pointing; on touch you aim by swiping
-    // and it just rides your finger around. Requiring positive evidence of a
-    // mouse means a phone can never show it, even if pointerType or the
-    // pointer:coarse query misreport on some device.
-    if (!dying && sawMouse && !isTouch) drawReticle();
+    if (!dying && !isTouch) drawReticle();
     drawOverlayFx();
     drawStrike();
     drawWaveBanner();
+    drawMagicReady();
   }
 
   function drawSky() {
@@ -2347,10 +2708,10 @@
     var x = c.getContext("2d");
 
     var g = x.createLinearGradient(0, 0, 0, fh);
-    g.addColorStop(0, "#131a35");
-    g.addColorStop(0.3, "#1a2242");
-    g.addColorStop(0.7, "#212b50");
-    g.addColorStop(1, "#28345e");
+    g.addColorStop(0, "#10162d");
+    g.addColorStop(0.24, "#171f3b");
+    g.addColorStop(0.58, "#202a49");
+    g.addColorStop(1, "#293655");
     x.fillStyle = g;
     x.fillRect(0, 0, c.width, fh);
 
@@ -2362,20 +2723,81 @@
       x.restore();
     }
 
-    // concentric flagstone courses, in world units so the compression is real
-    x.strokeStyle = "rgba(196,216,255,0.1)";
-    x.lineWidth = 1;
+    // Broad mineral blooms under the grain keep the surface from reading as a
+    // single flat fill. They are baked once, so their gradients cost nothing
+    // during play.
+    for (var stain = 0; stain < 34; stain++) {
+      var stx = rand(-c.width * 0.1, c.width * 1.1);
+      var sty = rand(0, fh);
+      var strx = rand(c.width * 0.035, c.width * 0.16);
+      var stry = rand(8, 38) * (0.35 + sty / fh);
+      var mineral = x.createRadialGradient(stx, sty, 0, stx, sty, strx);
+      mineral.addColorStop(0, stain % 3 === 0 ? "rgba(115,142,194,0.055)" : "rgba(4,8,20,0.075)");
+      mineral.addColorStop(1, "rgba(20,28,52,0)");
+      x.fillStyle = mineral;
+      x.save(); x.scale(1, stry / strx); x.beginPath(); x.arc(stx, sty * strx / stry, strx, 0, 6.283); x.fill(); x.restore();
+    }
+
+    // Concentric flagstone courses, in world units so their compression toward
+    // the wall is real. Alternating face values and a dark/light bevel give each
+    // course actual thickness instead of a collection of faint grid lines.
+    GROUND_ROWS = [0];
     for (var d = 2.2; d < R_WALL; d *= 1.28) {
       var yy = cylY(0, d) - baseY;
       if (yy < -1 || yy > fh) continue;
-      x.globalAlpha = clamp(yy / fh * 1.6, 0.15, 1);
-      x.beginPath(); x.moveTo(0, yy); x.lineTo(c.width, yy); x.stroke();
+      GROUND_ROWS.push(yy);
     }
-    x.globalAlpha = 1;
+    GROUND_ROWS.push(fh + 1);
+    GROUND_ROWS.sort(function (a, b) { return a - b; });
+    for (var row = 0; row < GROUND_ROWS.length - 1; row++) {
+      var y0 = GROUND_ROWS[row], y1 = GROUND_ROWS[row + 1];
+      x.fillStyle = row % 2
+        ? "rgba(100,126,177," + (0.018 + row * 0.003) + ")"
+        : "rgba(3,7,18," + (0.026 + row * 0.003) + ")";
+      x.fillRect(0, y0, c.width, y1 - y0);
+      if (row > 0) {
+        var edgeA = clamp(y0 / fh, 0.15, 1);
+        x.fillStyle = "rgba(3,6,16," + (0.3 * edgeA) + ")";
+        x.fillRect(0, y0, c.width, Math.max(1, 1.6 * edgeA));
+        x.fillStyle = "rgba(184,207,246," + (0.14 * edgeA) + ")";
+        x.fillRect(0, y0 + Math.max(1, 1.6 * edgeA), c.width, 1);
+      }
+    }
+
+    // Sparse fracture lines: short, irregular, and weighted toward the near
+    // foreground where they can be resolved. They stop well before becoming
+    // noisy enough to compete with attackers.
+    x.lineCap = "round";
+    for (var crack = 0; crack < 28; crack++) {
+      var cy = Math.pow(rand(0.08, 1), 0.62) * fh;
+      var cx = rand(0, c.width);
+      var clen = rand(12, 44) * (0.35 + cy / fh);
+      x.strokeStyle = "rgba(3,7,18," + (0.08 + cy / fh * 0.1) + ")";
+      x.lineWidth = 0.7 + cy / fh * 0.7;
+      x.beginPath(); x.moveTo(cx, cy);
+      for (var seg = 1; seg <= 3; seg++) {
+        cx += clen / 3;
+        cy += rand(-4, 4) * (0.35 + cy / fh);
+        x.lineTo(cx, cy);
+      }
+      x.stroke();
+    }
+
+    // Low, broken wet highlights catch the shoji reflections without coating
+    // the entire yard in a uniform mirror finish.
+    x.lineCap = "round";
+    for (var wet = 0; wet < 58; wet++) {
+      var wy = Math.pow(rand(0.06, 1), 0.72) * fh;
+      var wx = rand(0, c.width);
+      var ww = rand(4, 28) * (0.3 + wy / fh);
+      x.strokeStyle = "rgba(188,215,255," + rand(0.025, 0.085) + ")";
+      x.lineWidth = rand(0.6, 1.4);
+      x.beginPath(); x.moveTo(wx, wy); x.lineTo(wx + ww, wy + rand(-0.6, 0.6)); x.stroke();
+    }
 
     // gravel, densest near the eye where stones would be legible
     x.fillStyle = "rgba(210,226,255,0.055)";
-    for (var s2 = 0; s2 < 260; s2++) {
+    for (var s2 = 0; s2 < 180; s2++) {
       var sx2 = ((s2 * 7919) % 1000) / 1000 * c.width;
       var f = ((s2 * 104729) % 1000) / 1000;
       var sy2 = Math.pow(f, 0.55) * fh;
@@ -2449,23 +2871,127 @@
       ctx.fillRect(0, baseY, W, H - baseY);
     }
 
-    // Radial joints. A radial line has a constant bearing, so it projects to a
-    // vertical line — no convergence maths needed.
-    var spokes = 36;
-    for (var i = 0; i < spokes; i++) {
-      var ang = (i / spokes) * Math.PI * 2;
-      var xNear = bearingX(ang);
-      if (xNear === null) continue;
-      ctx.strokeStyle = "rgba(196,216,255,0.075)";
-      ctx.beginPath();
-      ctx.moveTo(xNear, H);
-      ctx.lineTo(xNear, cylY(0, R_WALL));
-      ctx.stroke();
+    // Staggered radial joints. Breaking them at every course removes the old
+    // graph-paper grid while keeping the seams locked to world bearing as the
+    // player turns.
+    if (GROUND_ROWS.length > 1) {
+      var jointStep = (Math.PI * 2) / 42;
+      ctx.lineWidth = 1;
+      for (var row = 0; row < GROUND_ROWS.length - 1; row++) {
+        var y0 = baseY + GROUND_ROWS[row];
+        var y1 = Math.min(H, baseY + GROUND_ROWS[row + 1]);
+        var offset = row % 2 ? jointStep * 0.5 : 0;
+        ctx.strokeStyle = "rgba(4,8,19," + (0.16 + row * 0.018) + ")";
+        ctx.beginPath();
+        for (var a = Math.floor((yaw - fov) / jointStep) * jointStep + offset; a <= yaw + fov; a += jointStep) {
+          var jx = bearingX(a);
+          if (jx === null || jx < -8 || jx > W + 8) continue;
+          ctx.moveTo(jx, y0 + 1);
+          ctx.lineTo(jx, y1 - 1);
+        }
+        ctx.stroke();
+      }
     }
 
   }
 
-  // Set rocks, clipped shrubs, stepping stones and pines. Drawn after the floor
+  function drawPropV2Ground(img, x, y, dh, scaleX) {
+    if (!img.complete || !img.naturalWidth) return false;
+    var dw = dh * (img.naturalWidth / img.naturalHeight) * (scaleX || 1);
+    // Every production prop's lowest opaque pixel is y=565 on a 724px canvas.
+    // Sink that exact baseline slightly into the stone so antialiased grass,
+    // roots, and feet cannot leave a bright sub-pixel gap that reads as hover.
+    var groundAnchor = 565 / 724;
+    var sink = clamp(dh * 0.018, 0.7, 3);
+    ctx.drawImage(img, x - dw * 0.5, y + sink - dh * groundAnchor, dw, dh);
+    return true;
+  }
+
+  function drawPropV2Centered(img, x, y, dh) {
+    if (!img.complete || !img.naturalWidth) return false;
+    var dw = dh * (img.naturalWidth / img.naturalHeight);
+    // Production frames share a 512x724 canvas; their visible art is centred
+    // at roughly 43.5% of its height rather than at the transparent-cell centre.
+    ctx.drawImage(img, x - dw * 0.5, y - dh * 0.435, dw, dh);
+    return true;
+  }
+
+  function drawGardenArt(G, p, u) {
+    var img = PROP_V2[G.kind];
+    // Plant the pine's illustrated grass fringe and root flare into the yard.
+    var groundY = p.y + (G.kind === "pine" ? u * 0.65 : 0);
+    if (img) drawPropV2Ground(img, p.x, groundY, u * 10);
+    // Every garden kind has a v2 asset. Return true even during initial decode
+    // so the old procedural placeholder cannot flash for a frame underneath it.
+    return !!img;
+  }
+
+  function drawGardenDepth(G, p) {
+    if (G.kind === "step") return;
+    var u = p.s * G.sz * 0.5;
+    if (u < 0.7) return;
+    var groundY = p.y + (G.kind === "pine" ? u * 0.65 : 0);
+    if (G.kind === "pine") {
+      // Three tight overlapping lobes follow the actual root flare. A single
+      // large oval underneath read as a floating display stand.
+      ctx.fillStyle = "rgba(1,3,10,0.34)";
+      var rootShadow = [[-0.62, 0.72], [0.02, 0.88], [0.68, 0.64]];
+      for (var rs = 0; rs < rootShadow.length; rs++) {
+        ctx.beginPath();
+        ctx.ellipse(p.x + rootShadow[rs][0] * u * G.sk, groundY + u * 0.07,
+          rootShadow[rs][1] * u * G.sk, u * 0.12, 0, 0, 6.283);
+        ctx.fill();
+      }
+      drawGardenArt(G, p, u);
+      // A few foreground blades and chips cross the cutout/floor seam, making
+      // the root mass feel embedded in the same gravel as the rest of the yard.
+      ctx.strokeStyle = "rgba(18,31,52,0.88)";
+      ctx.lineWidth = Math.max(0.7, u * 0.08);
+      ctx.beginPath();
+      for (var tuft = -2; tuft <= 2; tuft++) {
+        var tx = p.x + tuft * u * 0.42 * G.sk;
+        ctx.moveTo(tx, groundY + u * 0.13);
+        ctx.lineTo(tx + Math.sin(G.ph + tuft * 1.7) * u * 0.18, groundY - u * (0.12 + (tuft & 1) * 0.1));
+      }
+      ctx.stroke();
+      ctx.fillStyle = "rgba(36,50,75,0.72)";
+      ctx.beginPath();
+      ctx.ellipse(p.x - u * 1.02 * G.sk, groundY + u * 0.11, u * 0.18, u * 0.08, -0.2, 0, 6.283);
+      ctx.ellipse(p.x + u * 0.94 * G.sk, groundY + u * 0.1, u * 0.14, u * 0.07, 0.18, 0, 6.283);
+      ctx.fill();
+      return;
+    }
+
+    ctx.fillStyle = "rgba(2,5,14,0.34)";
+    ctx.beginPath();
+    ctx.ellipse(p.x, groundY + u * 0.08, u * 2.15 * G.sk, u * 0.5, 0, 0, 6.283);
+    ctx.fill();
+    ctx.fillStyle = "rgba(0,2,8,0.3)";
+    ctx.beginPath();
+    ctx.ellipse(p.x, groundY + u * 0.05, u * 1.38 * G.sk, u * 0.23, 0, 0, 6.283);
+    ctx.fill();
+    drawGardenArt(G, p, u);
+  }
+
+  function drawGroundSteps() {
+    for (var i = 0; i < garden.length; i++) {
+      var G = garden[i];
+      if (G.kind !== "step") continue;
+      var p = project(Math.sin(G.ang) * G.r, 0, Math.cos(G.ang) * G.r);
+      if (!p || p.x < -160 || p.x > W + 160) continue;
+      var u = p.s * G.sz * 0.5;
+      if (u < 0.7) continue;
+      ctx.fillStyle = "rgba(0,2,8,0.2)";
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y + u * 0.08, u * 2.35 * G.sk, u * 0.28, 0, 0, 6.283);
+      ctx.fill();
+      // Keep the footprint, but compress the apparent stone thickness so this
+      // reads as a path set into the yard rather than a raised platform.
+      drawPropV2Ground(PROP_V2.step, p.x, p.y, u * 7.8, G.sk * 1.28);
+    }
+  }
+
+  // Set rocks, clipped shrubs, stepping stones, pines and water basins. Drawn after the floor
   // and before the fixtures, so the light pass has already laid warmth on the
   // gravel and these sit in it rather than on top of it.
   function drawGarden() {
@@ -2477,6 +3003,22 @@
       // use ~0.18 with much larger multipliers; these need the scale in u.
       var u = p.s * G.sz * 0.5;
       if (u < 0.7) continue;
+
+      // A soft footprint under every illustrated object binds its transparent
+      // cutout to the stone. Steps are already the floor, so they get only a
+      // hairline occlusion rather than a floating-object shadow.
+      ctx.fillStyle = G.kind === "step" ? "rgba(2,5,14,0.16)" : "rgba(2,5,14,0.34)";
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y + u * 0.08, u * (G.kind === "pine" ? 2.5 : 2.15) * G.sk,
+        u * (G.kind === "step" ? 0.34 : 0.5), 0, 0, 6.283);
+      ctx.fill();
+      ctx.fillStyle = G.kind === "step" ? "rgba(0,2,8,0.12)" : "rgba(0,2,8,0.3)";
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y + u * 0.05, u * (G.kind === "pine" ? 1.65 : 1.38) * G.sk,
+        u * (G.kind === "step" ? 0.16 : 0.23), 0, 0, 6.283);
+      ctx.fill();
+
+      if (drawGardenArt(G, p, u)) continue;
 
       if (G.kind === "step") {
         // a flat stepping stone laid into the gravel
@@ -2554,16 +3096,13 @@
       var sp = project(Math.sin(S.ang) * S.r, 0, Math.cos(S.ang) * S.r);
       if (!sp || sp.x < -120 || sp.x > W + 120) continue;
       var u = sp.s * 0.18; // one unit ~ 18cm
-      ctx.fillStyle = "#070b16";
-      // base, post, light box, cap
-      ctx.fillRect(sp.x - u * 1.5, sp.y - u * 0.9, u * 3, u * 0.9);
-      ctx.fillRect(sp.x - u * 0.55, sp.y - u * 4.4, u * 1.1, u * 3.6);
-      ctx.fillRect(sp.x - u * 1.7, sp.y - u * 6.6, u * 3.4, u * 2.3);
+      ctx.fillStyle = "rgba(2,5,14,0.42)";
       ctx.beginPath();
-      ctx.moveTo(sp.x - u * 2.4, sp.y - u * 6.6);
-      ctx.lineTo(sp.x, sp.y - u * 8.1);
-      ctx.lineTo(sp.x + u * 2.4, sp.y - u * 6.6);
-      ctx.closePath();
+      ctx.ellipse(sp.x, sp.y + u * 0.08, u * 2.15, u * 0.52, 0, 0, 6.283);
+      ctx.fill();
+      ctx.fillStyle = "rgba(0,2,8,0.32)";
+      ctx.beginPath();
+      ctx.ellipse(sp.x, sp.y + u * 0.04, u * 1.5, u * 0.24, 0, 0, 6.283);
       ctx.fill();
       // the flame inside — stamped, not a fresh gradient every frame
       var flick = 0.86 + Math.sin(performance.now() * 0.006 + S.ang * 9) * 0.14;
@@ -2571,8 +3110,7 @@
       ctx.globalCompositeOperation = "lighter";
       blot(GLOW_WARM, sp.x, sp.y - u * 5.5, u * 7, u * 7, 0.5 * flick);
       ctx.restore();
-      ctx.fillStyle = "rgba(255,214,150,0.9)";
-      ctx.fillRect(sp.x - u * 1.1, sp.y - u * 6.2, u * 2.2, u * 1.5);
+      drawPropV2Ground(PROP_V2.stoneLantern, sp.x, sp.y, u * 11.7);
     }
 
     // Paper lanterns hanging under the eaves.
@@ -2589,34 +3127,35 @@
       ctx.globalCompositeOperation = "lighter";
       blot(GLOW_WARM, p.x, p.y, s * 6, s * 6, 0.32);
       ctx.restore();
-
-      // cord up to the eave
-      ctx.strokeStyle = "rgba(10,14,28,0.9)";
-      ctx.lineWidth = Math.max(0.6, s * 0.08);
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y - s * 1.05);
-      ctx.lineTo(p.x, p.y - s * 2.4);
-      ctx.stroke();
-
-      // paper body
-      ctx.fillStyle = "rgba(255,198,124,0.95)";
-      ctx.beginPath();
-      ctx.ellipse(p.x, p.y, s * 0.7, s, 0, 0, 6.283);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(150,72,34,0.4)";
-      ctx.lineWidth = Math.max(0.5, s * 0.055);
-      ctx.beginPath();
-      for (var r = -2; r <= 2; r++) {
-        var yy = p.y + (s * r) / 2.7;
-        var wgt = Math.sqrt(Math.max(0, 1 - Math.pow(r / 3.2, 2)));
-        ctx.moveTo(p.x - s * 0.7 * wgt, yy);
-        ctx.lineTo(p.x + s * 0.7 * wgt, yy);
-      }
-      ctx.stroke();
-      ctx.fillStyle = "rgba(30,16,9,0.92)";
-      ctx.fillRect(p.x - s * 0.2, p.y - s * 1.1, s * 0.4, s * 0.15);
-      ctx.fillRect(p.x - s * 0.16, p.y + s * 0.95, s * 0.32, s * 0.13);
+      drawPropV2Centered(PROP_V2.hangingLantern, p.x, p.y, s * 3.05);
     }
+  }
+
+  function drawStoneLanternDepth(S, sp) {
+    var u = sp.s * 0.18;
+    ctx.fillStyle = "rgba(2,5,14,0.42)";
+    ctx.beginPath();
+    ctx.ellipse(sp.x, sp.y + u * 0.08, u * 2.15, u * 0.52, 0, 0, 6.283);
+    ctx.fill();
+    ctx.fillStyle = "rgba(0,2,8,0.32)";
+    ctx.beginPath();
+    ctx.ellipse(sp.x, sp.y + u * 0.04, u * 1.5, u * 0.24, 0, 0, 6.283);
+    ctx.fill();
+    var flick = 0.86 + Math.sin(performance.now() * 0.006 + S.ang * 9) * 0.14;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    blot(GLOW_WARM, sp.x, sp.y - u * 5.5, u * 7, u * 7, 0.5 * flick);
+    ctx.restore();
+    drawPropV2Ground(PROP_V2.stoneLantern, sp.x, sp.y, u * 11.7);
+  }
+
+  function drawHangingLanternDepth(L, p) {
+    var s = Math.min(p.s * L.sz, 26);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    blot(GLOW_WARM, p.x, p.y, s * 6, s * 6, 0.32);
+    ctx.restore();
+    drawPropV2Centered(PROP_V2.hangingLantern, p.x, p.y, s * 3.05);
   }
 
   /* --------------------------------------------------------- ninja drawing */
@@ -3060,6 +3599,66 @@
     c.restore();
   }
 
+  function ninjaArtImage(e) {
+    var base = NINJA_RUNNER_ART;
+    var approach = NINJA_RUNNER_APPROACH;
+    var attack = NINJA_RUNNER_ATTACK;
+    if (e.type === "brute") {
+      base = NINJA_BRUTE_ART;
+      approach = NINJA_BRUTE_APPROACH;
+      attack = NINJA_BRUTE_ATTACK;
+    } else if (e.type === "thrower") {
+      base = NINJA_THROWER_ART;
+      approach = NINJA_THROWER_APPROACH;
+    } else if (e.type === "dropper") {
+      base = NINJA_DROPPER_ART;
+      approach = NINJA_DROPPER_APPROACH;
+      attack = NINJA_DROPPER_ATTACK;
+    }
+    if (e.state === "dead") return base[5];
+    if (e.hurtT > 0) return base[4];
+    if (e.state === "attack") {
+      var ak = clamp(e.t / ATTACK_WINDUP, 0, 0.999);
+      return attack[Math.min(3, (ak * 4) | 0)];
+    }
+    if (e.throwAnim > 0 && e.type === "thrower") {
+      var throwK = clamp(1 - e.throwAnim / THROW_TELL, 0, 0.999);
+      return NINJA_THROWER_THROW[Math.min(3, (throwK * 4) | 0)];
+    }
+    if (e.throwAnim > 0) return base[3];
+    var cadence = 7.4 + (e.speed || 3.2) * 0.75;
+    if (e.state === "walk") {
+      // Four front-facing phases replace the old two-pose lateral shuffle.
+      return approach[(((e.t * cadence + e.phase) / (Math.PI * 0.5)) | 0) & 3];
+    }
+    if (e.type === "dropper" && e.state === "drop") return base[3];
+    if (e.state === "flank" || e.state === "roof" || e.state === "drop") {
+      // Sideways motion deliberately keeps the punchier old pair.
+      return base[1 + ((((e.t * cadence + e.phase) / Math.PI) | 0) & 1)];
+    }
+    return base[0];
+  }
+
+  function drawNinjaArt(e, x, footY, h, alpha) {
+    var img = ninjaArtImage(e);
+    if (!img.complete || !img.naturalWidth) return false;
+
+    // The generated figures occupy roughly 62% of their source height. Draw
+    // the full transparent cell larger so the visible character still matches
+    // the gameplay height and the hit geometry inherited from the old figure.
+    var dh = h * 1.62;
+    var dw = dh * (img.naturalWidth / img.naturalHeight);
+    var flip = e.state === "flank" ? (e.flankDir || 1) < 0 : Math.sin(e.phase || 0) < 0;
+
+    ctx.save();
+    ctx.globalAlpha *= alpha === undefined ? 1 : alpha;
+    ctx.translate(x, 0);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(img, -dw * 0.5, footY - dh * 0.78, dw, dh);
+    ctx.restore();
+    return true;
+  }
+
   function drawEnemy(e, p) {
     var h = p.s * e.h;
     if (h < 3) return;
@@ -3120,23 +3719,19 @@
     ctx.ellipse(p.x, footY, h * 0.2, h * 0.052, 0, 0, 6.283);
     ctx.fill();
 
-    // Moon rim light: draw the whole silhouette once in a pale blue, offset
-    // toward the moon, then the dark body on top. The sliver left over is a
-    // rim that always follows the pose — far more robust than hand-placed arcs.
-    var moonX = bearingX(2.35);
-    var dir = moonX === null || moonX < p.x ? -1 : 1;
-    // Keep the offset a thin sliver at ALL sizes. Scaling it with height made
-    // a close ninja look like plate armour, because the offset copy showed
-    // through every gap between limbs.
-    var off = clamp(h * 0.009, 1, 3.2);
-    ctx.fillStyle = "rgba(150,182,248,0.42)";
-    drawNinjaShape(ctx, p.x + off * dir, footY - off * 0.5, h, e, false, 1);
-
-    // Always a dark silhouette; a hit reads as a brief additive flash on top
-    // rather than repainting the whole body a flat maroon.
-    ctx.fillStyle = "#05070f";
-    drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
-    drawNinjaKit(ctx, p.x, footY, h, e); // steel sode, crimson obi, lit eye slits
+    var usedArt = h >= 9 && drawNinjaArt(e, p.x, footY, h, 1);
+    if (!usedArt) {
+      // Load/failure fallback: preserve the original procedural figure so art
+      // delivery can never block the game from starting.
+      var moonX = bearingX(2.35);
+      var dir = moonX === null || moonX < p.x ? -1 : 1;
+      var off = clamp(h * 0.009, 1, 3.2);
+      ctx.fillStyle = "rgba(150,182,248,0.42)";
+      drawNinjaShape(ctx, p.x + off * dir, footY - off * 0.5, h, e, false, 1);
+      ctx.fillStyle = "#05070f";
+      drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
+      drawNinjaKit(ctx, p.x, footY, h, e);
+    }
 
     // The blade that killed it stays buried where it went in, and rides the
     // body down through the whole fall — the star used to simply vanish on
@@ -3175,14 +3770,17 @@
     if (e.hurtT > 0) {
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
-      ctx.globalAlpha = clamp(e.hurtT / 0.18, 0, 1) * 0.5;
-      ctx.fillStyle = "#b8394a";
-      drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
+      ctx.globalAlpha = clamp(e.hurtT / 0.18, 0, 1) * 0.42;
+      if (usedArt) drawNinjaArt(e, p.x, footY, h, 1);
+      else {
+        ctx.fillStyle = "#b8394a";
+        drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
+      }
       ctx.restore();
     }
 
     // brutes wear a faint red sash so the two-hit enemy is legible
-    if (e.type === "brute" && !dying) {
+    if (e.type === "brute" && !dying && !usedArt) {
       // a sash tied shoulder-to-hip, not a bar laid across the chest
       ctx.strokeStyle = "rgba(224,69,75,0.5)";
       ctx.lineWidth = Math.max(1, h * 0.013);
@@ -3200,21 +3798,20 @@
     ctx.restore();
   }
 
-  var LAUNCH_EASE = 0.15; // seconds spent easing up from the bottom edge
-
   // The star flies FLAT — a horizontal plate spinning about the VERTICAL axis,
   // the way a shuriken is actually thrown. So it is not a screen-plane rotation:
   // the eight points are spun in the ground plane and the depth axis is
   // foreshortened, which is what makes it read as a plate seen near edge-on
   // rather than a wheel facing the camera.
+  var LAUNCH_EASE = 0.15;
+
   function drawStar(s, p) {
-    // On a swipe throw the first moments are eased up from the bottom edge so
-    // the star reads as leaving your hand. Rendering only — the physics stay on
-    // the camera ray, so aiming is unaffected.
+    // Swipe throws visually rise from the player's hand while their physics
+    // remain on the exact camera ray, preserving all existing hit behavior.
     var dx = p.x, dy = p.y, dscale = p.s;
     if (s.lx != null && s.age < LAUNCH_EASE) {
       var k = s.age / LAUNCH_EASE;
-      var e = k * k * (3 - 2 * k); // smoothstep
+      var e = k * k * (3 - 2 * k);
       dx = lerp(s.lx, p.x, e);
       dy = lerp(s.ly, p.y, e);
       dscale = lerp(p.s * 3.2, p.s, e);
@@ -3253,8 +3850,6 @@
     for (i = 0; i < 8; i++) {
       a = (i / 8) * 6.283 + spin;
       rr = i % 2 === 0 ? r : r * 0.34;
-      // NB: vx/vy, not px/py — `var` is function-scoped and would clobber the
-      // eased draw position computed above.
       var vx = Math.cos(a) * rr, vy = Math.sin(a) * rr * tilt;
       if (i === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
     }
@@ -3270,7 +3865,6 @@
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     if (s.lx != null && s.age < LAUNCH_EASE * 1.6) {
-      // launch streak, trailing back toward the bottom edge it came from
       var fade = clamp(1 - s.age / (LAUNCH_EASE * 1.6), 0, 1);
       var gr = ctx.createLinearGradient(dx, dy, s.lx, s.ly);
       gr.addColorStop(0, "rgba(198,218,255," + (0.34 * fade) + ")");
@@ -3298,26 +3892,143 @@
   }
 
   function drawKunai(k, p) {
-    var r = Math.max(2.2, p.s * 0.15);
+    // A proper kunai silhouette instead of the old diamond-and-rectangle icon.
+    // It still follows the exact same point and collision path; all of this is
+    // presentation. The blade flies point-first along its projected trajectory
+    // and only rolls around its own long axis; it never cartwheels on screen.
+    var r = Math.min(H * 0.2, Math.max(3.2, p.s * 0.18));
+    var back = project(k.px, k.py, k.pz);
+    var travelX = back ? p.x - back.x : W * 0.5 - p.x;
+    var travelY = back ? p.y - back.y : H * 0.47 - p.y;
+    if (Math.abs(travelX) + Math.abs(travelY) < 0.2) {
+      travelX = W * 0.5 - p.x;
+      travelY = H * 0.47 - p.y;
+    }
+    // Local blade tip points up (-Y), hence the quarter-turn after atan2.
+    var flightAngle = Math.atan2(travelY, travelX) + Math.PI * 0.5;
+    // Axial roll changes the apparent blade width and the light across its
+    // facets. A generous floor keeps it readable and therefore deflectable.
+    var bank = 0.58 + Math.abs(Math.cos(k.spin)) * 0.42;
+
+    // Short directional smear. Keeping it tied to the previous world position
+    // makes the trail follow the ballistic arc rather than the blade's spin.
+    if (back) {
+      var trailLen = Math.sqrt((back.x - p.x) * (back.x - p.x) + (back.y - p.y) * (back.y - p.y));
+      var trailScale = clamp(trailLen / Math.max(8, r), 0.25, 1);
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.lineCap = "round";
+      var tg = ctx.createLinearGradient(p.x, p.y, back.x, back.y);
+      tg.addColorStop(0, "rgba(236,243,255,0.5)");
+      tg.addColorStop(0.3, "rgba(184,205,241,0.2)");
+      tg.addColorStop(1, "rgba(112,137,190,0)");
+      ctx.strokeStyle = tg;
+      ctx.lineWidth = Math.max(1.2, r * 0.13) * trailScale;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(back.x, back.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     ctx.save();
     ctx.translate(p.x, p.y);
-    ctx.rotate(k.spin);
-    ctx.fillStyle = "#cdd8ee";
+    ctx.rotate(flightAngle);
+    ctx.scale(bank, 1);
+
+    // Soft black depth copy gives the blade thickness against bright shoji.
+    ctx.save();
+    ctx.translate(r * 0.06, r * 0.09);
+    ctx.fillStyle = "rgba(4,7,15,0.88)";
     ctx.beginPath();
-    ctx.moveTo(0, -r * 1.5);
-    ctx.lineTo(r * 0.45, 0);
-    ctx.lineTo(0, r * 1.1);
-    ctx.lineTo(-r * 0.45, 0);
+    ctx.moveTo(0, -r * 1.65);
+    ctx.lineTo(r * 0.48, -r * 0.2);
+    ctx.lineTo(r * 0.22, r * 0.18);
+    ctx.lineTo(r * 0.12, r * 1.03);
+    ctx.lineTo(-r * 0.12, r * 1.03);
+    ctx.lineTo(-r * 0.22, r * 0.18);
+    ctx.lineTo(-r * 0.48, -r * 0.2);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = "#2b3350";
-    ctx.fillRect(-r * 0.16, r * 0.9, r * 0.32, r * 0.9);
     ctx.restore();
-    // threat glow so an incoming blade always reads
+
+    // Broad leaf blade with two moonlit facets and a dark forged shoulder.
+    var steel = ctx.createLinearGradient(-r * 0.48, -r, r * 0.48, r * 0.25);
+    steel.addColorStop(0, "#f7f2df");
+    steel.addColorStop(0.36, "#cbd7e9");
+    steel.addColorStop(0.62, "#7e8dab");
+    steel.addColorStop(1, "#303a55");
+    ctx.fillStyle = steel;
+    ctx.strokeStyle = "rgba(8,12,25,0.95)";
+    ctx.lineWidth = Math.max(0.8, r * 0.055);
+    ctx.beginPath();
+    ctx.moveTo(0, -r * 1.65);
+    ctx.lineTo(r * 0.48, -r * 0.2);
+    ctx.lineTo(r * 0.22, r * 0.18);
+    ctx.lineTo(0, r * 0.28);
+    ctx.lineTo(-r * 0.22, r * 0.18);
+    ctx.lineTo(-r * 0.48, -r * 0.2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Central forged ridge and a bright cutting edge.
+    ctx.strokeStyle = "rgba(247,250,255,0.75)";
+    ctx.lineWidth = Math.max(0.65, r * 0.035);
+    ctx.beginPath();
+    ctx.moveTo(0, -r * 1.5);
+    ctx.lineTo(-r * 0.04, r * 0.2);
+    ctx.lineTo(-r * 0.4, -r * 0.18);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(31,39,61,0.72)";
+    ctx.beginPath();
+    ctx.moveTo(0, -r * 1.5);
+    ctx.lineTo(r * 0.04, r * 0.2);
+    ctx.lineTo(r * 0.4, -r * 0.18);
+    ctx.stroke();
+
+    // Collar, cord-wrapped grip, and the characteristic ring pommel.
+    ctx.fillStyle = "#171c2b";
+    ctx.fillRect(-r * 0.25, r * 0.17, r * 0.5, r * 0.16);
+    ctx.fillStyle = "#252a3a";
+    ctx.fillRect(-r * 0.14, r * 0.29, r * 0.28, r * 0.78);
+    ctx.strokeStyle = "rgba(147,56,53,0.95)";
+    ctx.lineWidth = Math.max(1, r * 0.075);
+    for (var wrap = 0; wrap < 5; wrap++) {
+      var wy = r * (0.38 + wrap * 0.14);
+      ctx.beginPath();
+      ctx.moveTo(-r * 0.13, wy - r * 0.07);
+      ctx.lineTo(r * 0.13, wy + r * 0.07);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#111624";
+    ctx.strokeStyle = "#65718d";
+    ctx.lineWidth = Math.max(1, r * 0.09);
+    ctx.beginPath();
+    ctx.arc(0, r * 1.28, r * 0.25, 0, 6.283);
+    ctx.fill();
+    ctx.stroke();
+
+    // A restrained specular tick once per revolution, bright enough to call
+    // attention to the threat without turning it into a glowing projectile.
+    var glint = Math.max(0, Math.cos(k.spin));
+    if (glint > 0.72) {
+      ctx.globalCompositeOperation = "lighter";
+      ctx.globalAlpha = (glint - 0.72) / 0.28;
+      ctx.fillStyle = "rgba(255,247,218,0.9)";
+      ctx.beginPath();
+      ctx.arc(-r * 0.18, -r * 0.55, Math.max(1, r * 0.07), 0, 6.283);
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // Low red threat halo stays outside the rotating silhouette so incoming
+    // enemy steel remains distinguishable from the player's blue-white stars.
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 4);
-    g.addColorStop(0, "rgba(255,110,110,0.4)");
+    g.addColorStop(0, "rgba(255,132,105,0.28)");
+    g.addColorStop(0.35, "rgba(222,69,75,0.13)");
     g.addColorStop(1, "rgba(255,80,80,0)");
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.arc(p.x, p.y, r * 4, 0, 6.283); ctx.fill();
@@ -3381,6 +4092,45 @@
     ctx.globalAlpha = 1;
   }
 
+  function drawRicochet(f, p) {
+    var k = clamp(f.t / f.life, 0, 1);
+    var fade = 1 - k;
+    var r = Math.max(6, p.s * 0.16) * (0.75 + k * 0.75);
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(f.rot);
+    ctx.globalCompositeOperation = "lighter";
+    ctx.lineCap = "round";
+
+    // Incoming edge stops at the contact point; the brighter angled line is
+    // the star glancing away. Both vanish in under a quarter-second.
+    ctx.strokeStyle = "rgba(178,207,244," + (fade * 0.42) + ")";
+    ctx.lineWidth = Math.max(1, r * 0.1);
+    ctx.beginPath(); ctx.moveTo(-r * (1.25 - k * 0.5), 0); ctx.lineTo(0, 0); ctx.stroke();
+    ctx.rotate(f.foliage ? -0.62 : -1.05);
+    ctx.strokeStyle = f.col;
+    ctx.globalAlpha = fade;
+    ctx.lineWidth = Math.max(1.2, r * 0.12 * fade);
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(r * (1.1 + k * 0.9), 0); ctx.stroke();
+
+    // Four-frame-feeling contact glyph: a hot diamond and two crossing chips.
+    ctx.rotate(0.52);
+    ctx.fillStyle = f.col;
+    ctx.beginPath();
+    ctx.moveTo(0, -r * 0.34 * fade);
+    ctx.lineTo(r * 0.15 * fade, 0);
+    ctx.lineTo(0, r * 0.34 * fade);
+    ctx.lineTo(-r * 0.15 * fade, 0);
+    ctx.closePath(); ctx.fill();
+    for (var i = 0; i < 2; i++) {
+      ctx.rotate(i ? 1.7 : -1.15);
+      ctx.strokeStyle = f.foliage ? "rgba(117,151,185," + (fade * 0.75) + ")" : "rgba(255,240,205," + (fade * 0.9) + ")";
+      ctx.lineWidth = Math.max(0.8, r * 0.055);
+      ctx.beginPath(); ctx.moveTo(r * 0.25, 0); ctx.lineTo(r * (0.7 + k * 0.65), 0); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawFloater(f, p) {
     var k = f.t / f.life;
     ctx.save();
@@ -3416,6 +4166,7 @@
   }
   var GLOW_WARM = null, GLOW_MOON = null;
   var SHOJI = null, SHOJI_REF = null, KUMIKO = null, PLASTER = null, GROUND_TEX = null, WALL_TEX = null;
+  var GROUND_ROWS = [];
   // createPattern allocates; building it every frame for the wall AND the floor
   // cost ~6ms. Built once, reused.
   var PLASTER_PAT = null;
@@ -3650,6 +4401,28 @@
 
   /* -------------------------------------------------------------- HUD draw */
 
+  function drawPlayerHand() {
+    var held = charging && chargeT > 0.04;
+    if ((!held && handAnim <= 0) || dying) return;
+    var frame = 0, alpha = 1;
+    if (!held) {
+      var k = clamp(1 - handAnim / 0.24, 0, 1);
+      frame = Math.min(2, (k * 3) | 0);
+      alpha = 1 - clamp((k - 0.72) / 0.28, 0, 1);
+    }
+    var img = PLAYER_HAND_ART[frame];
+    if (!img.complete || !img.naturalWidth) return;
+    var dh = clamp(H * 0.66, 330, 540);
+    var dw = dh * (img.naturalWidth / img.naturalHeight);
+    var hx = held ? clamp(downX, W * 0.18, W * 0.82) : handX;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(hx, H + dh * 0.02);
+    ctx.rotate(((hx - W * 0.5) / W) * 0.12);
+    ctx.drawImage(img, -dw * 0.5, -dh, dw, dh);
+    ctx.restore();
+  }
+
   function drawEdgeThreats() {
     if (mode !== "turn" || !running) return;
     for (var i = 0; i < enemies.length; i++) {
@@ -3772,19 +4545,26 @@
       var fromLeft = strike.sx < W * 0.5;
       var reveal = clamp(k / (fatal ? 0.28 : 0.42), 0, 1);
       var fade = fatal ? clamp(1 - (k - 0.35) / 0.5, 0, 1) : clamp(1 - (k - 0.4) / 0.6, 0, 1);
-      if (fatal) {
-        // The attacker looms up out of the dark first, then cuts.
-        var loom = clamp(k / 0.45, 0, 1);
-        var lh = H * (0.55 + loom * 0.5);
+      {
+        // Shinobi's bonus stage sells a miss by having the attacker rush the
+        // camera. Keep this entirely in the strike presentation: damage timing,
+        // enemy range and recovery are unchanged.
+        var loom = clamp(k / (fatal ? 0.45 : 0.34), 0, 1);
+        var lh = H * (fatal ? 0.55 + loom * 0.5 : 0.38 + loom * 0.38);
         ctx.save();
-        ctx.globalAlpha = clamp(1 - (k - 0.55) / 0.35, 0, 1) * 0.95;
-        LOOM.t = 0.1 + loom * 0.42;
-        // Rim first, then the dark body — without it the looming figure is just
-        // a black mass against a dark sky.
-        ctx.fillStyle = "rgba(150,182,248,0.34)";
-        drawNinjaShape(ctx, strike.sx - 3, H * 1.02 - 2, lh, LOOM, false, 1);
-        ctx.fillStyle = "#03050c";
-        drawNinjaShape(ctx, strike.sx, H * 1.02, lh, LOOM, false, 1);
+        ctx.globalAlpha = clamp(1 - (k - (fatal ? 0.55 : 0.42)) / (fatal ? 0.35 : 0.34), 0, 1) * (fatal ? 0.95 : 0.82);
+        LOOM.type = strike.enemyType || "runner";
+        LOOM.w = LOOM.type === "brute" ? 1.32 : 1.05;
+        LOOM.t = loom * ATTACK_WINDUP * 0.999;
+        // Use the same illustrated attacker as ordinary play. The old close-up
+        // path still called the procedural silhouette, which made a vector
+        // character flash on screen immediately before the loss overlay.
+        if (!drawNinjaArt(LOOM, strike.sx, H * 1.02, lh, 1)) {
+          ctx.fillStyle = "rgba(150,182,248,0.34)";
+          drawNinjaShape(ctx, strike.sx - 3, H * 1.02 - 2, lh, LOOM, false, 1);
+          ctx.fillStyle = "#03050c";
+          drawNinjaShape(ctx, strike.sx, H * 1.02, lh, LOOM, false, 1);
+        }
         ctx.restore();
       }
       // Flash at the instant of contact.
@@ -3838,19 +4618,51 @@
       ctx.globalAlpha = fatal ? 1 : clamp(1 - (k - 0.45) / 0.55, 0, 1);
       ctx.translate(cx + trem, cy);
       ctx.rotate(fromAngle(strike.sx));
-      ctx.fillStyle = "#dbe5f7";
+      var hitSteel = ctx.createLinearGradient(-size * 0.35, -size, size * 0.35, size * 0.4);
+      hitSteel.addColorStop(0, "#fff6d9");
+      hitSteel.addColorStop(0.35, "#d4dfef");
+      hitSteel.addColorStop(0.7, "#8291ad");
+      hitSteel.addColorStop(1, "#333c55");
+      ctx.fillStyle = hitSteel;
+      ctx.strokeStyle = "#111626";
+      ctx.lineWidth = Math.max(1.5, size * 0.045);
       ctx.beginPath();
-      ctx.moveTo(0, -size);
-      ctx.lineTo(size * 0.26, 0);
-      ctx.lineTo(0, size * 0.72);
-      ctx.lineTo(-size * 0.26, 0);
+      ctx.moveTo(0, -size * 1.12);
+      ctx.lineTo(size * 0.34, -size * 0.08);
+      ctx.lineTo(size * 0.18, size * 0.2);
+      ctx.lineTo(0, size * 0.28);
+      ctx.lineTo(-size * 0.18, size * 0.2);
+      ctx.lineTo(-size * 0.34, -size * 0.08);
       ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = "#232a42";
-      ctx.fillRect(-size * 0.1, size * 0.6, size * 0.2, size * 0.7);
-      ctx.strokeStyle = "rgba(255,255,255,0.7)";
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(0, -size * 0.9); ctx.lineTo(0, size * 0.6); ctx.stroke();
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,0.72)";
+      ctx.lineWidth = Math.max(1, size * 0.025);
+      ctx.beginPath();
+      ctx.moveTo(0, -size);
+      ctx.lineTo(-size * 0.025, size * 0.19);
+      ctx.lineTo(-size * 0.29, -size * 0.07);
+      ctx.stroke();
+      ctx.fillStyle = "#171c2b";
+      ctx.fillRect(-size * 0.19, size * 0.18, size * 0.38, size * 0.13);
+      ctx.fillStyle = "#252a3a";
+      ctx.fillRect(-size * 0.105, size * 0.29, size * 0.21, size * 0.68);
+      ctx.strokeStyle = "#9a3b3b";
+      ctx.lineWidth = Math.max(1.5, size * 0.055);
+      for (var hw = 0; hw < 4; hw++) {
+        var hy = size * (0.38 + hw * 0.14);
+        ctx.beginPath();
+        ctx.moveTo(-size * 0.1, hy - size * 0.05);
+        ctx.lineTo(size * 0.1, hy + size * 0.05);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "#111624";
+      ctx.strokeStyle = "#71809c";
+      ctx.lineWidth = Math.max(2, size * 0.07);
+      ctx.beginPath();
+      ctx.arc(0, size * 1.13, size * 0.19, 0, 6.283);
+      ctx.fill();
+      ctx.stroke();
       ctx.restore();
       drawCracks(cx, cy, land * (fatal ? 1 : 0.55), fatal ? 14 : 7, fatal ? H * 0.55 : H * 0.16,
         (fatal ? 0.75 : 0.5) * clamp(1 - (k - 0.5) / 0.5, 0, 1));
@@ -3882,6 +4694,133 @@
     return ((sx - W * 0.5) / W) * 0.9 + 0.18;
   }
 
+  function traceMagicBolt(points, reveal) {
+    if (!points.length || reveal <= 0) return;
+    var reach = reveal * (points.length - 1);
+    var whole = Math.floor(reach);
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (var i = 1; i <= whole && i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    if (whole < points.length - 1) {
+      var f = reach - whole;
+      ctx.lineTo(lerp(points[whole].x, points[whole + 1].x, f), lerp(points[whole].y, points[whole + 1].y, f));
+    }
+    ctx.stroke();
+  }
+
+  function drawMagicFx() {
+    if (!magicFx) return;
+    var t = clamp(magicFx.age / MAGIC_FX_TIME, 0, 1);
+    var enter = clamp(t / 0.18, 0, 1);
+    var ease = 1 - Math.pow(1 - enter, 3);
+    var fade = clamp((1 - t) / 0.32, 0, 1);
+    var cx = W * 0.5, cy = H * 0.47;
+
+    ctx.save();
+    // A cold moonlight wash establishes a separate visual world for the spell.
+    ctx.fillStyle = "rgba(33,45,110," + (0.22 * Math.sin(Math.min(1, t * 1.8) * Math.PI) * fade) + ")";
+    ctx.fillRect(0, 0, W, H);
+
+    // The opening exposure is brief; detail becomes visible immediately after.
+    if (t < 0.09) {
+      var flash = 1 - t / 0.09;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = "rgba(225,244,255," + (flash * flash * 0.78) + ")";
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    ctx.globalCompositeOperation = "lighter";
+
+    // One expanding pressure ring carries the cast across the entire arena.
+    var shock = clamp((t - 0.05) / 0.72, 0, 1);
+    if (shock > 0 && shock < 1) {
+      ctx.strokeStyle = "rgba(157,222,255," + ((1 - shock) * 0.52 * fade) + ")";
+      ctx.lineWidth = Math.max(1.5, H * 0.009 * (1 - shock));
+      ctx.beginPath();
+      ctx.arc(cx, cy, shock * Math.max(W, H) * 0.72, 0, 6.283);
+      ctx.stroke();
+    }
+
+    // Stable lightning paths connect the central seal to the enemies that were
+    // visible when the button was pressed. Unlike the former random-per-frame
+    // bolts, these read as intentional strikes instead of visual noise.
+    for (var m = 0; m < magicFx.marks.length; m++) {
+      var mark = magicFx.marks[m];
+      var reveal = clamp((t - 0.08 - mark.delay) / 0.2, 0, 1);
+      var boltFade = clamp((0.7 - t) / 0.3, 0, 1) * fade;
+      if (reveal > 0 && boltFade > 0) {
+        ctx.strokeStyle = "rgba(91,126,255," + (boltFade * 0.34) + ")";
+        ctx.lineWidth = Math.max(5, H * 0.015);
+        ctx.lineJoin = "round";
+        traceMagicBolt(mark.points, reveal);
+        ctx.strokeStyle = "rgba(224,248,255," + (boltFade * 0.95) + ")";
+        ctx.lineWidth = Math.max(1.2, H * 0.0026);
+        traceMagicBolt(mark.points, reveal);
+      }
+
+      var lock = clamp((t - 0.12 - mark.delay) / 0.23, 0, 1);
+      var lockFade = clamp((0.82 - t) / 0.35, 0, 1) * fade;
+      if (lock > 0 && lockFade > 0) {
+        var mr = mark.r * lerp(1.9, 0.78, 1 - Math.pow(1 - lock, 3));
+        ctx.save();
+        ctx.translate(mark.x, mark.y);
+        ctx.rotate(mark.rot + (REDMO ? 0 : t * 1.8));
+        ctx.strokeStyle = "rgba(174,231,255," + (lockFade * 0.85) + ")";
+        ctx.lineWidth = Math.max(1.2, mr * 0.045);
+        ctx.setLineDash([mr * 0.34, mr * 0.16]);
+        ctx.beginPath(); ctx.arc(0, 0, mr, 0, 6.283); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = "rgba(255,255,255," + (lockFade * lock) + ")";
+        ctx.lineWidth = Math.max(1, mr * 0.06);
+        ctx.beginPath();
+        ctx.moveTo(-mr * lock, -mr * lock); ctx.lineTo(mr * lock, mr * lock);
+        ctx.moveTo(mr * lock, -mr * lock); ctx.lineTo(-mr * lock, mr * lock);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    // Central moon seal: concentric broken circles and eight shuriken blades.
+    var sealR = H * lerp(0.035, 0.19, ease);
+    var sealAlpha = fade * clamp(t / 0.08, 0, 1);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(magicFx.rot + (REDMO ? 0 : t * 0.85));
+    ctx.strokeStyle = "rgba(188,226,255," + (sealAlpha * 0.78) + ")";
+    ctx.lineWidth = Math.max(1.2, H * 0.0024);
+    ctx.beginPath(); ctx.arc(0, 0, sealR, 0, 6.283); ctx.stroke();
+    ctx.setLineDash([sealR * 0.2, sealR * 0.1]);
+    ctx.lineWidth = Math.max(1, H * 0.0015);
+    ctx.beginPath(); ctx.arc(0, 0, sealR * 0.72, 0, 6.283); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "rgba(180,225,255," + (sealAlpha * 0.72) + ")";
+    for (var b = 0; b < 8; b++) {
+      ctx.save();
+      ctx.rotate((b / 8) * 6.283 - t * (REDMO ? 0 : 1.4));
+      ctx.translate(0, -sealR * 0.84);
+      ctx.beginPath();
+      ctx.moveTo(0, -sealR * 0.2);
+      ctx.lineTo(sealR * 0.075, 0);
+      ctx.lineTo(0, sealR * 0.12);
+      ctx.lineTo(-sealR * 0.075, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+    ctx.rotate(-magicFx.rot * 1.7);
+    ctx.fillStyle = "rgba(240,251,255," + sealAlpha + ")";
+    ctx.beginPath();
+    for (var s = 0; s < 16; s++) {
+      var a = (s / 16) * 6.283;
+      var sr = s % 2 === 0 ? sealR * 0.32 : sealR * 0.1;
+      if (s === 0) ctx.moveTo(Math.cos(a) * sr, Math.sin(a) * sr);
+      else ctx.lineTo(Math.cos(a) * sr, Math.sin(a) * sr);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ctx.restore();
+  }
+
   function drawOverlayFx() {
     if (focusT > 0) {
       var fk = clamp(focusT / FOCUS_TIME, 0, 1);
@@ -3900,28 +4839,7 @@
       ctx.fillStyle = vg;
       ctx.fillRect(0, 0, W, H);
     }
-    if (flashMagic > 0) {
-      ctx.fillStyle = "rgba(210,230,255," + (flashMagic * 0.55) + ")";
-      ctx.fillRect(0, 0, W, H);
-      // forked lightning
-      if (flashMagic > 0.55) {
-        ctx.save();
-        ctx.strokeStyle = "rgba(255,255,255," + flashMagic + ")";
-        ctx.lineWidth = 2.4;
-        for (var b = 0; b < 4; b++) {
-          ctx.beginPath();
-          var x = W * (0.2 + b * 0.2), y = 0;
-          ctx.moveTo(x, y);
-          while (y < H * 0.75) {
-            y += H * 0.09;
-            x += rand(-W * 0.05, W * 0.05);
-            ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
-    }
+    drawMagicFx();
     // permanent vignette keeps the eye centred
     var vv = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.32, W / 2, H / 2, Math.max(W, H) * 0.72);
     vv.addColorStop(0, "rgba(2,4,12,0)");
@@ -4001,6 +4919,90 @@
     ctx.letterSpacing = "0px";
     ctx.restore();
     ctx.globalAlpha = 1;
+  }
+
+  function drawMagicReady() {
+    if (magicReadyT <= 0) return;
+    var age = MAGIC_READY_TIME - magicReadyT;
+    var enter = clamp(age / 0.24, 0, 1);
+    var exit = clamp(magicReadyT / 0.42, 0, 1);
+    var alpha = (1 - Math.pow(1 - enter, 3)) * exit;
+    var pulse = clamp(age / 0.72, 0, 1);
+    var panelW = Math.min(380, W * 0.78);
+    var panelH = Math.min(66, H * 0.12);
+    var cx = W * 0.5;
+    var cy = Math.min(H * 0.62, H - 112);
+    var sealX = cx - panelW * 0.36;
+    var sealR = Math.max(18, panelH * 0.36);
+    var slide = (1 - enter) * 22;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(0, slide);
+
+    // Compact ink plate: readable over lanterns and shoji without becoming a
+    // modal or hiding the central aiming lane.
+    var plate = ctx.createLinearGradient(cx - panelW / 2, 0, cx + panelW / 2, 0);
+    plate.addColorStop(0, "rgba(4,7,18,0)");
+    plate.addColorStop(0.16, "rgba(5,9,24,0.9)");
+    plate.addColorStop(0.84, "rgba(5,9,24,0.9)");
+    plate.addColorStop(1, "rgba(4,7,18,0)");
+    ctx.fillStyle = plate;
+    ctx.fillRect(cx - panelW / 2, cy - panelH / 2, panelW, panelH);
+
+    ctx.globalCompositeOperation = "lighter";
+    // One outward echo visually links this notification to the spell itself.
+    var echoR = sealR * lerp(0.8, 1.75, pulse);
+    ctx.strokeStyle = "rgba(157,222,255," + ((1 - pulse) * 0.6) + ")";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(sealX, cy, echoR, 0, 6.283); ctx.stroke();
+
+    ctx.save();
+    ctx.translate(sealX, cy);
+    ctx.rotate((REDMO ? 0 : age * 0.8) - 0.2);
+    ctx.strokeStyle = "rgba(181,228,255,0.92)";
+    ctx.lineWidth = Math.max(1.2, sealR * 0.06);
+    ctx.beginPath(); ctx.arc(0, 0, sealR, 0, 6.283); ctx.stroke();
+    ctx.setLineDash([sealR * 0.32, sealR * 0.16]);
+    ctx.strokeStyle = "rgba(255,183,101,0.8)";
+    ctx.beginPath(); ctx.arc(0, 0, sealR * 0.72, 0, 6.283); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "rgba(235,249,255,0.95)";
+    ctx.beginPath();
+    for (var p = 0; p < 8; p++) {
+      var a = (p / 8) * 6.283;
+      var r = p % 2 === 0 ? sealR * 0.48 : sealR * 0.14;
+      if (p === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+      else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+
+    ctx.globalCompositeOperation = "source-over";
+    var textX = sealX + sealR * 1.65;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.shadowColor = "rgba(3,6,18,0.95)";
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = COL.paper;
+    ctx.font = "700 " + Math.min(17, W * 0.038) + "px 'Geist', system-ui, sans-serif";
+    ctx.letterSpacing = "1.7px";
+    ctx.fillText("NINJA MAGIC READY", textX, cy - panelH * 0.12);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = COL.amber;
+    ctx.font = "600 " + Math.min(10, W * 0.025) + "px 'Geist Mono', ui-monospace, monospace";
+    ctx.letterSpacing = "1.2px";
+    ctx.fillText("+1 CHARGE", textX, cy + panelH * 0.23);
+    ctx.letterSpacing = "0px";
+
+    // Hairlines complete the small notification without adding more copy.
+    var lineY = cy + panelH * 0.43;
+    var lineG = ctx.createLinearGradient(textX, 0, cx + panelW * 0.43, 0);
+    lineG.addColorStop(0, "rgba(255,183,101,0.7)");
+    lineG.addColorStop(1, "rgba(255,183,101,0)");
+    ctx.fillStyle = lineG;
+    ctx.fillRect(textX, lineY, Math.max(20, cx + panelW * 0.43 - textX), 1);
+    ctx.restore();
   }
 
   /* ------------------------------------------------------------------ HUD */
