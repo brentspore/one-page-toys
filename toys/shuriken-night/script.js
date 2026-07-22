@@ -144,6 +144,37 @@
     img.src = src;
     return img;
   }
+
+  // Every frame is centred in a tall transparent cell, but the ground-contact
+  // point (feet, or knees on a death frame) sits at a DIFFERENT height per
+  // pose — so a single hardcoded anchor left some poses floating above their
+  // shadow and others sunk into the floor. Measure each frame's real bottom
+  // once (lazily, cached on the image) and anchor to that, so every pose's
+  // contact meets the shadow. Scans bottom-up and breaks on the first opaque
+  // row, so it only ever touches the empty padding plus one row.
+  var footScanCv = null;
+  function artFootFrac(img) {
+    if (img.__foot !== undefined) return img.__foot;
+    var W = img.naturalWidth, H = img.naturalHeight;
+    if (!W || !img.complete) return 0.78; // not ready yet; don't cache
+    if (!footScanCv) footScanCv = document.createElement("canvas");
+    footScanCv.width = W; footScanCv.height = H;
+    var x = footScanCv.getContext("2d");
+    x.clearRect(0, 0, W, H);
+    x.drawImage(img, 0, 0);
+    var bot = Math.round(H * 0.78), found = false;
+    try {
+      var top = Math.round(H * 0.5);
+      var d = x.getImageData(0, top, W, H - top).data; // only the lower half holds any feet
+      for (var yy = (H - top) - 1; yy >= 0 && !found; yy -= 2) {
+        for (var xp = 0; xp < W; xp += 4) {
+          if (d[(yy * W + xp) * 4 + 3] > 24) { bot = top + yy; found = true; break; }
+        }
+      }
+    } catch (e) { /* tainted/unsupported: keep the default */ }
+    img.__foot = bot / H;
+    return img.__foot;
+  }
   function artFrames(name, count) {
     var out = [];
     for (var i = 0; i < count; i++) out.push(artImage("assets/" + name + "-" + i + ".webp"));
@@ -1672,8 +1703,14 @@
   /* ---------------------------------------------------------------- damage */
 
   function killEnemy(e, headshot, byMagic, hitY) {
-    if (e.state === "dead") return;
-    e.state = "dead";
+    if (e.state === "dead" || e.state === "falldead") return;
+    // A dropper picked off the roof or mid-leap earns an aerial bonus. If it
+    // was still in the air when hit, it does NOT die on the spot — it drops the
+    // rest of the way and dies on the floor ("falldead", finished in
+    // updateEnemies). A roof kill dies where it stands, up on the ridge.
+    var aerial = e.type === "dropper" && (e.state === "roof" || e.state === "drop");
+    var fall = e.type === "dropper" && e.state === "drop" && e.y > 0.3;
+    e.state = fall ? "falldead" : "dead";
     e.dead = 0;
     // How this one goes down. A head-shot overrides type: it drops instantly
     // wherever it was, which is the whole point of hitting the head.
@@ -1692,6 +1729,7 @@
     comboT = 2.2;
     var mult = Math.min(1 + (combo - 1) * 0.25, 4);
     var pts = Math.round(def.points * (headshot ? 1.6 : 1) * mult);
+    if (aerial) pts += 150; // aerial pick-off bonus
     score += pts;
     focusMeter = clamp(focusMeter + (byMagic ? 0.02 : 0.13), 0, 1);
     // Where the blade actually went in. Everything below keys off this, so a
@@ -1716,7 +1754,7 @@
       burst(e.x, hy, e.z, headshot ? 7 : 5, "#101a30", 2.4, headshot); // torn cloth
       ring(e.x, e.y + e.h * 0.5, e.z, headshot ? "rgba(255,183,101,0.85)" : "rgba(190,210,255,0.6)", headshot);
     }
-    floater(e.x, e.y + e.h * 0.95, e.z, (headshot ? "HEAD " : "") + "+" + pts, headshot ? COL.amber : COL.paper);
+    floater(e.x, e.y + e.h * 0.95, e.z, (aerial ? "AERIAL " : headshot ? "HEAD " : "") + "+" + pts, aerial ? COL.jade : headshot ? COL.amber : COL.paper);
     if (sp && !byMagic) sndHit(panOf(sp.x), headshot);
     updateHud();
   }
@@ -1832,7 +1870,7 @@
       spawnTimer -= dt;
       var maxAlive = Math.min(3 + Math.floor(wave * 0.75), 9);
       var alive = 0;
-      for (var q = 0; q < enemies.length; q++) if (enemies[q].state !== "dead") alive++;
+      for (var q = 0; q < enemies.length; q++) if (enemies[q].state !== "dead" && enemies[q].state !== "falldead") alive++;
       if (spawnTimer <= 0 && alive < maxAlive) {
         spawnEnemy();
         spawnQueue--;
@@ -1937,6 +1975,24 @@
           e.vy = 1.9;            // kicks off the ridge before gravity takes over
           e.leap = rand(3.2, 5.0); // and carries forward into the courtyard
           ring(e.x, e.y, e.z, "rgba(190,210,255,0.28)", false);
+        }
+        syncPos(e);
+        continue;
+      }
+
+      if (e.state === "falldead") {
+        // Killed mid-air: the corpse finishes its fall, then dies on the floor.
+        e.vy = (e.vy === undefined ? 0 : e.vy) - 13 * dt;
+        e.y += e.vy * dt;
+        if (e.leap) e.dist = Math.max(6, e.dist - e.leap * dt);
+        if (e.y <= 0) {
+          e.y = 0;
+          e.state = "dead";
+          e.dead = 0;
+          ring(e.x, 0.05, e.z, "rgba(190,210,255,0.4)", false);
+          burst(e.x, 0.12, e.z, REDMO ? 5 : 9, "#0b1020", 2.1, false); // impact dust
+          var lsp = project(e.x, 0.5, e.z);
+          if (lsp) sndHit(panOf(lsp.x), false);
         }
         syncPos(e);
         continue;
@@ -2070,7 +2126,7 @@
     var best = null;
     for (var i = 0; i < enemies.length; i++) {
       var e = enemies[i];
-      if (e.state === "dead" || e.state === "shoji") continue;
+      if (e.state === "dead" || e.state === "shoji" || e.state === "falldead") continue;
       var t = segmentCylinderT(ax, ay, az, bx, by, bz, e.x, e.z,
         ENEMY_R * e.w + 0.1, e.y - 0.05, e.y + e.h);
       if (t !== null && (!best || t < best.t)) best = { t: t, enemy: e };
@@ -3616,6 +3672,7 @@
       attack = NINJA_DROPPER_ATTACK;
     }
     if (e.state === "dead") return base[5];
+    if (e.state === "falldead") return base[3]; // a body in the air, still falling
     if (e.hurtT > 0) return base[4];
     if (e.state === "attack") {
       var ak = clamp(e.t / ATTACK_WINDUP, 0, 0.999);
@@ -3649,12 +3706,15 @@
     var dh = h * 1.62;
     var dw = dh * (img.naturalWidth / img.naturalHeight);
     var flip = e.state === "flank" ? (e.flankDir || 1) < 0 : Math.sin(e.phase || 0) < 0;
+    // Anchor by THIS frame's real foot line, so the contact meets the shadow at
+    // footY whatever the pose. A hardcoded 0.78 floated the death/idle poses.
+    var foot = artFootFrac(img);
 
     ctx.save();
     ctx.globalAlpha *= alpha === undefined ? 1 : alpha;
     ctx.translate(x, 0);
     if (flip) ctx.scale(-1, 1);
-    ctx.drawImage(img, -dw * 0.5, footY - dh * 0.78, dw, dh);
+    ctx.drawImage(img, -dw * 0.5, footY - dh * foot, dw, dh);
     ctx.restore();
     return true;
   }
@@ -3665,59 +3725,91 @@
     var footY = p.y;
     var dying = e.state === "dead";
 
-    ctx.save();
-    if (dying) {
-      // Each type goes down its own way. The pose folding happens inside
-      // drawNinjaShape; this is the whole-body travel on top of it.
-      var k = clamp(e.dead / (e.deathDur || 1.1), 0, 1);
-      var ddir = e.deathDir || 1;
-      var rot = 0, slideX = 0, slideY = 0, squash = 1;
-      // Rotation stays well under horizontal on purpose. The body pivots at the
-      // FEET, so a full 90 degrees leaves it floating sideways off the ankles
-      // like a felled mannequin; going part-way and sinking reads as a man
-      // going down, and the fade covers the rest.
-      if (e.deathKind === "topple") {
-        // heavy: hangs a beat on dead legs, then goes over all at once
-        var tk = k * k;
-        rot = ddir * tk * 1.25;
-        slideY = tk * h * 0.12;
-      } else if (e.deathKind === "stagger") {
-        // driven back a step, then the knees go
-        var st = clamp((k - 0.3) / 0.7, 0, 1);
-        slideX = -ddir * h * 0.1 * Math.min(1, k / 0.3);
-        rot = -ddir * st * st * 1.1;
-        slideY = st * h * 0.1;
-      } else if (e.deathKind === "snap") {
-        // head-shot: dropped where it stood, a whip back and straight down
-        rot = -ddir * Math.sin(Math.min(1, k * 3) * Math.PI) * 0.2;
-        slideY = k * h * 0.09;
-        squash = 1 - k * 0.14;
-      } else if (e.deathKind === "kneel") {
-        // doubles over and goes down onto hands and knees — barely any roll,
-        // because the body folds rather than falling over sideways
-        rot = ddir * k * 0.3;
-        slideX = ddir * h * 0.05 * k;
-        slideY = k * h * 0.06;
-      } else {
-        // tumble: its own momentum carries it over its feet
-        rot = ddir * k * 1.2;
-        slideX = ddir * h * 0.14 * k;
-        slideY = k * k * h * 0.1;
+    // Which path will draw the body? A sprite death FRAME already shows the
+    // ninja going down, so the whole-body rotation the procedural figure needs
+    // would just tilt an upright sprite over like a felled board. Predict the
+    // path so death is handled correctly for each.
+    var deadK = dying ? clamp(e.dead / (e.deathDur || 1.1), 0, 1) : 0;
+    var artImg = h >= 9 ? ninjaArtImage(e) : null;
+    var willArt = !!(artImg && artImg.complete && artImg.naturalWidth);
+
+    // Shadow — drawn OUTSIDE any death transform so it can never tilt with the
+    // body (it is not part of the sprite). Normally a contact ellipse at the
+    // feet. A dropper is the exception: NO shadow while it is up on the roof,
+    // and once it is over the courtyard a GROUND shadow (projected at y=0) that
+    // starts large and faint and tightens to a runner-sized shadow as it falls
+    // to the floor — the cast shadow of an object dropping toward the ground.
+    var descending = (e.state === "drop" || e.state === "falldead") && e.y > 0.05;
+    var onRoof = e.state === "roof" || (e.y > 0.5 && !descending); // roof, or dead up on the roof
+    if (onRoof) {
+      // no shadow up on the roof
+    } else if (descending) {
+      var gp = project(e.x, 0, e.z);
+      if (gp) {
+        var tg = clamp(e.y / ROOF_Y, 0, 1);        // 1 = up high, 0 = on the floor
+        var runW = gp.s * 1.78 * 0.2;              // a runner's shadow at this depth
+        var runH = gp.s * 1.78 * 0.052;
+        var gsc = 1 + tg * 1.7;                    // large up high, runner-size at the floor
+        ctx.save();
+        ctx.globalAlpha = 0.42 - tg * 0.3;         // faint up high, solid at the floor
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        ctx.ellipse(gp.x, gp.y, runW * gsc, runH * gsc, 0, 0, 6.283);
+        ctx.fill();
+        ctx.restore();
       }
-      // Hold the body, THEN fade — but be fully gone by the end, so the last
-      // and least convincing frames of the fall are never actually seen.
-      ctx.globalAlpha = 1 - clamp((k - 0.62) / 0.38, 0, 1);
-      ctx.translate(p.x + slideX, footY + slideY);
-      ctx.rotate(rot);
-      if (squash !== 1) ctx.scale(1, squash);
-      ctx.translate(-p.x, -footY);
+    } else {
+      ctx.save();
+      var shSpread = 1 + deadK * 0.35;
+      ctx.globalAlpha = (dying ? 1 - deadK : 1) * 0.42;
+      ctx.fillStyle = "#000";
+      ctx.beginPath();
+      ctx.ellipse(p.x, footY, h * 0.2 * shSpread, h * 0.052 * shSpread, 0, 0, 6.283);
+      ctx.fill();
+      ctx.restore();
     }
 
-    // contact shadow
-    ctx.fillStyle = "rgba(0,0,0,0.42)";
-    ctx.beginPath();
-    ctx.ellipse(p.x, footY, h * 0.2, h * 0.052, 0, 0, 6.283);
-    ctx.fill();
+    ctx.save();
+    if (dying) {
+      var k = deadK;
+      // Hold the body, THEN fade — gone by the end so the least convincing
+      // frames are never actually seen.
+      ctx.globalAlpha = 1 - clamp((k - 0.62) / 0.38, 0, 1);
+      if (willArt) {
+        // Sprite: NO tilt. The frame already reads as going down, so the body
+        // just sinks and settles straight into a heap — a gentle squash toward
+        // the feet, never a sideways roll.
+        var sink = k * h * 0.05;
+        var sq = 1 - clamp((k - 0.15) / 0.85, 0, 1) * 0.18;
+        ctx.translate(p.x, footY + sink);
+        ctx.scale(1, sq);
+        ctx.translate(-p.x, -footY);
+      } else {
+        // Procedural fallback: the drawn figure folds INTERNALLY, so it keeps
+        // the original rotate/slide/squash that reads as it going down. Pivots
+        // at the feet, held well under horizontal.
+        var ddir = e.deathDir || 1;
+        var rot = 0, slideX = 0, slideY = 0, squash = 1;
+        if (e.deathKind === "topple") {
+          var tk = k * k; rot = ddir * tk * 1.25; slideY = tk * h * 0.12;
+        } else if (e.deathKind === "stagger") {
+          var st = clamp((k - 0.3) / 0.7, 0, 1);
+          slideX = -ddir * h * 0.1 * Math.min(1, k / 0.3);
+          rot = -ddir * st * st * 1.1; slideY = st * h * 0.1;
+        } else if (e.deathKind === "snap") {
+          rot = -ddir * Math.sin(Math.min(1, k * 3) * Math.PI) * 0.2;
+          slideY = k * h * 0.09; squash = 1 - k * 0.14;
+        } else if (e.deathKind === "kneel") {
+          rot = ddir * k * 0.3; slideX = ddir * h * 0.05 * k; slideY = k * h * 0.06;
+        } else {
+          rot = ddir * k * 1.2; slideX = ddir * h * 0.14 * k; slideY = k * k * h * 0.1;
+        }
+        ctx.translate(p.x + slideX, footY + slideY);
+        ctx.rotate(rot);
+        if (squash !== 1) ctx.scale(1, squash);
+        ctx.translate(-p.x, -footY);
+      }
+    }
 
     var usedArt = h >= 9 && drawNinjaArt(e, p.x, footY, h, 1);
     if (!usedArt) {
@@ -5100,6 +5192,9 @@
   document.body.classList.add("is-menu");
   updateHud();
   requestAnimationFrame(frame);
+
+
+
 
 
 

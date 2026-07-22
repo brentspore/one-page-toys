@@ -563,7 +563,15 @@ body:not(.is-menu) .frame__corner--tr { opacity: 0; }
   .mode__desc { display: none; }
   .play-btn { padding: 10px 24px; font-size: 13px; }
   .panel__keys { display: none; }
-  .abilities { bottom: max(10px, env(safe-area-inset-bottom)); }
+  .abilities { bottom: max(10px, env(safe-area-inset-bottom)); gap: 8px; }
+  /* Landscape phones have almost no vertical room, so the tall ability stack
+     ate the bottom of the play field. Compact it: tighter padding, a smaller
+     glyph and label, and a thinner meter — roughly halves the button height. */
+  .ab { padding: 4px 10px 5px; gap: 1px; width: 72px; }
+  .ab__glyph { font-size: 14px; }
+  .ab__label { font-size: 7.5px; }
+  .ab__meter { margin-top: 1px; height: 2.5px; width: 40px; }
+  .ab__count { margin-top: 1px; font-size: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
