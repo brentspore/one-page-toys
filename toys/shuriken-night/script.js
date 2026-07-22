@@ -1087,7 +1087,12 @@
 
   /* ------------------------------------------------------------ projectiles */
 
-  function throwStar(dir, spreadAng) {
+  // launchX: screen x the star should appear to leave from, at the bottom edge.
+  // The PHYSICS still start on the camera ray, so aiming stays exact; only the
+  // first ~0.14s of rendering is eased up from the bottom of the screen. Moving
+  // the real spawn point down there instead would throw off close-range shots,
+  // because the parallax between hand and eye only cancels at one distance.
+  function throwStar(dir, spreadAng, launchX) {
     var d = dir;
     if (spreadAng) {
       var c = Math.cos(spreadAng), s = Math.sin(spreadAng);
@@ -1097,7 +1102,10 @@
       x: d.x * 0.5, y: EYE - 0.12 + d.y * 0.5, z: d.z * 0.5,
       vx: d.x * THROW_SPEED, vy: d.y * THROW_SPEED, vz: d.z * THROW_SPEED,
       spin: rand(0, 6.283), life: 1.6, alive: true,
-      px: 0, py: 0, pz: 0
+      px: 0, py: 0, pz: 0,
+      lx: launchX == null ? null : launchX,
+      ly: H + 26,
+      age: 0
     });
   }
 
@@ -1163,6 +1171,9 @@
   var pointerDown = false, dragging = false, downX = 0, downY = 0, downT = 0, lastX = 0;
   var keyTurn = 0;
   var DRAG_PX = 12;
+  var SWIPE_MIN = 24; // travel before a touch gesture commits to an intent
+  var gestKind = null; // "turn" | "throw", decided by the dominant axis
+  var isTouch = false;
 
   function pointerPos(ev) {
     return { x: ev.clientX, y: ev.clientY };
@@ -1172,9 +1183,13 @@
     if (!running) return;
     ev.preventDefault();
     initAudio();
-    canvas.setPointerCapture && canvas.setPointerCapture(ev.pointerId);
+    // Capture is a nicety, not a requirement — and it throws if the pointer is
+    // already gone. Letting it throw here would abort the whole handler before
+    // the gesture state is even set up.
+    try { canvas.setPointerCapture && canvas.setPointerCapture(ev.pointerId); } catch (e) {}
     var p = pointerPos(ev);
-    pointerDown = true; dragging = false;
+    pointerDown = true; dragging = false; gestKind = null;
+    isTouch = ev.pointerType !== "mouse";
     downX = p.x; downY = p.y; lastX = p.x; downT = performance.now();
     aim.x = p.x; aim.y = p.y; aim.has = true;
     if (ev.button === 2) return;
@@ -1189,7 +1204,29 @@
       return;
     }
     var dx = p.x - lastX;
-    if (!dragging && Math.abs(p.x - downX) > DRAG_PX && ev.pointerType !== "mouse") {
+
+    if (isTouch) {
+      // On touch, the gesture's dominant axis decides what it means: a mostly
+      // sideways drag turns the view, anything else is a throwing swipe. That
+      // keeps both gestures available without a mode button.
+      var tx = p.x - downX, ty = p.y - downY;
+      if (!gestKind && (Math.abs(tx) > SWIPE_MIN || Math.abs(ty) > SWIPE_MIN)) {
+        gestKind = mode === "turn" && Math.abs(tx) > Math.abs(ty) * 1.25 ? "turn" : "throw";
+        charging = false;
+        if (gestKind === "turn") dragging = true;
+      }
+      if (gestKind === "turn") {
+        yaw += (dx / W) * fov * 2.1;
+        yawVel = (dx / W) * 6;
+      } else {
+        aim.x = p.x; aim.y = p.y;
+      }
+      lastX = p.x;
+      return;
+    }
+
+    // Mouse: drag still turns, everything else aims.
+    if (!dragging && Math.abs(p.x - downX) > DRAG_PX && ev.buttons === 2) {
       dragging = true;
       charging = false;
     }
@@ -1206,9 +1243,27 @@
     if (!pointerDown) return;
     pointerDown = false;
     var wasCharging = charging;
+    var kind = gestKind;
     charging = false;
+    gestKind = null;
     if (dragging) { dragging = false; return; }
     if (!running || over) return;
+
+    if (isTouch) {
+      if (kind === "throw") {
+        // Swipe: the star leaves from the bottom of the screen, under the
+        // start of the swipe, and flies out along the line you drew.
+        swipeThrow(downX, downY, aim.x, aim.y);
+      } else if (wasCharging && chargeT >= CHARGE_TIME) {
+        fireFan(downX);
+      } else {
+        // A plain tap still throws, launched from below the tap.
+        fire(aim.x);
+      }
+      chargeT = 0;
+      return;
+    }
+
     if (wasCharging && chargeT >= CHARGE_TIME) fireFan();
     else fire();
     chargeT = 0;
@@ -1232,23 +1287,42 @@
     if ((k === "arrowright" || k === "d") && keyTurn === 1) keyTurn = 0;
   });
 
-  function fire() {
+  function fire(launchX) {
     if (cooldown > 0 || !running || over) return;
     cooldown = THROW_COOLDOWN;
-    throwStar(unproject(aim.x, aim.y));
+    throwStar(unproject(aim.x, aim.y), 0, launchX);
     sndThrow(panOf(aim.x));
     hideHint();
   }
 
-  function fireFan() {
+  function fireFan(launchX) {
     if (!running || over) return;
     cooldown = THROW_COOLDOWN * 1.7;
     var d = unproject(aim.x, aim.y);
-    throwStar(d, -FAN_SPREAD);
-    throwStar(d, 0);
-    throwStar(d, FAN_SPREAD);
+    throwStar(d, -FAN_SPREAD, launchX);
+    throwStar(d, 0, launchX);
+    throwStar(d, FAN_SPREAD, launchX);
     sndThrow(panOf(aim.x));
     setTimeout(function () { sndThrow(panOf(aim.x)); }, 45);
+    hideHint();
+  }
+
+  // A swipe throws along the line drawn on screen. The end of the swipe is the
+  // aim point (you flick toward what you want to hit) and the star launches
+  // from the bottom edge beneath where the swipe began.
+  function swipeThrow(x0, y0, x1, y1) {
+    if (cooldown > 0 || !running || over) return;
+    var dx = x1 - x0, dy = y1 - y0;
+    var len = Math.sqrt(dx * dx + dy * dy);
+    if (len < 1) return;
+    // Aim exactly where the swipe ended. An earlier version extrapolated past
+    // the fingertip to be "helpful" and pushed the aim above the horizon, so
+    // every star sailed over the courtyard.
+    var tx = x1, ty = y1;
+    aim.x = tx; aim.y = ty; aim.has = true;
+    cooldown = THROW_COOLDOWN;
+    throwStar(unproject(tx, ty), 0, x0);
+    sndThrow(panOf(tx));
     hideHint();
   }
 
@@ -1296,8 +1370,12 @@
     // Shift / right-click / space — on touch the abilities live on the
     // on-screen ◎ Focus and 卍 Magic buttons, so point at those instead.
     var line1 = m === "turn"
-      ? (COARSE ? "Drag to turn" : "Drag or A / D to turn") + " &nbsp;·&nbsp; hold to charge a fan of three<br />"
-      : "Tap to throw &nbsp;·&nbsp; hold to charge a fan of three<br />";
+      ? (COARSE
+          ? "Swipe to throw &nbsp;·&nbsp; swipe sideways to turn<br />"
+          : "Drag or A / D to turn &nbsp;·&nbsp; hold to charge a fan of three<br />")
+      : (COARSE
+          ? "Swipe to throw &nbsp;·&nbsp; hold still to charge a fan of three<br />"
+          : "Aim and click to throw &nbsp;·&nbsp; hold to charge a fan of three<br />");
     var line2 = COARSE
       ? "Tap ◎ to focus &nbsp;·&nbsp; tap 卍 for ninja magic"
       : "Shift or right-click for focus &nbsp;·&nbsp; space for ninja magic";
@@ -1685,6 +1763,7 @@
   function updateStars(dt) {
     for (var i = stars.length - 1; i >= 0; i--) {
       var s = stars[i];
+      s.age += dt;
       s.px = s.x; s.py = s.y; s.pz = s.z;
       // Substep so a fast star can't tunnel through a ninja.
       var steps = 3;
@@ -3110,13 +3189,26 @@
     ctx.restore();
   }
 
+  var LAUNCH_EASE = 0.15; // seconds spent easing up from the bottom edge
+
   // The star flies FLAT — a horizontal plate spinning about the VERTICAL axis,
   // the way a shuriken is actually thrown. So it is not a screen-plane rotation:
   // the eight points are spun in the ground plane and the depth axis is
   // foreshortened, which is what makes it read as a plate seen near edge-on
   // rather than a wheel facing the camera.
   function drawStar(s, p) {
-    var r = Math.max(2.4, p.s * 0.16);
+    // On a swipe throw the first moments are eased up from the bottom edge so
+    // the star reads as leaving your hand. Rendering only — the physics stay on
+    // the camera ray, so aiming is unaffected.
+    var dx = p.x, dy = p.y, dscale = p.s;
+    if (s.lx != null && s.age < LAUNCH_EASE) {
+      var k = s.age / LAUNCH_EASE;
+      var e = k * k * (3 - 2 * k); // smoothstep
+      dx = lerp(s.lx, p.x, e);
+      dy = lerp(s.ly, p.y, e);
+      dscale = lerp(p.s * 3.2, p.s, e);
+    }
+    var r = Math.max(2.4, dscale * 0.16);
     var spin = s.spin + performance.now() * 0.03;
     // Squash of the depth axis = how far off eye level the blade sits. Floored,
     // because a star at exactly eye height is geometrically a hairline and would
@@ -3125,7 +3217,7 @@
     var tilt = Math.min(0.6, Math.max(0.22, Math.abs(EYE - s.y) / dist + 0.2));
     var i, a, rr;
     ctx.save();
-    ctx.translate(p.x, p.y);
+    ctx.translate(dx, dy);
     // plate thickness — a dark copy a hair below gives the blade an edge, so it
     // still reads as steel when the points sweep through side-on
     var th = Math.max(0.7, r * 0.1);
@@ -3150,8 +3242,10 @@
     for (i = 0; i < 8; i++) {
       a = (i / 8) * 6.283 + spin;
       rr = i % 2 === 0 ? r : r * 0.34;
-      var px = Math.cos(a) * rr, py = Math.sin(a) * rr * tilt;
-      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      // NB: vx/vy, not px/py — `var` is function-scoped and would clobber the
+      // eased draw position computed above.
+      var vx = Math.cos(a) * rr, vy = Math.sin(a) * rr * tilt;
+      if (i === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
     }
     ctx.closePath();
     ctx.fill();
@@ -3164,16 +3258,30 @@
     // this fast should smear, and it also makes the star readable at range.
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
+    if (s.lx != null && s.age < LAUNCH_EASE * 1.6) {
+      // launch streak, trailing back toward the bottom edge it came from
+      var fade = clamp(1 - s.age / (LAUNCH_EASE * 1.6), 0, 1);
+      var gr = ctx.createLinearGradient(dx, dy, s.lx, s.ly);
+      gr.addColorStop(0, "rgba(198,218,255," + (0.34 * fade) + ")");
+      gr.addColorStop(1, "rgba(198,218,255,0)");
+      ctx.strokeStyle = gr;
+      ctx.lineWidth = Math.max(1.5, r * 0.7);
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(dx, dy);
+      ctx.lineTo(lerp(dx, s.lx, 0.55), lerp(dy, s.ly, 0.55));
+      ctx.stroke();
+    }
     if (GLOW_MOON) {
       var back = project(s.px, s.py, s.pz);
       if (back) {
         for (var tr = 1; tr <= 3; tr++) {
           var f = tr / 4;
-          blot(GLOW_MOON, p.x + (back.x - p.x) * f, p.y + (back.y - p.y) * f,
+          blot(GLOW_MOON, dx + (back.x - dx) * f, dy + (back.y - dy) * f,
             r * (1.7 - f * 0.7), r * (1.7 - f * 0.7), 0.13 * (1 - f));
         }
       }
-      blot(GLOW_MOON, p.x, p.y, r * 2.4, r * 2.4, 0.3);
+      blot(GLOW_MOON, dx, dy, r * 2.4, r * 2.4, 0.3);
     }
     ctx.restore();
   }
