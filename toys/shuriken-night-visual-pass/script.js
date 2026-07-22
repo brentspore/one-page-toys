@@ -129,6 +129,20 @@
   var charging = false, chargeT = 0, cooldown = 0;
   var soundOn = true;
 
+  // Illustrated atlases are decoded once and then drawn as ordinary Canvas
+  // images. They replace hundreds of per-frame path operations with one blit,
+  // so the visual upgrade is cheaper than the procedural figure it succeeds.
+  // The old vector renderer remains as a load/failure fallback.
+  function artImage(src) {
+    var img = new Image();
+    img.decoding = "async";
+    img.src = src;
+    return img;
+  }
+  var NINJA_RUNNER_ART = artImage("assets/ninja-runner-sheet.webp");
+  var NINJA_BRUTE_ART = artImage("assets/ninja-brute-sheet.webp");
+  var GARDEN_ART = artImage("assets/garden-props.webp");
+
   try {
     best = parseInt(localStorage.getItem(BEST_KEY), 10) || 0;
     var sv = localStorage.getItem(SOUND_KEY);
@@ -310,12 +324,12 @@
     for (var gi = 0; gi < 26; gi++) {
       var ga = (gi / 26) * Math.PI * 2 + rand(-0.06, 0.06);
       var roll = Math.random();
-      var kind = roll < 0.34 ? "rock" : roll < 0.62 ? "shrub" : roll < 0.9 ? "step" : "pine";
+      var kind = roll < 0.28 ? "rock" : roll < 0.52 ? "shrub" : roll < 0.74 ? "step" : roll < 0.9 ? "pine" : "basin";
       garden.push({
         ang: ga,
         r: kind === "step" ? rand(11.5, 14.5) : rand(15.2, 16.6),
         kind: kind,
-        sz: kind === "pine" ? rand(0.85, 1.25) : kind === "shrub" ? rand(0.45, 0.75) : rand(0.3, 0.58),
+        sz: kind === "pine" ? rand(0.85, 1.25) : kind === "shrub" ? rand(0.45, 0.75) : kind === "basin" ? rand(0.48, 0.68) : rand(0.3, 0.58),
         sk: rand(0.75, 1.3),
         ph: rand(0, 6.283)
       });
@@ -2375,7 +2389,24 @@
 
   }
 
-  // Set rocks, clipped shrubs, stepping stones and pines. Drawn after the floor
+  function drawGardenArt(G, p, u) {
+    if (!GARDEN_ART.complete || !GARDEN_ART.naturalWidth || G.kind === "step") return false;
+    var cells = 5;
+    var cell = GARDEN_ART.naturalWidth / cells;
+    var frame = G.kind === "pine" ? 1 : G.kind === "shrub" ? 2 : G.kind === "rock" ? 3 : G.kind === "basin" ? 4 : -1;
+    if (frame < 0) return false;
+
+    // Every atlas cell retains the same transparent breathing room. Anchoring
+    // its illustrated baseline (about 78% down the source) to the projected
+    // ground point keeps rocks, trees and basins planted instead of floating.
+    var dh = u * 10;
+    var dw = dh * (cell / GARDEN_ART.naturalHeight);
+    ctx.drawImage(GARDEN_ART, frame * cell, 0, cell, GARDEN_ART.naturalHeight,
+      p.x - dw * 0.5, p.y - dh * 0.78, dw, dh);
+    return true;
+  }
+
+  // Set rocks, clipped shrubs, stepping stones, pines and water basins. Drawn after the floor
   // and before the fixtures, so the light pass has already laid warmth on the
   // gravel and these sit in it rather than on top of it.
   function drawGarden() {
@@ -2387,6 +2418,8 @@
       // use ~0.18 with much larger multipliers; these need the scale in u.
       var u = p.s * G.sz * 0.5;
       if (u < 0.7) continue;
+
+      if (drawGardenArt(G, p, u)) continue;
 
       if (G.kind === "step") {
         // a flat stepping stone laid into the gravel
@@ -2970,6 +3003,41 @@
     c.restore();
   }
 
+  function ninjaArtFrame(e) {
+    if (e.state === "dead") return 5;
+    if (e.hurtT > 0) return 4;
+    if (e.state === "attack" || e.throwAnim > 0) return 3;
+    if (e.state === "walk" || e.state === "flank" || e.state === "roof" || e.state === "drop") {
+      var cadence = 7.4 + (e.speed || 3.2) * 0.75;
+      return 1 + ((((e.t * cadence + e.phase) / Math.PI) | 0) & 1);
+    }
+    return 0;
+  }
+
+  function drawNinjaArt(e, x, footY, h, alpha) {
+    var img = e.type === "brute" ? NINJA_BRUTE_ART : NINJA_RUNNER_ART;
+    if (!img.complete || !img.naturalWidth) return false;
+
+    var cells = 6;
+    var cell = img.naturalWidth / cells;
+    var frame = ninjaArtFrame(e);
+    // The generated figures occupy roughly 62% of their source height. Draw
+    // the full transparent cell larger so the visible character still matches
+    // the gameplay height and the hit geometry inherited from the old figure.
+    var dh = h * 1.62;
+    var dw = dh * (cell / img.naturalHeight);
+    var flip = e.state === "flank" ? (e.flankDir || 1) < 0 : Math.sin(e.phase || 0) < 0;
+
+    ctx.save();
+    ctx.globalAlpha *= alpha === undefined ? 1 : alpha;
+    ctx.translate(x, 0);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(img, frame * cell, 0, cell, img.naturalHeight,
+      -dw * 0.5, footY - dh * 0.78, dw, dh);
+    ctx.restore();
+    return true;
+  }
+
   function drawEnemy(e, p) {
     var h = p.s * e.h;
     if (h < 3) return;
@@ -3030,23 +3098,19 @@
     ctx.ellipse(p.x, footY, h * 0.2, h * 0.052, 0, 0, 6.283);
     ctx.fill();
 
-    // Moon rim light: draw the whole silhouette once in a pale blue, offset
-    // toward the moon, then the dark body on top. The sliver left over is a
-    // rim that always follows the pose — far more robust than hand-placed arcs.
-    var moonX = bearingX(2.35);
-    var dir = moonX === null || moonX < p.x ? -1 : 1;
-    // Keep the offset a thin sliver at ALL sizes. Scaling it with height made
-    // a close ninja look like plate armour, because the offset copy showed
-    // through every gap between limbs.
-    var off = clamp(h * 0.009, 1, 3.2);
-    ctx.fillStyle = "rgba(150,182,248,0.42)";
-    drawNinjaShape(ctx, p.x + off * dir, footY - off * 0.5, h, e, false, 1);
-
-    // Always a dark silhouette; a hit reads as a brief additive flash on top
-    // rather than repainting the whole body a flat maroon.
-    ctx.fillStyle = "#05070f";
-    drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
-    drawNinjaKit(ctx, p.x, footY, h, e); // steel sode, crimson obi, lit eye slits
+    var usedArt = h >= 9 && drawNinjaArt(e, p.x, footY, h, 1);
+    if (!usedArt) {
+      // Load/failure fallback: preserve the original procedural figure so art
+      // delivery can never block the game from starting.
+      var moonX = bearingX(2.35);
+      var dir = moonX === null || moonX < p.x ? -1 : 1;
+      var off = clamp(h * 0.009, 1, 3.2);
+      ctx.fillStyle = "rgba(150,182,248,0.42)";
+      drawNinjaShape(ctx, p.x + off * dir, footY - off * 0.5, h, e, false, 1);
+      ctx.fillStyle = "#05070f";
+      drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
+      drawNinjaKit(ctx, p.x, footY, h, e);
+    }
 
     // The blade that killed it stays buried where it went in, and rides the
     // body down through the whole fall — the star used to simply vanish on
@@ -3085,14 +3149,17 @@
     if (e.hurtT > 0) {
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
-      ctx.globalAlpha = clamp(e.hurtT / 0.18, 0, 1) * 0.5;
-      ctx.fillStyle = "#b8394a";
-      drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
+      ctx.globalAlpha = clamp(e.hurtT / 0.18, 0, 1) * 0.42;
+      if (usedArt) drawNinjaArt(e, p.x, footY, h, 1);
+      else {
+        ctx.fillStyle = "#b8394a";
+        drawNinjaShape(ctx, p.x, footY, h, e, false, 1);
+      }
       ctx.restore();
     }
 
     // brutes wear a faint red sash so the two-hit enemy is legible
-    if (e.type === "brute" && !dying) {
+    if (e.type === "brute" && !dying && !usedArt) {
       // a sash tied shoulder-to-hip, not a bar laid across the chest
       ctx.strokeStyle = "rgba(224,69,75,0.5)";
       ctx.lineWidth = Math.max(1, h * 0.013);
