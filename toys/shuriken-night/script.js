@@ -1174,6 +1174,11 @@
   var SWIPE_MIN = 24; // travel before a touch gesture commits to an intent
   var gestKind = null; // "turn" | "throw", decided by the dominant axis
   var isTouch = COARSE; // seeded from the device, then corrected by real pointer events
+  // Positive evidence that a real mouse exists on this machine. The crosshair
+  // is opt-IN on this rather than opt-out of touch detection: a phone never
+  // produces a mouse event, so it can never show the crosshair no matter what
+  // pointerType or the media query happen to report on that device.
+  var sawMouse = false;
 
   function pointerPos(ev) {
     return { x: ev.clientX, y: ev.clientY };
@@ -1190,6 +1195,7 @@
     var p = pointerPos(ev);
     pointerDown = true; dragging = false; gestKind = null;
     isTouch = ev.pointerType !== "mouse";
+    if (ev.pointerType === "mouse") sawMouse = true;
     downX = p.x; downY = p.y; lastX = p.x; downT = performance.now();
     aim.x = p.x; aim.y = p.y; aim.has = true;
     if (ev.button === 2) return;
@@ -1200,7 +1206,7 @@
     var p = pointerPos(ev);
     if (!pointerDown) {
       // Desktop hover aims directly.
-      if (ev.pointerType === "mouse") { aim.x = p.x; aim.y = p.y; aim.has = true; }
+      if (ev.pointerType === "mouse") { sawMouse = true; isTouch = false; aim.x = p.x; aim.y = p.y; aim.has = true; }
       return;
     }
     var dx = p.x - lastX;
@@ -1971,11 +1977,12 @@
     ctx.restore();
 
     drawEdgeThreats();
-    // Mouse only. The crosshair exists to show where a mouse is pointing; on
-    // touch you aim by swiping and it just rides your finger around, so it is
-    // pure noise. isTouch tracks the LAST pointer type, so a hybrid laptop
-    // still gets it back the moment the mouse is used.
-    if (!dying && !isTouch) drawReticle();
+    // Mouse only, and gated on having actually SEEN a mouse. The crosshair
+    // exists to show where a mouse is pointing; on touch you aim by swiping
+    // and it just rides your finger around. Requiring positive evidence of a
+    // mouse means a phone can never show it, even if pointerType or the
+    // pointer:coarse query misreport on some device.
+    if (!dying && sawMouse && !isTouch) drawReticle();
     drawOverlayFx();
     drawStrike();
     drawWaveBanner();
