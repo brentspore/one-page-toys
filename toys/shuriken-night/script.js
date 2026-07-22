@@ -1173,7 +1173,7 @@
   var DRAG_PX = 12;
   var SWIPE_MIN = 24; // travel before a touch gesture commits to an intent
   var gestKind = null; // "turn" | "throw", decided by the dominant axis
-  var isTouch = false;
+  var isTouch = COARSE; // seeded from the device, then corrected by real pointer events
 
   function pointerPos(ev) {
     return { x: ev.clientX, y: ev.clientY };
@@ -1971,7 +1971,11 @@
     ctx.restore();
 
     drawEdgeThreats();
-    if (!dying) drawReticle();
+    // Mouse only. The crosshair exists to show where a mouse is pointing; on
+    // touch you aim by swiping and it just rides your finger around, so it is
+    // pure noise. isTouch tracks the LAST pointer type, so a hybrid laptop
+    // still gets it back the moment the mouse is used.
+    if (!dying && !isTouch) drawReticle();
     drawOverlayFx();
     drawStrike();
     drawWaveBanner();
