@@ -4412,12 +4412,19 @@
     }
     var img = PLAYER_HAND_ART[frame];
     if (!img.complete || !img.naturalWidth) return;
-    var dh = clamp(H * 0.66, 330, 540);
+    // In portrait, H is the LONG edge, so keying the hand to H made it fill
+    // ~two thirds of a phone screen and cover the enemies you're aiming at.
+    // On a tall screen key it to WIDTH and sit it lower, so it reads as coming
+    // up from below the frame rather than blocking the courtyard. Desktop and
+    // landscape (H <= W) are unchanged.
+    var portrait = H > W;
+    var dh = portrait ? clamp(W * 0.92, 300, 470) : clamp(H * 0.66, 330, 540);
+    var sink = portrait ? dh * 0.14 : dh * 0.02; // push more of it below the fold on mobile
     var dw = dh * (img.naturalWidth / img.naturalHeight);
     var hx = held ? clamp(downX, W * 0.18, W * 0.82) : handX;
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.translate(hx, H + dh * 0.02);
+    ctx.translate(hx, H + sink);
     ctx.rotate(((hx - W * 0.5) / W) * 0.12);
     ctx.drawImage(img, -dw * 0.5, -dh, dw, dh);
     ctx.restore();
