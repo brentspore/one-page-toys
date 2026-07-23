@@ -16,6 +16,11 @@ blocks.push(`  <url>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>`);
+blocks.push(`  <url>
+    <loc>${SITE}/store/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`);
 
 for (const t of reg) {
   if (!t.path) continue;

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>The Prize Counter — One Page Toys</title>
+    <meta name="description" content="Spend the tickets you earn playing One Page Toys on trophies, titles, certificates, fortunes, and gloriously silly prizes — then share your win in the moment." />
+    <link rel="canonical" href="https://onepagetoys.com/store/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="The Prize Counter — One Page Toys" />
+    <meta property="og:description" content="Earn tickets across the toys, then redeem them for trophies, titles, and gloriously silly flexes at the Prize Counter." />
+    <meta property="og:url" content="https://onepagetoys.com/store/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/store.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Prize Counter — One Page Toys" />
+    <meta name="twitter:description" content="Redeem the tickets you earn playing for trophies, titles, and silly flexes to share." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/store.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "The Prize Counter",
+        "url": "https://onepagetoys.com/store/",
+        "description": "Redeem tickets earned playing One Page Toys for collectible prizes you can share.",
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="../assets/styles.css?v=94" />
+    <link rel="stylesheet" href="store.css?v=7" />
+  </head>
+  <body data-store>
+    <a class="skip-link" href="#counter">Skip to content</a>
+
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="topbar__start">
+          <a class="brand" href="/">One Page Toys</a>
+          <nav class="topbar__nav" aria-label="Site sections">
+            <a class="topbar__link" href="/">Home</a>
+            <a class="topbar__link" href="/all-toys/">All toys</a>
+            <a class="topbar__link" href="/store/" aria-current="page">Prize Counter</a>
+          </nav>
+        </div>
+        <div class="topbar__actions" aria-label="Quick actions">
+          <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+            <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+            <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+            <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+          </button>
+          <a class="btn btn--primary" href="/all-toys/">Earn tickets</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="counter" class="container store">
+      <!-- ============ shopper view (default) ============ -->
+      <div id="shopView">
+        <section class="prize-hero">
+          <div class="prize-hero__marquee" aria-hidden="true">
+            <span>★ PRIZE COUNTER ★ REDEEM YOUR TICKETS ★ NO CASH VALUE ★ ALL FUN ★ </span>
+            <span>★ PRIZE COUNTER ★ REDEEM YOUR TICKETS ★ NO CASH VALUE ★ ALL FUN ★ </span>
+          </div>
+          <div class="prize-hero__body">
+            <div class="prize-hero__intro">
+              <p class="pagehead__eyebrow">The Prize Counter</p>
+              <h1 class="prize-hero__title">Cash in your tickets.</h1>
+              <p class="prize-hero__lede">
+                Every toy you play quietly earns you arcade tickets. Spend them here on trophies,
+                titles, certificates, fortunes, and beautifully pointless prizes — then flex your
+                haul with a card you can share on the spot.
+              </p>
+            </div>
+            <aside class="wallet" id="wallet" aria-label="Your tickets">
+              <div class="wallet__bal">
+                <span class="wallet__ticket" aria-hidden="true">🎟️</span>
+                <span class="wallet__num" id="balNum">0</span>
+                <span class="wallet__label">tickets</span>
+              </div>
+              <div class="wallet__rank">
+                <span class="wallet__rankname" id="rankName">Newcomer</span>
+                <div class="wallet__bar"><i id="rankBar"></i></div>
+                <span class="wallet__next" id="rankNext"></span>
+              </div>
+              <p class="wallet__lifetime"><span id="lifeNum">0</span> earned all-time · <button type="button" class="wallet__mine" id="walletMine"><span id="ownedNum">0</span> prizes won →</button></p>
+            </aside>
+          </div>
+        </section>
+
+        <div class="store-controls">
+          <div class="chiprow" id="catChips" role="tablist" aria-label="Prize categories"></div>
+          <label class="store-name">
+            <span class="store-name__label">Sign your prizes</span>
+            <input id="nameInput" type="text" maxlength="24" placeholder="Your arcade name" autocomplete="off" spellcheck="false" />
+          </label>
+        </div>
+
+        <section class="prize-wall" id="prizeWall" aria-label="Prizes"></section>
+
+        <section class="shelf" id="shelf" hidden>
+          <div class="shelf__head">
+            <div>
+              <h2 class="shelf__title">Your prize shelf</h2>
+              <p class="shelf__hint">Tap any prize to show it off again — once it's yours, you can always share it.</p>
+            </div>
+            <button type="button" class="btn btn--small" id="shareShelf">Share my shelf</button>
+          </div>
+          <div class="shelf__grid" id="shelfGrid"></div>
+        </section>
+
+        <p class="store-fineprint">
+          Prizes are just for fun — no cash value, no real-world anything, and your ticket
+          balance lives only in this browser. Play more toys to earn more.
+        </p>
+      </div>
+
+      <!-- ============ someone else's brag (when arriving via a share link) ============ -->
+      <div id="bragView" hidden></div>
+    </main>
+
+    <!-- redemption modal -->
+    <div class="modal" id="modal" hidden>
+      <div class="modal__scrim" data-close></div>
+      <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button type="button" class="modal__x" data-close aria-label="Close">✕</button>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+    <div class="confetti-root" id="confetti" aria-hidden="true"></div>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <div class="site-footer__bottom">
+          <p class="site-footer__copyright muted">© 2026 One Page Toys · Prize Counter</p>
+          <nav class="site-footer__nav" aria-label="Site">
+            <a href="/">Home</a>
+            <a href="/all-toys/">All toys</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/theme.js?v=8" defer></script>
+    <script src="../assets/tickets.js?v=8" defer></script>
+    <script src="../assets/prizes.js?v=1" defer></script>
+    <script src="store.js?v=6" defer></script>
+  </body>
+</html>

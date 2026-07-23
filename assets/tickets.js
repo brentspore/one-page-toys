@@ -31,8 +31,11 @@
   /* ---------------------------------------------------------------- config */
 
   var STORE_KEY = "opt_tickets_v1";
-  var UI_FLAG_KEY = "opt_tickets_ui";
-  var UI_DEFAULT = false; // <- flip to true to open tickets to everyone
+  // v2 key: the old "opt_tickets_ui" could be pinned to "0" by the removed
+  // "Hide bank" button, permanently hiding the bank with no way back. Renaming
+  // it ignores those stale flags so the bank shows by default again.
+  var UI_FLAG_KEY = "opt_bank_show";
+  var UI_DEFAULT = true; // the bank pill shows everywhere (?tickets=0 opts out)
 
   // Earning rates. These are the tuning knobs; see the backlog item
   // "Ticket system Phase 1 — real-play testing + economy tuning pass".
@@ -40,7 +43,13 @@
   var DAILY_CAP_PER_TOY = 25; // max time-tickets per toy per day
   var IDLE_MS = 25000; // no input for this long = not playing
   var TICK_MS = 5000; // heartbeat resolution
-  var DISCOVERY_BONUS = 15; // first ever visit to a given toy
+  // "Discovery" bonus for genuinely giving a new toy a fair shake — NOT for
+  // opening it. It only pays once the visitor has both spent PLAY_MIN_SEC of
+  // active time on the toy AND interacted PLAY_MIN_HITS times, so a drive-by
+  // (open, wiggle once, leave) earns nothing.
+  var DISCOVERY_BONUS = 15;
+  var PLAY_MIN_SEC = 20; // active seconds on the toy before the bonus unlocks
+  var PLAY_MIN_HITS = 12; // genuine interactions (throttled ≥400ms apart) required
   var FIRST_BEST = 8; // first recorded score on a toy
   var BEST_BASE = 6; // floor for beating a personal best
   var BEST_SCALE = 5; // how fast the log bonus grows
@@ -189,6 +198,11 @@
       if (!o.toys || typeof o.toys !== "object") o.toys = {};
       if (!o.scores || typeof o.scores !== "object") o.scores = {};
       if (!o.dayEarn || typeof o.dayEarn !== "object") o.dayEarn = {};
+      // Migration: a toy record that predates the engagement gate already got
+      // its bonus under the old rules — mark it discovered so it can't re-earn.
+      for (var tk in o.toys) {
+        if (o.toys[tk] && o.toys[tk].disc === undefined) o.toys[tk].disc = true;
+      }
       return o;
     } catch (e) {
       return blank();
@@ -245,8 +259,16 @@
     var entry = { t: Date.now(), n: n, why: reason || "bonus", slug: s || null };
     L.log.unshift(entry);
     if (L.log.length > LOG_MAX) L.log.length = LOG_MAX;
-    save();
+    // Persist earned tickets IMMEDIATELY, not on the 4s debounce — otherwise a
+    // discovery bonus is lost when the visitor opens the next toy (a new tab)
+    // within a few seconds and it reads a stale ledger.
+    save(true);
+    // Keep the pill showing the PRE-award total so the fly-in can count up to
+    // the new one (bankAward, below). After the first award `displayed` already
+    // trails the true balance, so this only seeds the very first earn.
+    if (displayed == null) displayed = L.balance - n;
     emit(entry);
+    bankAward(n);
     return n;
   }
 
@@ -338,22 +360,36 @@
   var carrySec = 0; // fractional seconds not yet converted to a ticket
   var heartbeat = null;
 
+  function toyRec() {
+    if (!SLUG) return null;
+    rollDay();
+    var t = L.toys[SLUG];
+    if (!t) t = L.toys[SLUG] = { sec: 0, tickets: 0, plays: 0, hits: 0, first: Date.now(), last: Date.now(), disc: false };
+    return t;
+  }
+
+  // Grant the "gave it a fair shake" bonus once, when real engagement clears the
+  // bar. Called from both the input handler and the heartbeat so whichever
+  // threshold lands last triggers it.
+  function maybeDiscovery(t) {
+    if (!t || t.disc) return;
+    if (t.sec >= PLAY_MIN_SEC && (t.hits || 0) >= PLAY_MIN_HITS) {
+      t.disc = true;
+      grant(DISCOVERY_BONUS, "Played " + pageName()); // grant saves immediately
+    }
+  }
+
+  // Each genuine interaction beat (throttled ≥400ms apart) counts toward the
+  // engagement bar. Opening a toy and touching it once no longer pays anything.
   function markInput() {
     lastInput = Date.now();
-    if (!everInteracted) {
-      everInteracted = true;
-      if (SLUG) {
-        rollDay();
-        var t = L.toys[SLUG];
-        if (!t) {
-          t = L.toys[SLUG] = { sec: 0, tickets: 0, plays: 0, first: Date.now(), last: Date.now() };
-          grant(DISCOVERY_BONUS, "Discovered " + pageName());
-        }
-        t.plays++;
-        t.last = Date.now();
-        save();
-      }
-    }
+    var t = toyRec();
+    if (!t) return;
+    t.hits = (t.hits || 0) + 1;
+    t.last = Date.now();
+    if (!everInteracted) { everInteracted = true; t.plays++; }
+    maybeDiscovery(t);
+    save();
   }
 
   function tick() {
@@ -365,6 +401,7 @@
     if (!t) return;
     t.sec += TICK_MS / 1000;
     t.last = Date.now();
+    maybeDiscovery(t);
     carrySec += TICK_MS / 1000;
     if (carrySec >= SEC_PER_TICKET) {
       var earned = Math.floor(carrySec / SEC_PER_TICKET);
@@ -396,6 +433,16 @@
     window.addEventListener("pagehide", function () {
       save(true);
     });
+    // Keep the bank coherent across tabs: when another tab earns or spends, its
+    // localStorage write fires a `storage` event here — reload and re-render so
+    // an already-open pill (the hub, another toy) reflects the new total.
+    window.addEventListener("storage", function (e) {
+      if (e.key && e.key !== STORE_KEY) return;
+      L = load();
+      displayed = null; // snap to the true balance, no fly-in for a remote change
+      if (UI.el) UI.render();
+      for (var i = 0; i < listeners.length; i++) { try { listeners[i](L, null); } catch (err) {} }
+    });
   }
 
   var inputThrottle = 0;
@@ -412,6 +459,70 @@
   /* ------------------------------------------------------------------- UI */
 
   var UI = { el: null, panel: null, open: false };
+  var displayed = null; // pill's shown balance; lags L.balance during a fly-in
+
+  function fxRand(a, b) { return a + Math.random() * (b - a); }
+
+  // When tickets are earned, fly a few ticket glyphs from the play area down
+  // into the bank pill (bottom-left) and count the pill up as each one lands.
+  // Falls back to an instant update when the pill is hidden or motion is
+  // reduced, so the number is always correct either way.
+  function bankAward(n) {
+    if (n <= 0) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var pillWrap = UI.el;
+    var pill = pillWrap && pillWrap.querySelector(".opt-tickets__pill");
+    if (!pill || reduce || document.visibilityState !== "visible") {
+      displayed = L.balance; if (UI.el) UI.render();
+      return;
+    }
+    if (displayed == null) displayed = L.balance - n; // start from the pre-award total
+
+    var pr = pill.getBoundingClientRect();
+    var tx = pr.left + pr.width * 0.5, ty = pr.top + pr.height * 0.5;
+    var K = Math.min(n, 7); // a few representative tickets, not literally n
+    // how much each landing adds, summing to exactly n
+    var per = [], base = Math.floor(n / K), rem = n - base * K;
+    for (var j = 0; j < K; j++) per.push(base + (j < rem ? 1 : 0));
+
+    var W = window.innerWidth, H = window.innerHeight;
+    var srcX = W * 0.5, srcY = H * 0.42;
+    var landed = 0; // glyphs land out of order (random durations) — snap on the last
+
+    function launch(i) {
+      var g = document.createElement("div");
+      g.className = "opt-tickets-fly";
+      g.textContent = "🎟️";
+      document.body.appendChild(g);
+      var sx = srcX + fxRand(-46, 46), sy = srcY + fxRand(-34, 34);
+      var cx = (sx + tx) / 2 + fxRand(-70, 70), cy = Math.min(sy, ty) - fxRand(30, 110); // arc control point
+      var dur = 620 + fxRand(-60, 140), t0 = performance.now();
+      g.style.transform = "translate(" + sx + "px," + sy + "px) scale(0.5)";
+      g.style.opacity = "0";
+      (function step(now) {
+        var t = (now - t0) / dur;
+        if (t >= 1) {
+          g.remove();
+          landed++;
+          displayed = (displayed == null ? L.balance : displayed) + per[i];
+          if (landed === K) displayed = L.balance; // land exactly on the true total
+          UI.render();
+          pill.classList.remove("bank-pop"); void pill.offsetWidth; pill.classList.add("bank-pop");
+          return;
+        }
+        var e = 1 - Math.pow(1 - Math.max(0, t), 2.2); // ease-out
+        var mt = 1 - e;
+        var x = mt * mt * sx + 2 * mt * e * cx + e * e * tx;
+        var y = mt * mt * sy + 2 * mt * e * cy + e * e * ty;
+        var sc = 0.95 - e * 0.55;
+        var op = t < 0.14 ? t / 0.14 : (t > 0.82 ? Math.max(0, 1 - (t - 0.82) / 0.18) : 1);
+        g.style.transform = "translate(" + x + "px," + y + "px) scale(" + sc + ") rotate(" + e * 200 + "deg)";
+        g.style.opacity = String(op);
+        requestAnimationFrame(step);
+      })(t0);
+    }
+    for (var i = 0; i < K; i++) setTimeout(launch, i * 75, i);
+  }
 
   function uiEnabled() {
     var q = null;
@@ -453,11 +564,24 @@
       ".opt-tickets__row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:10.5px;border-top:1px solid rgba(255,255,255,.09);}" +
       ".opt-tickets__row span:first-child{color:rgba(255,255,255,.72);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}" +
       ".opt-tickets__row span:last-child{color:#fff;font-variant-numeric:tabular-nums;flex:0 0 auto;}" +
+      ".opt-tickets__spend{display:block;text-align:center;text-decoration:none;margin:2px 0 12px;padding:9px 10px;border-radius:9px;" +
+      "background:linear-gradient(180deg,#ffce8e,#e0873a);color:#160c04;font-weight:700;font-size:11.5px;letter-spacing:.02em;" +
+      "box-shadow:0 4px 12px rgba(224,135,58,.3);transition:transform .12s ease,filter .12s ease;}" +
+      ".opt-tickets__spend:hover{transform:translateY(-1px);filter:brightness(1.05);}" +
+      ".opt-tickets__mine{display:block;text-align:center;text-decoration:none;margin:-6px 0 12px;padding:8px 10px;border-radius:9px;" +
+      "background:rgba(255,255,255,.08);color:#ffd9a8;border:1px solid rgba(255,183,101,.4);font-weight:600;font-size:11px;letter-spacing:.02em;" +
+      "transition:background .12s ease;}" +
+      ".opt-tickets__mine:hover{background:rgba(255,255,255,.15);}" +
       ".opt-tickets__foot{margin-top:11px;display:flex;gap:6px;}" +
       ".opt-tickets__btn{flex:1;background:rgba(255,255,255,.09);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:7px;" +
       "padding:6px 8px;font:inherit;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}" +
       ".opt-tickets__btn:hover{background:rgba(255,255,255,.16);}" +
-      "@media (prefers-reduced-motion:reduce){.opt-tickets__pill{transition:none;}}";
+      // earned tickets flying down into the bank
+      ".opt-tickets-fly{position:fixed;left:0;top:0;z-index:2147483400;font-size:22px;pointer-events:none;" +
+      "will-change:transform,opacity;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));}" +
+      "@keyframes optBankPop{0%{transform:scale(1)}38%{transform:scale(1.24)}100%{transform:scale(1)}}" +
+      ".opt-tickets__pill.bank-pop{animation:optBankPop .34s cubic-bezier(.2,.9,.3,1.3);}" +
+      "@media (prefers-reduced-motion:reduce){.opt-tickets__pill{transition:none;}.opt-tickets__pill.bank-pop{animation:none;}}";
     var style = document.createElement("style");
     style.id = "opt-tickets-style";
     style.textContent = css;
@@ -474,7 +598,9 @@
 
   UI.render = function () {
     if (!UI.el) return;
-    UI.el.querySelector(".opt-tickets__n").textContent = L.balance;
+    // The pill number shows `displayed`, which lags L.balance while earned
+    // tickets are still flying into the bank (see bankAward). null = in sync.
+    UI.el.querySelector(".opt-tickets__n").textContent = displayed == null ? L.balance : displayed;
     if (!UI.open) return;
     var here = SLUG ? L.toys[SLUG] : null;
     var rows = "";
@@ -517,14 +643,16 @@
     UI.panel.innerHTML =
       '<div class="opt-tickets__big">' +
       L.balance +
-      '</div><div class="opt-tickets__sub">tickets · earning silently (test mode)</div>' +
+      '</div><div class="opt-tickets__sub">arcade tickets · earned across the toys</div>' +
+      '<a class="opt-tickets__spend" href="/store/"><span aria-hidden="true">🎟️</span> Spend at the Prize Counter →</a>' +
+      (L.owned && L.owned.length
+        ? '<a class="opt-tickets__mine" href="/store/#mine"><span aria-hidden="true">🏆</span> See my ' + L.owned.length + " prize" + (L.owned.length === 1 ? "" : "s") + " →</a>"
+        : "") +
       '<p class="opt-tickets__h">Breakdown</p>' +
       rows +
-      (log ? '<p class="opt-tickets__h" style="margin-top:12px">Recent</p>' + log : "") +
-      '<div class="opt-tickets__foot">' +
-      '<button class="opt-tickets__btn" data-act="hide">Hide UI</button>' +
-      '<button class="opt-tickets__btn" data-act="reset">Reset</button>' +
-      "</div>";
+      (log ? '<p class="opt-tickets__h" style="margin-top:12px">Recent</p>' + log : "");
+    // No Hide/Reset buttons: the bank is a real feature now, and both were
+    // footguns (Hide pinned it off permanently; Reset wiped the balance).
   };
 
   function esc(s) {
@@ -553,20 +681,8 @@
       wrap.classList.remove("is-fresh");
       UI.render();
     });
-    UI.panel.addEventListener("click", function (ev) {
-      var b = ev.target.closest && ev.target.closest("[data-act]");
-      if (!b) return;
-      if (b.getAttribute("data-act") === "hide") {
-        lsSet(UI_FLAG_KEY, "0");
-        wrap.remove();
-        UI.el = null;
-      } else if (b.getAttribute("data-act") === "reset") {
-        L = blank();
-        seed();
-        save(true);
-        UI.render();
-      }
-    });
+    // Let the "Spend at the Prize Counter" link (and any panel content) work
+    // normally; the panel no longer has Hide/Reset actions.
     document.addEventListener("click", function () {
       if (!UI.open) return;
       UI.open = false;
@@ -651,6 +767,7 @@
     reset: function () {
       L = blank();
       seed();
+      displayed = null;
       save(true);
       emit(null);
     },
