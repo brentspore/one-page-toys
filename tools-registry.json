@@ -1,5 +1,28 @@
 [
   {
+    "slug": "skee-ball",
+    "name": "Skee Ball",
+    "shortDescription": "The arcade alley in your browser. Swipe up the lane to roll: flick harder to send the ball farther up the board — a soft roll lands a 10, a firm one finds the 40 and 50, and a fast angled flick threads a corner 100. Overcook it and it sails over for nothing. Nine balls, one score.",
+    "category": "game",
+    "tags": [
+      "skee-ball",
+      "arcade",
+      "carnival",
+      "rolling",
+      "aiming",
+      "swipe",
+      "score-chase",
+      "tickets",
+      "physics",
+      "bowling",
+      "boardwalk",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/skee-ball/",
+    "related": []
+  },
+  {
     "slug": "deep-hollow",
     "name": "Deep Hollow",
     "shortDescription": "A bioluminescent cave-descent platformer reimagining the classic rope-climbing chamber crawlers. Climb glowing vines, grab every key to unlock the door, and drop deeper into the hollow — dodging falling drips and bouncing spores before the timer runs out. How deep can you go?",

@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "skee-ball":
+    "skee ball skeeball arcade roll the ball up the ramp lane bowling carnival boardwalk midway ticket redemption arcade tickets swipe flick aim 10 20 30 40 50 100 corner holes rings score chase alley rolling game classic arcade fairground amusement park physics toss underhand roll nine balls high score",
   "deep-hollow":
     "deep hollow downland retro platformer cave descent climb glowing vines ropes ladders grab keys unlock doors dodge drips falling water bouncing spores hazards timer chamber crawler trs-80 tandy classic arcade platform game jump climbing spelunker caver headlamp bioluminescent glowing cavern underground dungeon crawl how deep can you go descend deeper miner lantern retro reimagined",
   "shuriken-night":

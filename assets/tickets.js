@@ -77,6 +77,9 @@
     { test: "plane_best", dir: "up", label: "Paper Plane distance" },
     { test: "pc_best", dir: "up", label: "Perfect Circle accuracy" },
     { test: "skyfortress_best", dir: "up", label: "Sky Fortress score" },
+    // Skee Ball is the ticket machine — it pays a per-game payout directly via
+    // OPT_TICKETS.award() in its own endGame (proportional to score), so it is
+    // intentionally NOT score-detected here (that would double-count).
     { test: "slice_best", dir: "up", label: "Slice It score" },
     { test: "stack_best", dir: "up", label: "Stack Tower height" },
     { test: "trio_best", dir: "up", label: "Trio score" },
@@ -582,6 +585,19 @@
       "will-change:transform,opacity;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));}" +
       "@keyframes optBankPop{0%{transform:scale(1)}38%{transform:scale(1.24)}100%{transform:scale(1)}}" +
       ".opt-tickets__pill.bank-pop{animation:optBankPop .34s cubic-bezier(.2,.9,.3,1.3);}" +
+      // light theme: match the page instead of staying dark (the page sets html[data-theme])
+      ":root[data-theme=light] .opt-tickets__pill{background:rgba(255,255,255,.92);color:#1a1a1e;border-color:rgba(0,0,0,.16);box-shadow:0 4px 14px rgba(0,0,0,.14);}" +
+      ":root[data-theme=light] .opt-tickets__pill:hover{border-color:rgba(0,0,0,.34);}" +
+      ":root[data-theme=light] .opt-tickets__panel{background:rgba(255,255,255,.98);color:#1a1a1e;border-color:rgba(0,0,0,.12);box-shadow:0 12px 34px rgba(0,0,0,.2);}" +
+      ":root[data-theme=light] .opt-tickets__h{color:rgba(0,0,0,.5);}" +
+      ":root[data-theme=light] .opt-tickets__sub{color:rgba(0,0,0,.55);}" +
+      ":root[data-theme=light] .opt-tickets__row{border-top-color:rgba(0,0,0,.1);}" +
+      ":root[data-theme=light] .opt-tickets__row span:first-child{color:rgba(0,0,0,.72);}" +
+      ":root[data-theme=light] .opt-tickets__row span:last-child{color:#1a1a1e;}" +
+      ":root[data-theme=light] .opt-tickets__mine{background:rgba(0,0,0,.045);color:#9a5716;border-color:rgba(224,135,58,.5);}" +
+      ":root[data-theme=light] .opt-tickets__mine:hover{background:rgba(0,0,0,.09);}" +
+      ":root[data-theme=light] .opt-tickets__btn{background:rgba(0,0,0,.05);color:#1a1a1e;border-color:rgba(0,0,0,.14);}" +
+      ":root[data-theme=light] .opt-tickets__btn:hover{background:rgba(0,0,0,.1);}" +
       "@media (prefers-reduced-motion:reduce){.opt-tickets__pill{transition:none;}.opt-tickets__pill.bank-pop{animation:none;}}";
     var style = document.createElement("style");
     style.id = "opt-tickets-style";
