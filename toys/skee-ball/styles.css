@@ -1,5 +1,5 @@
 /* Skee Ball — No. 090
- * Warm arcade alley: varnished blond wood, brass ring holes, a scuffed ball.
+ * Neon arcade chrome (deep purple + pink) around the canvas machine.
  * Self-contained; nothing leaks to the hub. */
 
 :root {
@@ -8,9 +8,9 @@
   --wood-lo: #7a4c22;
   --brass: #e8b45a;
   --felt: #1f5038;
-  --ink: #f6ead6;
+  --ink: #f3f0fb;
   --hot: #ff8a3d;    /* score pop / power */
-  --gold: #ffcf6a;
+  --gold: #ff6ec7;
 }
 
 * { box-sizing: border-box; }
@@ -48,7 +48,7 @@ html, body {
   font-size: 10px;
   letter-spacing: 0.19em;
   text-transform: uppercase;
-  color: rgba(246, 234, 214, 0.36);
+  color: rgba(228, 224, 248, 0.36);
 }
 .frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); }
 .frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right)); }
@@ -69,7 +69,7 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(246, 234, 214, 0.32);
+  color: rgba(228, 224, 248, 0.32);
   pointer-events: none;
   z-index: 6;
   text-align: center;
@@ -96,10 +96,10 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
 }
 .hud__cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .hud__cell[hidden] { display: none; }
-.hud__k { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(246, 234, 214, 0.48); }
-.hud__cell span:last-child { font-size: 19px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; text-shadow: 0 0 14px rgba(232, 180, 90, 0.35); }
+.hud__k { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(228, 224, 248, 0.48); }
+.hud__cell span:last-child { font-size: 19px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; text-shadow: 0 0 14px rgba(184, 142, 255, 0.35); }
 .hud__score span:last-child { color: var(--gold); }
-.hud__best span:last-child { color: rgba(246, 234, 214, 0.7); }
+.hud__best span:last-child { color: rgba(228, 224, 248, 0.7); }
 .hud__streak span:last-child { color: var(--hot); }
 
 /* ------------------------------------------------------------ sound button */
@@ -113,10 +113,10 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   height: 34px;
   display: grid;
   place-items: center;
-  background: rgba(30, 18, 10, 0.72);
-  border: 1px solid rgba(232, 180, 90, 0.3);
+  background: rgba(26, 16, 40, 0.72);
+  border: 1px solid rgba(184, 142, 255, 0.3);
   border-radius: 50%;
-  color: rgba(246, 234, 214, 0.82);
+  color: rgba(228, 224, 248, 0.82);
   font-size: 14px;
   cursor: pointer;
   -webkit-backdrop-filter: blur(6px);
@@ -125,7 +125,7 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
 }
 .sound-btn:hover { color: var(--gold); border-color: var(--gold); }
 .sound-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
-.sound-btn[aria-pressed="false"] { color: rgba(246, 234, 214, 0.32); }
+.sound-btn[aria-pressed="false"] { color: rgba(228, 224, 248, 0.32); }
 
 /* ---------------------------------------------------------------- overlay */
 
@@ -136,7 +136,7 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   display: grid;
   place-items: center;
   padding: 20px;
-  background: radial-gradient(120% 100% at 50% 32%, rgba(40, 22, 12, 0.72) 0%, rgba(15, 8, 5, 0.94) 74%);
+  background: radial-gradient(120% 100% at 50% 32%, rgba(46, 26, 78, 0.74) 0%, rgba(12, 7, 26, 0.95) 74%);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   animation: ovIn 0.35s ease both;
@@ -150,10 +150,10 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   overflow-y: auto;
   padding: 26px 26px 24px;
   text-align: center;
-  background: linear-gradient(170deg, rgba(58, 34, 18, 0.92) 0%, rgba(26, 14, 8, 0.96) 100%);
-  border: 1px solid rgba(232, 180, 90, 0.24);
+  background: linear-gradient(170deg, rgba(50, 31, 84, 0.94) 0%, rgba(21, 13, 40, 0.97) 100%);
+  border: 1px solid rgba(184, 142, 255, 0.3);
   border-radius: 18px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(232, 180, 90, 0.12);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(200, 160, 255, 0.14);
   color: var(--ink);
 }
 .panel__eyebrow {
@@ -162,8 +162,8 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   font-size: 9.5px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.92;
+  color: #ff6ec7;
+  opacity: 0.95;
 }
 .panel__title {
   margin: 0 0 12px;
@@ -172,16 +172,16 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   letter-spacing: -0.02em;
   line-height: 1.0;
   color: var(--ink);
-  text-shadow: 0 0 40px rgba(255, 138, 61, 0.32);
+  text-shadow: 0 0 40px rgba(242, 74, 160, 0.4);
 }
-.panel__text { margin: 0 0 20px; font-size: 14.5px; line-height: 1.6; color: rgba(246, 234, 214, 0.78); }
+.panel__text { margin: 0 0 20px; font-size: 14.5px; line-height: 1.6; color: rgba(228, 224, 248, 0.8); }
 .panel__keys {
   margin: 14px 0 0;
   font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 9.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(246, 234, 214, 0.34);
+  color: rgba(228, 224, 248, 0.4);
   line-height: 1.9;
 }
 
@@ -192,15 +192,15 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   font-weight: 800;
   font-family: inherit;
   letter-spacing: 0.01em;
-  color: #26140a;
-  background: linear-gradient(180deg, #ffd98a 0%, var(--brass) 58%, #c98a45 100%);
+  color: #2a0820;
+  background: linear-gradient(180deg, #ff8fd6 0%, #f24aa0 58%, #c9247a 100%);
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(232, 180, 90, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 10px 28px rgba(242, 74, 160, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   transition: transform 0.14s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
-.play-btn:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 14px 34px rgba(232, 180, 90, 0.44); }
+.play-btn:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 14px 34px rgba(242, 74, 160, 0.52); }
 .play-btn:active { transform: translateY(1px); }
 .play-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
