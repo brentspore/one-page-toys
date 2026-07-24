@@ -70,6 +70,7 @@
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },
     { test: "coinpush_best", dir: "up", label: "Coin Pusher score" },
     { test: "descent_best", dir: "up", label: "Deep Descent depth" },
+    { test: "deep_hollow_best", dir: "up", label: "Deep Hollow score" },
     { test: "dice_best", dir: "up", label: "Dice roll total" },
     { test: "dotloop_best", dir: "up", label: "Dot Loop score" },
     { test: "nova_best", dir: "up", label: "Nova Coil score" },

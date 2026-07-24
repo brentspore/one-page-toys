@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "deep-hollow":
+    "deep hollow downland retro platformer cave descent climb glowing vines ropes ladders grab keys unlock doors dodge drips falling water bouncing spores hazards timer chamber crawler trs-80 tandy classic arcade platform game jump climbing spelunker caver headlamp bioluminescent glowing cavern underground dungeon crawl how deep can you go descend deeper miner lantern retro reimagined",
   "shuriken-night":
     "shuriken night ninja star throwing game first person shooter fps ninja stars throwing stars kunai shinobi samurai japan japanese castle courtyard moonlit night paper screens shoji wave defense wave survival arcade action aim aiming target practice throw deflect parry slow motion bullet time ninja magic stealth assassin martial arts katana blade rooftop dojo horde survive",
   "spelling-blocks":

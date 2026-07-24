@@ -1,5 +1,28 @@
 [
   {
+    "slug": "deep-hollow",
+    "name": "Deep Hollow",
+    "shortDescription": "A bioluminescent cave-descent platformer reimagining the classic rope-climbing chamber crawlers. Climb glowing vines, grab every key to unlock the door, and drop deeper into the hollow — dodging falling drips and bouncing spores before the timer runs out. How deep can you go?",
+    "category": "game",
+    "tags": [
+      "deep-hollow",
+      "platformer",
+      "downland",
+      "retro",
+      "arcade",
+      "climbing",
+      "keys",
+      "cave",
+      "descent",
+      "bioluminescent",
+      "spelunker",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/deep-hollow/",
+    "related": []
+  },
+  {
     "slug": "shuriken-night",
     "name": "Shuriken Night",
     "shortDescription": "A first-person ninja star game. Hold a moonlit castle courtyard as shadows gather behind the paper screens, then burst through. Throw shuriken, knock incoming blades out of the air, charge a fan of three, slow time, and survive wave after wave.",

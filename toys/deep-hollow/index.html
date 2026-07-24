@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Deep Hollow — One Page Toys</title>
+    <meta name="description" content="A bioluminescent cave-descent platformer. Climb glowing vines, grab keys, open doors, and drop deeper — dodging falling drips and bouncing spores before the timer runs out. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/deep-hollow/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#05121a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Deep Hollow — One Page Toys" />
+    <meta property="og:description" content="Descend a glowing cavern — climb vines, grab keys, open doors, and dodge the drips. How deep can you go?" />
+    <meta property="og:url" content="https://onepagetoys.com/toys/deep-hollow/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/deep-hollow.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Deep Hollow — One Page Toys" />
+    <meta name="twitter:description" content="A glowing cave-descent platformer. Climb vines, grab keys, dodge the drips. How deep can you go?" />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/deep-hollow.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Deep Hollow",
+        "url": "https://onepagetoys.com/toys/deep-hollow/",
+        "description": "A bioluminescent cave-descent platformer inspired by the classic rope-climbing chamber crawlers: climb glowing vines, collect keys to open doors, and descend deeper while dodging falling drips and bouncing spore-balls against a per-chamber timer.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell hud__depth"><span class="hud__k">Depth</span><span id="depth">1</span></div>
+      <div class="hud__cell hud__score"><span class="hud__k">Score</span><span id="score">0</span></div>
+      <div class="hud__cell hud__keys"><span class="hud__k">Keys</span><span id="keys">0/1</span></div>
+      <div class="hud__cell hud__lives"><span class="hud__k">Lives</span><span id="lives"></span></div>
+      <div class="hud__timer" id="timerWrap"><i id="timerBar"></i></div>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <!-- touch controls -->
+    <div class="pad" id="pad" hidden aria-hidden="true">
+      <div class="pad__move">
+        <button class="pad__btn" data-btn="left">◀</button>
+        <div class="pad__ud">
+          <button class="pad__btn" data-btn="up">▲</button>
+          <button class="pad__btn" data-btn="down">▼</button>
+        </div>
+        <button class="pad__btn" data-btn="right">▶</button>
+      </div>
+      <button class="pad__jump" data-btn="jump">JUMP</button>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">A glowing descent</p>
+        <h1 class="panel__title" id="ovTitle">Deep Hollow</h1>
+        <p class="panel__text" id="ovText">Climb the glowing vines, grab every key to open the door, and drop deeper into the hollow. Mind the falling drips and the bouncing spores — and the timer.</p>
+        <button type="button" class="play-btn" id="ovBtn">Descend</button>
+        <p class="panel__keys" id="ovKeys"></p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 089</span>
+      <span class="frame__corner frame__corner--tr">Deep Hollow</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">arrows to move · up to climb &amp; jump</p>
+
+    <script src="../../assets/tickets.js?v=9" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=8" defer></script>
+  </body>
+</html>
