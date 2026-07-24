@@ -565,13 +565,9 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Built 2026-07-21. Test checklist: (1) does an average session on an ambient toy earn a sane number vs. a good run on an arcade toy — neither should dwarf the other by 100×; (2) do the per-toy daily caps stop idle-tab farming; (3) confirm score-key detection actually fires on each scoring toy (the debug console lists recent awards); (4) confirm no toy lost its own save behavior from the wrapped `localStorage.setItem`; (5) private/incognito degrades to a silent no-op. Tuning knobs live at the top of `assets/tickets.js` (rate table + `EARN` key map). Real-device check too — iOS Safari visibility/heartbeat behavior differs from desktop.
 ---
-### New toy: Downland clone (TRS-80 CoCo platformer)
+### ~~New toy: Downland clone (TRS-80 CoCo platformer)~~ — DONE 2026-07-23
 
-**Why it matters:** Owner idea (2026-07-21) — a nostalgia pick from the TRS-80 Color Computer era. Downland is a genuinely good, tight single-screen platformer that has aged well mechanically, and the site has no rope-climbing/chamber-crawler in the catalog. Retro-arcade nostalgia toys also search well.
-
-**When to revisit:** Next time we're picking new toys to build (owner selects via AskUserQuestion).
-
-**Notes:** Downland (1983, Michael Aichlmayr, TRS-80 CoCo): single-screen chambers connected by ladders and **ropes you climb**, collecting keys to open doors, dodging falling **water drops** and bouncing balls, with a per-chamber timer. Signature feel = precise jumping, rope physics, and instant-death hazards on a strict timer. **Build direction:** vanilla Canvas 2D; keep it a one-sitting arcade score-chase (a handful of chambers, best score/depth in `localStorage`) per the "keep builds small & self-contained" decision — do NOT attempt the full 20-chamber original as a campaign. Legal: original name + original art, mechanics only (no Downland wordmark or copied sprite art). Must clear the design quality bar — a curated little world, not flat primitives: think CRT-phosphor palette done tastefully, glowing vector-ish platforms, real lighting on the ropes/drops. Audio per the quality bar: physically-grounded synth (rope creak, drop plink, key chime, death buzz that isn't a harsh beep). Real rendered card + OG; full add-a-toy pipeline.
+**Shipped as Deep Hollow (No. 089, `main 9ee4b02`)** — reimagined as a bioluminescent cave-descent platformer with a headlamped spelunker (rope-climb vines, keys→doors, drips + bouncing spores, per-chamber timer, procedural solvable chambers). Faithful mechanics, modern skin. Open: owner play-test + audio-by-ear.
 ---
 ### New toy: Clowns & Balloons clone (TRS-80 CoCo / arcade Circus)
 
