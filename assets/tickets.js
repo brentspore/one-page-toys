@@ -586,8 +586,8 @@
       "@keyframes optBankPop{0%{transform:scale(1)}38%{transform:scale(1.24)}100%{transform:scale(1)}}" +
       ".opt-tickets__pill.bank-pop{animation:optBankPop .34s cubic-bezier(.2,.9,.3,1.3);}" +
       // light theme: match the page instead of staying dark (the page sets html[data-theme])
-      ":root[data-theme=light] .opt-tickets__pill{background:rgba(255,255,255,.92);color:#1a1a1e;border-color:rgba(0,0,0,.16);box-shadow:0 4px 14px rgba(0,0,0,.14);}" +
-      ":root[data-theme=light] .opt-tickets__pill:hover{border-color:rgba(0,0,0,.34);}" +
+      ":root[data-theme=light] .opt-tickets__pill{background:rgba(255,255,255,.96);color:#1a1a1e;border-color:rgba(0,0,0,.24);box-shadow:0 3px 12px rgba(0,0,0,.2);}" +
+      ":root[data-theme=light] .opt-tickets__pill:hover{border-color:rgba(0,0,0,.4);}" +
       ":root[data-theme=light] .opt-tickets__panel{background:rgba(255,255,255,.98);color:#1a1a1e;border-color:rgba(0,0,0,.12);box-shadow:0 12px 34px rgba(0,0,0,.2);}" +
       ":root[data-theme=light] .opt-tickets__h{color:rgba(0,0,0,.5);}" +
       ":root[data-theme=light] .opt-tickets__sub{color:rgba(0,0,0,.55);}" +

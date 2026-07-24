@@ -56,7 +56,7 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
     <canvas id="canvas"></canvas>
@@ -71,24 +71,23 @@
 
     <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
 
-    <!-- touch controls -->
+    <!-- touch controls: move on the left thumb, jump/climb on the right -->
     <div class="pad" id="pad" hidden aria-hidden="true">
-      <div class="pad__move">
-        <button class="pad__btn" data-btn="left">◀</button>
-        <div class="pad__ud">
-          <button class="pad__btn" data-btn="up">▲</button>
-          <button class="pad__btn" data-btn="down">▼</button>
-        </div>
-        <button class="pad__btn" data-btn="right">▶</button>
+      <div class="pad__zone pad__zone--move">
+        <button class="pad__btn" data-btn="left" aria-label="Move left">◀</button>
+        <button class="pad__btn" data-btn="right" aria-label="Move right">▶</button>
       </div>
-      <button class="pad__jump" data-btn="jump">JUMP</button>
+      <div class="pad__zone pad__zone--climb">
+        <button class="pad__btn" data-btn="down" aria-label="Climb down / drop">▼</button>
+        <button class="pad__btn pad__btn--jump" data-btn="up" aria-label="Jump / climb up">▲</button>
+      </div>
     </div>
 
     <div class="overlay" id="overlay">
       <div class="panel">
         <p class="panel__eyebrow" id="ovEyebrow">A glowing descent</p>
         <h1 class="panel__title" id="ovTitle">Deep Hollow</h1>
-        <p class="panel__text" id="ovText">Climb the glowing vines, grab every key to open the door, and drop deeper into the hollow. Mind the falling drips and the bouncing spores — and the timer.</p>
+        <p class="panel__text" id="ovText">Climb the glowing vines, grab every key to open the door, and drop deeper into the hollow. Grab the crystals for bonus points, dodge the drips, spores and swooping bats, and hit a depth milestone for an extra life. Beat the timer.</p>
         <button type="button" class="play-btn" id="ovBtn">Descend</button>
         <p class="panel__keys" id="ovKeys"></p>
       </div>
@@ -102,8 +101,8 @@
 
     <p class="hint" id="hint">arrows to move · up to climb &amp; jump</p>
 
-    <script src="../../assets/tickets.js?v=11" defer></script>
-    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/tickets.js?v=12" defer></script>
+    <script src="script.js?v=2" defer></script>
     <script src="../../assets/prizes.js?v=1" defer></script>
     <script src="../../assets/tip-jar.js?v=10" defer></script>
     <script src="../../assets/share.js?v=5" defer></script>

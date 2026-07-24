@@ -152,47 +152,54 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
 
 .pad { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
 .pad[hidden] { display: none; }
-.pad__move {
+.pad__zone {
   position: absolute;
-  left: max(14px, env(safe-area-inset-left));
-  bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
+  bottom: max(22px, calc(env(safe-area-inset-bottom) + 14px));
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 14px;
 }
-.pad__ud { display: flex; flex-direction: column; gap: 8px; }
-.pad__btn, .pad__jump {
+.pad__zone--move { left: max(18px, calc(env(safe-area-inset-left) + 4px)); }
+.pad__zone--climb {
+  right: max(18px, calc(env(safe-area-inset-right) + 4px));
+  flex-direction: column;
+  gap: 12px;
+}
+.pad__btn {
   pointer-events: auto;
   -webkit-user-select: none;
   user-select: none;
-  background: rgba(10, 30, 44, 0.62);
-  border: 1px solid rgba(79, 224, 200, 0.3);
+  background: rgba(10, 30, 44, 0.5);
+  border: 1px solid rgba(79, 224, 200, 0.34);
   color: var(--glow);
-  border-radius: 14px;
-  font-size: 18px;
+  border-radius: 18px;
+  font-size: 25px;
+  width: 68px;
+  height: 68px;
   display: grid;
   place-items: center;
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   touch-action: none;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.32);
 }
-.pad__btn { width: 52px; height: 52px; }
-.pad__ud .pad__btn { width: 52px; height: 44px; }
-.pad__jump {
-  position: absolute;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(28px, calc(env(safe-area-inset-bottom) + 20px));
-  width: 82px;
-  height: 82px;
-  border-radius: 50%;
-  font-family: "Geist Mono", monospace;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+.pad__btn--jump {
+  width: 88px;
+  height: 88px;
+  font-size: 34px;
   color: var(--amber);
-  border-color: rgba(255, 207, 106, 0.4);
+  border-color: rgba(255, 207, 106, 0.44);
+  background: rgba(30, 20, 10, 0.42);
 }
-.pad__btn.is-down, .pad__jump.is-down { background: rgba(79, 224, 200, 0.28); transform: scale(0.94); }
+.pad__btn.is-down { background: rgba(79, 224, 200, 0.32); transform: scale(0.93); }
+.pad__btn--jump.is-down { background: rgba(255, 207, 106, 0.34); }
+
+/* on touch, hide the meta badges while playing so they never sit under the controls */
+@media (pointer: coarse) {
+  body.is-playing .opt-tickets,
+  body.is-playing .opt-tipjar,
+  body.is-playing .opt-fs { display: none !important; }
+}
 
 /* ---------------------------------------------------------------- overlay */
 

@@ -43,6 +43,7 @@
 
   var GRAV = 1500, MOVE = 190, ACCEL = 1500, FRICT = 1400, AIR = 700;
   var JUMP = 430, CLIMB = 165, DROP_MAX = 900;
+  var FATAL_FALL_GAPS = 1.7;      // a plunge longer than this many ledge-gaps (from the apex) is lethal
   var GRAB_R = 15;
 
   var BEST_KEY = "deep_hollow_best";
@@ -61,6 +62,8 @@
   var depth = 1, score = 0, lives = 3, best = 0, bestDepth = 0;
   var timeLeft = 0, timeMax = 0;
   var shake = 0, flash = 0, flashCol = "255,106,138";
+  var bannerText = "", bannerT = 0, bannerCol = "#4fe0c8";
+  function banner(text, col) { bannerText = text; bannerCol = col || COL.glow; bannerT = 2.3; }
   var soundOn = true;
 
   var chamber = null;     // { platforms, ropes, keys, door, drips, balls, spawn }
@@ -153,7 +156,28 @@
       var bpz = plats[ri(1, rows - 1)];
       balls.push({ x: bpz.x + bpz.w / 2, y: bpz.y - 20, vx: rand(60, 110) * (Math.random() < 0.5 ? -1 : 1), vy: -rand(150, 260), r: 9, pulse: rand(0, 6.28) });
     }
-    chamber = { plats: plats, ropes: ropes, keys: keys, door: door, drips: drips, balls: balls, rows: rows,
+    // glowing crystals to collect — score + an all-clear time bonus, some on risky ledges
+    var gems = [];
+    var nGems = ri(2, 4);
+    var gRows = [];
+    for (i = 1; i < rows; i++) gRows.push(i);
+    shuffle(gRows);
+    for (i = 0; i < nGems; i++) {
+      var gpl = plats[gRows[i % gRows.length]];
+      var air = i > 0 && Math.random() < 0.35;    // a few float above the ledge (need a jump)
+      gems.push({ x: gpl.x + rand(18, gpl.w - 18), y: gpl.y - (air ? 44 : 14), taken: false, bob: rand(0, 6.28), hue: pick([COL.glow, COL.glow2, "#c79bff"]) });
+    }
+    // cave bats — a moving threat that drifts across and occasionally swoops to your height
+    var bats = [];
+    var nBats = d >= 2 ? Math.min(1 + Math.floor((d - 2) / 3), 3) : 0;
+    for (i = 0; i < nBats; i++) {
+      var byy = rand(TOP_Y + 34, BOT_Y - 46);
+      bats.push({ x: rand(WALL + 24, DW - WALL - 24), y: byy, baseY: byy, targetY: byy,
+        vx: rand(46, 82) * (Math.random() < 0.5 ? -1 : 1), phase: rand(0, 6.28), flap: rand(0, 6.28),
+        swoop: 0, swoopT: rand(2.5, 5.5) });
+    }
+    chamber = { plats: plats, ropes: ropes, keys: keys, door: door, drips: drips, balls: balls,
+      gems: gems, gemsTotal: gems.length, gemBonus: false, bats: bats, rows: rows,
       spawn: { x: plats[0].x + 24, y: plats[0].y - PW.h } };
   }
   function clampOverlap(prev, pw) {
@@ -170,7 +194,7 @@
 
   function resetPlayer() {
     player = { x: chamber.spawn.x, y: chamber.spawn.y, vx: 0, vy: 0, w: PW.w, h: PW.h,
-      onGround: false, onRope: null, face: 1, squash: 1, walkT: 0, blink: 0 };
+      onGround: false, onRope: null, face: 1, squash: 1, walkT: 0, blink: 0, fallY: null };
   }
 
   function startChamber(regen) {
@@ -269,6 +293,15 @@
       var o = AC.createOscillator(), g = vox(pan, 0.5); o.type = "sine"; o.frequency.value = fr;
       var tt = t + i * 0.04, amp = 0.16 / (1 + i * 0.7), dur = 0.7 / (1 + i * 0.5);
       g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(amp, tt + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, tt + dur);
+      o.connect(g); o.start(tt); o.stop(tt + dur + 0.02);
+    });
+  }
+  function sndGem(pan) {
+    if (!AC || !soundOn) return; var t = AC.currentTime;
+    [1318, 1976, 2637].forEach(function (fr, i) {
+      var o = AC.createOscillator(), g = vox(pan * 0.6, 0.42); o.type = "triangle"; o.frequency.value = fr;
+      var tt = t + i * 0.035, amp = 0.11 / (1 + i * 0.5), dur = 0.5 / (1 + i * 0.4);
+      g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(amp, tt + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, tt + dur);
       o.connect(g); o.start(tt); o.stop(tt + dur + 0.02);
     });
   }
@@ -385,6 +418,15 @@
     score += bonus;
     depth++;
     if (depth - 1 > bestDepth) { bestDepth = depth - 1; try { localStorage.setItem(DEPTH_KEY, String(bestDepth)); } catch (e) {} }
+    // depth milestone every 5: a breather reward — extra life + bonus + fanfare
+    if (depth % 5 === 0) {
+      score += 500;
+      var gainedLife = lives < 5;
+      if (gainedLife) lives++;
+      banner("Depth " + depth + (gainedLife ? " · +1 life" : " · +500"), COL.amber);
+      flash = 0.5; flashCol = "255,207,106";
+      sndWin();
+    }
     transit = 1.0;
     sndDescend();
     // build the next chamber now; the transition animates over it
@@ -438,6 +480,7 @@
     updateFx(dt);
 
     if (!running) return;
+    if (bannerT > 0) bannerT = Math.max(0, bannerT - dt);
 
     // chamber animation continues, but freeze player control during death/transit
     if (transit > 0) { transit -= dt; }
@@ -472,6 +515,20 @@
         updateHud();
       }
     }
+    // gems (crystals)
+    var gemsLeft = 0;
+    for (i = 0; i < chamber.gems.length; i++) {
+      var gm = chamber.gems[i];
+      if (gm.taken) continue;
+      if (Math.abs((player.x + player.w / 2) - gm.x) < 18 && Math.abs((player.y + player.h / 2) - gm.y) < 20) {
+        gm.taken = true; score += 40; sndGem(panX(gm.x)); pop(gm.x, gm.y, gm.hue); updateHud();
+      } else gemsLeft++;
+    }
+    if (gemsLeft === 0 && chamber.gemsTotal > 0 && !chamber.gemBonus) {
+      chamber.gemBonus = true; score += 60; timeLeft = Math.min(timeMax, timeLeft + 4);
+      sndGem(0); pop(player.x + player.w / 2, player.y, COL.glow); banner("All crystals! +4s", COL.glow);
+    }
+
     // door
     var dr = chamber.door;
     if (dr.open && player.x + player.w > dr.x && player.x < dr.x + dr.w && player.y + player.h > dr.y && player.y < dr.y + dr.h) {
@@ -486,6 +543,7 @@
     var p = player;
     // --- on a vine ---
     if (p.onRope) {
+      p.fallY = null;               // grabbing a vine cancels any fall
       var rope = p.onRope;
       p.x = rope.x - p.w / 2;
       if (keyState.up) p.y -= CLIMB * dt;
@@ -527,14 +585,24 @@
     p.y += p.vy * dt;
     p.x = clamp(p.x, WALL, DW - WALL - p.w);
 
+    var feet = p.y + p.h;
+    // track the apex of the current airborne arc (highest point = smallest feet-y)
+    if (p.fallY === null || feet < p.fallY) p.fallY = feet;
+    // fell off the bottom of the chamber -> death
+    if (p.y > DH + 12) { p.onGround = false; loseLife(); return; }
+
     // one-way ledge landing
     var was = p.onGround; p.onGround = false;
     if (p.vy >= 0) {
-      var feet = p.y + p.h;
       for (var i = 0; i < chamber.plats.length; i++) {
         var pl = chamber.plats[i];
         if (p.x + p.w > pl.x + 2 && p.x < pl.x + pl.w - 2 && prevFeet <= pl.y + 2 && feet >= pl.y) {
-          p.y = pl.y - p.h; p.vy = 0; p.onGround = true;
+          // a plunge longer than ~1.7 ledge-gaps (measured from the apex) kills on impact
+          var fatalDist = (BOT_Y - TOP_Y) / (chamber.rows - 1) * FATAL_FALL_GAPS;
+          if (p.fallY !== null && (pl.y - p.fallY) > fatalDist) {
+            p.y = pl.y - p.h; p.onGround = true; p.fallY = null; loseLife(); return;
+          }
+          p.y = pl.y - p.h; p.vy = 0; p.onGround = true; p.fallY = null;
           if (!was) { sndLand(panX(p.x)); p.squash = 0.7; }
           break;
         }
@@ -584,6 +652,21 @@
       }
       if (ba.y > DH + 40) { ba.y = TOP_Y; ba.vy = 0; } // safety
     }
+    // bats: drift across, bob, and occasionally swoop toward the player's height
+    for (var bt = 0; bt < chamber.bats.length; bt++) {
+      var bat = chamber.bats[bt];
+      bat.flap += dt * 15;
+      bat.phase += dt * 1.7;
+      bat.x += bat.vx * dt;
+      if (bat.x < WALL + 16) { bat.x = WALL + 16; bat.vx = Math.abs(bat.vx); }
+      if (bat.x > DW - WALL - 16) { bat.x = DW - WALL - 16; bat.vx = -Math.abs(bat.vx); }
+      if (!frozen) {
+        bat.swoopT -= dt;
+        if (bat.swoopT <= 0 && player) { bat.swoopT = rand(3.5, 6.5); bat.targetY = clamp(player.y + player.h / 2, TOP_Y + 24, BOT_Y - 24); }
+        bat.baseY = lerp(bat.baseY, bat.targetY, dt * 1.1);
+      }
+      bat.y = bat.baseY + Math.sin(bat.phase) * 11;
+    }
   }
 
   function checkHazardHit() {
@@ -596,6 +679,11 @@
       var ba = chamber.balls[b];
       var cx = clamp(ba.x, pb.x, pb.x + pb.w), cy = clamp(ba.y, pb.y, pb.y + pb.h);
       var dx = ba.x - cx, dy = ba.y - cy; if (dx * dx + dy * dy < (ba.r - 1) * (ba.r - 1)) return true;
+    }
+    for (var bt = 0; bt < chamber.bats.length; bt++) {
+      var bat = chamber.bats[bt];
+      var bx = clamp(bat.x, pb.x, pb.x + pb.w), by = clamp(bat.y, pb.y, pb.y + pb.h);
+      var bdx = bat.x - bx, bdy = bat.y - by; if (bdx * bdx + bdy * bdy < 64) return true; // ~8px body
     }
     return false;
   }
@@ -627,8 +715,10 @@
       drawPlatforms();
       drawDoor();
       drawKeys();
+      drawGems();
       drawDrips();
       drawBalls();
+      drawBats();
       drawMotes();
       if (player && (running || transit > 0)) drawPlayer();
       drawHeadlamp();
@@ -642,6 +732,18 @@
     var vg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.34, W / 2, H / 2, Math.max(W, H) * 0.72);
     vg.addColorStop(0, "rgba(2,8,14,0)"); vg.addColorStop(1, "rgba(2,8,14,0.66)");
     ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+
+    // milestone / bonus banner (screen space)
+    if (bannerT > 0 && bannerText) {
+      var a = Math.min(1, bannerT * 1.4) * Math.min(1, (2.3 - bannerT) * 3);
+      ctx.save(); ctx.globalAlpha = a;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = "700 " + Math.round(clamp(W * 0.05, 18, 30)) + "px 'Geist', system-ui, sans-serif";
+      var by = H * 0.26 - (2.3 - bannerT) * 12;
+      ctx.fillStyle = "rgba(2,10,16,0.55)"; ctx.fillText(bannerText, W / 2 + 1, by + 1);
+      ctx.fillStyle = bannerCol; ctx.shadowColor = bannerCol; ctx.shadowBlur = 16; ctx.fillText(bannerText, W / 2, by);
+      ctx.restore();
+    }
   }
 
   function drawCaveBg() {
@@ -724,6 +826,58 @@
       ctx.fillRect(k.x - 1.3, yy - 2, 2.6, 11);
       ctx.fillRect(k.x - 1.3, yy + 6, 5, 2.2);
       ctx.fillRect(k.x - 1.3, yy + 2.5, 4, 2);
+    }
+  }
+
+  function hexToRgb(h) { h = h.replace("#", ""); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+  function drawGems() {
+    for (var i = 0; i < chamber.gems.length; i++) {
+      var g = chamber.gems[i]; if (g.taken) continue; g.bob += 0.045;
+      var yy = g.y + Math.sin(g.bob) * 3, rgb = hexToRgb(g.hue), rs = rgb[0] + "," + rgb[1] + "," + rgb[2];
+      ctx.save(); ctx.globalCompositeOperation = "lighter";
+      var gl = ctx.createRadialGradient(g.x, yy, 1, g.x, yy, 16);
+      gl.addColorStop(0, "rgba(" + rs + ",0.55)"); gl.addColorStop(1, "rgba(" + rs + ",0)");
+      ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(g.x, yy, 16, 0, 6.28); ctx.fill();
+      ctx.restore();
+      // faceted crystal
+      var s = 6.5 + Math.sin(g.bob * 2) * 0.4;
+      ctx.beginPath();
+      ctx.moveTo(g.x, yy - s); ctx.lineTo(g.x + s * 0.7, yy - s * 0.15); ctx.lineTo(g.x, yy + s); ctx.lineTo(g.x - s * 0.7, yy - s * 0.15); ctx.closePath();
+      ctx.fillStyle = g.hue; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(g.x, yy - s); ctx.lineTo(g.x + s * 0.7, yy - s * 0.15); ctx.lineTo(g.x, yy + s); ctx.closePath();
+      ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.moveTo(g.x, yy - s); ctx.lineTo(g.x, yy + s); ctx.moveTo(g.x - s * 0.7, yy - s * 0.15); ctx.lineTo(g.x + s * 0.7, yy - s * 0.15); ctx.stroke();
+    }
+  }
+
+  function drawBats() {
+    for (var i = 0; i < chamber.bats.length; i++) {
+      var b = chamber.bats[i], flap = Math.sin(b.flap) * 0.7;
+      ctx.save(); ctx.translate(b.x, b.y);
+      // menacing under-glow so it's always readable in the dark
+      ctx.save(); ctx.globalCompositeOperation = "lighter";
+      var gl = ctx.createRadialGradient(0, 0, 1, 0, 0, 20);
+      gl.addColorStop(0, "rgba(255,106,138,0.28)"); gl.addColorStop(1, "rgba(255,106,138,0)");
+      ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(0, 0, 20, 0, 6.28); ctx.fill();
+      ctx.restore();
+      if (b.vx < 0) ctx.scale(-1, 1);
+      // wings
+      ctx.fillStyle = "#2b1830";
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(-8, -7 - flap * 7, -16, -1 + flap * 5);
+      ctx.quadraticCurveTo(-10, 3, -3, 3);
+      ctx.lineTo(3, 3);
+      ctx.quadraticCurveTo(10, 3, 16, -1 + flap * 5);
+      ctx.quadraticCurveTo(8, -7 - flap * 7, 0, 0);
+      ctx.fill();
+      // body
+      ctx.fillStyle = "#3a2440"; ctx.beginPath(); ctx.ellipse(0, 1.5, 4, 5.5, 0, 0, 6.28); ctx.fill();
+      // glowing eyes
+      ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = COL.danger;
+      ctx.beginPath(); ctx.arc(-1.6, -1, 1.1, 0, 6.28); ctx.arc(1.6, -1, 1.1, 0, 6.28); ctx.fill(); ctx.restore();
+      ctx.restore();
     }
   }
 
