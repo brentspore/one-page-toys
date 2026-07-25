@@ -44,9 +44,33 @@
   var DECAY = [0.14, 0.26, 0.50, 0.85, 1.30, 1.90];       // energy loss / sec
   var LEVEL = [0.32, 0.21, 0.115, 0.062, 0.036, 0.021];
 
+  // Drive-model knobs. Deliberately forgiving — an uneven hand should sound
+  // less locked, not silent (DRIVE_FLOOR keeps half the drive unconditionally).
+  var SPEED_SWEET = 0.55;   // rub speed where stick-slip couples best
+  var SWEET_LO = 0.44;      // gaussian width below the sweet spot
+  var SWEET_HI = 0.72;      // and above it — too fast loses grip more slowly
+  var SWEET_FLOOR = 0.42;   // even a wrong-speed rub still does something
+  var DRIVE_FLOOR = 0.45;   // share of drive that does not depend on the lock
+  var LOCK_RISE = 0.9;      // how fast a steady hand catches the tone
+  var LOCK_FALL = 1.8;      // and how fast an unsteady one loses it
+  var REVERSE_COST = 0.38;  // lock kept after a direction change
+  // A badly driven bowl does not merely take longer to get there — it never
+  // gets as loud. Without a lock-dependent ceiling both a steady and a jerky
+  // rub saturate at the same level and consistency stops mattering.
+  var CAP_BASE = 0.5;       // energy an unlocked rub can reach
+  var CAP_LOCK = 0.7;       // extra ceiling a fully locked tone unlocks
+
   // ------------------------------------------------------------------- state
   var energy = [0, 0, 0, 0, 0, 0];
   var rubbing = false, rubSpeed = 0, rubAng = 0, rubShown = 0;
+  // Stick-slip drive model. A bowl does not sing because you touched it, it
+  // sings because the mallet grabs and releases at a steady rate — so an even,
+  // unbroken circle locks the tone in and a jerky or reversing hand breaks it.
+  var rubDir = 0, pendDir = 0, dirFlipT = 0;
+  var spdMean = 0, spdDev = 0;   // running mean + mean deviation of rub speed
+  var consist = 0;               // 0..1, how even the hand is
+  var lock = 0;                  // 0..1, how well the tone has caught
+  var chatterCool = 0;
   var pressed = false, pressT = 0, pressMove = 0, pressX = 0, pressY = 0;
   var lastAng = null;
   var amp = 0;              // smoothed loudness for the visuals
@@ -238,6 +262,25 @@
     og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
     o.connect(og); og.connect(bowlBus);
     o.start(t); o.stop(t + 0.14);
+  }
+
+  // the rasp of the mallet losing its grip when you change direction
+  function chatter(v) {
+    if (!AC || !soundOn || !noiseBuf) return;
+    var t = AC.currentTime;
+    var src = AC.createBufferSource();
+    src.buffer = noiseBuf;
+    var f = AC.createBiquadFilter();
+    f.type = "bandpass";
+    f.frequency.setValueAtTime(BOWLS[sizeIdx].f * 4.2, t);
+    f.frequency.exponentialRampToValueAtTime(BOWLS[sizeIdx].f * 1.6, t + 0.16);
+    f.Q.value = 2.2;
+    var g = AC.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.018 + 0.026 * clamp(v, 0, 1), t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    src.connect(f); f.connect(g); g.connect(bowlBus);
+    src.start(t, rnd(0, 1)); src.stop(t + 0.22);
   }
 
   function plip(pan) {
@@ -522,6 +565,8 @@
       // rad/frame → normalised 0..1 rub speed, smoothed
       rubSpeed = clamp(Math.abs(d) * 26, 0, 1.35);
       rubAng = a;
+      // which way round the rim — a tiny wobble must not read as a reversal
+      if (Math.abs(d) > 0.012) pendDir = d > 0 ? 1 : -1;
       if (pressMove > 10) rubbing = true;
     }
     lastAng = a;
@@ -537,6 +582,10 @@
     rubbing = false;
     rubSpeed = 0;
     lastAng = null;
+    // lifting off breaks the contact, so the tone stops being driven — but it
+    // keeps most of its lock so a quick re-grab picks the note straight back up
+    lock *= 0.7;
+    dirFlipT = 0;
   }
   canvas.addEventListener("pointerup", endPress);
   canvas.addEventListener("pointercancel", endPress);
@@ -557,22 +606,72 @@
     // friction feeds the modes: the fundamental takes almost anything, the
     // upper modes only wake up once you're moving properly
     if (rubbing && rubSpeed > 0.05) {
-      var sp = clamp(rubSpeed, 0, 1.2);
-      // Mode 2 is what you actually hear as "the" note of a rubbed bowl, so it
-      // has to arrive early — the first curve kept it buried until you were
-      // whipping the rim, which left a slow rub sounding like a bare sine.
+      var sp = clamp(rubSpeed, 0, 1.35);
+
+      // --- direction. A committed reversal knocks the tone; a jitter does not.
+      if (pendDir !== 0 && rubDir !== 0 && pendDir !== rubDir && sp > 0.14) {
+        dirFlipT += dt;
+        if (dirFlipT > 0.05) {
+          rubDir = pendDir;
+          dirFlipT = 0;
+          lock *= REVERSE_COST;
+          if (chatterCool <= 0) { chatter(sp); chatterCool = 0.22; }
+        }
+      } else {
+        dirFlipT = 0;
+        if (rubDir === 0) rubDir = pendDir;
+      }
+
+      // --- how even is the hand? mean and mean-deviation of the rub speed
+      var km = Math.min(1, dt * 3.5);
+      spdMean += (sp - spdMean) * km;
+      spdDev += (Math.abs(sp - spdMean) - spdDev) * km;
+      consist = clamp(1 - spdDev / (spdMean * 0.5 + 0.07), 0, 1);
+
+      // --- speed: stick-slip couples best in a band, and falls off either side
+      var off = sp - SPEED_SWEET;
+      var wid = off < 0 ? SWEET_LO : SWEET_HI;
+      var sweet = SWEET_FLOOR + (1 - SWEET_FLOOR) * Math.exp(-(off / wid) * (off / wid));
+
+      // --- the lock: steady + in the band = the tone catches and holds
+      var want = consist * sweet;
+      var rate = want > lock ? LOCK_RISE : LOCK_FALL;
+      lock += (want - lock) * Math.min(1, dt * rate);
+      lock = clamp(lock, 0, 1);
+
+      var drive = sweet * (DRIVE_FLOOR + (1 - DRIVE_FLOOR) * lock);
+
+      // Mode 2 is what you hear as "the" note of a rubbed bowl, so it arrives
+      // early; the upper modes only come in once the tone is genuinely locked.
       var feed = [
         1,
-        0.85 * Math.pow(sp, 0.6),
-        0.4 * Math.pow(sp, 1.4),
-        0.16 * sp * sp,
-        0.06 * Math.pow(sp, 2.6),
-        0.02 * Math.pow(sp, 3)
+        0.85 * Math.pow(sp, 0.6) * (0.6 + 0.4 * lock),
+        0.4 * Math.pow(sp, 1.4) * lock,
+        0.16 * sp * sp * lock,
+        0.06 * Math.pow(sp, 2.6) * lock,
+        0.02 * Math.pow(sp, 3) * lock
       ];
+      var cap = CAP_BASE + CAP_LOCK * lock;
       for (var i = 0; i < energy.length; i++) {
-        energy[i] = Math.min(1.2, energy[i] + feed[i] * sp * dt * 1.6);
+        // only ever drive UP to the ceiling; a mode already ringing louder
+        // (from a strike) is left alone rather than being pulled down
+        // NOTE: no raw `sp` factor here. How LOUD the bowl gets is set by how
+        // well the stick-slip couples (drive), not by how fast you are moving —
+        // with `sp` in the multiplier, whipping the rim simply got louder and
+        // the whole sweet-spot idea did nothing. Speed still shapes the TIMBRE
+        // through the pow(sp, …) terms in `feed`.
+        if (energy[i] < cap) {
+          energy[i] = Math.min(cap, energy[i] + feed[i] * drive * dt * 2.6);
+        }
       }
+    } else {
+      // not in contact: the lock bleeds away rather than snapping off
+      lock += (0 - lock) * Math.min(1, dt * 0.9);
+      consist += (0 - consist) * Math.min(1, dt * 2);
+      dirFlipT = 0;
     }
+    if (chatterCool > 0) chatterCool -= dt;
+
     rubShown += ((rubbing ? rubSpeed : 0) - rubShown) * Math.min(1, dt * 9);
 
     for (var k = 0; k < energy.length; k++) {
@@ -584,20 +683,24 @@
     if (AC && voices.length) {
       // The hand going round is audible as a slow wah — a real bowl is never
       // perfectly even under a moving finger.
-      var wob = rubbing ? 1 + Math.sin(rubAng * 2) * 0.14 * rubShown : 1;
+      var wob = rubbing ? 1 + Math.sin(rubAng * 2) * 0.13 * rubShown * (0.4 + 0.6 * lock) : 1;
       for (var v = 0; v < voices.length; v++) {
         var target = Math.max(0.00001, energy[v] * LEVEL[v] * wob);
         try { voices[v].g.gain.setTargetAtTime(target, AC.currentTime, 0.04); } catch (e) {}
       }
       if (rubGain) {
-        // stick-slip: friction grabs and releases rather than hissing evenly
-        var slip = 1 + Math.sin(t0 * 34 + rubAng * 6) * 0.35;
-        var rv = rubbing ? (0.008 + rubShown * 0.02) * slip : 0.00001;
+        // Stick-slip: friction grabs and releases rather than hissing evenly,
+        // and an unlocked tone is mostly SCRAPE — that contrast is what makes
+        // a steady hand feel like it is doing something.
+        var slip = 1 + Math.sin(t0 * 34 + rubAng * 6) * (0.3 + 0.45 * (1 - lock));
+        var rough = 1.35 - lock * 0.85;
+        var rv = rubbing ? (0.008 + rubShown * 0.022) * slip * rough : 0.00001;
         try {
           rubGain.gain.setTargetAtTime(soundOn ? rv : 0.00001, AC.currentTime, 0.05);
           // keep the rasp pitched around the singing mode, not a wide hiss
           var f0 = BOWLS[sizeIdx].f;
           rubFilt.frequency.setTargetAtTime(f0 * 2.83 * (1 + rubShown * 0.5), AC.currentTime, 0.12);
+          rubFilt.Q.setTargetAtTime(2 + lock * 5, AC.currentTime, 0.15);
         } catch (e) {}
       }
     }
@@ -807,7 +910,7 @@
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
       var cg = ctx.createRadialGradient(x, y, 1, x, y, R * 0.3);
-      cg.addColorStop(0, "rgba(255,220,150," + (0.25 + rubShown * 0.4) + ")");
+      cg.addColorStop(0, "rgba(255,220,150," + (0.14 + rubShown * 0.24 + lock * 0.34) + ")");
       cg.addColorStop(1, "rgba(255,200,120,0)");
       ctx.fillStyle = cg;
       ctx.beginPath(); ctx.arc(x, y, R * 0.3, 0, TAU); ctx.fill();
