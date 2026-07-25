@@ -1,5 +1,5 @@
 /*!
- * more-games.js — shared "More Games" cross-promo widget for One Page Toys.
+ * more-games.js — shared "More Toys" cross-promo widget for One Page Toys.
  * Self-contained, no deps. Auto-mounts into the overlay panel of a toy end screen,
  * shows 2 random games from the portfolio list (excluding the host toy), styled with
  * translucent chrome that inherits the host panel's palette.
@@ -9,6 +9,38 @@
   "use strict";
 
   var GAMES = [
+    {
+      "name": "Color Match",
+      "tagline": "Trust your eye",
+      "url": "https://onepagetoys.com/toys/color-match/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2358d9ae'/><rect x='7' y='6' width='18' height='14' rx='3' fill='%2392c9c0'/><rect x='7' y='23' width='18' height='3' rx='1.5' fill='%23ffffff' opacity='0.65'/><circle cx='13' cy='24.5' r='3' fill='%23ffffff'/></svg>",
+      "initial": "C",
+      "slug": "color-match"
+    },
+    {
+      "name": "Video Poker",
+      "tagline": "Hold and draw",
+      "url": "https://onepagetoys.com/toys/video-poker/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a1c15'/><rect x='5' y='7' width='10' height='15' rx='2' fill='%23f6f2e8' transform='rotate(-8 10 14.5)'/><rect x='16' y='9' width='10' height='15' rx='2' fill='%23fffdf8' transform='rotate(7 21 16.5)'/><path d='M21 14l2.4 2.6L21 19.4 18.6 16.6z' fill='%23c1272d'/><path d='M10 12.6c1.6 1.2 2.6 2.2 2.6 3.2a1.4 1.4 0 0 1-2.6.7 1.4 1.4 0 0 1-2.6-.7c0-1 1-2 2.6-3.2z' fill='%23181d26'/></svg>",
+      "initial": "V",
+      "slug": "video-poker"
+    },
+    {
+      "name": "Air Hockey",
+      "tagline": "Slam the puck",
+      "url": "https://onepagetoys.com/toys/air-hockey/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080d1a'/><rect x='6' y='3' width='20' height='26' rx='4' fill='none' stroke='%234fe6ff' stroke-width='1.6'/><path d='M6 16h20' stroke='%234fe6ff' stroke-width='1' opacity='0.5'/><circle cx='16' cy='9' r='3.4' fill='%23ff5fa8'/><circle cx='16' cy='23' r='3.4' fill='%234fe6ff'/><circle cx='16' cy='16' r='2' fill='%23cfe4ff'/></svg>",
+      "initial": "A",
+      "slug": "air-hockey"
+    },
+    {
+      "name": "Darts",
+      "tagline": "Nine darts, one score",
+      "url": "https://onepagetoys.com/toys/darts/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230b1116'/><circle cx='16' cy='16' r='13' fill='%23141110'/><circle cx='16' cy='16' r='10' fill='%23e6d9ba'/><path d='M16 6a10 10 0 0 1 8.7 5H16z' fill='%23141110'/><path d='M16 26a10 10 0 0 1-8.7-5H16z' fill='%23141110'/><circle cx='16' cy='16' r='4.6' fill='none' stroke='%232d8a5c' stroke-width='1.6'/><circle cx='16' cy='16' r='2' fill='%23c4332b'/></svg>",
+      "initial": "D",
+      "slug": "darts"
+    },
     {
       "name": "Perfect Timing",
       "tagline": "Stop the needle",
@@ -377,7 +409,7 @@
     injectStyle();
     var label = document.createElement("span");
     label.className = "mg-label";
-    label.textContent = "More Games";
+    label.textContent = "More Toys";
     host.appendChild(label);
     var row = document.createElement("div");
     row.className = "mg-row";
