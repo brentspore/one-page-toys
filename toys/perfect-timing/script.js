@@ -1,7 +1,8 @@
 /* Perfect Timing — No. 092
  * A needle sweeps a premium dial; tap / click / space to stop it on the
  * glowing target. Score = how many degrees off. Nail hits to ramp the speed
- * and shrink the target; a wide miss ends the run.
+ * and shrink the target; a wide miss — or letting the needle lap the target
+ * PASS_LIMIT (3) times without a stop — ends the run.
  * Vanilla Canvas 2D + Web Audio. Self-contained.
  * localStorage best key: "timing_best" (higher = better round score). */
 (function () {
@@ -41,6 +42,7 @@
   var PERFECT_DEG = 0.7;  // within this = PERFECT
   var RESOLVE_MS = 620;   // freeze on a hit before the next sweep
   var FAIL_MS = 780;      // freeze on a miss before game over
+  var PASS_LIMIT = 3;     // laps past the target window before the run ends
 
   // ------------------------------------------------------------------- state
   var state = "menu";     // menu | sweep | resolve | fail | over
@@ -54,6 +56,9 @@
   var best = 0;
   var lastErr = 0;        // last stop error in degrees (for display)
   var lastPerfect = false;
+  var lastTimedOut = false; // did the last miss come from lapping out?
+  var passCount = 0;      // times the needle has lapped the target this sweep
+  var prevDiff = null;    // previous needle-to-target signed delta (crossing detect)
   var resolveT = 0;       // countdown ms during resolve/fail
   var snapFrom = 0, snapTo = 0, snapT = 0; // needle snap animation
   var shake = 0;
@@ -258,6 +263,13 @@
     voice({ type: "sine", f: base * 2, dur: 0.28, a: 0.005, g: 0.06 });
   }
 
+  // airy "whiff" each time the needle laps the target without a stop
+  function sndWhiff(n) {
+    if (!AC || !soundOn) return;
+    noiseHit({ f: 900 + n * 520, Q: 0.9, dur: 0.14, g: 0.05, filt: "bandpass" });
+    voice({ type: "sine", f: 320 + n * 90, f2: 190 + n * 60, dur: 0.16, a: 0.003, g: 0.06 });
+  }
+
   // gentle buzz/thud on a miss (not harsh)
   function sndMiss() {
     if (!AC || !soundOn) return;
@@ -312,7 +324,7 @@
     speed = SPD_START; tol = TOL_START; dir = 1;
     needle = -90 - 40 * dir;
     newTarget();
-    lastErr = 0; lastPerfect = false;
+    lastErr = 0; lastPerfect = false; lastTimedOut = false;
     scoreEl.textContent = "0";
     streakEl.textContent = "0";
     streakCell.hidden = true;
@@ -329,6 +341,8 @@
     // place target away from the current needle so there's travel to time
     var away = rnd(70, 290) * dir;
     target = norm180(needle + away);
+    passCount = 0;
+    prevDiff = null;   // re-seed crossing detection for the new target
   }
 
   function stopNeedle() {
@@ -338,6 +352,7 @@
     lastErr = err;
     var perfect = err <= PERFECT_DEG;
     lastPerfect = perfect;
+    lastTimedOut = false;
 
     // snap the needle visually to a crisp rest
     snapFrom = needle;
@@ -397,6 +412,24 @@
     }
   }
 
+  // run out of laps: the needle passed the target too many times
+  function timeoutMiss() {
+    hint.classList.add("is-gone");
+    lastErr = Math.abs(norm180(needle - target));
+    lastPerfect = false;
+    lastTimedOut = true;
+    sndMiss();
+    shake = 12;
+    flashCol = "255,122,168"; flashT = 1;
+    var mx = cx + Math.cos(needle * RAD) * R;
+    var my = cy + Math.sin(needle * RAD) * R;
+    floaters.push({ x: mx, y: my, life: 1, txt: "TOO SLOW", col: "255,122,168", big: true, up: 30 });
+    rings.push({ x: cx, y: cy, r: R * 0.62, max: R * 1.2, life: 1, col: "255,122,168" });
+    streak = 0;
+    resolveT = FAIL_MS;
+    state = "fail";
+  }
+
   function nextSweep() {
     newTarget();
     state = "sweep";
@@ -415,10 +448,16 @@
     // build the game-over panel
     ovEyebrow.textContent = isBest ? "New best!" : "Run over";
     ovTitle.textContent = isBest ? String(score) : String(score);
-    var line = "You stacked " + score + " point" + (score === 1 ? "" : "s") +
-      ". Last stop was " + lastErr.toFixed(1) + "° off" +
-      (lastPerfect ? " — a PERFECT to finish." : ".");
-    ovText.innerHTML = line + "<br><br>Tap the target dead-on for a <b>PERFECT</b>. Go again?";
+    var line;
+    if (lastTimedOut) {
+      line = "You stacked " + score + " point" + (score === 1 ? "" : "s") +
+        ", then let the needle lap the target " + PASS_LIMIT + " times without a stop.";
+    } else {
+      line = "You stacked " + score + " point" + (score === 1 ? "" : "s") +
+        ". Last stop was " + lastErr.toFixed(1) + "° off" +
+        (lastPerfect ? " — a PERFECT to finish." : ".");
+    }
+    ovText.innerHTML = line + "<br><br>Stop the needle on the target within <b>" + PASS_LIMIT + "</b> passes. Go again?";
     ovKeys.textContent = "tap / click / space to stop";
     ovBtn.textContent = "Play again";
     overlay.hidden = false;
@@ -543,7 +582,7 @@
       ctx.beginPath();
       ctx.arc(cx, cy, rr, 0, TAU);
       ctx.lineWidth = Math.max(1, R * 0.02 * rg.life);
-      var rc = rg.gold ? "255,207,107" : "111,227,255";
+      var rc = rg.col ? rg.col : (rg.gold ? "255,207,107" : "111,227,255");
       ctx.strokeStyle = "rgba(" + rc + "," + (rg.life * 0.5) + ")";
       ctx.stroke();
     }
@@ -594,15 +633,34 @@
         ctx.fillStyle = "rgba(255,207,107,0.5)";
         ctx.font = "700 " + Math.max(8, R * 0.07) + "px 'Geist Mono', ui-monospace, monospace";
         ctx.fillText("±" + tol.toFixed(1) + "° TO SCORE", cx, cy + R * 0.56);
+        // remaining-lap pips: spent laps go dim/pink, the run ends on the last
+        var pr = Math.max(2.2, R * 0.026);
+        var gap = pr * 3.6;
+        var totalW = (PASS_LIMIT - 1) * gap;
+        var py = cy + R * 0.72;
+        for (var pp = 0; pp < PASS_LIMIT; pp++) {
+          var px = cx - totalW / 2 + pp * gap;
+          var spent = pp < passCount;
+          ctx.beginPath();
+          ctx.arc(px, py, pr, 0, TAU);
+          ctx.fillStyle = spent ? "rgba(255,122,168,0.3)" : "rgba(255,207,107,0.85)";
+          ctx.fill();
+        }
       } else {
         var big = lastPerfect;
+        var timedOut = state === "fail" && lastTimedOut;
         var col = state === "fail" ? "255,122,168" : (big ? "255,207,107" : "111,227,255");
         ctx.fillStyle = "rgba(" + col + ",0.95)";
-        ctx.font = "800 " + Math.max(18, R * 0.26) + "px 'Geist', system-ui, sans-serif";
-        ctx.fillText(big ? "PERFECT" : (lastErr.toFixed(1) + "°"), cx, cy + R * 0.5);
+        if (timedOut) {
+          ctx.font = "800 " + Math.max(14, R * 0.17) + "px 'Geist', system-ui, sans-serif";
+          ctx.fillText("TOO SLOW", cx, cy + R * 0.5);
+        } else {
+          ctx.font = "800 " + Math.max(18, R * 0.26) + "px 'Geist', system-ui, sans-serif";
+          ctx.fillText(big ? "PERFECT" : (lastErr.toFixed(1) + "°"), cx, cy + R * 0.5);
+        }
         ctx.fillStyle = "rgba(224,230,255,0.42)";
         ctx.font = "600 " + Math.max(8, R * 0.072) + "px 'Geist Mono', ui-monospace, monospace";
-        ctx.fillText(state === "fail" ? "MISSED" : (big ? "DEAD ON" : "OFF TARGET"), cx, cy + R * 0.66);
+        ctx.fillText(state === "fail" ? (timedOut ? "LAPPED " + PASS_LIMIT + "×" : "MISSED") : (big ? "DEAD ON" : "OFF TARGET"), cx, cy + R * 0.66);
       }
     }
 
@@ -665,9 +723,34 @@
     if (state === "sweep") {
       needle += speed * dir * dt;
       needle = norm180(needle);
+
+      // A "pass" counts only once the needle has traveled through the WHOLE
+      // safe window and out its far edge — so on every lap (the fatal 3rd
+      // included) you still get the full width of the target to stop on.
+      // farEdge is the exit side of the window in the sweep direction.
+      var d = norm180(needle - target);
+      var farEdge = tol * (dir > 0 ? 1 : -1);
+      var crossedFar = dir > 0
+        ? (prevDiff <= farEdge && d > farEdge)
+        : (prevDiff >= farEdge && d < farEdge);
+      if (prevDiff !== null &&
+          Math.abs(d) < 90 && Math.abs(prevDiff) < 90 && crossedFar) {
+        passCount++;
+        if (passCount >= PASS_LIMIT) {
+          timeoutMiss();
+        } else {
+          sndWhiff(passCount);
+          shake = Math.max(shake, 3);
+          rings.push({ x: cx, y: cy, r: R * 0.72, max: R * 1.08, life: 1, col: "255,122,168" });
+        }
+      }
+      prevDiff = d;
+
       // subtle metronome tick every ~0.5s
-      tickAcc += dt;
-      if (tickAcc >= 0.5) { tickAcc -= 0.5; sndTick(); }
+      if (state === "sweep") {
+        tickAcc += dt;
+        if (tickAcc >= 0.5) { tickAcc -= 0.5; sndTick(); }
+      }
     }
 
     // resolve/fail timers
