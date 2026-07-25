@@ -10,6 +10,46 @@
 
   var GAMES = [
     {
+      "name": "Perfect Timing",
+      "tagline": "Stop the needle",
+      "url": "https://onepagetoys.com/toys/perfect-timing/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230d1020'/><circle cx='16' cy='16' r='11' fill='none' stroke='%232a3358' stroke-width='2'/><path d='M13 5.4a11 11 0 0 1 6 0' fill='none' stroke='%23ffd166' stroke-width='2.6' stroke-linecap='round'/><path d='M16 16l8-4' stroke='%235ad1ff' stroke-width='2.4' stroke-linecap='round'/><circle cx='16' cy='16' r='2.6' fill='%23cfe4ff'/></svg>",
+      "initial": "P",
+      "slug": "perfect-timing"
+    },
+    {
+      "name": "Clowns & Balloons",
+      "tagline": "Bounce & pop",
+      "url": "https://onepagetoys.com/toys/clowns-balloons/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%233a1526'/><circle cx='11' cy='11' r='5' fill='%23e0384a'/><circle cx='21' cy='11' r='5' fill='%23f2b63c'/><circle cx='16' cy='20' r='5' fill='%233fb8c4'/><g stroke='%23ffffff' stroke-width='1' opacity='0.5'><path d='M11 16v4'/><path d='M21 16v4'/><path d='M16 25v4'/></g></svg>",
+      "initial": "C",
+      "slug": "clowns-balloons"
+    },
+    {
+      "name": "Skee Ball",
+      "tagline": "Roll for the 100s",
+      "url": "https://onepagetoys.com/toys/skee-ball/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231c1338'/><ellipse cx='16' cy='10' rx='8.5' ry='4.2' fill='none' stroke='%23f4f1e9' stroke-width='2.2'/><ellipse cx='16' cy='10' rx='3.6' ry='1.9' fill='%233a7a58'/><circle cx='16' cy='24' r='4.2' fill='%23f0b93f'/><circle cx='14.6' cy='22.6' r='1.2' fill='%23fff1c4'/></svg>",
+      "initial": "S",
+      "slug": "skee-ball"
+    },
+    {
+      "name": "Deep Hollow",
+      "tagline": "Descend the caverns",
+      "url": "https://onepagetoys.com/toys/deep-hollow/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2304101a'/><path d='M16 4c-3 4 3 6 0 10s3 6 0 14' fill='none' stroke='%237de08a' stroke-width='2.6' stroke-linecap='round'/><circle cx='23' cy='21' r='2.6' fill='%23ffcf6a'/><circle cx='9' cy='14' r='2' fill='%234fe0c8'/></svg>",
+      "initial": "D",
+      "slug": "deep-hollow"
+    },
+    {
+      "name": "Shuriken Night",
+      "tagline": "Throw the stars",
+      "url": "https://onepagetoys.com/toys/shuriken-night/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230b1330'/><circle cx='25' cy='7' r='2' fill='%23ffe9a8'/><path d='M16 5l2.6 8.8L27 16l-8.4 2.2L16 27l-2.6-8.8L5 16l8.4-2.2z' fill='%23dfe7f5'/><circle cx='16' cy='16' r='1.9' fill='%230b1330'/></svg>",
+      "initial": "N",
+      "slug": "shuriken-night"
+    },
+    {
       "name": "Global War",
       "tagline": "Strategy conquest",
       "url": "https://globalwar.app",
