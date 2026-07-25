@@ -1,0 +1,159 @@
+/* Glow Pegs — No. 096
+ * A dark room, a black board, and light you punch into it. Self-contained. */
+
+:root {
+  --bg: #07070b;
+  --ink: #eef0f6;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------------ frame */
+
+.frame { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
+.frame__corner {
+  position: absolute;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: rgba(238, 240, 246, 0.28);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); }
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right)); }
+/* the peg tray owns the bottom edge, so the back-link tucks under the number */
+.frame__corner--bl { top: calc(max(14px, env(safe-area-inset-top)) + 19px); left: max(16px, env(safe-area-inset-left)); pointer-events: auto; }
+.frame__corner--bl a { color: inherit; text-decoration: none; transition: color 0.18s ease; }
+.frame__corner--bl a:hover { color: #ffe14d; }
+.frame__corner--bl a:focus-visible { outline: 2px solid #ffe14d; outline-offset: 3px; }
+
+.hint {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: max(14px, env(safe-area-inset-top));
+  margin: 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238, 240, 246, 0.26);
+  pointer-events: none;
+  z-index: 6;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.5s ease;
+}
+.hint.is-gone { opacity: 0; }
+
+/* ------------------------------------------------------------------- tray */
+
+.tray {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(10px, env(safe-area-inset-bottom));
+  z-index: 8;
+  width: min(620px, calc(100% - 20px));
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  align-items: center;
+  background: rgba(16, 16, 24, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.swatches { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; }
+
+.sw {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  cursor: pointer;
+  background: currentColor;
+  box-shadow: 0 0 12px 1px currentColor, inset 0 -3px 6px rgba(0, 0, 0, 0.35);
+  transition: transform 0.14s ease, border-color 0.14s ease;
+}
+.sw:hover { transform: translateY(-2px) scale(1.06); }
+.sw[aria-checked="true"] { border-color: #fff; transform: translateY(-3px) scale(1.12); }
+.sw:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.sw--eraser {
+  color: #2a2a34;
+  background: repeating-linear-gradient(45deg, #33333f 0 5px, #1e1e26 5px 10px);
+  box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.tools { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+
+.tool {
+  min-height: 32px;
+  padding: 7px 13px;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(238, 240, 246, 0.82);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.tool:hover { background: rgba(255, 255, 255, 0.13); color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+.tool:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.tool--icon { min-width: 34px; padding: 7px 9px; font-size: 12px; letter-spacing: 0; }
+.tool--icon[aria-pressed="false"] { color: rgba(238, 240, 246, 0.3); }
+
+/* -------------------------------------------------- shared-badge docking
+ * The tray owns the bottom and the board owns the middle, so the badges go
+ * top-right where only the (short) frame label sits. */
+.opt-tipjar.opt-tipjar { top: calc(max(52px, env(safe-area-inset-top) + 52px)); bottom: auto; transform: none; }
+.opt-fs.opt-fs { top: calc(max(106px, env(safe-area-inset-top) + 106px)); bottom: auto; transform: none; }
+.opt-tipjar.opt-tipjar.tj-nudge { animation: none; }
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 560px) {
+  .sw { width: 27px; height: 27px; }
+  .tray { gap: 8px; padding: 9px 10px; }
+  .tool { padding: 6px 10px; font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sw, .tool, .hint { transition: none; }
+}

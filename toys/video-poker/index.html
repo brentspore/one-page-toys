@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Video Poker — One Page Toys</title>
+    <meta name="description" content="Jacks or Better, the classic five-card draw machine. Bet your credits, hold the cards you want, draw once, and chase the royal flush. Full 9/6 paytable, no sign-up, play money only." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/video-poker/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#08130f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Video Poker — One Page Toys" />
+    <meta property="og:description" content="Jacks or Better five-card draw. Bet, hold, draw once, and chase the royal flush. Full 9/6 paytable, play money only." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/video-poker/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/video-poker.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Video Poker — One Page Toys" />
+    <meta name="twitter:description" content="Jacks or Better five-card draw. Bet, hold, draw once, chase the royal." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/video-poker.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Video Poker",
+        "url": "https://onepagetoys.com/toys/video-poker/",
+        "description": "A Jacks or Better video poker machine. Bet one to five play credits, receive five cards, hold the ones you want, draw replacements once, and get paid on the 9/6 paytable from a high pair up to the royal flush. Play money only, no real wagering.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="controls" id="controls" hidden>
+      <button type="button" class="btn" id="betBtn">Bet one</button>
+      <button type="button" class="btn btn--primary" id="dealBtn">Deal</button>
+      <button type="button" class="btn" id="maxBtn">Max bet</button>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Jacks or Better</p>
+        <h1 class="panel__title" id="ovTitle">Video Poker</h1>
+        <p class="panel__text" id="ovText">The classic draw machine. Set your bet, take five cards, then <b>tap the ones you want to keep</b> and draw once for the rest. A pair of jacks or better pays; the royal at max bet pays <b>4,000</b>. Play credits only — nothing here is real money.</p>
+        <button type="button" class="play-btn" id="ovBtn">Insert credits</button>
+        <p class="panel__keys" id="ovKeys">tap cards to hold · 1–5 keys · enter to deal</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 095</span>
+      <span class="frame__corner frame__corner--tr">Video Poker</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <script src="../../assets/tickets.js?v=14" defer></script>
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=10" defer></script>
+  </body>
+</html>

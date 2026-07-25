@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Glow Pegs — One Page Toys</title>
+    <meta name="description" content="Punch glowing pegs into a black board and paint with light. Eight colors, drag to fill, faint templates to follow or ignore, and a one-tap save of whatever you make. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/glow-pegs/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#07070b" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Glow Pegs — One Page Toys" />
+    <meta property="og:description" content="Punch glowing pegs into a black board and paint with light. Eight colors, drag to fill, templates to follow or ignore." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/glow-pegs/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/glow-pegs.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Glow Pegs — One Page Toys" />
+    <meta name="twitter:description" content="Punch glowing pegs into a black board and paint with light. Drag to fill, save what you make." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/glow-pegs.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Glow Pegs",
+        "url": "https://onepagetoys.com/toys/glow-pegs/",
+        "description": "A glowing peg board you draw with. Choose from eight peg colors, tap or drag across a dark hole grid to punch in luminous pegs, follow one of the faint built-in templates or freehand your own picture, then save the result as an image.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="tray" id="tray">
+      <div class="swatches" id="swatches" role="radiogroup" aria-label="Peg colour"></div>
+      <div class="tools">
+        <button type="button" class="tool" id="tplBtn" title="Cycle the template guide">Free</button>
+        <button type="button" class="tool" id="clearBtn" title="Empty the board">Clear</button>
+        <button type="button" class="tool" id="saveBtn" title="Save as a PNG">Save</button>
+        <button type="button" class="tool tool--icon" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 096</span>
+      <span class="frame__corner frame__corner--tr">Glow Pegs</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">tap or drag to punch in pegs</p>
+
+    <script src="../../assets/tickets.js?v=14" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

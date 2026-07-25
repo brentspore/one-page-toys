@@ -66,6 +66,20 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "color-match":
+    "color match colour match match the color guess the color color test eye test how good is your eye perceptual delta e cielab hue saturation lightness hsl sliders swatch designer color theory calibration pantone shade tone tint mixing paint mixer color accuracy color blindness test munsell x-rite hue test precision",
+  "singing-bowl":
+    "singing bowl tibetan bowl himalayan bowl rin gong standing bell meditation bowl sound bath sound healing rub the rim make it sing gong mallet puja stick bronze bowl calm relax mindfulness zen chakra drone resonance overtones bell partials om ambient soothing yoga studio water bowl",
+  "decision-wheel":
+    "decision wheel spinner wheel of names spin the wheel random picker chooser what should i eat where should we eat who goes first random name picker raffle wheel prize wheel fortune wheel roulette style chore picker yes or no decision maker pick for me can't decide group decision shareable wheel flick to spin",
+  "glow-pegs":
+    "glow pegs lite brite lite-brite light bright peg board pegboard glowing pegs paint with light draw with light pixel art grid drawing neon dots nostalgia toy 80s retro kids toy template star heart rocket flower punch pegs bright colors dark board save png satisfying calm creative",
+  "video-poker":
+    "video poker jacks or better draw poker five card draw casino machine hold and draw paytable royal flush straight flush four of a kind full house flush straight three of a kind two pair credits bet max bet arcade gambling cards deck vegas slot machine style card game play money",
+  "air-hockey":
+    "air hockey table hockey puck mallet paddle arcade table vs computer vs ai one on one first to seven neon table sports game fast reflex slam the puck goal rebound bank shot bar game rec room pong family two player feel drag your mallet",
+  "darts":
+    "darts dartboard dart board throw darts pub game bullseye bulls eye treble twenty double out 180 nine darts oche steady your hand aim and throw sports arcade tungsten flight bristle board 501 301 around the clock precision nerve score chase english pub",
   "perfect-timing":
     "perfect timing reflex reaction test stop the needle stop the dial precision timing skill one tap tap game bull's-eye bullseye accuracy degrees off streak nerve twitch how good is your timing arcade minimal dial speedometer sweep hand needle stop it on target perfect circle family test your reflexes reaction time",
   "clowns-balloons":
@@ -578,10 +592,30 @@ function getFilteredTools() {
   });
 }
 
+/** Sort modes offered by the All Toys control. */
+const SORT_MODES = ["name", "category", "newest", "oldest"];
+
+function currentSortMode() {
+  const el = document.getElementById("toolsSort");
+  const v = el ? String(el.value || "") : "";
+  return SORT_MODES.indexOf(v) === -1 ? "name" : v;
+}
+
 function sortToolsForDisplay(tools) {
-  const sortEl = document.getElementById("toolsSort");
-  const sortMode = sortEl && sortEl.value === "category" ? "category" : "name";
+  const sortMode = currentSortMode();
   const slice = tools.slice();
+  // __ord is the registry index, stamped at load. The registry is maintained
+  // newest-first, so a low index means a recent toy.
+  if (sortMode === "newest" || sortMode === "oldest") {
+    const dir = sortMode === "newest" ? 1 : -1;
+    slice.sort(function (a, b) {
+      const oa = typeof a.__ord === "number" ? a.__ord : 9999;
+      const ob = typeof b.__ord === "number" ? b.__ord : 9999;
+      if (oa !== ob) return (oa - ob) * dir;
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    });
+    return slice;
+  }
   if (sortMode === "category") {
     slice.sort(function (a, b) {
       const ca = String(a.category || "").toLowerCase();
@@ -653,8 +687,8 @@ function syncURL() {
   if (q) params.set("q", q);
   if (activeTag) params.set("tag", activeTag);
   if (activeCategory && activeCategory !== forcedCategory()) params.set("cat", activeCategory);
-  const sortEl = document.getElementById("toolsSort");
-  if (sortEl && sortEl.value === "category") params.set("sort", "category");
+  const sortMode = currentSortMode();
+  if (sortMode !== "name") params.set("sort", sortMode);
   const qs = params.toString();
   const path = location.pathname;
   const hash = location.hash || "";
@@ -1131,6 +1165,9 @@ async function loadRegistryAndRender() {
 
     // registry is maintained newest-first, so the first toy with a path is the newest
     newestTool = tools.find(function (t) { return t && t.path; }) || null;
+    // keep the registry position on each toy; the alphabetical sort below
+    // destroys the ordering the newest/oldest sort modes need
+    tools.forEach(function (t, i) { if (t) t.__ord = i; });
     allTools = tools.slice().sort(function (a, b) {
       return String(a.name || "").localeCompare(String(b.name || ""));
     });
@@ -1149,7 +1186,7 @@ async function loadRegistryAndRender() {
       activeCategory = urlState.cat || forcedCategory();
       const sortEl = document.getElementById("toolsSort");
       if (sortEl) {
-        sortEl.value = urlState.sort === "category" ? "category" : "name";
+        sortEl.value = SORT_MODES.indexOf(urlState.sort) === -1 ? "name" : urlState.sort;
       }
     }
     validateActiveTag();

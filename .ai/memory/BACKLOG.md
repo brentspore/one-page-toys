@@ -48,14 +48,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** AI suggestion (2026-07-05). Paddle follows pointer/touch; ball physics with paddle-english (hit position steers angle); a few hand-designed brick layouts cycling with speed ramp; power-ups kept minimal (widen, multiball, laser — pick 2); lives, score + best in `localStorage`. Design bar: neon-glass bricks that crack then shatter with particles, trail on the ball, bloom-y glow, screen-shake on last-brick; synth audio: pitch-rising brick pings (pentatonic ladder = the addictive part), paddle thock, multiball shimmer. Real card + OG; full pipeline.
 ---
-### New toy: Air Hockey (vs AI)
-
-**Why it matters:** Fast, physical, instantly fun on touch (finger = mallet); the table glow + puck clack is naturally juicy. Category `game`/arcade.
-
-**When to revisit:** Next arcade round; small-medium scope.
-
-**Notes:** AI suggestion (2026-07-05). Drag your mallet (bottom half only); puck physics with friction + wall bounce + mallet impulse; AI opponent with tunable reaction/speed (rubber-bands to stay fun); first to 7. Design: glowing neon table, air-hole dot grid, puck trail, goal flash + shake; audio: authentic hollow puck CLACK (velocity-scaled), table air hiss bed, goal horn (tasteful). Best-of streak in `localStorage`. Real card + OG; full pipeline.
----
 ### New toy: Word Hunt (Boggle-style letter grid)
 
 **Why it matters:** The site has zero word games — a gap for a huge audience. Drag-to-trace word finding is tactile, satisfying, and endlessly replayable with a fresh grid each round. Category `game`/word.
@@ -71,14 +63,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 **When to revisit:** Next puzzle round. Main scope: a curated set of solvable puzzles (or a generator + solvability checker).
 
 **Notes:** AI suggestion (2026-07-05). Row/column count clues; tap to fill, long-press/second-tool to mark X; mistake-forgiveness toggle; 5×5 → 15×15 sizes. Content: procedurally generate boards and verify line-solvability, or hand-curate a pack of charming pixel-art reveals (animals, objects) — reveal animates + colorizes on completion. Timer + best per size in `localStorage`. Design: clean paper-grid aesthetic or glowing terminal; satisfying fill thunk, error buzz (gentle), completion chime + the picture coming alive. Keep the name generic ("Picture Logic" etc. — Picross is trademarked). Real card + OG; full pipeline.
----
-### New toy: Singing Bowl
-
-**Why it matters:** Rub the rim and the bowl slowly blooms into its ring — a meditative gesture-to-sound loop that crosses `audio` and `wellness` perfectly (Tongue Drum's sibling).
-
-**When to revisit:** Next audio/wellness round; small-medium scope.
-
-**Notes:** AI suggestion (2026-07-05). A bronze bowl (top-down or 3/4 pseudo-3D); circle your finger around the rim — sustained circling builds amplitude (a resonance model: slow attack, long release, wobble/beating between close partials as it swells); strike the side for an immediate warm GONG with long decay; a mallet follows your touch around the rim. Water-in-bowl option: droplets dance when loud. Inharmonic-ish bowl partials (like the tongue-drum research), heavy lush reverb, iOS unlock. Design: warm bronze with hammered texture, cushion, incense-calm scene; ripple rings emanate while singing. Real card + OG; full pipeline.
 ---
 ### New toy: Omnichord / Strum Pad
 
@@ -168,37 +152,15 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** AI suggestion (2026-07-05). Show a folded triangle wedge; drag to cut polyline snips from the edges (polygon clipping on the wedge shape); an unfold button (or auto-preview) mirrors the wedge 12× (6-fold + reflection) into the full snowflake with a paper-unfolding animation. Then: cut another, drift finished flakes in a gentle snow scene, download/share. Design: soft paper texture, scissor-line preview, warm desk-lamp scene vs. cool snowy backdrop for the reveal; audio: crisp paper-snip, soft unfolding rustle, a twinkle on reveal. Real card + OG; full pipeline.
 ---
-### New toy: Lite-Brite pegboard
 
-**Why it matters:** Pure glowing nostalgia in the Pin Art / Magnetic Face family — punch luminous pegs into a black board and paint with light. Simple, tactile, screenshot-friendly. Category `visual`.
+### New toy: Pyramid (card game)
 
-**When to revisit:** Quick-win visual round.
+**Why it matters:** The card-render foundation (Solitaire / Blackjack / Video Poker: pips, courts, chips, felt, deal animations) makes each additional card game a cheap, high-polish win for the popular `game`/cards lane.
 
-**Notes:** AI suggestion (2026-07-05). Dark board with a hex/square hole grid; pick from ~8 glowing peg colors, tap/drag to place (drag = paint), long-press to remove; each peg is a bright core + halo bloom on the dark board; optional template outlines (rocket, flower) as faint guides. Clear/save-to-PNG buttons. Trademark-safe generic name ("Glow Pegs" / "Peg Glow"). Audio: soft plastic *click-in* per peg (velocity-varied), gentle hum bed that thickens with board fullness. Real card + OG; full pipeline.
----
-### New tool: Decision Wheel (spin to decide)
+**When to revisit:** Any quick-win round. Video Poker — the other half of this pair — shipped as No. 095 on 2026-07-25.
 
-**Why it matters:** Type your options, spin the wheel, let fate decide — the most shareable utility imaginable (hash-encoded wheels = send a "where do we eat?" wheel to the group chat). Category `utility`.
+**Notes:** Clear pairs summing to 13 from a 28-card pyramid plus a stock; drag or tap pairs; win cascade like Solitaire's. Its own toy folder/slug. Reuse the felt + audio bus with a distinct table accent colour. Real card + OG; full pipeline.
 
-**When to revisit:** Next tools round; small scope, high virality.
-
-**Notes:** AI suggestion (2026-07-05). Editable option list (2-12 entries) → a colorful wheel; drag-flick to spin with real angular momentum + friction + a ticking flapper (pointer physics against pegs); dramatic slow-down, winner celebration. Presets: dinner picker, chore assigner, yes/no/maybe. **Share via URL hash** (like Countdown) so a specific wheel is linkable; last wheel in `localStorage`. Geist tool-family styling (light/dark) OR full-bleed toy treatment — decide at build. Audio: accelerating tick-tick-tick that slows to the verdict, fanfare. CSS-motif or rendered card + OG; full pipeline.
----
-### New toy: More card games — Video Poker + Pyramid
-
-**Why it matters:** The card-render foundation (Solitaire/Blackjack: pips, courts, chips, felt, deal animations) makes each additional card game a cheap, high-polish win for the popular `game`/cards lane.
-
-**When to revisit:** Any quick-win round — these were already flagged as follow-ups when Solitaire/Blackjack shipped.
-
-**Notes:** AI suggestion (2026-07-05, consolidating the standing Pyramid/Video Poker note). **Video Poker (Jacks or Better):** bet chips, deal 5, hold/redraw once, standard paytable, bankroll persists (like Blackjack's `bj_bank`). **Pyramid:** clear pairs summing to 13 from a 28-card pyramid + stock; drag/tap pairs; win cascade like Solitaire's. Each is its own toy folder/slug. Reuse felt + audio bus; distinct table accent colors. Real cards + OGs; full pipeline each.
----
-### New toy: Darts
-
-**Why it matters:** A quick, universally-understood aim-and-timing pub game; short sessions, high "one more throw" pull. Category `game`.
-
-**When to revisit:** Quick-win round.
-
-**Notes:** AI suggestion (2026-07-05). Aim via a drifting/oscillating reticle (timing skill) or drag-back throw with wobble; proper dartboard scoring (doubles/triples/bull); play 301/501 vs. a simple AI or a 10-dart high-score mode. Perspective board with a satisfying THUNK + dart quiver on landing; felt-lined pub-corner mood, warm spotlight; crowd-less quiet ambience, synth thunk/ding per the audio bar. Best in `localStorage`. Real card + OG; full pipeline.
 ---
 ### New toy: Explorative Music (loop/track maker)
 
@@ -253,23 +215,13 @@ Items in this file follow the structure below so that any AI tool or human editi
 - ⚠ **Moderation/abuse is the main open question** for anything community-submitted — offensive drawings, spam, and (for shared-canvas) griefing/defacement. Needs at least a plan (report/flag, per-session rate limits, clear/undo, maybe review-before-public for the gallery variant) before it ships publicly. This is the real blocker, not the drawing tech.
 - Drawing surface itself is well-trodden (canvas pointer strokes, pressure/size, palette, undo) and reuses the repo's canvas/audio discipline; the hard part is entirely the shared-state + moderation layer.
 ---
-### New toy: Clowns & Balloons clone (TRS-80 CoCo / arcade Circus)
 
-**Why it matters:** Owner idea (2026-07-21) — the other half of the TRS-80 nostalgia pair. It is a Breakout cousin with a much more charming premise (seesaw + acrobats + balloon rows), and the site has no paddle/bounce game yet. Very readable, very juiceable, and an easy one-sitting score-chase.
+### New toy: Steady Hand (buzz-wire)
 
-**When to revisit:** Next time we're picking new toys to build; pairs naturally with the Downland item as a retro double-header.
+**Why it matters:** The last of the Perfect Circle precision family. Same proven DNA — one dead-simple input, an instantly brutal score, a share-worthy number — but sustained motor control rather than a single gesture, so it plays differently from its siblings. (Perfect Timing shipped as No. 092 and Color Match as No. 099, both 2026-07-25.)
 
-**Notes:** Clowns & Balloons (TRS-80 CoCo, a home version of the 1977 arcade game Circus / Clowns): you slide a **seesaw** left/right along the bottom; a clown lands on one end and launches the other clown upward to **pop rows of balloons** across the top; clear all balloons to advance, miss the catch and you lose a clown. Essentially Breakout with an asymmetric two-body launcher instead of a paddle — the catch-and-launch timing is the whole skill. **Build direction:** vanilla Canvas 2D, one-sitting arcade score-chase with best score in `localStorage`. Lean HARD into the circus theming for the design bar — striped big-top canvas, warm footlight glow, squashy cartoon clown with real squash-and-stretch on the bounce, balloons with specular highlights that **pop into rubber shreds** with a satisfying burst. Audio: physically-grounded balloon pop (transient burst + short resonant body, pitch varying by balloon row), seesaw creak/thump, circus-organ pentatonic flourish on clearing a row — per the audio quality bar, no plain beeps. Legal: original name + original art. Real rendered card + OG; full add-a-toy pipeline.
----
-### New toy cluster: precision toys (Perfect Circle family)
+**When to revisit:** Any time we want a small, fast, high-shareability build.
 
-**Why it matters:** Owner asked (2026-07-23) "another idea like Perfect Circle." Same proven DNA — one dead-simple input, an instantly brutal precision score, and a share-worthy number. Perfect Circle is a strong live toy; this family is a reliable vein of quick, high-replay, high-share builds.
+**Notes:** Trace a glowing wire A to B without touching the edges; scored on time plus how close you skirted the walls, with a buzz and a shake on contact. Great audio payoff — a rising hum as you near an edge, a satisfying buzz on a hit. Single input identical on mouse and touch, best in `localStorage`, share pill, ticket-economy earn key, real card + OG, full pipeline.
 
-**When to revisit:** Any time we want a small, fast, high-shareability build. Pick one via AskUserQuestion. (Note: a "blind 10-second timer" idea was considered and DROPPED — it duplicates the owner's own 5 Second Game at 5secondgame.com, which one-page-toys already cross-promotes.)
-
-**Notes:** Three non-overlapping candidates, ranked:
-- **A. Perfect Timing** *(top pick, truest Perfect Circle sibling)* — a needle sweeps a dial; tap to stop it exactly at 12. Score = degrees off. One-tap, one-more-try, "0.4° off" brag. Ramp by speeding the sweep / shrinking a target wedge. Pure nerve + precision.
-- **B. Steady Hand (buzz-wire)** — trace a glowing wire A→B without touching the edges; scored on time + how close you skirted the walls, buzz + shake on contact. Sustained motor control (not a single gesture); great audio payoff (rising hum near an edge, satisfying buzz on a hit). More game-y.
-- **C. Color Match** *(designer bait)* — a target swatch appears; drag RGB/HSL sliders to match it, scored on perceptual delta → "97.3% match." Tests the eye, not the hand — a genuinely different *kind* of precision, adds variety to the catalog, very shareable.
-All three: single input identical on mouse + touch, instant precise score, best in `localStorage`, share pill, ticket-economy earn key, real card + OG, full pipeline. Recommend A or C first.
 ---

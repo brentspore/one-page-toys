@@ -67,7 +67,10 @@
    * bankrolls that legitimately go down (bj_bank) must NOT earn. */
   var RULES = [
     // higher is better
+    { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },
+    { test: "colormatch_best", dir: "up", label: "Color Match accuracy" },
+    { test: "darts_best", dir: "up", label: "Darts nine-dart score" },
     { test: "coinpush_best", dir: "up", label: "Coin Pusher score" },
     { test: "descent_best", dir: "up", label: "Deep Descent depth" },
     { test: "clowns_best", dir: "up", label: "Clowns & Balloons score" },
@@ -84,6 +87,10 @@
     { test: "slice_best", dir: "up", label: "Slice It score" },
     { test: "stack_best", dir: "up", label: "Stack Tower height" },
     { test: "timing_best", dir: "up", label: "Perfect Timing score" },
+    // Video Poker's bankroll legitimately goes DOWN as you play, so the earn
+    // rule watches the high-water mark instead (cf. bj_bank, deliberately
+    // excluded for the same reason).
+    { test: "vp_best", dir: "up", label: "Video Poker high bank" },
     { test: "trio_best", dir: "up", label: "Trio score" },
     { test: "shuriken_best", dir: "up", label: "Shuriken Night score" },
     { test: "snake:best", dir: "up", label: "Snake score" },

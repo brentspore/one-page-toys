@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Air Hockey — One Page Toys</title>
+    <meta name="description" content="Your finger is the mallet. Slam the puck past a quick AI opponent on a glowing neon table — real puck physics, hard rebounds, and that hollow clack on every hit. First to seven. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/air-hockey/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#070a12" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Air Hockey — One Page Toys" />
+    <meta property="og:description" content="Your finger is the mallet. Slam the puck past a quick AI on a glowing neon table. First to seven wins." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/air-hockey/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/air-hockey.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Air Hockey — One Page Toys" />
+    <meta name="twitter:description" content="Drag your mallet, slam the puck, beat the AI. First to seven on a glowing neon table." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/air-hockey.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Air Hockey",
+        "url": "https://onepagetoys.com/toys/air-hockey/",
+        "description": "A one-on-one air hockey game against an AI opponent. Drag your mallet around your half of a glowing neon table, strike the puck with real physics and rebounds, and score seven goals before the computer does.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell hud__them"><span class="hud__k">CPU</span><span id="them">0</span></div>
+      <div class="hud__cell hud__streak"><span class="hud__k">Streak</span><span id="streak">0</span></div>
+      <div class="hud__cell hud__you"><span class="hud__k">You</span><span id="you">0</span></div>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">First to seven</p>
+        <h1 class="panel__title" id="ovTitle">Air Hockey</h1>
+        <p class="panel__text" id="ovText">Drag anywhere in <b>your half</b> and the mallet follows your finger. Slam the puck off the side rails, cut the angles, and put seven past the machine before it does the same to you. Hit it harder and it flies harder — that's the whole game.</p>
+        <button type="button" class="play-btn" id="ovBtn">Face off</button>
+        <p class="panel__keys" id="ovKeys">drag to move your mallet</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 094</span>
+      <span class="frame__corner frame__corner--tr">Air Hockey</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag in your half to move the mallet</p>
+
+    <script src="../../assets/tickets.js?v=14" defer></script>
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=10" defer></script>
+  </body>
+</html>
