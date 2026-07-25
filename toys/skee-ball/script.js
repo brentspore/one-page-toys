@@ -32,8 +32,8 @@
 
   var BALLS = 9;
   var VMIN = 1.15;      // swipe speed (screen-heights/sec) that maps to power 0
-  var VMAX = 6.6;       // ...that maps to power 1
-  var AIM_MAX = 0.46;   // swipe angle (rad from straight-up) that maps to full lateral aim
+  var VMAX = COARSE ? 5.2 : 6.4;   // ...that maps to power 1 (lower on touch: thumb-swipes peak slower than mouse flicks)
+  var AIM_MAX = COARSE ? 0.4 : 0.46; // swipe angle (rad) for full lateral aim (a touch easier to angle for corner 100s on touch)
   var ROLL_T = 0.40;    // seconds rolling up the lane
   var VAULT_T = 0.60;   // seconds airborne over the board
 
@@ -344,6 +344,19 @@
 
   var samples = [];   // {x,y,t} recent pointer positions
   var dragging = false, dragStart = null, live = null;
+  var peak = { speed: 0, vx: 0, vy: 0 };   // fastest upward flick seen during the swipe (touch decelerates before lift-off)
+
+  // velocity over the ~ms window ending at the latest sample; null if too short
+  function windowVel(ms) {
+    if (samples.length < 2) return null;
+    var end = samples[samples.length - 1], i = samples.length - 1;
+    while (i > 0 && end.t - samples[i].t < ms) i--;
+    if (i === samples.length - 1) return null;
+    var a = samples[i], dt = (end.t - a.t) / 1000;
+    if (dt <= 0) return null;
+    var vx = (end.x - a.x) / dt, vy = (end.y - a.y) / dt;
+    return { vx: vx, vy: vy, speed: Math.hypot(vx, vy) };
+  }
 
   function pt(e) {
     var r = canvas.getBoundingClientRect();
@@ -352,12 +365,16 @@
   function onDown(e) {
     if (!running || state !== "aim") return;
     dragging = true; samples = []; var p = pt(e); dragStart = p; samples.push(p); live = null;
+    peak.speed = 0; peak.vx = 0; peak.vy = 0;
     try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
   }
   function onMove(e) {
     if (!dragging) return;
     var p = pt(e); samples.push(p);
     if (samples.length > 24) samples.shift();
+    // remember the fastest upward flick of the whole swipe (touch slows before release)
+    var w = windowVel(70);
+    if (w && w.vy < 0 && w.speed > peak.speed) { peak.speed = w.speed; peak.vx = w.vx; peak.vy = w.vy; }
     live = livePreview();
   }
   function onUp(e) {
@@ -368,29 +385,21 @@
     if (!v) return; // dead-zone: not a real swipe
     fire(v.P, v.A);
   }
-  // velocity from the last ~90ms of the swipe (the flick, not the wind-up)
+  // use the swipe's PEAK upward flick (not the decelerating release), so a thumb-swipe
+  // that slows before lift-off still reaches full power — reachable 50s and corner 100s on touch
   function releaseVel() {
-    if (samples.length < 2) return null;
+    if (dragStart == null || samples.length < 2) return null;
     var end = samples[samples.length - 1];
-    var i = samples.length - 1;
-    while (i > 0 && end.t - samples[i].t < 90) i--;
-    var a = samples[i];
-    var dt = (end.t - a.t) / 1000;
-    if (dt <= 0) return null;
-    var vx = (end.x - a.x) / dt, vy = (end.y - a.y) / dt; // px/s; vy<0 is up-screen
-    var speed = Math.hypot(vx, vy);
     var totalDist = Math.hypot(end.x - dragStart.x, end.y - dragStart.y);
-    if (totalDist < 22 || vy > -H * 0.6) return null;     // must be a real upward flick
-    return velToShot(vx, vy, speed);
+    // consider the release window too, in case the fastest moment was the very end
+    var w = windowVel(90);
+    if (w && w.vy < 0 && w.speed > peak.speed) { peak.speed = w.speed; peak.vx = w.vx; peak.vy = w.vy; }
+    if (peak.speed <= 0 || totalDist < 22 || peak.vy > -H * 0.5) return null; // real upward flick
+    return velToShot(peak.vx, peak.vy, peak.speed);
   }
   function livePreview() {
-    if (samples.length < 2) return null;
-    var end = samples[samples.length - 1], i = samples.length - 1;
-    while (i > 0 && end.t - samples[i].t < 70) i--;
-    var a = samples[i], dt = (end.t - a.t) / 1000; if (dt <= 0) return null;
-    var vx = (end.x - a.x) / dt, vy = (end.y - a.y) / dt;
-    if (vy > -H * 0.3) return null;
-    var s = velToShot(vx, vy, Math.hypot(vx, vy));
+    if (peak.speed <= 0 || peak.vy >= 0) return null;
+    var s = velToShot(peak.vx, peak.vy, peak.speed);
     var r = resolve(s.P, s.A);
     return { sLand: r.sLand, uLand: r.uLand, pts: r.pts };
   }
