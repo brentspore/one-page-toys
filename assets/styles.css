@@ -973,7 +973,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="random-maze"]{ background: #05070d url("cards/random-maze.png") center / cover no-repeat; }
 .card__preview[data-slug="trio"]{ background: #17131f url("cards/trio.png") center / cover no-repeat; }
 .card__preview[data-slug="coin-pusher"]{ background: #0b141c url("cards/coin-pusher.png") center / cover no-repeat; }
-.card__preview[data-slug="stack-tower"]{ background: #0e1430 url("cards/stack-tower.png?v=2") center / cover no-repeat; }
+.card__preview[data-slug="stack-tower"]{ background: #0e1430 url("cards/stack-tower.png?v=3") center / cover no-repeat; }
 .card__preview[data-slug="music-box"]{ background: #1a2440 url("cards/music-box.png") center / cover no-repeat; }
 .card__preview[data-slug="theremin"]{ background: #0a0a1e url("cards/theremin.png") center / cover no-repeat; }
 .card__preview[data-slug="mini-golf"]{ background: #14663a url("cards/mini-golf.png") center / cover no-repeat; }

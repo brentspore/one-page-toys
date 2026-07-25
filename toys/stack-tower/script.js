@@ -46,6 +46,8 @@
   var running = false, over = false, toppling = false, toppleT = 0;
   var particles = [], perfectPops = [];
   var soundOn = true;
+  var NIGHT_GLOW = 0;          // 0..1 interior-light bloom, ramps as the sky darkens
+  var clouds = [];
 
   try { best = parseInt(localStorage.getItem("stack_best"), 10) || 0; } catch (e) { best = 0; }
   bestEl.textContent = "Best " + best;
@@ -309,69 +311,153 @@
 
   function lit(seed, idx) { return ((idx * 5 + seed) % 7) > 2; }   // deterministic, stable per-floor window pattern
 
-  function drawBlock(b, cx, cy, rot) {
-    var st = b.style || DEFAULT_STYLE, pal = st.pal;
-    var x = cx, y = cy, w = b.w, h = b.h;
-    ctx.save();
-    if (rot) { ctx.translate(x, y); ctx.rotate(rot); ctx.translate(-x, -y); }
-    var lx = x - w / 2, ty = y - h / 2, shape = SHAPE[st.facade] || "rect";
-
-    // body — vertical gradient reads as a lit facade
-    var g = ctx.createLinearGradient(lx, ty, lx, ty + h);
-    g.addColorStop(0, hsl(pal.h, pal.s, pal.lt));
-    g.addColorStop(1, hsl(pal.h, pal.s, pal.lb));
-    bodyPath(lx, ty, w, h, shape); ctx.fillStyle = g; ctx.fill();
-
-    // facade content (clipped to the silhouette)
-    ctx.save(); bodyPath(lx, ty, w, h, shape); ctx.clip();
-    var litCol = pal.win, glass = hsl(pal.h, pal.s + 8, Math.max(14, pal.lb - 24));
-    drawFacade(st, lx, ty, w, h, litCol, glass, pal);
-    // left highlight / right shade for a little 3D relief
-    var sh = ctx.createLinearGradient(lx, ty, lx + w, ty);
-    sh.addColorStop(0, "rgba(255,255,255,0.10)");
-    sh.addColorStop(0.5, "rgba(255,255,255,0)");
-    sh.addColorStop(1, "rgba(0,0,0,0.16)");
-    ctx.fillStyle = sh; ctx.fillRect(lx, ty, w, h);
-    // roof cap — a bright parapet lip (conforms to the silhouette via the clip)
-    ctx.fillStyle = hsl(pal.h, pal.s, Math.min(88, pal.lt + 14));
-    ctx.fillRect(lx, ty, w, Math.max(4, h * 0.10));
-    ctx.fillStyle = "rgba(0,0,0,0.14)"; ctx.fillRect(lx, ty + Math.max(4, h * 0.10), w, 1.5);
-    ctx.restore();
-
-    // mechanical decks wear a protruding maintenance ledge
-    if (st.facade === "mechanical") {
-      ctx.fillStyle = hsl(pal.h, Math.max(0, pal.s - 6), Math.max(20, pal.lb - 8));
-      ctx.fillRect(lx - 4, ty + h * 0.15, w + 8, h * 0.05);
-      ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fillRect(lx - 4, ty + h * 0.20, w + 8, 1.5);
+  // sun by day → warm dusk sun → moon at night, with a soft halo
+  function drawCelestial(f) {
+    var bx = W * (0.20 + f * 0.10), by = H * (0.15 + f * 0.14);
+    var rad = Math.max(24, Math.min(W, H) * 0.085);
+    var disc, halo;
+    if (f < 0.4) { disc = "rgb(255,247,216)"; halo = "255,236,180"; }
+    else if (f < 0.75) { disc = "rgb(255,198,120)"; halo = "255,150,90"; }
+    else { disc = "rgb(228,234,255)"; halo = "150,172,232"; }
+    var gg = ctx.createRadialGradient(bx, by, rad * 0.5, bx, by, rad * 4.2);
+    gg.addColorStop(0, "rgba(" + halo + ",0.45)");
+    gg.addColorStop(1, "rgba(" + halo + ",0)");
+    ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(bx, by, rad * 4.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = disc; ctx.beginPath(); ctx.arc(bx, by, rad, 0, Math.PI * 2); ctx.fill();
+    if (f >= 0.72) {   // moon craters
+      ctx.fillStyle = "rgba(150,162,196,0.45)";
+      ctx.beginPath(); ctx.arc(bx - rad * 0.32, by - rad * 0.22, rad * 0.2, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx + rad * 0.28, by + rad * 0.3, rad * 0.13, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx + rad * 0.05, by - rad * 0.42, rad * 0.09, 0, 7); ctx.fill();
     }
+  }
 
-    // edge shade
-    ctx.strokeStyle = "rgba(0,0,0,0.20)"; ctx.lineWidth = 1.5; bodyPath(lx, ty, w, h, shape); ctx.stroke();
+  function ensureClouds() { if (clouds.length) return; for (var i = 0; i < 5; i++) clouds.push({ x: Math.random() * 1.2, y: 0.08 + Math.random() * 0.5, s: 0.72 + Math.random() * 0.8, spd: 0.003 + Math.random() * 0.005 }); }
+  // rounded, tail-free cloud from overlapping circles
+  function puff(x, y, s, warm) {
+    var tint = warm ? "255,240,222" : "234,241,255";
+    ctx.fillStyle = "rgba(" + tint + ",0.9)";
+    ctx.beginPath();
+    ctx.arc(x, y, s * 0.62, 0, Math.PI * 2);
+    ctx.arc(x - s * 0.72, y + s * 0.14, s * 0.46, 0, Math.PI * 2);
+    ctx.arc(x + s * 0.72, y + s * 0.14, s * 0.46, 0, Math.PI * 2);
+    ctx.arc(x - s * 0.34, y - s * 0.16, s * 0.44, 0, Math.PI * 2);
+    ctx.arc(x + s * 0.36, y - 4, s * 0.42, 0, Math.PI * 2);
+    ctx.arc(x, y + s * 0.22, s * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  function drawClouds(f) {
+    if (f > 0.7) return;
+    ensureClouds();
+    ctx.save(); ctx.globalAlpha = (1 - f / 0.7) * 0.4;
+    var warm = f > 0.32;
+    for (var i = 0; i < clouds.length; i++) {
+      var c = clouds[i];
+      var cx = ((c.x + swayT * c.spd) % 1.25 - 0.12) * W;
+      puff(cx, c.y * H * 0.62, Math.min(W, H) * 0.12 * c.s, warm);
+    }
     ctx.restore();
   }
 
-  // silhouettes — all keep a flat, full-width BOTTOM so floors seat cleanly
-  var SHAPE = { ribbon: "chamfer", setback: "setback", mechanical: "sharp" };
-  function bodyPath(lx, ty, w, h, shape) {
+  // A floor is drawn as a 2.5-D extruded volume: a bright TOP roof face and a
+  // shaded RIGHT side face give it real depth, with a lit front facade and a
+  // soft contact shadow onto the floor below. Light comes from the upper-left.
+  function drawBlock(b, cx, cy, rot, isTop) {
+    var st = b.style || DEFAULT_STYLE, pal = st.pal;
+    var w = b.w, h = b.h;
+    var lx = -w / 2, ty = -h / 2, r = Math.max(4, Math.min(8, w * 0.05));
+    var D = Math.max(9, w * 0.13), ex = D, ey = -D * 0.52;   // iso extrusion up-right
+    ctx.save();
+    ctx.translate(cx, cy);
+    if (rot) ctx.rotate(rot);
+
+    // contact shadow onto the floor beneath (drawn first → lands on the lower block)
+    var ag = ctx.createLinearGradient(0, ty + h - 2, 0, ty + h + D * 1.2);
+    ag.addColorStop(0, "rgba(0,0,0,0.30)");
+    ag.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = ag; ctx.fillRect(lx - 3, ty + h - 2, w + ex + 6, D * 1.3);
+
+    // RIGHT side face (shadow side)
     ctx.beginPath();
-    if (shape === "chamfer") {
-      var c = Math.min(18, w * 0.13), r = 5;   // angled top corners
-      ctx.moveTo(lx + c, ty); ctx.lineTo(lx + w - c, ty); ctx.lineTo(lx + w, ty + c);
-      ctx.lineTo(lx + w, ty + h - r); ctx.arcTo(lx + w, ty + h, lx + w - r, ty + h, r);
-      ctx.lineTo(lx + r, ty + h); ctx.arcTo(lx, ty + h, lx, ty + h - r, r);
-      ctx.lineTo(lx, ty + c); ctx.closePath();
-    } else if (shape === "setback") {
-      var ins = w * 0.12, sb = h * 0.22, r2 = 5;   // narrow crown / shoulders
-      ctx.moveTo(lx + ins, ty); ctx.lineTo(lx + w - ins, ty);
-      ctx.lineTo(lx + w - ins, ty + sb); ctx.lineTo(lx + w, ty + sb);
-      ctx.lineTo(lx + w, ty + h - r2); ctx.arcTo(lx + w, ty + h, lx + w - r2, ty + h, r2);
-      ctx.lineTo(lx + r2, ty + h); ctx.arcTo(lx, ty + h, lx, ty + h - r2, r2);
-      ctx.lineTo(lx, ty + sb); ctx.lineTo(lx + ins, ty + sb); ctx.closePath();
-    } else if (shape === "sharp") {
-      ctx.rect(lx, ty, w, h);                       // industrial hard corners
-    } else {
-      roundRect(lx, ty, w, h, 5);
+    ctx.moveTo(lx + w, ty + r * 0.6);
+    ctx.lineTo(lx + w + ex, ty + r * 0.6 + ey);
+    ctx.lineTo(lx + w + ex, ty + h + ey);
+    ctx.lineTo(lx + w, ty + h);
+    ctx.closePath();
+    var sg = ctx.createLinearGradient(lx + w, 0, lx + w + ex, 0);
+    sg.addColorStop(0, hsl(pal.h, pal.s, Math.max(12, pal.lb - 5)));
+    sg.addColorStop(1, hsl(pal.h, pal.s, Math.max(8, pal.lb - 22)));
+    ctx.fillStyle = sg; ctx.fill();
+
+    // TOP roof face (bright, catches the light)
+    ctx.beginPath();
+    ctx.moveTo(lx + r * 0.6, ty);
+    ctx.lineTo(lx + r * 0.6 + ex, ty + ey);
+    ctx.lineTo(lx + w + ex, ty + ey);
+    ctx.lineTo(lx + w, ty);
+    ctx.closePath();
+    ctx.fillStyle = hsl(pal.h, Math.max(0, pal.s - 6), Math.min(92, pal.lt + 18));
+    ctx.fill();
+    ctx.strokeStyle = "rgba(0,0,0,0.10)"; ctx.lineWidth = 1; ctx.stroke();
+    if (isTop) drawRoofProps(lx, ty, w, ex, ey, pal);
+
+    // FRONT face body
+    var g = ctx.createLinearGradient(0, ty, 0, ty + h);
+    g.addColorStop(0, hsl(pal.h, pal.s, pal.lt));
+    g.addColorStop(1, hsl(pal.h, pal.s, pal.lb));
+    roundRect(lx, ty, w, h, r); ctx.fillStyle = g; ctx.fill();
+
+    // facade content (clipped to the front face)
+    ctx.save(); roundRect(lx, ty, w, h, r); ctx.clip();
+    var litCol = pal.win, glass = hsl(pal.h, pal.s + 8, Math.max(14, pal.lb - 24));
+    drawFacade(st, lx, ty, w, h, litCol, glass, pal);
+    // warm interior bloom at night
+    if (NIGHT_GLOW > 0.02) {
+      ctx.save(); ctx.globalCompositeOperation = "lighter";
+      var bl = ctx.createLinearGradient(0, ty, 0, ty + h);
+      bl.addColorStop(0, "rgba(255,224,158,0)");
+      bl.addColorStop(0.5, "rgba(255,224,158," + (0.16 * NIGHT_GLOW).toFixed(3) + ")");
+      bl.addColorStop(1, "rgba(255,206,150,0)");
+      ctx.fillStyle = bl; ctx.fillRect(lx, ty, w, h); ctx.restore();
     }
+    // left sheen → right shade
+    var sh = ctx.createLinearGradient(lx, 0, lx + w, 0);
+    sh.addColorStop(0, "rgba(255,255,255,0.14)");
+    sh.addColorStop(0.4, "rgba(255,255,255,0)");
+    sh.addColorStop(1, "rgba(0,0,0,0.20)");
+    ctx.fillStyle = sh; ctx.fillRect(lx, ty, w, h);
+    // diagonal glass reflection streak
+    ctx.globalAlpha = 0.055; ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.moveTo(lx + w * 0.14, ty); ctx.lineTo(lx + w * 0.32, ty);
+    ctx.lineTo(lx + w * 0.14, ty + h); ctx.lineTo(lx - w * 0.04, ty + h);
+    ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+    // bright parapet lip along the roofline
+    ctx.fillStyle = hsl(pal.h, pal.s, Math.min(90, pal.lt + 12));
+    ctx.fillRect(lx, ty, w, Math.max(3, h * 0.08));
+    ctx.fillStyle = "rgba(0,0,0,0.12)"; ctx.fillRect(lx, ty + Math.max(3, h * 0.08), w, 1.5);
+    ctx.restore();
+
+    // outline
+    ctx.strokeStyle = "rgba(0,0,0,0.22)"; ctx.lineWidth = 1.25;
+    roundRect(lx, ty, w, h, r); ctx.stroke();
+    ctx.restore();
+  }
+
+  // rooftop dressing on the topmost floor — units, vents, a blinking beacon
+  function drawRoofProps(lx, ty, w, ex, ey, pal) {
+    var mx = ex * 0.5, my = ey * 0.5;   // sit on the roof-face midline
+    ctx.fillStyle = hsl(pal.h, Math.max(0, pal.s - 8), Math.max(22, pal.lb - 4));
+    ctx.fillRect(lx + w * 0.18 + mx, ty + my - 9, w * 0.20, 9);
+    ctx.fillStyle = hsl(pal.h, Math.max(0, pal.s - 10), Math.max(28, pal.lb + 2));
+    ctx.fillRect(lx + w * 0.52 + mx, ty + my - 6, w * 0.15, 6);
+    // antenna + beacon
+    var axx = lx + w * 0.80 + mx, ayy = ty + my;
+    ctx.strokeStyle = "rgba(210,218,236,0.85)"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(axx, ayy); ctx.lineTo(axx, ayy - 17); ctx.stroke();
+    var blink = 0.5 + 0.5 * Math.sin(swayT * 4);
+    ctx.fillStyle = "rgba(255,86,74," + (0.35 + 0.6 * blink).toFixed(2) + ")";
+    ctx.beginPath(); ctx.arc(axx, ayy - 18, 2.3, 0, Math.PI * 2); ctx.fill();
   }
 
   function drawFacade(st, lx, ty, w, h, litCol, glass, pal) {
@@ -459,29 +545,34 @@
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     curTheta = towerTheta();
     var sk = skyStops();
+    NIGHT_GLOW = clamp((sk.f - 0.35) / 0.4, 0, 1);   // interior lights bloom as it darkens
     var bg = ctx.createLinearGradient(0, 0, 0, H);
     bg.addColorStop(0, sk.top); bg.addColorStop(1, sk.bot);
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
+    // sun / moon + drifting clouds
+    drawCelestial(sk.f);
+    drawClouds(sk.f);
+
     // stars fade in with altitude
     if (sk.f > 0.35) {
       ensureStars();
-      ctx.save(); ctx.globalAlpha = Math.min(1, (sk.f - 0.35) / 0.4);
+      var sa = Math.min(1, (sk.f - 0.35) / 0.4);
       for (var i = 0; i < stars.length; i++) {
         var s = stars[i];
         var tw = 0.6 + 0.4 * Math.sin(swayT * 2 + s.tw);
-        ctx.globalAlpha = Math.min(1, (sk.f - 0.35) / 0.4) * tw;
+        ctx.globalAlpha = sa * tw;
         ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(s.x * W, s.y * H * 0.8, s.r, 0, Math.PI * 2); ctx.fill();
       }
-      ctx.restore();
+      ctx.globalAlpha = 1;
     }
 
     // ground + skyline base
     var groundScreen = sy(GROUND_Y);
     if (groundScreen < H + 40) {
-      ctx.fillStyle = sk.f > 0.5 ? "#0a1030" : "#2b3b52";
-      // simple silhouette skyline
       var baseline = groundScreen;
+      // far skyline silhouette
+      ctx.fillStyle = sk.f > 0.5 ? "#0a1030" : "#2b3b52";
       ctx.beginPath(); ctx.moveTo(0, baseline);
       var seed = 7;
       for (var bx = 0; bx <= W; bx += 46) {
@@ -491,37 +582,55 @@
       }
       ctx.lineTo(W, baseline); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
       ctx.globalAlpha = 0.55; ctx.fill(); ctx.globalAlpha = 1;
+      // atmospheric haze rising off the skyline (warm by day, cool at night)
+      var hzTop = baseline - H * 0.20;
+      var hz = ctx.createLinearGradient(0, hzTop, 0, baseline);
+      var hzc = sk.f > 0.5 ? "150,168,214" : (sk.f > 0.3 ? "255,208,170" : "205,222,244");
+      hz.addColorStop(0, "rgba(" + hzc + ",0)");
+      hz.addColorStop(1, "rgba(" + hzc + ",0.42)");
+      ctx.fillStyle = hz; ctx.fillRect(0, hzTop, W, H * 0.20);
       // ground fill
       ctx.fillStyle = sk.f > 0.5 ? "#070b1e" : "#1c2b3e";
       ctx.fillRect(0, baseline, W, H - baseline);
     }
 
     // tower — placed floors ride the base rotation; tumbling floors fly on their own
+    var topIdx = blocks.length - 1;
     for (var b = 0; b < blocks.length; b++) {
       var blk = blocks[b];
-      if (blk.tumble) { drawBlock(blk, blk.x, sy(blk.y), blk.rot || 0); }
-      else { var p = towerScreen(blk.x, blk.y); drawBlock(blk, p.x, p.y, curTheta); }
+      if (blk.tumble) { drawBlock(blk, blk.x, sy(blk.y), blk.rot || 0, false); }
+      else { var p = towerScreen(blk.x, blk.y); drawBlock(blk, p.x, p.y, curTheta, b === topIdx && !falling); }
     }
 
-    // crane: fixed pivot overhead, rope tilting as the block swings on its arc
+    // crane: fixed pivot overhead, block hanging on cables from a trolley
     if (crane && !over) {
       var pcx = crane.pivotX, pcy = sy(crane.pivotY);
       var bcx = crane.x, bcy = sy(crane.y);
-      // short jib beam + mount at the pivot
-      var HB = BW * 0.75;
-      ctx.strokeStyle = "rgba(255,255,255,0.30)"; ctx.lineWidth = 5; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(pcx - HB, pcy); ctx.lineTo(pcx + HB, pcy); ctx.stroke();
-      // drop-timer: an accent segment on the beam that drains inward, reddening + pulsing when time's low
+      var HB = BW * 0.78;
+      // jib beam (dark structural bar) with a counterweight tail
+      ctx.strokeStyle = "rgba(38,46,66,0.92)"; ctx.lineWidth = 7; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(pcx - HB * 0.55, pcy); ctx.lineTo(pcx + HB, pcy); ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,0.16)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(pcx - HB * 0.55, pcy - 1.5); ctx.lineTo(pcx + HB, pcy - 1.5); ctx.stroke();
+      ctx.fillStyle = "#2b3242"; roundRect(pcx - HB * 0.55 - 12, pcy - 8, 15, 16, 3); ctx.fill();   // counterweight
+      // drop-timer: accent segment draining inward, reddening + pulsing when low
       var rem = Math.max(0, 1 - crane.life / crane.maxLife), warn = rem < 0.32;
       var pulse = warn ? 0.55 + 0.45 * Math.sin(swayT * 18) : 1;
       ctx.strokeStyle = warn ? "rgba(255,92,80," + (0.9 * pulse) + ")" : "rgba(255,208,128,0.9)";
-      ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.moveTo(pcx - HB * rem, pcy); ctx.lineTo(pcx + HB * rem, pcy); ctx.stroke();
-      ctx.fillStyle = "#cfd7ea"; ctx.beginPath(); ctx.arc(pcx, pcy, 6, 0, Math.PI * 2); ctx.fill();
-      // tilted rope from pivot to the top of the block
-      ctx.strokeStyle = "rgba(230,236,250,0.7)"; ctx.lineWidth = 2.5; ctx.lineCap = "butt";
-      ctx.beginPath(); ctx.moveTo(pcx, pcy); ctx.lineTo(bcx, bcy - crane.h / 2); ctx.stroke();
-      drawBlock({ x: crane.x, y: crane.y, w: crane.w, h: crane.h, style: crane.style }, bcx, bcy, 0);
+      ctx.lineWidth = 4; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(pcx - HB * 0.55 * rem, pcy); ctx.lineTo(pcx + HB * rem, pcy); ctx.stroke();
+      // trolley riding the jib above the block
+      ctx.fillStyle = "#cfd7ea"; roundRect(bcx - 11, pcy - 5, 22, 11, 3); ctx.fill();
+      ctx.fillStyle = "rgba(0,0,0,0.25)"; ctx.fillRect(bcx - 8, pcy + 6, 16, 2);
+      // twin cables from trolley to a hook bar on top of the block
+      var hookY = bcy - crane.h / 2 - 5;
+      ctx.strokeStyle = "rgba(226,232,248,0.72)"; ctx.lineWidth = 2; ctx.lineCap = "butt";
+      ctx.beginPath();
+      ctx.moveTo(bcx - 7, pcy + 5); ctx.lineTo(crane.x - crane.w * 0.28, hookY);
+      ctx.moveTo(bcx + 7, pcy + 5); ctx.lineTo(crane.x + crane.w * 0.28, hookY);
+      ctx.stroke();
+      ctx.fillStyle = "#454f66"; ctx.fillRect(crane.x - crane.w * 0.34, hookY - 2, crane.w * 0.68, 5);
+      drawBlock({ x: crane.x, y: crane.y, w: crane.w, h: crane.h, style: crane.style }, bcx, bcy, 0, true);
     }
 
     // falling block (still on the crane, not yet part of the swaying tower)
@@ -545,6 +654,12 @@
       ctx.fillText(label, ppp.x, ppp.y - BH * 0.8 - pp.t * 40);
     }
     ctx.globalAlpha = 1;
+
+    // vignette to focus the frame
+    var vg = ctx.createRadialGradient(W / 2, H * 0.44, Math.min(W, H) * 0.34, W / 2, H * 0.5, Math.max(W, H) * 0.78);
+    vg.addColorStop(0, "rgba(0,0,0,0)");
+    vg.addColorStop(1, "rgba(0,0,0,0.26)");
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
   }
 
   function roundRect(x, y, w, h, r) {
