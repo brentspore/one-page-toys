@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Perfect Timing — One Page Toys</title>
+    <meta name="description" content="A needle sweeps the dial — tap, click, or hit space to stop it dead on the glowing target. See exactly how many degrees off you were, chase a PERFECT, and ride the streak as it speeds up. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/perfect-timing/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0b0e16" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Perfect Timing — One Page Toys" />
+    <meta property="og:description" content="A needle sweeps the dial. Tap to stop it on the target — how many degrees off can you get? Chase a PERFECT and ride the streak as the sweep speeds up." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/perfect-timing/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/perfect-timing.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Perfect Timing — One Page Toys" />
+    <meta name="twitter:description" content="Tap to stop the sweeping needle on the target. How many degrees off can you get? Chase a PERFECT." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/perfect-timing.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Perfect Timing",
+        "url": "https://onepagetoys.com/toys/perfect-timing/",
+        "description": "A one-tap precision dial. A needle sweeps around a circular gauge and you tap, click, or press space to stop it as close as possible to the glowing target. Score is how many degrees off you were; land a streak of good stops and the sweep speeds up while the target shrinks.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell hud__score"><span class="hud__k">Score</span><span id="score">0</span></div>
+      <div class="hud__cell hud__best"><span class="hud__k">Best</span><span id="best">0</span></div>
+      <div class="hud__cell hud__streak" id="streakCell" hidden><span class="hud__k">Streak</span><span id="streak">0</span></div>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">One-tap precision</p>
+        <h1 class="panel__title" id="ovTitle">Perfect Timing</h1>
+        <p class="panel__text" id="ovText">A needle sweeps the dial. Tap, click, or press <b>space</b> to stop it dead on the glowing target — the closer you land, the more you score, and a bull's-eye is a <b>PERFECT</b>. Nail one and the sweep speeds up while the target shrinks. Miss wide and the run ends. How many degrees off can you get?</p>
+        <button type="button" class="play-btn" id="ovBtn">Start</button>
+        <p class="panel__keys" id="ovKeys">tap / click / space to stop</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 092</span>
+      <span class="frame__corner frame__corner--tr">Perfect Timing</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">tap to stop the needle</p>
+
+    <script src="../../assets/tickets.js?v=13" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=8" defer></script>
+  </body>
+</html>

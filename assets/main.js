@@ -66,6 +66,10 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "perfect-timing":
+    "perfect timing reflex reaction test stop the needle stop the dial precision timing skill one tap tap game bull's-eye bullseye accuracy degrees off streak nerve twitch how good is your timing arcade minimal dial speedometer sweep hand needle stop it on target perfect circle family test your reflexes reaction time",
+  "clowns-balloons":
+    "clowns and balloons clowns balloons circus breakout brick breaker arkanoid paddle bounce seesaw teeter clown pop balloons big top carnival retro trs-80 coco bally circus arcade classic keep the ball up smash bricks pop all the balloons big top tent acrobat",
   "skee-ball":
     "skee ball skeeball arcade roll the ball up the ramp lane bowling carnival boardwalk midway ticket redemption arcade tickets swipe flick aim 10 20 30 40 50 100 corner holes rings score chase alley rolling game classic arcade fairground amusement park physics toss underhand roll nine balls high score",
   "deep-hollow":

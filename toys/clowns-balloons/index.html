@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Clowns &amp; Balloons — One Page Toys</title>
+    <meta name="description" content="A retro big-top arcade game. Slide the seesaw to bounce the clown up and pop every balloon across the top. Clear the rows for the next level — faster clown, narrower seesaw. Three lives, one high score. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/clowns-balloons/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#241033" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Clowns &amp; Balloons — One Page Toys" />
+    <meta property="og:description" content="Slide the seesaw, launch the clown, and pop every balloon under the big top. Clear the rows to level up. Three lives, one high score." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/clowns-balloons/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/clowns-balloons.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Clowns &amp; Balloons — One Page Toys" />
+    <meta name="twitter:description" content="Bounce the clown off the seesaw and pop every balloon under the big top. Clear the rows to level up. Three lives, one high score." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/clowns-balloons.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Clowns & Balloons",
+        "url": "https://onepagetoys.com/toys/clowns-balloons/",
+        "description": "A retro big-top arcade game in the browser, a cousin of Breakout. Slide the seesaw to bounce the clown up and pop rows of balloons across the top; clear them all to advance the level. Three lives, one high score, instant restart.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell hud__score"><span class="hud__k">Score</span><span id="score">0</span></div>
+      <div class="hud__cell hud__best"><span class="hud__k">Best</span><span id="best">0</span></div>
+      <div class="hud__cell hud__level"><span class="hud__k">Level</span><span id="level">1</span></div>
+      <div class="hud__cell hud__lives"><span class="hud__k">Lives</span><span id="lives">♣♣♣</span></div>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Under the big top</p>
+        <h1 class="panel__title" id="ovTitle">Clowns &amp; Balloons</h1>
+        <p class="panel__text" id="ovText">Slide the seesaw left and right to bounce the clown skyward and pop every balloon along the top. Where the clown lands on the plank steers the bounce — hit the ends to angle it, the middle to send it straight up. Clear all the balloons to raise the tent for the next act. Miss the clown and it's one of your three lives. Go for the high score!</p>
+        <button type="button" class="play-btn" id="ovBtn">Start the show</button>
+        <p class="panel__keys" id="ovKeys"></p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 091</span>
+      <span class="frame__corner frame__corner--tr">Clowns &amp; Balloons</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">slide to move the seesaw</p>
+
+    <script src="../../assets/tickets.js?v=13" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=8" defer></script>
+  </body>
+</html>

@@ -70,6 +70,7 @@
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },
     { test: "coinpush_best", dir: "up", label: "Coin Pusher score" },
     { test: "descent_best", dir: "up", label: "Deep Descent depth" },
+    { test: "clowns_best", dir: "up", label: "Clowns & Balloons score" },
     { test: "deep_hollow_best", dir: "up", label: "Deep Hollow score" },
     { test: "dice_best", dir: "up", label: "Dice roll total" },
     { test: "dotloop_best", dir: "up", label: "Dot Loop score" },
@@ -82,6 +83,7 @@
     // intentionally NOT score-detected here (that would double-count).
     { test: "slice_best", dir: "up", label: "Slice It score" },
     { test: "stack_best", dir: "up", label: "Stack Tower height" },
+    { test: "timing_best", dir: "up", label: "Perfect Timing score" },
     { test: "trio_best", dir: "up", label: "Trio score" },
     { test: "shuriken_best", dir: "up", label: "Shuriken Night score" },
     { test: "snake:best", dir: "up", label: "Snake score" },

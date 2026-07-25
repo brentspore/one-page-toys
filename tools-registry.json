@@ -1,5 +1,51 @@
 [
   {
+    "slug": "perfect-timing",
+    "name": "Perfect Timing",
+    "shortDescription": "A one-tap test of nerve: a needle sweeps the dial and you stop it dead on the target. Score by how few degrees you're off — nail a bull's-eye for a PERFECT. Each hit speeds the sweep and shrinks the target, so it's a streak-chase. One tap, one more try.",
+    "category": "game",
+    "tags": [
+      "perfect-timing",
+      "reflex",
+      "precision",
+      "timing",
+      "one-tap",
+      "arcade",
+      "skill",
+      "dial",
+      "needle",
+      "streak",
+      "minimal",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/perfect-timing/",
+    "related": []
+  },
+  {
+    "slug": "clowns-balloons",
+    "name": "Clowns & Balloons",
+    "shortDescription": "A circus take on the classic bounce-and-pop arcade game: slide the seesaw to launch the clown up into rows of balloons and pop them all. Where the clown lands on the plank steers the angle. Miss the catch and a clown is gone. Clear the big top, level by level.",
+    "category": "game",
+    "tags": [
+      "clowns-balloons",
+      "arcade",
+      "breakout",
+      "circus",
+      "retro",
+      "bounce",
+      "paddle",
+      "balloons",
+      "seesaw",
+      "clown",
+      "brick-breaker",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/clowns-balloons/",
+    "related": []
+  },
+  {
     "slug": "skee-ball",
     "name": "Skee Ball",
     "shortDescription": "The arcade alley in your browser. Swipe up the lane to roll: flick harder to send the ball farther up the board — a soft roll lands a 10, a firm one finds the 40 and 50, and a fast angled flick threads a corner 100. Overcook it and it sails over for nothing. Nine balls, one score.",
