@@ -1,5 +1,28 @@
 [
   {
+    "slug": "five-second-game",
+    "name": "5 Second Game",
+    "shortDescription": "Start the clock, then stop it at exactly five seconds — with the readout blanked while it runs, so you are working purely from your own sense of time. Within 10ms is a Perfect. Endless practice; the daily challenge, streaks and the leaderboard live at 5secondgame.com.",
+    "category": "game",
+    "tags": [
+      "five-second-game",
+      "reflex",
+      "timing",
+      "precision",
+      "one-tap",
+      "minimal",
+      "internal-clock",
+      "challenge",
+      "daily",
+      "score-chase",
+      "skill",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/five-second-game/",
+    "related": []
+  },
+  {
     "slug": "color-match",
     "name": "Color Match",
     "shortDescription": "How good is your eye? A colour fills the screen and your swatch sits right on top of it — drag hue, saturation and lightness until the edge disappears. Scored on real perceptual distance in CIELAB, so close is not the same as correct. Three rounds, each subtler than the last.",

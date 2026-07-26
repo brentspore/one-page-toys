@@ -96,6 +96,8 @@
     { test: "snake:best", dir: "up", label: "Snake score" },
     { test: "opt-echo-best", dir: "up", label: "Echo sequence" },
     // lower is better
+    // 5 Second Game stores the CLOSEST miss in ms, so lower is better
+    { test: "fsg_best", dir: "down", label: "5 Second Game accuracy" },
     { test: /^mines_best_/, dir: "down", label: "Minesweeper time" },
     { test: /^maze_best_/, dir: "down", label: "Maze time" },
     { test: /^trailfeed_best_/, dir: "down", label: "Trail Game time" },

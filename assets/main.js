@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "five-second-game":
+    "5 second game five second game 5secondgame stop the clock at five seconds count to five internal clock body clock timing test reaction stop watch stopwatch hidden timer guess five seconds one tap precision daily challenge streak leaderboard practice mode how good is your sense of time perfect 5.000 exactly five",
   "color-match":
     "color match colour match match the color guess the color color test eye test how good is your eye perceptual delta e cielab hue saturation lightness hsl sliders swatch designer color theory calibration pantone shade tone tint mixing paint mixer color accuracy color blindness test munsell x-rite hue test precision",
   "singing-bowl":

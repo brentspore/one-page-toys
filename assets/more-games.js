@@ -251,11 +251,11 @@
     },
     {
       "name": "5 Second Game",
-      "tagline": "Stop at 5.00",
-      "url": "https://5secondgame.com/",
-      "favicon": "https://5secondgame.com/favicon.png",
+      "tagline": "Stop the hidden clock",
+      "url": "https://onepagetoys.com/toys/five-second-game/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230e1119'/><circle cx='16' cy='17' r='10' fill='none' stroke='%238b4dff' stroke-width='2'/><path d='M16 11v6l4 2.6' stroke='%23e3e7f2' stroke-width='2.2' stroke-linecap='round' fill='none'/><rect x='13' y='3' width='6' height='2.6' rx='1.3' fill='%23a97cff'/><rect x='15' y='4.6' width='2' height='3' fill='%23a97cff'/></svg>",
       "initial": "5",
-      "slug": null
+      "slug": "five-second-game"
     }
   ];
 
