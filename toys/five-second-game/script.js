@@ -19,7 +19,7 @@
   "use strict";
 
   var TAU = Math.PI * 2;
-  var SITE = "https://5secondgame.com/?utm_source=onepagetoys&utm_medium=referral&utm_campaign=feeder";
+  var SITE = "https://5secondgame.com";
 
   // ---------------------------------------------------------------- elements
   var canvas = document.getElementById("canvas");
@@ -228,7 +228,7 @@
 
   [dailyEl, ctaBtn].forEach(function (el) {
     el.addEventListener("click", function () {
-      track("outbound_click", { link_url: SITE, link_text: (el.textContent || "").trim().slice(0, 60) });
+      track("outbound_click", { destination: "5secondgame.com", link_id: el.id });
     });
   });
 
@@ -269,9 +269,8 @@
     var r = ratingFor(last.diff);
     var line = r.emoji + " " + fmt(last.elapsed) + "s — " + last.diff + "ms off " + fmt(last.target) + "s" +
       (best !== null ? "\nBest miss: " + best + "ms" : "") +
-      "\n\n5 Second Game practice → onepagetoys.com/toys/five-second-game/" +
-      "\nToday's daily → 5secondgame.com";
-    track("share", { method: "five_second_game", value: last.diff });
+      "\n\nPlay today's daily against everyone → " + SITE + "/?utm_source=onepagetoys&utm_medium=share";
+    track("share", { method: "5sg_feeder", value: last.diff });
     if (navigator.share) {
       navigator.share({ title: "5 Second Game", text: line }).catch(function () {});
       return;

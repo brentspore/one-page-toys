@@ -16,6 +16,14 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
+### Backport `value` param to blocks/trail feeder share events
+
+**Why it matters:** The 5SG feeder's `share` event carries `value` (ms off), a free quality signal in GA4 — are the sharers the accurate players? Spelling-blocks and trail-game feeders send no value, so the three feeders can't be compared on it.
+
+**When to revisit:** Next time either feeder toy is touched for any reason.
+
+**Notes:** One-line change each: `toys/spelling-blocks/script.js` share event gets `value: lastResult.words` (or secs), `toys/trail-game/script.js` gets `value: lastResult.secs`. Convention documented in the `new-toy` skill → "Feeder toys". From the 2026-07-27 three-feeder reconciliation.
+---
 ### New toy: Pinball (mini table)
 
 **Why it matters:** A flagship arcade classic with enormous nostalgia and replay pull — real flipper physics, bumpers, and a score chase. The kind of showpiece that gets shared. Category `game`.
