@@ -410,7 +410,10 @@
     if (navigator.share) { navigator.share({ text: txt }).catch(function () {}); }
     else if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(function () { showToast("Copied — paste it anywhere"); }, function () { showToast(txt); }); }
     else { showToast(txt); }
-    if (window.gtag) try { gtag("event", "share", { method: "blocks_feeder" }); } catch (e) {}
+    // `value` carries the score metric so GA4 can compare the three feeders on
+    // it — are the sharers the strong players? (5SG sends ms off, we send words.)
+    var shareWords = lastResult ? lastResult.words : placed.length;
+    if (window.gtag) try { gtag("event", "share", { method: "blocks_feeder", value: shareWords }); } catch (e) {}
   });
   againBtn.addEventListener("click", newPuzzle);
 

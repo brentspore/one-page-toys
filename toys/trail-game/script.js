@@ -397,7 +397,10 @@
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(txt).then(function () { showToast("Copied — paste it anywhere"); }, function () { showToast(txt); });
     } else { showToast(txt); }
-    if (window.gtag) try { gtag("event", "share", { method: "trail_feeder" }); } catch (e) {}
+    // `value` carries the score metric so GA4 can compare the three feeders on
+    // it — are the sharers the fast solvers? (5SG sends ms off, we send seconds.)
+    var shareSecs = lastResult ? Math.round(lastResult.secs) : 0;
+    if (window.gtag) try { gtag("event", "share", { method: "trail_feeder", value: shareSecs }); } catch (e) {}
   });
   againBtn.addEventListener("click", function () { newPuzzle(); });
 
