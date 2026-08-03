@@ -68,6 +68,8 @@ const CATEGORY_LABELS = {
 const TYPE_NL_PHRASES = {
   "five-second-game":
     "5 second game five second game 5secondgame stop the clock at five seconds count to five internal clock body clock timing test reaction stop watch stopwatch hidden timer guess five seconds one tap precision daily challenge streak leaderboard practice mode how good is your sense of time perfect 5.000 exactly five",
+  "brick-smasher":
+    "brick smasher brick breaker breakout arkanoid block breaker bust a move blocks smash the wall paddle and ball bat and ball ball bouncer wall breaker demolish bricks neon glass bricks retro arcade classic atari 2600 super breakout alleyway ricochet infinity ball juggle power ups multiball laser paddle widen slow ball capsules armoured bricks steel bricks levels waves lives high score combo chain angle the ball off the paddle edge one more go",
   "color-match":
     "color match colour match match the color guess the color color test eye test how good is your eye perceptual delta e cielab hue saturation lightness hsl sliders swatch designer color theory calibration pantone shade tone tint mixing paint mixer color accuracy color blindness test munsell x-rite hue test precision",
   "singing-bowl":

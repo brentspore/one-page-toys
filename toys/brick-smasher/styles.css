@@ -1,0 +1,239 @@
+/* Brick Smasher — No. 101
+ * A well of neon glass in a dark room. Self-contained. */
+
+:root {
+  --bg: #05060f;
+  --ink: #eef2ff;
+  --neon: #6ee7ff;   /* paddle / ball / chrome */
+  --hot: #ff4d8d;    /* top-row bricks, danger */
+  --violet: #a78bfa; /* armour */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------------ frame */
+
+.frame { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
+.frame__corner {
+  position: absolute;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: rgba(238, 242, 255, 0.28);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); }
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right)); }
+.frame__corner--bl { bottom: max(14px, env(safe-area-inset-bottom)); left: max(16px, env(safe-area-inset-left)); pointer-events: auto; }
+.frame__corner--bl a { color: inherit; text-decoration: none; transition: color 0.18s ease; }
+.frame__corner--bl a:hover { color: var(--neon); }
+.frame__corner--bl a:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+/* the well runs edge to edge on a phone — the top corners would sit on the brick
+   field, so they step aside once the ball is live */
+body.is-playing .frame__corner--tl,
+body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; }
+
+.hint {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(12px, env(safe-area-inset-bottom));
+  margin: 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238, 242, 255, 0.26);
+  pointer-events: none;
+  z-index: 6;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.4s ease;
+}
+.hint.is-gone { opacity: 0; }
+
+/* -------------------------------------------------------------------- HUD */
+
+.hud {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+  justify-content: center;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+/* `display:flex` above is an author rule and beats the UA's `[hidden]{display:none}`,
+   so the score row would sit behind the intro and the game-over panel. */
+.hud[hidden] { display: none; }
+.hud__cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.hud__k { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(238, 242, 255, 0.4); }
+.hud__cell span:last-child { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.hud__score { color: var(--ink); text-shadow: 0 0 18px rgba(110, 231, 255, 0.4); }
+.hud__lives { color: var(--neon); letter-spacing: 0.12em; }
+.hud__lvl { color: rgba(238, 242, 255, 0.72); }
+.hud__best { color: rgba(238, 242, 255, 0.5); font-size: 15px !important; }
+.hud__score.is-bump { animation: bump 0.22s ease; }
+@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.16); } 100% { transform: scale(1); } }
+
+/* ------------------------------------------------------------ sound button */
+
+.sound-btn {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 7;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 14, 30, 0.74);
+  border: 1px solid rgba(110, 231, 255, 0.3);
+  border-radius: 50%;
+  color: rgba(238, 242, 255, 0.82);
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.sound-btn:hover { color: var(--neon); border-color: var(--neon); }
+.sound-btn:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+.sound-btn[aria-pressed="false"] { color: rgba(238, 242, 255, 0.3); }
+/* the sound toggle shares the top-right with the frame label — the label is the
+   one that gives way, so keep the button up while playing */
+body.is-playing .sound-btn { opacity: 0.55; }
+body.is-playing .sound-btn:hover { opacity: 1; }
+
+/* ---------------------------------------------------------------- overlay */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: radial-gradient(120% 100% at 50% 32%, rgba(46, 26, 88, 0.72) 0%, rgba(4, 5, 12, 0.96) 74%);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: ovIn 0.35s ease both;
+}
+.overlay[hidden] { display: none; }
+@keyframes ovIn { from { opacity: 0; } to { opacity: 1; } }
+
+.panel {
+  width: min(460px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 26px 26px 24px;
+  text-align: center;
+  background: linear-gradient(170deg, rgba(34, 26, 66, 0.95) 0%, rgba(7, 8, 20, 0.97) 100%);
+  border: 1px solid rgba(110, 231, 255, 0.24);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.66), inset 0 1px 0 rgba(170, 200, 255, 0.13);
+  color: var(--ink);
+}
+.panel__eyebrow {
+  margin: 0 0 8px;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--neon);
+}
+.panel__title {
+  margin: 0 0 12px;
+  font-size: clamp(32px, 7.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+  text-shadow: 0 0 40px rgba(110, 231, 255, 0.38);
+}
+.panel__text { margin: 0 0 20px; font-size: 14.5px; line-height: 1.6; color: rgba(238, 242, 255, 0.76); }
+.panel__text b { color: var(--ink); font-weight: 700; }
+.panel__keys {
+  margin: 14px 0 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(238, 242, 255, 0.36);
+  line-height: 1.9;
+}
+
+.play-btn {
+  display: inline-block;
+  padding: 13px 34px;
+  font-size: 14.5px;
+  font-weight: 800;
+  font-family: inherit;
+  color: #04121c;
+  background: linear-gradient(180deg, #c2f6ff 0%, #6ee7ff 56%, #1fa5cf 100%);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(31, 165, 207, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.14s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.play-btn:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 14px 34px rgba(31, 165, 207, 0.56); }
+.play-btn:active { transform: translateY(1px); }
+.play-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* -------------------------------------------------- shared-badge docking
+ * On a phone the well runs almost the full width, so the default right-centre
+ * badges would sit on the brick field and in the ball's path. Dock them under
+ * the well instead (nova-coil pattern). */
+.opt-tipjar.opt-tipjar { top: auto; bottom: max(14px, env(safe-area-inset-bottom)); transform: none; }
+.opt-fs.opt-fs { top: auto; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 54px); transform: none; }
+.opt-tipjar.opt-tipjar.tj-nudge { animation: none; }
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 560px) {
+  .panel { padding: 22px 18px 20px; border-radius: 15px; }
+  .hud { gap: 17px; }
+  .hud__cell span:last-child { font-size: 17px; }
+}
+@media (max-height: 520px) {
+  .panel { padding: 16px 18px 16px; }
+  .panel__title { font-size: clamp(22px, 5vh, 30px); margin-bottom: 6px; }
+  .panel__text { font-size: 12.5px; margin-bottom: 12px; }
+  .panel__keys { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay { animation: none; }
+  .hud__score.is-bump { animation: none; }
+  .play-btn, .sound-btn, .hint, .frame__corner--tl, .frame__corner--tr { transition: none; }
+}
