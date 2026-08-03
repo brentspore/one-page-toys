@@ -16,14 +16,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
-### Backport `value` param to blocks/trail feeder share events
-
-**Why it matters:** The 5SG feeder's `share` event carries `value` (ms off), a free quality signal in GA4 — are the sharers the accurate players? Spelling-blocks and trail-game feeders send no value, so the three feeders can't be compared on it.
-
-**When to revisit:** Next time either feeder toy is touched for any reason.
-
-**Notes:** One-line change each: `toys/spelling-blocks/script.js` share event gets `value: lastResult.words` (or secs), `toys/trail-game/script.js` gets `value: lastResult.secs`. Convention documented in the `new-toy` skill → "Feeder toys". From the 2026-07-27 three-feeder reconciliation.
----
 ### New toy: Pinball (mini table)
 
 **Why it matters:** A flagship arcade classic with enormous nostalgia and replay pull — real flipper physics, bumpers, and a score chase. The kind of showpiece that gets shared. Category `game`.
@@ -47,14 +39,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 **When to revisit:** Cozy round / before the holidays.
 
 **Notes:** AI suggestion (2026-07-05). A glass globe (specular + refraction-ish distortion of the tiny scene) over a carved base; shake via drag-flick (or device motion) — hundreds of snow particles swirl with fluid-ish turbulence then settle drift-by-drift; tiny scene inside (cabin + pines, lantern-lit; maybe 2-3 scenes to cycle). Glass glints, warm interior glow, falling-settled snow accumulates. Audio: soft glass-muffled swirl, twinkling music-box phrase that plays as snow falls (reuse Music Box voice), settling hush. Real card + OG; full pipeline.
----
-### New toy: Breakout / brick smasher
-
-**Why it matters:** An arcade staple with instant muscle-memory appeal and very juicy feedback potential (brick shatter, screen shake, multiball). Category `game`/arcade.
-
-**When to revisit:** Next arcade round; medium-small scope.
-
-**Notes:** AI suggestion (2026-07-05). Paddle follows pointer/touch; ball physics with paddle-english (hit position steers angle); a few hand-designed brick layouts cycling with speed ramp; power-ups kept minimal (widen, multiball, laser — pick 2); lives, score + best in `localStorage`. Design bar: neon-glass bricks that crack then shatter with particles, trail on the ball, bloom-y glow, screen-shake on last-brick; synth audio: pitch-rising brick pings (pentatonic ladder = the addictive part), paddle thock, multiball shimmer. Real card + OG; full pipeline.
 ---
 ### New toy: Word Hunt (Boggle-style letter grid)
 
