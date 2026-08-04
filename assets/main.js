@@ -68,6 +68,8 @@ const CATEGORY_LABELS = {
 const TYPE_NL_PHRASES = {
   "five-second-game":
     "5 second game five second game 5secondgame stop the clock at five seconds count to five internal clock body clock timing test reaction stop watch stopwatch hidden timer guess five seconds one tap precision daily challenge streak leaderboard practice mode how good is your sense of time perfect 5.000 exactly five",
+  "tossing-cards":
+    "tossing cards tossingcards card toss flick cards into a bowl card flicking throw cards playing cards deck bowl toss game paper toss trash can basketball office game flick game aim and throw skill precision physics wind curve hook spin lamplit room parlor cozy dark academia daily room daily game streak practice unlimited ten cards ace is eleven card values bounce rim in the bowl tossingcards.com",
   "brick-smasher":
     "brick smasher bricksmasher brick breaker breakout arkanoid block breaker bust a move blocks smash the wall paddle and ball bat and ball ball bouncer wall breaker demolish bricks neon glass bricks retro arcade classic atari 2600 super breakout alleyway ricochet infinity ball juggle power ups multiball laser paddle widen slow ball capsules armoured bricks steel bricks levels waves lives high score combo chain angle the ball off the paddle edge one more go daily wall daily game daily challenge streak practice mode unlimited practice wordle for arcade same wall for everyone bricksmasher.com",
   "color-match":

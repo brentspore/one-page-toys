@@ -1,5 +1,33 @@
 [
   {
+    "slug": "tossing-cards",
+    "name": "Tossing Cards",
+    "shortDescription": "Flick playing cards across a lamplit room and into a bowl — the unlimited practice edition. Drag back and snap upward: a quick swipe throws harder, a sideways swipe hooks, and wind or a prop can bend the card mid-air. Ten cards a room, scored by card value. The daily room, streaks and stats are at tossingcards.com.",
+    "category": "game",
+    "tags": [
+      "tossing-cards",
+      "flick",
+      "toss",
+      "cards",
+      "physics",
+      "aim",
+      "skill",
+      "daily",
+      "feeder",
+      "relaxing",
+      "cozy",
+      "score-chase",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/tossing-cards/",
+    "related": [
+      "coin-pusher",
+      "skee-ball",
+      "darts"
+    ]
+  },
+  {
     "slug": "brick-smasher",
     "name": "Brick Smasher",
     "shortDescription": "Break out of a wall of neon glass — the unlimited practice edition. Where the ball lands on the paddle decides where it goes, so you steer with the edges, and smashing without letting it come back down climbs a combo that raises the pitch as it goes. Armour, power-ups, multiball and lasers. The daily wall, streaks and stats are at bricksmasher.com.",

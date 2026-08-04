@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Tossing Cards",
+      "tagline": "Flick them in the bowl",
+      "url": "https://onepagetoys.com/toys/tossing-cards/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230d2021'/><rect x='17' y='4' width='11' height='15' rx='2' fill='%23f6f2e8' transform='rotate(12 22 11)'/><path d='M22 9l1.6 1.8L22 12.6 20.4 10.8z' fill='%23b3271f'/><path d='M5 19h14a7 7 0 0 1-14 0z' fill='%23e8e0cf'/><path d='M5 19h14' stroke='%238a99a0' stroke-width='1.2'/><circle cx='12' cy='22' r='1.4' fill='%234a6b86'/></svg>",
+      "initial": "T",
+      "slug": "tossing-cards"
+    },
+    {
       "name": "Brick Smasher",
       "tagline": "Take the wall apart",
       "url": "https://onepagetoys.com/toys/brick-smasher/",

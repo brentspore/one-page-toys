@@ -70,6 +70,7 @@
     { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },
     { test: "bricksmash_best", dir: "up", label: "Brick Smasher score" },
+    { test: "tc_best", dir: "up", label: "Tossing Cards round" },
     { test: "colormatch_best", dir: "up", label: "Color Match accuracy" },
     { test: "darts_best", dir: "up", label: "Darts nine-dart score" },
     { test: "coinpush_best", dir: "up", label: "Coin Pusher score" },
