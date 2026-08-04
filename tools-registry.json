@@ -2,7 +2,7 @@
   {
     "slug": "brick-smasher",
     "name": "Brick Smasher",
-    "shortDescription": "Break out of a wall of neon glass. Where the ball lands on the paddle decides where it goes, so you steer with the edges — and smashing without letting it come back down climbs a combo that raises the pitch as it goes. Six hand-built layouts, cracking armour, falling power-ups, multiball and lasers.",
+    "shortDescription": "Break out of a wall of neon glass — the unlimited practice edition. Where the ball lands on the paddle decides where it goes, so you steer with the edges, and smashing without letting it come back down climbs a combo that raises the pitch as it goes. Armour, power-ups, multiball and lasers. The daily wall, streaks and stats are at bricksmasher.com.",
     "category": "game",
     "tags": [
       "brick-smasher",
@@ -17,11 +17,17 @@
       "power-ups",
       "levels",
       "classic",
-      "game"
+      "game",
+      "daily",
+      "feeder"
     ],
     "status": "live",
     "path": "toys/brick-smasher/",
-    "related": ["clowns-balloons", "air-hockey", "skee-ball"]
+    "related": [
+      "clowns-balloons",
+      "air-hockey",
+      "skee-ball"
+    ]
   },
   {
     "slug": "five-second-game",

@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Brick Smasher",
+      "tagline": "Take the wall apart",
+      "url": "https://onepagetoys.com/toys/brick-smasher/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2305060f'/><rect x='3' y='6' width='12' height='4' rx='1.4' fill='%23ff4d8d'/><rect x='17' y='6' width='12' height='4' rx='1.4' fill='%23ff4d8d'/><rect x='3' y='12' width='12' height='4' rx='1.4' fill='%23ffd15c'/><rect x='17' y='12' width='12' height='4' rx='1.4' fill='%234ef0c0'/><circle cx='16' cy='21.5' r='2.4' fill='%23ffffff'/><rect x='9' y='26' width='14' height='3' rx='1.5' fill='%236ee7ff'/></svg>",
+      "initial": "B",
+      "slug": "brick-smasher"
+    },
+    {
       "name": "Color Match",
       "tagline": "Trust your eye",
       "url": "https://onepagetoys.com/toys/color-match/",

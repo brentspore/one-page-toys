@@ -14,14 +14,14 @@
       gtag('config', 'G-VBVJ93GL8L');
     </script>
     <title>Brick Smasher — One Page Toys</title>
-    <meta name="description" content="Break out of a wall of neon glass. Slide the paddle, steer the ball off its edges, and smash six hand-built layouts — cracking armour, falling power-ups, lasers and multiball. The combo climbs and so does the pitch. Free, no sign-up." />
+    <meta name="description" content="Break out of a wall of neon glass — the unlimited practice edition. Steer the ball off the paddle edges, chain the combo, and smash six hand-built layouts with armour, power-ups, lasers and multiball. The daily wall, streaks and stats are at bricksmasher.com. Free, no sign-up." />
     <link rel="canonical" href="https://onepagetoys.com/toys/brick-smasher/" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#05060f" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One Page Toys" />
     <meta property="og:title" content="Brick Smasher — One Page Toys" />
-    <meta property="og:description" content="Break out of a wall of neon glass. Steer the ball off the paddle edges, chase the combo, and smash six layouts of cracking armour and falling power-ups." />
+    <meta property="og:description" content="Unlimited practice for Brick Smasher. Steer the ball off the paddle edges, chain the combo, smash the wall. The daily is at bricksmasher.com." />
     <meta property="og:url" content="https://onepagetoys.com/toys/brick-smasher/" />
     <meta property="og:image" content="https://onepagetoys.com/assets/og/brick-smasher.png" />
     <meta property="og:image:width" content="1200" />
@@ -30,7 +30,7 @@
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Brick Smasher — One Page Toys" />
-    <meta name="twitter:description" content="Neon glass breakout. Steer the ball off the paddle edges, chain the combo, grab the power-ups." />
+    <meta name="twitter:description" content="Neon glass breakout, unlimited practice. The daily wall is at bricksmasher.com." />
     <meta name="twitter:image" content="https://onepagetoys.com/assets/og/brick-smasher.png" />
     <script type="application/ld+json">
       {
@@ -38,7 +38,7 @@
         "@type": "WebApplication",
         "name": "Brick Smasher",
         "url": "https://onepagetoys.com/toys/brick-smasher/",
-        "description": "A neon breakout arcade game. Slide a paddle along the base of a glass well, steer the ball by where it strikes the paddle, and clear six hand-built brick layouts with armoured bricks, falling power-ups, multiball and lasers. Score and best run are kept in the browser.",
+        "description": "The unlimited practice edition of Brick Smasher, the daily breakout game at bricksmasher.com. Slide a paddle along the base of a glass well, steer the ball by where it strikes the paddle, and clear hand-built brick layouts with armoured bricks, falling power-ups, multiball and lasers. The daily wall, streaks and stats live on the game's own site.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
@@ -56,9 +56,22 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
+    <a
+      class="daily"
+      id="daily"
+      href="https://bricksmasher.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=bricksmasher_practice"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="daily__dot" aria-hidden="true"></span>
+      <span class="daily__text">Today's wall is live</span>
+      <span class="daily__time" id="dailyTime">—</span>
+      <span class="daily__go" aria-hidden="true">&rarr;</span>
+    </a>
+
     <canvas id="canvas"></canvas>
 
     <div class="hud" id="hud" hidden>
@@ -77,6 +90,20 @@
         <p class="panel__text" id="ovText">Slide the paddle and take the wall apart. <b>Where the ball lands on the paddle decides where it goes</b> — catch it out on the edge to cut a steep angle up into the gaps. Keep smashing without it coming back down and the combo climbs, and so does the pitch. Grab the falling capsules.</p>
         <button type="button" class="play-btn" id="ovBtn">Break in</button>
         <p class="panel__keys" id="ovKeys">drag to move · ← → also works · space to launch</p>
+        <div class="cta" id="cta" hidden>
+          <p class="cta__line" id="ctaLine">
+            Everyone gets the <b>same wall</b> on the daily — three balls, one score, and a streak
+            for turning up.
+          </p>
+          <a
+            class="cta__btn"
+            id="ctaBtn"
+            href="https://bricksmasher.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=bricksmasher_solved"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Play today's wall &rarr;</a
+          >
+        </div>
       </div>
     </div>
 
@@ -86,14 +113,14 @@
       <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
     </div>
 
-    <p class="hint" id="hint">drag to move the paddle · tap to launch</p>
+    <p class="hint" id="hint">drag to move · tap to launch</p>
 
     <script src="../../assets/tickets.js?v=16" defer></script>
-    <script src="script.js?v=1" defer></script>
+    <script src="script.js?v=2" defer></script>
     <script src="../../assets/prizes.js?v=1" defer></script>
     <script src="../../assets/tip-jar.js?v=10" defer></script>
     <script src="../../assets/share.js?v=5" defer></script>
     <script src="../../assets/fullscreen.js?v=3" defer></script>
-    <script src="../../assets/more-games.js?v=12" defer></script>
+    <script src="../../assets/more-games.js?v=13" defer></script>
   </body>
 </html>

@@ -62,7 +62,7 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: max(12px, env(safe-area-inset-bottom));
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 26px);
   margin: 0;
   font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
@@ -81,7 +81,7 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
 
 .hud {
   position: fixed;
-  top: max(12px, env(safe-area-inset-top));
+  top: calc(max(12px, env(safe-area-inset-top)) + 40px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
@@ -236,4 +236,95 @@ body.is-playing .sound-btn:hover { opacity: 1; }
   .overlay { animation: none; }
   .hud__score.is-bump { animation: none; }
   .play-btn, .sound-btn, .hint, .frame__corner--tl, .frame__corner--tr { transition: none; }
+}
+
+
+/* ------------------------------------------------------------ feeder CTAs
+ * This build is the unlimited practice edition; the daily, the streak and the
+ * stats live at bricksmasher.com. Two CTAs, per the house feeder convention:
+ * a persistent banner with a live countdown, and one in the end-of-run panel.
+ * The countdown targets LOCAL midnight because that is what `ROLLOVER` in the
+ * daily's own `daily.ts` is set to — if that flips to UTC, this must flip too. */
+
+.daily {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: min(92vw, 460px);
+  padding: 7px 13px;
+  border: 1px solid rgba(110, 231, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(10, 14, 30, 0.8);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  color: rgba(238, 242, 255, 0.9);
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.18s ease, background 0.18s ease, opacity 0.3s ease;
+}
+.daily:hover { border-color: var(--neon); background: rgba(14, 22, 44, 0.9); }
+.daily:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+.daily__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #4ef0c0;
+  box-shadow: 0 0 10px rgba(78, 240, 192, 0.9);
+  flex: 0 0 auto;
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.daily__text { overflow: hidden; text-overflow: ellipsis; }
+.daily__time { color: var(--neon); font-variant-numeric: tabular-nums; }
+.daily__go { color: rgba(238, 242, 255, 0.5); }
+/* keep it out of the way of a live ball without hiding it entirely */
+body.is-playing .daily { opacity: 0.42; }
+body.is-playing .daily:hover { opacity: 1; }
+.daily.is-hot { border-color: rgba(255, 209, 92, 0.55); }
+.daily.is-hot .daily__dot { background: #ffd15c; box-shadow: 0 0 10px rgba(255, 209, 92, 0.9); }
+
+.cta {
+  margin: 18px 0 0;
+  padding: 15px 6px 4px;
+  border-top: 1px solid rgba(110, 231, 255, 0.16);
+}
+.cta[hidden] { display: none; }
+.cta__line {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(238, 242, 255, 0.72);
+}
+.cta__line b { color: var(--ink); font-weight: 700; }
+.cta__btn {
+  display: inline-block;
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #04121c;
+  background: linear-gradient(180deg, #c2f6ff 0%, #6ee7ff 56%, #1fa5cf 100%);
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(31, 165, 207, 0.36);
+  transition: transform 0.14s ease, filter 0.18s ease;
+}
+.cta__btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.cta__btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+@media (max-height: 620px) {
+  /* a short viewport cannot spare 40px above the well while a ball is live */
+  body.is-playing .daily { display: none; }
+  .hud { top: max(10px, env(safe-area-inset-top)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .daily__dot { animation: none; }
+  .cta__btn, .daily { transition: none; }
 }

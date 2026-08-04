@@ -10,7 +10,11 @@
  *    death spiral of a ball skimming sideways between the rails forever;
  *  - the brick field is cached to an offscreen canvas and only redrawn when a
  *    brick changes, which buys the per-brick glow.
- * localStorage: "bricksmash_best" (score), "bricksmash_sound". */
+ * localStorage: "bricksmash_best" (score), "bricksmash_sound", "bricksmash_runs".
+ *
+ * This is the FEEDER edition: unlimited practice, with the daily wall, streaks
+ * and stats living at bricksmasher.com. No email capture here — that stays on
+ * the game's own domain. */
 (function () {
   "use strict";
 
@@ -32,6 +36,11 @@
   var ovKeys = document.getElementById("ovKeys");
   var hint = document.getElementById("hint");
   var soundBtn = document.getElementById("soundBtn");
+  var dailyEl = document.getElementById("daily");
+  var dailyTime = document.getElementById("dailyTime");
+  var cta = document.getElementById("cta");
+  var ctaLine = document.getElementById("ctaLine");
+  var ctaBtn = document.getElementById("ctaBtn");
 
   var REDMO = false;
   try { REDMO = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
@@ -79,6 +88,8 @@
   var soundOn = true;
   try { best = parseInt(localStorage.getItem("bricksmash_best") || "0", 10) || 0; } catch (e) {}
   try { if (localStorage.getItem("bricksmash_sound") === "0") soundOn = false; } catch (e) {}
+  var runs = 0;
+  try { runs = parseInt(localStorage.getItem("bricksmash_runs") || "0", 10) || 0; } catch (e) {}
   bestEl.textContent = best;
 
   // -------------------------------------------------------------------- util
@@ -1135,6 +1146,7 @@
     pad.x = bx + bw / 2;
     hud.hidden = false;
     overlay.hidden = true;
+    cta.hidden = true;
     document.body.classList.add("is-playing");
     hint.classList.remove("is-gone");
     startLevel(1);
@@ -1143,6 +1155,10 @@
   function gameOver() {
     state = "over";
     sndOver();
+    runs++;
+    try { localStorage.setItem("bricksmash_runs", String(runs)); } catch (e) {}
+    refreshCta();
+    cta.hidden = false;
     if (bestBumped) {
       try { localStorage.setItem("bricksmash_best", String(best)); } catch (e) {}
     }
@@ -1158,7 +1174,11 @@
     document.body.classList.remove("is-playing");
     hud.hidden = true;
 
-    window.OPT_SHARE_TEXT = "I smashed " + score + " on Brick Smasher at One Page Toys.";
+    // Feeder share convention: the result, then ONE link — the daily, tagged.
+    // No practice-page link; the daily is the destination worth having.
+    window.OPT_SHARE_TEXT =
+      "Brick Smasher (practice): " + score + ", longest chain " + comboBestRun + "." +
+      "\nPlay today's wall against everyone \u2192 https://bricksmasher.com/?utm_source=onepagetoys&utm_medium=share";
     if (window.OPT_SHARE && window.OPT_SHARE.refresh) window.OPT_SHARE.refresh();
   }
 
@@ -1702,6 +1722,55 @@
     }
     ctx.restore();
   }
+
+  // ================================================================= FEEDER
+  // bricksmasher.com keys its daily on a LOCAL date (ROLLOVER = "local" in the
+  // game's src/game/daily.ts), so this counts down to local midnight. If that
+  // constant ever flips to UTC, this has to flip with it or the banner lies.
+  function tickCountdown() {
+    var now = new Date();
+    var next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0).getTime();
+    var left = Math.max(0, next - now.getTime());
+    var h = Math.floor(left / 3600000);
+    var m = Math.floor(left / 60000) % 60;
+    var sec = Math.floor(left / 1000) % 60;
+    dailyTime.textContent = h + "h " + (m < 10 ? "0" : "") + m + "m " + (sec < 10 ? "0" : "") + sec + "s";
+    dailyEl.title = "A new wall drops in " + h + "h " + m + "m at bricksmasher.com";
+  }
+  tickCountdown();
+  setInterval(tickCountdown, 1000);
+
+  // The nudge: once someone has played a few runs in here, stop describing the
+  // daily and start describing what they are missing by not being on it.
+  function refreshCta() {
+    if (runs >= 3) {
+      dailyEl.classList.add("is-hot");
+      ctaLine.innerHTML = "That is <b>" + runs + " runs</b> in the practice edition. " +
+        "The daily gives everyone the <b>same wall</b> and three balls — and a streak for coming back.";
+      ctaBtn.textContent = "Start a streak \u2192";
+    } else {
+      ctaLine.innerHTML = "Everyone gets the <b>same wall</b> on the daily — three balls, one score, " +
+        "and a streak for turning up.";
+      ctaBtn.textContent = "Play today's wall \u2192";
+    }
+  }
+  refreshCta();
+
+  function track(name, params) {
+    if (window.gtag) { try { gtag("event", name, params); } catch (e) {} }
+  }
+  // share.js injects its own button into the overlay panel after this script
+  // runs, so the listener is delegated rather than bound directly.
+  document.addEventListener("click", function (e) {
+    var t = e.target && e.target.closest ? e.target.closest(".opt-share") : null;
+    if (t) track("share", { method: "bricksmasher_feeder", value: score });
+  });
+
+  [[dailyEl, "banner"], [ctaBtn, "post_round"]].forEach(function (pair) {
+    pair[0].addEventListener("click", function () {
+      track("outbound_click", { destination: "bricksmasher.com", link_id: pair[1] });
+    });
+  });
 
   // ==================================================================== LOOP
   document.addEventListener("visibilitychange", function () {
