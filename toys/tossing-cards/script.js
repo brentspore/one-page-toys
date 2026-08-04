@@ -1010,6 +1010,7 @@
   var settleT = 0, flash = 0, bowlPulse = 0, t = 0, reported = false;
   var floaters = [];
   var litter = [];                 // cards that have landed, they stay in the room
+  var perched = [];                // cards balanced on the bowl's lip
   var heldIntro = 0;               // 0..1 ease as the next card comes up
   var drag = null;
   // A real CardBody used only for the held pose, so the hand sprite and the
@@ -1060,6 +1061,7 @@
     body = null;
     floaters.length = 0;
     litter.length = 0;
+    perched.length = 0;
     heldIntro = 0;
     state = "aim";
     applyWind();
@@ -1117,7 +1119,7 @@
     reported = false;
     sfx.release();
     startFlutter();
-    updateFlutter(input.spin, input.speed);
+    updateFlutter(input.spin, input.speed / 20);
   }
 
   window.addEventListener("keydown", function (e) {
@@ -1137,9 +1139,10 @@
     if (pts > 0) {
       floaters.push({ x: body.pos.x, y: body.pos.y, z: body.pos.z, txt: "+" + pts, t: 0, col: outcome === "in" ? "#f5a25c" : "#c2a07a" });
     }
-    // the thrown card stays where it landed, like the real game
-    litter.push({ body: body, card: card });
-    if (litter.length > ROUND_SIZE) litter.shift();
+    // where the card ends up: in the bowl (gone from view), balanced on the
+    // lip (live — a later throw can knock it in or out), or on the floor.
+    if (isPerchedOnRim(body, room)) perched.push({ body: body, card: card });
+    else if (outcome !== "in") litter.push({ body: body, card: card });
     throwIdx++;
     updateHud();
     if (throwIdx >= ROUND_SIZE) endRound();
@@ -1214,6 +1217,73 @@
     hint.classList.remove("is-gone");
     newRound();
   });
+
+  // ======================================= PORTED: perched rim cards
+  // A card can balance on the bowl's lip. A later throw can knock it IN or OUT,
+  // and gets deflected doing it. This is the "bounce stuff" — it was missing
+  // entirely from the first port.
+  function isPerchedOnRim(bd, rm) {
+    if (bd.outcome !== "rim" || !bd.settled || bd.pos.y < rm.bowlHeight * 0.85) return false;
+    var rad = Math.hypot(bd.pos.x - rm.bowlX, bd.pos.z - rm.bowlZ);
+    return rad > rm.bowlRadius * 0.72 && rad < rm.bowlRadius * 1.34;
+  }
+
+  function knockedRimCardBody(pb, rm, inward) {
+    var bd = createCard({ speed: 0, aimX: 0, spin: 0.1, curve: 0 });
+    var dx = pb.pos.x - rm.bowlX, dz = pb.pos.z - rm.bowlZ;
+    var rad = Math.hypot(dx, dz) || 1;
+    var nx = dx / rad, nz = dz / rad;
+    bd.pos = inward
+      ? { x: rm.bowlX, y: rm.bowlHeight * 0.35, z: rm.bowlZ }
+      : { x: rm.bowlX + nx * (rm.bowlRadius * 1.85), y: 0.004, z: rm.bowlZ + nz * (rm.bowlRadius * 1.9) };
+    bd.vel = { x: 0, y: 0, z: 0 };
+    bd.spin = 0;
+    bd.grounded = true;
+    bd.settled = true;
+    bd.outcome = inward ? "in" : "rim";
+    bd.pitch = inward ? 0.24 : 0;
+    bd.roll = 0;
+    bd.phi = pb.phi + (inward ? 0.18 : 0.42);
+    return bd;
+  }
+
+  function resolvePerchedCardHits() {
+    if (!body || body.settled || perched.length === 0) return;
+    var flyer = body;
+    var speed = Math.hypot(flyer.vel.x, flyer.vel.y, flyer.vel.z);
+    if (speed < 1.25 || flyer.pos.y < room.bowlHeight * 0.15) return;
+    for (var i = 0; i < perched.length; i++) {
+      var pc = perched[i];
+      var dx = flyer.pos.x - pc.body.pos.x;
+      var dz = flyer.pos.z - pc.body.pos.z;
+      var dy = flyer.pos.y - pc.body.pos.y;
+      if (Math.hypot(dx, dz) > Math.max(0.16, room.bowlRadius * 0.7) || Math.abs(dy) > 0.34) continue;
+
+      var rimDx = pc.body.pos.x - room.bowlX;
+      var rimDz = pc.body.pos.z - room.bowlZ;
+      var rimRad = Math.hypot(rimDx, rimDz) || 1;
+      var nx = rimDx / rimRad, nz = rimDz / rimRad;
+      var towardCenter = -(flyer.vel.x * nx + flyer.vel.z * nz);
+      var flyerRad = Math.hypot(flyer.pos.x - room.bowlX, flyer.pos.z - room.bowlZ);
+      var inward = towardCenter > 0.38 || flyerRad < rimRad;
+      var knocked = knockedRimCardBody(pc.body, room, inward);
+      perched.splice(i, 1);
+      if (inward) {
+        bowlPulse = 1;
+        floaters.push({ x: room.bowlX, y: room.bowlHeight + 0.12, z: room.bowlZ,
+                        txt: "nice", t: 0, col: "#f5a25c" });
+        sfx.bowl();
+      } else {
+        litter.push({ body: knocked, card: pc.card });
+        sfx.rim();
+      }
+      flyer.spin *= 0.58;
+      flyer.vel.x += nx * (inward ? 0.35 : 0.85);
+      flyer.vel.z += nz * (inward ? 0.35 : 0.85);
+      flyer.vel.y = Math.max(flyer.vel.y, 0.4);
+      return;
+    }
+  }
 
   // ================================================================= FEEDER
   // Links name www because tossingcards.com 308s the apex to www; pointing at
@@ -1317,14 +1387,25 @@
     var drawW, drawH;
     if (ready(img)) {
       if (ob.kind === "grate") {
+        // A grate is a FLOOR feature: top is 0.08m and surfaceY() excludes it,
+        // so cards pass over it as a drag patch. Sizing it by the sprite's own
+        // aspect and anchoring at base.sy - drawH stood it up off the boards
+        // like a wall vent — ~75px tall for an 11px-tall prop. Its height on
+        // screen is the foreshortened DEPTH of its footprint, straddling the
+        // floor point rather than rising from it. Same fix is in the game.
         drawW = Math.max(28, ob.halfWidth * 2.2 * s);
-        drawH = drawW * (img.naturalHeight / img.naturalWidth);
+        var halfDepth = obstacleDepth(ob) / 2;
+        var nearP = projectXYZ(cam, ob.x, 0, Math.max(0.2, ob.z - halfDepth));
+        var farP = projectXYZ(cam, ob.x, 0, ob.z + halfDepth);
+        drawH = Math.max(6, nearP.sy - farP.sy);
       } else {
         drawH = Math.max(18, ob.top * s * OBSTACLE_HEIGHT_SCALE[ob.kind]);
         drawW = drawH * (img.naturalWidth / img.naturalHeight);
       }
       var x = base.sx - drawW / 2;
-      var y = base.sy - drawH + drawH * OBSTACLE_Y_OFFSET[ob.kind];
+      var y = ob.kind === "grate"
+        ? base.sy - drawH / 2
+        : base.sy - drawH + drawH * OBSTACLE_Y_OFFSET[ob.kind];
 
       if (ob.kind === "lamp" || ob.kind === "candle") {
         var gy = y + drawH * (ob.kind === "lamp" ? 0.22 : 0.12);
@@ -1660,6 +1741,14 @@
         } });
       })(litter[i]);
     }
+    for (var q = 0; q < perched.length; q++) {
+      (function (d) {
+        items.push({ z: d.body.pos.z, paint: function () {
+          drawShadow(d.body, 0.82);
+          drawCardBody(d.body, d.card);
+        } });
+      })(perched[q]);
+    }
     items.push({ z: room.bowlZ, paint: drawBowl });
     if (room.obstacle) items.push({ z: room.obstacle.z, paint: drawObstacle });
     if (body) {
@@ -1725,19 +1814,25 @@
         // the whole settle window. That stacking was the ring in the bowl.
         if (!body.settled) {
           stepCard(body, room, FIXED_DT);
+          resolvePerchedCardHits();
           var ev = body.event;
           if (ev === "bowl") { sfx.bowl(); bowlPulse = 1; flash = 0.6; }
           else if (ev === "rim") { sfx.rim(); bowlPulse = 0.6; }
           else if (ev === "floor") sfx.floor();
           else if (ev === "obstacle") sfx.thud();
         } else if (!reported) {
+          // no break: the settle timer accumulates per FIXED step, like the
+          // engine does. Breaking here advanced it once per frame instead,
+          // which doubled the wait between throws.
           settleT += FIXED_DT;
           if (settleT > 0.45) { reported = true; stopFlutter(); resolveThrow(); }
-          break;
-        } else break;
+        }
+        if (!body) break;
       }
       if (body && !body.settled) {
-        updateFlutter(body.spin, Math.hypot(body.vel.x, body.vel.y, body.vel.z));
+        // speed is normalised — the real call divides by 20. Passing it raw made
+        // the flight roar.
+        updateFlutter(body.spin, Math.hypot(body.vel.x, body.vel.y, body.vel.z) / 20);
       }
     }
 
@@ -1752,6 +1847,8 @@
     draw();
     requestAnimationFrame(frame);
   }
+
+
 
 
 
