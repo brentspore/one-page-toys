@@ -1007,7 +1007,7 @@
   var cam = null, dpr = 1, W = 0, H = 0;
   var setup = null, room = null, throwIdx = 0, throws = [], body = null;
   var best = 0, rounds = 0;
-  var settleT = 0, flash = 0, bowlPulse = 0, t = 0;
+  var settleT = 0, flash = 0, bowlPulse = 0, t = 0, reported = false;
   var floaters = [];
   var litter = [];                 // cards that have landed, they stay in the room
   var heldIntro = 0;               // 0..1 ease as the next card comes up
@@ -1114,6 +1114,7 @@
     body = createCard(input);
     state = "fly";
     settleT = 0;
+    reported = false;
     sfx.release();
     startFlutter();
     updateFlutter(input.spin, input.speed);
@@ -1397,13 +1398,14 @@
     }
 
     if (bowlPulse > 0.02) {
+      var pulseAlpha = Math.min(0.34, bowlPulse * 0.34);
       ctx.save();
       ctx.globalCompositeOperation = "screen";
-      ctx.globalAlpha = Math.min(0.34, bowlPulse * 0.34);
-      ctx.strokeStyle = "#f5a25c";
-      ctx.lineWidth = Math.max(2, rx * 0.09);
+      ctx.strokeStyle = "rgba(255,168,92," + pulseAlpha.toFixed(3) + ")";
+      ctx.lineWidth = Math.max(1, rx * 0.028);
       ctx.beginPath();
-      ctx.ellipse(base.sx, rim.sy, rx * 1.18, ry * 1.18, 0, 0, TAU);
+      ctx.ellipse(rim.sx, rim.sy + ry * 0.03, rx * 0.88, ry * 0.58, 0,
+                  Math.PI * 1.04, Math.PI * 1.96);
       ctx.stroke();
       ctx.restore();
     }
@@ -1716,22 +1718,26 @@
       while (acc >= FIXED_DT && steps < 12) {
         acc -= FIXED_DT;
         steps++;
-        stepCard(body, room, FIXED_DT);
-        if (body.event) {
-          if (body.event === "bowl") { sfx.bowl(); bowlPulse = 1; flash = 0.6; }
-          else if (body.event === "rim") { sfx.rim(); bowlPulse = 0.5; }
-          else if (body.event === "floor") sfx.floor();
-          else if (body.event === "obstacle") sfx.thud();
-        }
-        if (body.settled) break;
+        bowlPulse *= 0.9;
+        // Only step — and only read `event` — while the card is still live.
+        // stepCard early-returns on a settled card WITHOUT clearing `event`, so
+        // reading it unconditionally re-fired the landing sound every frame for
+        // the whole settle window. That stacking was the ring in the bowl.
+        if (!body.settled) {
+          stepCard(body, room, FIXED_DT);
+          var ev = body.event;
+          if (ev === "bowl") { sfx.bowl(); bowlPulse = 1; flash = 0.6; }
+          else if (ev === "rim") { sfx.rim(); bowlPulse = 0.6; }
+          else if (ev === "floor") sfx.floor();
+          else if (ev === "obstacle") sfx.thud();
+        } else if (!reported) {
+          settleT += FIXED_DT;
+          if (settleT > 0.45) { reported = true; stopFlutter(); resolveThrow(); }
+          break;
+        } else break;
       }
-      // the flutter follows the card's own spin and speed while it is in the air
-      if (!body.settled) {
+      if (body && !body.settled) {
         updateFlutter(body.spin, Math.hypot(body.vel.x, body.vel.y, body.vel.z));
-      } else {
-        stopFlutter();
-        settleT += dt;
-        if (settleT > 0.55) resolveThrow();
       }
     }
 
@@ -1741,12 +1747,13 @@
       floaters[i].t += dt;
       if (floaters[i].t > 1.1) floaters.splice(i, 1);
     }
-    if (bowlPulse > 0) bowlPulse = Math.max(0, bowlPulse - dt * 1.6);
     if (flash > 0) flash = Math.max(0, flash - dt * 1.8);
 
     draw();
     requestAnimationFrame(frame);
   }
+
+
 
 
 
