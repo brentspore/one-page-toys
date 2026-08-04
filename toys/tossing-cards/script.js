@@ -499,6 +499,225 @@
     });
   }
 
+  // cardNormal decides face vs back and the light catch — ported with the rest.
+  function cardNormal(c) {
+    var cp = Math.cos(c.pitch), sp = Math.sin(c.pitch);
+    var cr = Math.cos(c.roll), sr = Math.sin(c.roll);
+    var x = 0, y = 1, z = 0;
+    var y1 = y * cp - z * sp, z1 = y * sp + z * cp;
+    y = y1; z = z1;
+    var x2 = x * cr - y * sr, y2 = x * sr + y * cr;
+    return { x: x2, y: y2, z: z };
+  }
+
+  function scaledCardCorners(bodyRef, visualScale) {
+    var corners = cardCorners(bodyRef);
+    if (!visualScale || visualScale === 1) return corners;
+    return corners.map(function (c) {
+      return {
+        x: bodyRef.pos.x + (c.x - bodyRef.pos.x) * visualScale,
+        y: bodyRef.pos.y + (c.y - bodyRef.pos.y) * visualScale,
+        z: bodyRef.pos.z + (c.z - bodyRef.pos.z) * visualScale
+      };
+    });
+  }
+
+  // ============================================== PORTED: cardFace.ts
+  var faceCache = {}, inkCache = {}, backCanvas = null;
+  var PIP_LAYOUT = {
+    "2": [[0,-0.62],[0,0.62]],
+    "3": [[0,-0.62],[0,0],[0,0.62]],
+    "4": [[-0.5,-0.62],[0.5,-0.62],[-0.5,0.62],[0.5,0.62]],
+    "5": [[-0.5,-0.62],[0.5,-0.62],[0,0],[-0.5,0.62],[0.5,0.62]],
+    "6": [[-0.5,-0.62],[0.5,-0.62],[-0.5,0],[0.5,0],[-0.5,0.62],[0.5,0.62]],
+    "7": [[-0.5,-0.62],[0.5,-0.62],[0,-0.31],[-0.5,0],[0.5,0],[-0.5,0.62],[0.5,0.62]],
+    "8": [[-0.5,-0.62],[0.5,-0.62],[0,-0.31],[-0.5,0],[0.5,0],[0,0.31],[-0.5,0.62],[0.5,0.62]],
+    "9": [[-0.5,-0.62],[0.5,-0.62],[-0.5,-0.21],[0.5,-0.21],[0,0],[-0.5,0.21],[0.5,0.21],[-0.5,0.62],[0.5,0.62]],
+    "10": [[-0.5,-0.62],[0.5,-0.62],[0,-0.41],[-0.5,-0.21],[0.5,-0.21],[-0.5,0.21],[0.5,0.21],[0,0.41],[-0.5,0.62],[0.5,0.62]]
+  };
+
+  function cpath(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h, r);
+    c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r);
+    c.arcTo(x, y, x + w, y, r);
+    c.closePath();
+  }
+  function suitPath(c, suit, sz) {
+    c.save();
+    c.font = '900 ' + sz + 'px "Times New Roman", Georgia, ui-serif, serif';
+    c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText(SUIT_GLYPH[suit], 0, sz * 0.035);
+    c.restore();
+  }
+  function pip(c, suit, x, y, sz, flip) {
+    c.save();
+    c.translate(x, y);
+    if (flip) c.rotate(Math.PI);
+    suitPath(c, suit, sz);
+    c.restore();
+  }
+  function drawCardInk(c, card, w, h) {
+    var red = isRed(card.suit);
+    var ink = red ? "#8f2119" : "#17120d";
+    c.fillStyle = ink;
+    c.textAlign = "center"; c.textBaseline = "middle";
+    function drawCorner() {
+      c.save();
+      c.font = '800 ' + (w * (card.rank === "10" ? 0.155 : 0.19)) + 'px "Times New Roman", Georgia, ui-serif, serif';
+      c.fillText(card.rank, w * 0.12, h * 0.088);
+      c.restore();
+      pip(c, card.suit, w * 0.12, h * 0.175, w * 0.135, false);
+    }
+    drawCorner();
+    c.save(); c.translate(w, h); c.rotate(Math.PI); drawCorner(); c.restore();
+
+    var cx = w / 2, cy = h / 2;
+    var fieldH = h * 1.02, columnW = w * 0.43;
+    var isFace = card.rank === "J" || card.rank === "Q" || card.rank === "K";
+    if (card.rank === "A") {
+      pip(c, card.suit, cx, cy, w * 0.52, false);
+    } else if (isFace) {
+      c.save();
+      c.strokeStyle = red ? "rgba(192,54,44,0.5)" : "rgba(23,19,16,0.45)";
+      c.lineWidth = Math.max(1, w * 0.012);
+      cpath(c, w * 0.22, h * 0.24, w * 0.56, h * 0.52, w * 0.05);
+      c.stroke();
+      c.fillStyle = red ? "rgba(192,54,44,0.08)" : "rgba(23,19,16,0.07)";
+      c.fill();
+      c.restore();
+      c.fillStyle = ink;
+      c.font = '800 ' + (w * 0.28) + 'px "Times New Roman", Georgia, ui-serif, serif';
+      c.fillText(card.rank, cx, cy - h * 0.06);
+      pip(c, card.suit, cx, cy + h * 0.11, w * 0.25, false);
+    } else {
+      var pips = PIP_LAYOUT[card.rank] || [];
+      var dense = card.rank === "9" || card.rank === "10" || card.rank === "8";
+      var sz = dense ? w * 0.225 : w * 0.285;
+      for (var i = 0; i < pips.length; i++) {
+        pip(c, card.suit, cx + pips[i][0] * columnW, cy + pips[i][1] * (fieldH / 2), sz, pips[i][1] > 0.02);
+      }
+    }
+  }
+  function cardInkCanvas(card, w, mirror) {
+    w = w || 220;
+    var key = card.rank + card.suit + ":" + w + ":" + (mirror ? "m" : "n") + ":ink";
+    if (inkCache[key]) return inkCache[key];
+    var h = Math.round(w * 1.4);
+    var cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    var c = cv.getContext("2d");
+    if (mirror) { c.translate(w, 0); c.scale(-1, 1); }
+    drawCardInk(c, card, w, h);
+    inkCache[key] = cv;
+    return cv;
+  }
+  function cardFaceCanvas(card, w, mirror) {
+    w = w || 220;
+    var key = card.rank + card.suit + ":" + w + ":" + (mirror ? "m" : "n");
+    if (faceCache[key]) return faceCache[key];
+    var h = Math.round(w * 1.4);
+    var cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    var c = cv.getContext("2d");
+    if (mirror) { c.translate(w, 0); c.scale(-1, 1); }
+    var r = w * 0.08;
+    var paper = c.createLinearGradient(0, 0, w, h);
+    paper.addColorStop(0, "#fff5df");
+    paper.addColorStop(0.45, "#efe2c8");
+    paper.addColorStop(1, "#d5c3a5");
+    c.fillStyle = paper;
+    cpath(c, 0.5, 0.5, w - 1, h - 1, r);
+    c.fill();
+
+    c.save();
+    cpath(c, 0.5, 0.5, w - 1, h - 1, r);
+    c.clip();
+    c.globalAlpha = 0.18;
+    c.fillStyle = "#6b4a2e";
+    for (var i = 0; i < 110; i++) {
+      var x = w * ((Math.sin(i * 12.71) + 1) / 2);
+      var y = h * ((Math.sin(i * 5.93 + 1.8) + 1) / 2);
+      var rw = Math.max(0.45, w * (0.002 + ((Math.sin(i * 8.7) + 1) / 2) * 0.004));
+      c.fillRect(x, y, rw, rw);
+    }
+    c.restore();
+
+    var paperEdge = c.createRadialGradient(w / 2, h / 2, w * 0.16, w / 2, h / 2, h * 0.64);
+    paperEdge.addColorStop(0, "rgba(255,255,255,0)");
+    paperEdge.addColorStop(0.62, "rgba(0,0,0,0.04)");
+    paperEdge.addColorStop(1, "rgba(0,0,0,0.18)");
+    c.fillStyle = paperEdge;
+    cpath(c, 0.5, 0.5, w - 1, h - 1, r);
+    c.fill();
+
+    c.strokeStyle = "rgba(45,28,15,0.34)";
+    c.lineWidth = Math.max(1, w * 0.012);
+    c.stroke();
+    c.strokeStyle = "rgba(255,250,230,0.72)";
+    c.lineWidth = Math.max(1, w * 0.006);
+    cpath(c, w * 0.035, h * 0.025, w * 0.93, h * 0.95, r * 0.72);
+    c.stroke();
+
+    drawCardInk(c, card, w, h);
+    faceCache[key] = cv;
+    return cv;
+  }
+  function cardBackCanvas(w) {
+    if (backCanvas) return backCanvas;
+    w = w || 220;
+    var h = Math.round(w * 1.4);
+    var cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    var c = cv.getContext("2d");
+    var r = w * 0.08;
+    c.fillStyle = "#eadcc5";
+    cpath(c, 0.5, 0.5, w - 1, h - 1, r);
+    c.fill();
+    var back = c.createLinearGradient(0, 0, w, h);
+    back.addColorStop(0, "#172622");
+    back.addColorStop(0.48, "#253d38");
+    back.addColorStop(1, "#091313");
+    c.fillStyle = back;
+    cpath(c, w * 0.05, h * 0.036, w * 0.9, h * 0.928, r * 0.8);
+    c.fill();
+    c.save();
+    cpath(c, w * 0.05, h * 0.036, w * 0.9, h * 0.928, r * 0.8);
+    c.clip();
+    c.strokeStyle = "rgba(188,128,52,0.18)";
+    c.lineWidth = Math.max(1, w * 0.01);
+    for (var i = -h; i < w + h; i += w * 0.11) {
+      c.beginPath(); c.moveTo(i, 0); c.lineTo(i + h, h); c.stroke();
+      c.beginPath(); c.moveTo(i + h, 0); c.lineTo(i, h); c.stroke();
+    }
+    c.strokeStyle = "rgba(224,184,104,0.34)";
+    c.lineWidth = Math.max(1, w * 0.01);
+    [0.68, 0.44, 0.22].forEach(function (sc) {
+      c.beginPath();
+      c.ellipse(w / 2, h / 2, w * sc * 0.42, h * sc * 0.32, 0, 0, TAU);
+      c.stroke();
+    });
+    c.fillStyle = "rgba(218,156,70,0.32)";
+    c.save(); c.translate(w / 2, h * 0.32); suitPath(c, "spades", w * 0.18); c.restore();
+    c.save(); c.translate(w / 2, h * 0.68); c.rotate(Math.PI); suitPath(c, "spades", w * 0.18); c.restore();
+    c.restore();
+    c.strokeStyle = "rgba(231,192,118,0.5)";
+    c.lineWidth = Math.max(1, w * 0.014);
+    cpath(c, w * 0.1, h * 0.075, w * 0.8, h * 0.85, r * 0.6);
+    c.stroke();
+    var edge = c.createRadialGradient(w / 2, h / 2, w * 0.12, w / 2, h / 2, h * 0.62);
+    edge.addColorStop(0, "rgba(255,255,255,0)");
+    edge.addColorStop(0.72, "rgba(0,0,0,0.12)");
+    edge.addColorStop(1, "rgba(0,0,0,0.38)");
+    c.fillStyle = edge;
+    cpath(c, 0.5, 0.5, w - 1, h - 1, r);
+    c.fill();
+    backCanvas = cv;
+    return cv;
+  }
+
   // ================================================== PORTED: daily.ts
   var OBSTACLE_NAMES = {
     couch: "velvet couch", lamp: "brass lamp", cat: "watchful cat", books: "book stack",
@@ -608,148 +827,177 @@
   OBSTACLES.forEach(function (k) { loadArt(k, k + ".webp"); });
   function ready(img) { return img && img.complete && img.naturalWidth > 0; }
 
-  // ================================================================ AUDIO
-  var AC = null, outGain = null, noiseBuf = null;
+  // ================================================== PORTED: lib/audio.ts
+  // Ported rather than invented. The first pass had a dense inharmonic partial
+  // stack through a 1.6s convolver, which is why the bowl buzzed — the real
+  // thing is a papery tick and three clean porcelain sines, no reverb at all.
+  var actx = null, master = null, flutterOsc = null;
   var soundOn = true;
   try { if (localStorage.getItem("tc_sound") === "0") soundOn = false; } catch (e) {}
 
-  function initAudio() {
-    if (AC) return;
-    try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; return; }
-    outGain = AC.createGain();
-    outGain.gain.value = soundOn ? 1 : 0;
-    var lp = AC.createBiquadFilter();
-    lp.type = "lowpass"; lp.frequency.value = 13000; lp.Q.value = 0.6;
-    var comp = AC.createDynamicsCompressor();
-    comp.threshold.value = -15; comp.knee.value = 26; comp.ratio.value = 3;
-    comp.attack.value = 0.003; comp.release.value = 0.22;
-    var verb = AC.createConvolver();
-    verb.buffer = makeImpulse(1.6, 3.2);
-    var vg = AC.createGain(); vg.gain.value = 0.26;
-    var hp = AC.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 260;
-    var master = AC.createGain(); master.gain.value = 0.9;
-    outGain.connect(lp); lp.connect(comp);
-    outGain.connect(hp); hp.connect(verb); verb.connect(vg); vg.connect(comp);
-    comp.connect(master); master.connect(AC.destination);
-    var len = Math.floor(AC.sampleRate * 2);
-    noiseBuf = AC.createBuffer(1, len, AC.sampleRate);
-    var d = noiseBuf.getChannelData(0);
-    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+  function ensure() {
+    if (!actx) {
+      var Ctor = window.AudioContext || window.webkitAudioContext;
+      if (!Ctor) return null;
+      actx = new Ctor();
+      master = actx.createGain();
+      master.gain.value = soundOn ? 0.9 : 0;
+      master.connect(actx.destination);
+    }
+    if (actx.state === "suspended") actx.resume();
+    return actx;
   }
-  function makeImpulse(dur, decay) {
-    var rate = AC.sampleRate, len = Math.max(1, Math.floor(rate * dur));
-    var buf = AC.createBuffer(2, len, rate);
-    for (var ch = 0; ch < 2; ch++) {
-      var d = buf.getChannelData(ch), prev = 0;
-      for (var i = 0; i < len; i++) {
-        var t = i / len, env = Math.pow(1 - t, decay);
-        prev = prev + 0.3 * ((Math.random() * 2 - 1) - prev);
-        d[i] = prev * env;
-      }
+  function unlockAudio() {
+    var c = ensure();
+    if (c && c.state !== "running") c.resume();
+  }
+  function setMuted(next) {
+    soundOn = !next;
+    if (master && actx) master.gain.setTargetAtTime(next ? 0 : 0.9, actx.currentTime, 0.02);
+  }
+  function noiseBuffer(c, seconds) {
+    var len = Math.floor(c.sampleRate * (seconds || 1));
+    var buf = c.createBuffer(1, len, c.sampleRate);
+    var data = buf.getChannelData(0);
+    var st = 12345;
+    for (var i = 0; i < len; i++) {
+      st = (Math.imul(st, 1103515245) + 12345) & 0x7fffffff;
+      data[i] = (st / 0x3fffffff - 1) * 0.6;
     }
     return buf;
   }
-  function unlockAudio() {
-    initAudio();
-    if (!AC) return;
-    if (AC.state === "suspended") AC.resume();
-    try {
-      var b = AC.createBuffer(1, 1, 22050), s = AC.createBufferSource();
-      s.buffer = b; s.connect(AC.destination); s.start(0);
-    } catch (e) {}
-  }
-  function now_() { return AC ? AC.currentTime : 0; }
 
-  function tone(o) {
-    if (!AC || !soundOn) return;
-    var t = now_() + (o.at || 0);
-    var osc = AC.createOscillator();
-    osc.type = o.type || "sine";
-    osc.frequency.setValueAtTime(o.f, t);
-    if (o.f2) osc.frequency.exponentialRampToValueAtTime(Math.max(1, o.f2), t + (o.dur || 0.3));
-    var g = AC.createGain();
-    var a = o.a != null ? o.a : 0.004, d = o.dur || 0.3, peak = o.g != null ? o.g : 0.2;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), t + a);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
-    var node = osc;
-    if (o.filt) {
-      var fl = AC.createBiquadFilter();
-      fl.type = o.filt; fl.frequency.setValueAtTime(o.filtF || 2000, t);
-      if (o.filtF2) fl.frequency.exponentialRampToValueAtTime(o.filtF2, t + a + d);
-      if (o.filtQ) fl.Q.value = o.filtQ;
-      node.connect(fl); node = fl;
-    }
-    node.connect(g);
-    if (o.pan != null && AC.createStereoPanner) {
-      var p = AC.createStereoPanner(); p.pan.value = clamp(o.pan, -1, 1);
-      g.connect(p); p.connect(outGain);
-    } else g.connect(outGain);
-    osc.start(t); osc.stop(t + a + d + 0.06);
+  // A card in the air isn't hiss: filtered noise amplitude-modulated at the
+  // card's rotation rate, so a clean spin blurs and a tumble flaps.
+  function startFlutter() {
+    var c = ensure();
+    if (!c || !master || flutterOsc) return;
+    var src = c.createBufferSource();
+    src.buffer = noiseBuffer(c, 2);
+    src.loop = true;
+    var filter = c.createBiquadFilter();
+    filter.type = "bandpass"; filter.frequency.value = 620; filter.Q.value = 2.1;
+    var tame = c.createBiquadFilter();
+    tame.type = "lowpass"; tame.frequency.value = 1750;
+    var gain = c.createGain(); gain.gain.value = 0;
+    var lfo = c.createOscillator();
+    lfo.type = "sine"; lfo.frequency.value = 9;
+    var lfoDepth = c.createGain(); lfoDepth.gain.value = 0;
+    lfo.connect(lfoDepth).connect(gain.gain);
+    var bodyOsc = c.createOscillator();
+    bodyOsc.type = "triangle"; bodyOsc.frequency.value = 150;
+    var bodyGain = c.createGain(); bodyGain.gain.value = 0;
+    bodyOsc.connect(bodyGain).connect(master);
+    src.connect(filter).connect(tame).connect(gain).connect(master);
+    src.start(); lfo.start(); bodyOsc.start();
+    flutterOsc = { src: src, gain: gain, filter: filter, tame: tame, lfo: lfo,
+                   lfoDepth: lfoDepth, body: bodyOsc, bodyGain: bodyGain };
   }
-  function noise(o) {
-    if (!AC || !noiseBuf || !soundOn) return;
-    var t = now_() + (o.at || 0), dur = o.dur || 0.1;
-    var s = AC.createBufferSource();
-    s.buffer = noiseBuf;
-    var f = AC.createBiquadFilter();
-    f.type = o.filt || "bandpass";
-    f.frequency.setValueAtTime(o.f || 1800, t);
-    if (o.f2) f.frequency.exponentialRampToValueAtTime(Math.max(40, o.f2), t + dur);
-    if (o.Q) f.Q.value = o.Q;
-    var g = AC.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, o.g != null ? o.g : 0.16), t + 0.004);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    s.connect(f); f.connect(g);
-    if (o.pan != null && AC.createStereoPanner) {
-      var p = AC.createStereoPanner(); p.pan.value = clamp(o.pan, -1, 1);
-      g.connect(p); p.connect(outGain);
-    } else g.connect(outGain);
-    s.start(t, Math.random()); s.stop(t + dur + 0.05);
+  function updateFlutter(spin, speed) {
+    if (!flutterOsc || !actx) return;
+    var t = actx.currentTime;
+    var sp = Math.min(1, spin);
+    var level = Math.min(0.072, 0.009 + sp * 0.022 + speed * 0.0032);
+    flutterOsc.lfo.frequency.setTargetAtTime(4 + sp * 22, t, 0.06);
+    flutterOsc.lfoDepth.gain.setTargetAtTime(level * (0.65 - sp * 0.42), t, 0.06);
+    flutterOsc.gain.gain.setTargetAtTime(level, t, 0.05);
+    flutterOsc.filter.frequency.setTargetAtTime(430 + sp * 620 + speed * 16, t, 0.06);
+    flutterOsc.tame.frequency.setTargetAtTime(1200 + sp * 900, t, 0.08);
+    flutterOsc.bodyGain.gain.setTargetAtTime(Math.min(0.022, speed * 0.0017), t, 0.06);
+    flutterOsc.body.frequency.setTargetAtTime(92 + speed * 3.5, t, 0.08);
+  }
+  function stopFlutter() {
+    if (!flutterOsc || !actx) return;
+    var f = flutterOsc, t = actx.currentTime;
+    f.gain.gain.setTargetAtTime(0, t, 0.05);
+    f.lfoDepth.gain.setTargetAtTime(0, t, 0.05);
+    f.bodyGain.gain.setTargetAtTime(0, t, 0.05);
+    setTimeout(function () {
+      [f.src, f.lfo, f.body].forEach(function (n) { try { n.stop(); } catch (e) {} });
+    }, 300);
+    flutterOsc = null;
   }
 
-  // card leaving the hand: air over a thin stiff sheet
-  function sndFlick(power) {
-    noise({ filt: "bandpass", f: 900, f2: 2600, Q: 0.8, dur: 0.16, g: 0.07 + power * 0.06 });
-    noise({ filt: "highpass", f: 3800, dur: 0.05, g: 0.03 + power * 0.03 });
+  function shapedNoise(args) {
+    var c = ensure();
+    if (!c || !master) return;
+    var src = c.createBufferSource();
+    src.buffer = noiseBuffer(c, Math.max(0.25, args.dur + 0.08));
+    var f = c.createBiquadFilter();
+    f.type = args.type || "bandpass";
+    f.frequency.value = args.freq;
+    f.Q.value = args.q == null ? 1.4 : args.q;
+    var g = c.createGain();
+    var pn = c.createStereoPanner();
+    pn.pan.value = args.pan || 0;
+    var t = c.currentTime;
+    var attack = args.attack == null ? 0.003 : args.attack;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(args.vol, t + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + args.dur);
+    src.connect(f).connect(g).connect(pn).connect(master);
+    src.start(t);
+    src.stop(t + args.dur + 0.08);
   }
-  // china: a soft wooden contact then the bowl's own ring
-  function sndBowl(pan) {
-    noise({ filt: "bandpass", f: 2400, Q: 1.6, dur: 0.02, g: 0.11, pan: pan });
-    [1, 2.71, 5.1].forEach(function (m, i) {
-      tone({ type: "sine", f: 620 * m, dur: 0.5 / (1 + i * 0.8), a: 0.002, g: 0.15 / (i + 1), pan: pan });
-    });
+  function resonant(freq, dur, vol, decay, pan) {
+    var c = ensure();
+    if (!c || !master) return;
+    var o = c.createOscillator();
+    var g = c.createGain();
+    var pn = c.createStereoPanner();
+    o.type = "sine"; o.frequency.value = freq;
+    pn.pan.value = pan || 0;
+    var t = c.currentTime;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + (decay == null ? 0.08 : decay));
+    o.connect(g).connect(pn).connect(master);
+    o.start(t);
+    o.stop(t + dur);
   }
-  function sndRim(pan) {
-    noise({ filt: "bandpass", f: 3600, Q: 2.4, dur: 0.03, g: 0.1, pan: pan });
-    tone({ type: "sine", f: 1180, f2: 900, dur: 0.12, a: 0.001, g: 0.08, pan: pan });
-  }
-  function sndFloor(pan) {
-    noise({ filt: "lowpass", f: 1500, f2: 500, dur: 0.09, g: 0.11, pan: pan });
-    tone({ type: "sine", f: 150, f2: 96, dur: 0.09, a: 0.001, g: 0.09, pan: pan });
-  }
-  function sndProp(pan) {
-    noise({ filt: "bandpass", f: 700, f2: 320, Q: 1.1, dur: 0.08, g: 0.1, pan: pan });
-    tone({ type: "triangle", f: 210, f2: 150, dur: 0.1, a: 0.002, g: 0.1, pan: pan });
-  }
-  function sndRoundEnd(good) {
-    var steps = good ? [0, 4, 7, 12] : [0, -2, -5];
-    for (var i = 0; i < steps.length; i++) {
-      var f = 329.6 * Math.pow(2, steps[i] / 12);
-      tone({ type: "triangle", f: f, dur: 0.7, a: 0.008, g: 0.09, at: i * 0.09 });
-      tone({ type: "sine", f: f * 2, dur: 0.4, a: 0.005, g: 0.03, at: i * 0.09 });
+
+  var sfx = {
+    release: function () {
+      shapedNoise({ freq: 5200, dur: 0.025, vol: 0.09, q: 5, pan: -0.12 });
+      shapedNoise({ freq: 1900, dur: 0.075, vol: 0.105, q: 1.7, pan: 0.04 });
+      shapedNoise({ freq: 760, dur: 0.045, vol: 0.05, q: 1.1, type: "highpass" });
+    },
+    floor: function () {
+      shapedNoise({ freq: 210, dur: 0.12, vol: 0.18, q: 0.8, type: "lowpass", pan: 0.06 });
+      shapedNoise({ freq: 1450, dur: 0.09, vol: 0.07, q: 1.3, pan: -0.04 });
+      resonant(92, 0.16, 0.045, 0.11);
+    },
+    bowl: function () {
+      shapedNoise({ freq: 2400, dur: 0.035, vol: 0.07, q: 2.5, pan: 0.03 });
+      resonant(640, 0.34, 0.11, 0.24, -0.04);
+      resonant(970, 0.28, 0.065, 0.18, 0.04);
+      resonant(1320, 0.18, 0.035, 0.12, 0.02);
+    },
+    rim: function () {
+      var hits = [[0, 820, 0.11], [34, 1180, 0.07], [78, 690, 0.055], [126, 1450, 0.035]];
+      hits.forEach(function (h) {
+        setTimeout(function () {
+          shapedNoise({ freq: h[1] * 2.1, dur: 0.026, vol: h[2] * 0.45, q: 6 });
+          resonant(h[1], 0.22, h[2], 0.12, h[0] % 2 ? 0.08 : -0.08);
+        }, h[0]);
+      });
+    },
+    thud: function () {
+      shapedNoise({ freq: 160, dur: 0.16, vol: 0.18, q: 0.7, type: "lowpass" });
+      shapedNoise({ freq: 900, dur: 0.06, vol: 0.07, q: 1.2 });
+      resonant(72, 0.18, 0.035, 0.1);
+    },
+    done: function () {
+      [420, 530, 670].forEach(function (f, i) {
+        setTimeout(function () { resonant(f, 0.32, 0.09 - i * 0.012, 0.22); }, i * 105);
+      });
     }
-  }
+  };
 
   soundBtn.addEventListener("click", function () {
-    soundOn = !soundOn;
+    setMuted(soundOn);
     soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
     try { localStorage.setItem("tc_sound", soundOn ? "1" : "0"); } catch (e) {}
-    if (outGain && AC) {
-      try { outGain.gain.setTargetAtTime(soundOn ? 1 : 0, now_(), 0.02); }
-      catch (e) { outGain.gain.value = soundOn ? 1 : 0; }
-    }
     unlockAudio();
   });
   soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
@@ -761,7 +1009,12 @@
   var best = 0, rounds = 0;
   var settleT = 0, flash = 0, bowlPulse = 0, t = 0;
   var floaters = [];
+  var litter = [];                 // cards that have landed, they stay in the room
+  var heldIntro = 0;               // 0..1 ease as the next card comes up
   var drag = null;
+  // A real CardBody used only for the held pose, so the hand sprite and the
+  // card ink share one set of projected corners.
+  var held = createCard({ speed: 6.5, aimX: 0, spin: 0, curve: 0 });
 
   try { best = parseInt(localStorage.getItem("tc_best") || "0", 10) || 0; } catch (e) {}
   try { rounds = parseInt(localStorage.getItem("tc_rounds") || "0", 10) || 0; } catch (e) {}
@@ -806,6 +1059,8 @@
     throws = [];
     body = null;
     floaters.length = 0;
+    litter.length = 0;
+    heldIntro = 0;
     state = "aim";
     applyWind();
     updateHud();
@@ -859,8 +1114,9 @@
     body = createCard(input);
     state = "fly";
     settleT = 0;
-    var power = clamp((input.speed - 6.5) / 8.5, 0, 1);
-    sndFlick(power);
+    sfx.release();
+    startFlutter();
+    updateFlutter(input.spin, input.speed);
   }
 
   window.addEventListener("keydown", function (e) {
@@ -872,8 +1128,6 @@
   });
 
   // ============================================================ RESOLUTION
-  function panFor(x) { return clamp(x / 2.4, -0.8, 0.8); }
-
   function resolveThrow() {
     var card = setup.cards[throwIdx];
     var outcome = body.outcome || "miss";
@@ -882,10 +1136,13 @@
     if (pts > 0) {
       floaters.push({ x: body.pos.x, y: body.pos.y, z: body.pos.z, txt: "+" + pts, t: 0, col: outcome === "in" ? "#f5a25c" : "#c2a07a" });
     }
+    // the thrown card stays where it landed, like the real game
+    litter.push({ body: body, card: card });
+    if (litter.length > ROUND_SIZE) litter.shift();
     throwIdx++;
     updateHud();
     if (throwIdx >= ROUND_SIZE) endRound();
-    else { state = "aim"; body = null; applyWind(); updateHud(); }
+    else { state = "aim"; body = null; heldIntro = 0; applyWind(); updateHud(); }
   }
 
   function endRound() {
@@ -899,7 +1156,8 @@
       best = score;
       try { localStorage.setItem("tc_best", String(best)); } catch (e) {}
     }
-    sndRoundEnd(inCount >= 5);
+    stopFlutter();
+    sfx.done();
 
     resultGrid.innerHTML = "";
     throws.forEach(function (th) {
@@ -998,50 +1256,108 @@
     if (el) track("share", { method: "tossingcards_feeder", value: totalScore(throws) });
   });
 
-  // ================================================================== DRAW
-  function drawRoom() {
+  // ================================================ PORTED: render.ts
+  // The first pass approximated this and it showed: props were drawn from the
+  // projected top instead of the real per-kind tables, so the art never lined
+  // up with the collision box the physics uses — you could hit a prop that
+  // looked like nothing but a shadow. These are the game's own numbers.
+  var OBSTACLE_HEIGHT_SCALE = {
+    couch: 1.1, lamp: 1.06, cat: 1.14, books: 1, glass: 1.08, chair: 1.02,
+    candle: 1.08, fan: 1.16, plant: 1.05, curtain: 1, grate: 1
+  };
+  var OBSTACLE_Y_OFFSET = {
+    couch: 0.02, lamp: 0, cat: 0.01, books: 0, glass: 0, chair: 0,
+    candle: 0, fan: 0.01, plant: 0, curtain: 0, grate: 0
+  };
+
+  function drawRoomArt() {
     var img = ART.room;
     if (ready(img)) {
       var scale = Math.max(W / img.naturalWidth, H / img.naturalHeight);
       var dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
       ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
-    } else {
-      var g = ctx.createLinearGradient(0, 0, 0, H);
-      g.addColorStop(0, "#071111");
-      g.addColorStop(cam.horizon / H, "#0d2021");
-      g.addColorStop(1, "#090f0e");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
+      return;
     }
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#071111");
+    g.addColorStop(Math.max(0.01, Math.min(0.99, cam.horizon / H)), "#0d2021");
+    g.addColorStop(1, "#090f0e");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
   }
 
   function drawObstacle() {
     var ob = room.obstacle;
     if (!ob) return;
-    var img = ART[ob.kind];
     var base = projectXYZ(cam, ob.x, 0, ob.z);
-    var topP = projectXYZ(cam, ob.x, ob.top, ob.z);
-    var hpx = Math.max(6, base.sy - topP.sy);
-    if (ready(img)) {
-      var dw = hpx * (img.naturalWidth / img.naturalHeight);
-      ctx.save();
-      ctx.filter = "saturate(0.85) brightness(0.72)";
-      ctx.drawImage(img, base.sx - dw / 2, topP.sy, dw, hpx);
-      ctx.restore();
-    } else {
-      var w = ob.halfWidth * 2 * base.scale;
-      ctx.fillStyle = "rgba(10,16,15,0.9)";
-      ctx.fillRect(base.sx - w / 2, topP.sy, w, hpx);
-    }
-    // contact shadow so it sits on the boards
+    var s = base.scale;
+
+    // floor shadow, elongated away from the lamp rather than dropped straight down
+    var rx = Math.max(6, ob.halfWidth * 1.45 * s);
+    var ry = Math.max(2, rx * 0.34);
+    var lampSx = cam.width * 0.64, lampSy = cam.height * 0.36;
+    var awayX = base.sx - lampSx, awayY = base.sy - lampSy;
+    var len = Math.hypot(awayX, awayY) || 1;
+    var shX = base.sx + (awayX / len) * Math.min(rx * 0.42, ob.top * s * 0.12);
+    var shY = base.sy + Math.max(1, (awayY / len) * Math.min(rx * 0.2, ob.top * s * 0.055));
+    var ring = ctx.createRadialGradient(shX, shY, rx * 0.1, shX, shY, rx * 1.18);
+    ring.addColorStop(0, "rgba(0,0,0,0.42)");
+    ring.addColorStop(0.56, "rgba(0,0,0,0.18)");
+    ring.addColorStop(1, "rgba(0,0,0,0)");
     ctx.save();
-    var sh = ctx.createRadialGradient(base.sx, base.sy, 2, base.sx, base.sy, ob.halfWidth * base.scale * 1.6);
-    sh.addColorStop(0, "rgba(0,0,0,0.5)");
-    sh.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = sh;
+    ctx.filter = "blur(" + Math.max(1, rx * 0.045) + "px)";
+    ctx.fillStyle = ring;
     ctx.beginPath();
-    ctx.ellipse(base.sx, base.sy, ob.halfWidth * base.scale * 1.7, ob.halfWidth * base.scale * 0.5, 0, 0, TAU);
+    ctx.ellipse(shX, shY, rx * 1.12, ry * 0.9, -0.12, 0, TAU);
     ctx.fill();
+    ctx.restore();
+
+    var img = ART[ob.kind];
+    var drawW, drawH;
+    if (ready(img)) {
+      if (ob.kind === "grate") {
+        drawW = Math.max(28, ob.halfWidth * 2.2 * s);
+        drawH = drawW * (img.naturalHeight / img.naturalWidth);
+      } else {
+        drawH = Math.max(18, ob.top * s * OBSTACLE_HEIGHT_SCALE[ob.kind]);
+        drawW = drawH * (img.naturalWidth / img.naturalHeight);
+      }
+      var x = base.sx - drawW / 2;
+      var y = base.sy - drawH + drawH * OBSTACLE_Y_OFFSET[ob.kind];
+
+      if (ob.kind === "lamp" || ob.kind === "candle") {
+        var gy = y + drawH * (ob.kind === "lamp" ? 0.22 : 0.12);
+        var gr = drawH * (ob.kind === "lamp" ? 0.62 : 0.58);
+        var glow = ctx.createRadialGradient(base.sx, gy, 1, base.sx, gy, gr);
+        glow.addColorStop(0, ob.kind === "lamp" ? "rgba(255,190,112,0.24)" : "rgba(255,188,86,0.3)");
+        glow.addColorStop(1, ob.kind === "lamp" ? "rgba(255,170,92,0)" : "rgba(255,130,62,0)");
+        ctx.save();
+        ctx.globalCompositeOperation = "screen";
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(base.sx, gy, gr, 0, TAU);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.filter = "saturate(0.82) contrast(1.08) brightness(0.78)";
+      ctx.globalAlpha = ob.kind === "glass" ? 0.74 : 0.98;
+      ctx.drawImage(img, x, y, drawW, drawH);
+      ctx.restore();
+      return;
+    }
+
+    // Art missing: draw the collision box itself rather than nothing, so a prop
+    // can never be invisible while still stopping the card.
+    var topP = projectXYZ(cam, ob.x, ob.top, ob.z);
+    var bw2 = ob.halfWidth * 2 * s;
+    ctx.save();
+    ctx.fillStyle = "rgba(14,22,21,0.92)";
+    ctx.fillRect(base.sx - bw2 / 2, topP.sy, bw2, Math.max(4, base.sy - topP.sy));
+    ctx.strokeStyle = "rgba(226,165,72,0.35)";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(base.sx - bw2 / 2, topP.sy, bw2, Math.max(4, base.sy - topP.sy));
     ctx.restore();
   }
 
@@ -1052,24 +1368,26 @@
     var rx = room.bowlRadius * s * (1 + bowlPulse * 0.08);
     var ry = rx * 0.42;
 
-    ctx.save();
-    var sh = ctx.createRadialGradient(base.sx, base.sy + ry * 0.2, rx * 0.2, base.sx, base.sy + ry * 0.2, rx * 1.72);
+    var shadowX = base.sx - rx * 0.12, shadowY = base.sy + ry * 0.2;
+    var sh = ctx.createRadialGradient(shadowX, shadowY, rx * 0.2, shadowX, shadowY, rx * 1.72);
     sh.addColorStop(0, "rgba(0,0,0,0.5)");
     sh.addColorStop(0.58, "rgba(0,0,0,0.2)");
     sh.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.save();
+    ctx.filter = "blur(" + Math.max(1, rx * 0.055) + "px)";
     ctx.fillStyle = sh;
     ctx.beginPath();
-    ctx.ellipse(base.sx, base.sy + ry * 0.2, rx * 1.74, ry * 1.04, -0.08, 0, TAU);
+    ctx.ellipse(shadowX, shadowY, rx * 1.74, ry * 1.04, -0.08, 0, TAU);
     ctx.fill();
     ctx.restore();
 
     var img = ART.bowl;
     if (ready(img)) {
-      var dw = rx * 2.52;
-      var dh = dw * (img.naturalHeight / img.naturalWidth);
+      var drawW = rx * 2.52;
+      var drawH = drawW * (img.naturalHeight / img.naturalWidth);
       ctx.save();
       ctx.filter = "saturate(0.82) contrast(1.08) brightness(0.76)";
-      ctx.drawImage(img, base.sx - dw / 2, rim.sy - dh * 0.26, dw, dh);
+      ctx.drawImage(img, base.sx - drawW / 2, rim.sy - drawH * 0.26, drawW, drawH);
       ctx.restore();
     } else {
       ctx.fillStyle = "#d8cdbb";
@@ -1080,13 +1398,118 @@
 
     if (bowlPulse > 0.02) {
       ctx.save();
-      ctx.globalCompositeOperation = "lighter";
+      ctx.globalCompositeOperation = "screen";
       ctx.globalAlpha = Math.min(0.34, bowlPulse * 0.34);
       ctx.strokeStyle = "#f5a25c";
-      ctx.lineWidth = Math.max(2, rx * 0.1);
+      ctx.lineWidth = Math.max(2, rx * 0.09);
       ctx.beginPath();
-      ctx.ellipse(base.sx, rim.sy, rx * 1.2, ry * 1.2, 0, 0, TAU);
+      ctx.ellipse(base.sx, rim.sy, rx * 1.18, ry * 1.18, 0, 0, TAU);
       ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function drawShadow(c, visualScale) {
+    visualScale = visualScale || 1;
+    var g = projectXYZ(cam, c.pos.x, 0, c.pos.z);
+    var height = Math.max(0, c.pos.y);
+    var floorFade = 1 / (1 + height * 1.1);
+    var liftFade = Math.max(0.08, 1 - height / 1.35);
+    var alpha = 0.38 * floorFade * liftFade;
+    var lampSx = cam.width * 0.64, lampSy = cam.height * 0.36;
+    var awayX = g.sx - lampSx, awayY = g.sy - lampSy;
+    var len = Math.hypot(awayX, awayY) || 1;
+    var cast = Math.min(g.scale * 0.12, height * g.scale * 0.1);
+    var sx = g.sx + (awayX / len) * cast;
+    var sy = g.sy + Math.max(0, (awayY / len) * cast * 0.45);
+    var stretch = 1 + height * 0.95;
+    var rx = (CARD_H / 2) * g.scale * floorFade * visualScale * stretch;
+    var ry = (CARD_W / 2) * g.scale * floorFade * visualScale * 0.58;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0.035, alpha);
+    ctx.filter = "blur(" + Math.max(0.8, height * g.scale * 0.018) + "px)";
+    ctx.fillStyle = "#04100f";
+    ctx.beginPath();
+    ctx.ellipse(sx, sy, Math.max(1, rx), Math.max(0.8, ry), c.phi - 0.1, 0, TAU);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawCardBody(bodyRef, card, visualScale) {
+    visualScale = visualScale || 1;
+    var corners = scaledCardCorners(bodyRef, visualScale);
+    var p = corners.map(function (c) { return project(cam, c); });
+    var n = cardNormal(bodyRef);
+    var view = { x: bodyRef.pos.x, y: bodyRef.pos.y - cam.eyeY, z: bodyRef.pos.z };
+    var vlen = Math.hypot(view.x, view.y, view.z) || 1;
+    var facing = (n.x * view.x + n.y * view.y + n.z * view.z) / vlen;
+    var showFace = facing < 0;
+
+    var p0 = p[0], p1 = p[1], p3 = p[3];
+    var probe = showFace ? cardFaceCanvas(card) : cardBackCanvas();
+    var sw = probe.width, shh = probe.height;
+    var a = (p1.sx - p0.sx) / sw;
+    var b2 = (p1.sy - p0.sy) / sw;
+    var cc = (p3.sx - p0.sx) / shh;
+    var d = (p3.sy - p0.sy) / shh;
+    var img = showFace ? cardFaceCanvas(card, 220, a * d - b2 * cc < 0) : probe;
+    var area = Math.abs(a * d - b2 * cc) * sw * shh;
+
+    var edge = Math.max(0.6, Math.hypot(a, b2) * sw * 0.03);
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.5)";
+    ctx.shadowBlur = Math.max(4, edge * 2.5);
+    ctx.shadowOffsetY = Math.max(2, edge * 1.8);
+    ctx.fillStyle = "rgba(7,10,9,0.88)";
+    ctx.beginPath();
+    ctx.moveTo(p[0].sx + edge * 0.28, p[0].sy + edge);
+    for (var i = 1; i < 4; i++) ctx.lineTo(p[i].sx + edge * 0.28, p[i].sy + edge);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    if (area < 2) return;
+
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.transform(a, b2, cc, d, p0.sx, p0.sy);
+    ctx.drawImage(img, 0, 0);
+    ctx.globalCompositeOperation = "multiply";
+    var edgeShade = ctx.createRadialGradient(sw * 0.5, shh * 0.48, sw * 0.16, sw * 0.5, shh * 0.48, shh * 0.65);
+    edgeShade.addColorStop(0, "rgba(255,255,255,1)");
+    edgeShade.addColorStop(0.7, "rgba(150,135,112,0.9)");
+    edgeShade.addColorStop(1, "rgba(48,35,24,0.72)");
+    ctx.fillStyle = edgeShade;
+    ctx.fillRect(0, 0, sw, shh);
+    ctx.globalCompositeOperation = "screen";
+    var lampSheen = ctx.createLinearGradient(0, 0, sw, shh);
+    lampSheen.addColorStop(0, "rgba(255,236,185,0.32)");
+    lampSheen.addColorStop(0.45, "rgba(255,221,150,0.04)");
+    lampSheen.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = lampSheen;
+    ctx.fillRect(0, 0, sw, shh);
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle = "rgba(255,244,208,0.42)";
+    ctx.lineWidth = Math.max(0.8, edge * 0.55);
+    ctx.beginPath();
+    ctx.moveTo(p[0].sx, p[0].sy);
+    ctx.lineTo(p[1].sx, p[1].sy);
+    ctx.stroke();
+    ctx.restore();
+
+    var catchAmt = Math.pow(Math.max(0, Math.abs(n.y)), 6) * 0.5 + Math.max(0, -n.z) * 0.12;
+    if (catchAmt > 0.02) {
+      ctx.save();
+      ctx.globalAlpha = Math.min(0.5, catchAmt);
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = "rgba(255,236,196,0.7)";
+      ctx.beginPath();
+      ctx.moveTo(p[0].sx, p[0].sy);
+      for (var j = 1; j < 4; j++) ctx.lineTo(p[j].sx, p[j].sy);
+      ctx.closePath();
+      ctx.fill();
       ctx.restore();
     }
   }
@@ -1101,120 +1524,88 @@
     ctx.globalCompositeOperation = "screen";
     ctx.lineCap = "round";
     for (var i = 1; i < pts.length; i++) {
-      var a = pts[i - 1], b = pts[i];
+      var a = pts[i - 1], b2 = pts[i];
       var f = i / (pts.length - 1);
-      ctx.globalAlpha = Math.pow(f, 1.7) * 0.22;
-      ctx.strokeStyle = "rgba(255,214,160,1)";
-      ctx.lineWidth = Math.max(1, b.scale * (0.012 + f * 0.024));
+      var width = Math.max(1, b2.scale * (0.012 + f * 0.024));
+      ctx.filter = "blur(" + Math.max(1, width * 0.55) + "px)";
+      ctx.strokeStyle = "rgba(255,214,160," + (Math.pow(f, 1.7) * 0.18).toFixed(4) + ")";
+      ctx.lineWidth = width;
       ctx.beginPath();
       ctx.moveTo(a.sx, a.sy);
-      ctx.lineTo(b.sx, b.sy);
+      var mx = (a.sx + b2.sx) / 2, my = (a.sy + b2.sy) / 2;
+      ctx.quadraticCurveTo(mx, my, b2.sx, b2.sy);
       ctx.stroke();
     }
     ctx.restore();
+    ctx.filter = "none";
   }
 
-  function drawCard() {
-    if (!body) return;
-    var corners = cardCorners(body).map(function (p) { return project(cam, p); });
-    // signed area tells us which face we are looking at
-    var area = 0;
-    for (var i = 0; i < 4; i++) {
-      var a = corners[i], b = corners[(i + 1) % 4];
-      area += a.sx * b.sy - b.sx * a.sy;
-    }
-    var faceUp = area < 0;
-    var card = setup.cards[Math.min(throwIdx, setup.cards.length - 1)];
+  /* The held card is the hand sprite with the card ink mapped into the sprite's
+     OWN card corners. Drawing an independent rectangle beside the hand is what
+     made the first pass look huge and misaligned. */
+  var SRC_CARD = {
+    tl: { x: 0.524, y: 0.089 }, tr: { x: 0.646, y: 0.141 },
+    br: { x: 0.622, y: 0.49 }, bl: { x: 0.474, y: 0.404 }
+  };
+  var HELD_CARD_SCALE = 1.22;
 
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(corners[0].sx, corners[0].sy);
-    for (var j = 1; j < 4; j++) ctx.lineTo(corners[j].sx, corners[j].sy);
-    ctx.closePath();
-
-    ctx.shadowColor = "rgba(0,0,0,0.55)";
-    ctx.shadowBlur = Math.max(2, corners[0].scale * 0.02);
-    ctx.shadowOffsetY = Math.max(1, corners[0].scale * 0.006);
-    ctx.fillStyle = faceUp ? "#f6f2e8" : "#8d2b25";
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.strokeStyle = "rgba(0,0,0,0.35)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.restore();
-
-    // rank + suit, sized to the quad
-    var cx = (corners[0].sx + corners[2].sx) / 2;
-    var cy = (corners[0].sy + corners[2].sy) / 2;
-    var w = Math.hypot(corners[1].sx - corners[0].sx, corners[1].sy - corners[0].sy);
-    var h = Math.hypot(corners[3].sx - corners[0].sx, corners[3].sy - corners[0].sy);
-    var size = Math.min(w, h);
-    if (faceUp && size > 14) {
-      var ang = Math.atan2(corners[3].sy - corners[0].sy, corners[3].sx - corners[0].sx) - Math.PI / 2;
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(ang);
-      ctx.fillStyle = isRed(card.suit) ? "#b3271f" : "#191512";
-      ctx.font = "700 " + Math.round(size * 0.52) + "px Georgia, ui-serif, serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(card.rank + SUIT_GLYPH[card.suit], 0, 0);
-      ctx.restore();
-    }
-  }
-
-  function drawHeld() {
-    if (state !== "aim") return;
+  function drawHeldCardHand(bodyRef, card, visualScale, alpha) {
     var img = ART.hand;
-    var card = setup.cards[throwIdx];
-    var baseY = H - Math.max(10, H * 0.02);
-    var cw = Math.min(W * 0.30, H * 0.17);
-    var chh = cw * 1.4;
-    var cx = W / 2;
-    var lift = drag ? Math.min(30, (drag.samples[0].y - drag.samples[drag.samples.length - 1].y) * 0.35) : 0;
-    var cy = baseY - chh * 0.62 - lift;
+    if (!ready(img)) return;
+    var projected = scaledCardCorners(bodyRef, visualScale).map(function (c) { return project(cam, c); });
+    var tl = projected[0], tr = projected[1], br = projected[2], bl = projected[3];
+    var targetCenter = {
+      sx: (tl.sx + tr.sx + br.sx + bl.sx) / 4,
+      sy: (tl.sy + tr.sy + br.sy + bl.sy) / 4
+    };
+    var targetH = Math.hypot(tl.sx - bl.sx, tl.sy - bl.sy);
+    var srcH = Math.hypot(
+      (SRC_CARD.tl.x - SRC_CARD.bl.x) * img.naturalWidth,
+      (SRC_CARD.tl.y - SRC_CARD.bl.y) * img.naturalHeight
+    );
+    var drawScale = (targetH / srcH) * 1.02;
+    var drawW = img.naturalWidth * drawScale;
+    var drawH = img.naturalHeight * drawScale;
+    var srcCenter = {
+      x: ((SRC_CARD.tl.x + SRC_CARD.tr.x + SRC_CARD.br.x + SRC_CARD.bl.x) / 4) * drawW,
+      y: ((SRC_CARD.tl.y + SRC_CARD.tr.y + SRC_CARD.br.y + SRC_CARD.bl.y) / 4) * drawH
+    };
+    var x = targetCenter.sx - srcCenter.x - targetH * 0.06;
+    var y = targetCenter.sy - srcCenter.y + targetH * 0.03;
 
     ctx.save();
-    ctx.shadowColor = "rgba(0,0,0,0.5)";
-    ctx.shadowBlur = 16;
-    ctx.fillStyle = "#f6f2e8";
-    roundRect(ctx, cx - cw / 2, cy - chh / 2, cw, chh, cw * 0.09);
-    ctx.fill();
+    ctx.globalAlpha = 0.99 * alpha;
+    ctx.filter = "saturate(0.8) contrast(1.08) brightness(0.8) drop-shadow(0 " +
+      Math.max(5, cam.height * 0.012) + "px " + Math.max(18, cam.height * 0.038) +
+      "px rgba(0,0,0,0.66))";
+    ctx.drawImage(img, x, y, drawW, drawH);
     ctx.restore();
-    ctx.fillStyle = isRed(card.suit) ? "#b3271f" : "#191512";
-    ctx.font = "700 " + Math.round(cw * 0.3) + "px Georgia, ui-serif, serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillText(card.rank, cx - cw / 2 + cw * 0.1, cy - chh / 2 + chh * 0.06);
-    ctx.font = "700 " + Math.round(cw * 0.26) + "px Georgia, ui-serif, serif";
-    ctx.fillText(SUIT_GLYPH[card.suit], cx - cw / 2 + cw * 0.1, cy - chh / 2 + chh * 0.26);
-    ctx.textAlign = "center";
-    ctx.font = "700 " + Math.round(cw * 0.42) + "px Georgia, ui-serif, serif";
-    ctx.fillText(SUIT_GLYPH[card.suit], cx, cy - chh * 0.06);
 
-    // The hand goes ON TOP of the card's lower third — it is holding it, not
-    // standing behind it.
-    if (ready(img)) {
-      var hw = cw * 2.3;
-      var hh2 = hw * (img.naturalHeight / img.naturalWidth);
-      ctx.drawImage(img, cx - hw * 0.44, cy + chh * 0.12, hw, hh2);
-    }
-  }
+    var q = {
+      tl: { sx: x + SRC_CARD.tl.x * drawW, sy: y + SRC_CARD.tl.y * drawH },
+      tr: { sx: x + SRC_CARD.tr.x * drawW, sy: y + SRC_CARD.tr.y * drawH },
+      br: { sx: x + SRC_CARD.br.x * drawW, sy: y + SRC_CARD.br.y * drawH },
+      bl: { sx: x + SRC_CARD.bl.x * drawW, sy: y + SRC_CARD.bl.y * drawH }
+    };
+    var ink = cardInkCanvas(card);
+    var a = (q.tr.sx - q.tl.sx) / ink.width;
+    var b2 = (q.tr.sy - q.tl.sy) / ink.width;
+    var cc = (q.bl.sx - q.tl.sx) / ink.height;
+    var d = (q.bl.sy - q.tl.sy) / ink.height;
 
-  function drawAimGuide() {
-    if (!drag || drag.samples.length < 2) return;
-    var a = drag.samples[0];
-    var b = drag.samples[drag.samples.length - 1];
     ctx.save();
-    ctx.globalAlpha = 0.35;
-    ctx.strokeStyle = "#e2a548";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([6, 6]);
     ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.lineTo(b.x, b.y);
-    ctx.stroke();
+    ctx.moveTo(q.tl.sx, q.tl.sy);
+    ctx.lineTo(q.tr.sx, q.tr.sy);
+    ctx.lineTo(q.br.sx, q.br.sy);
+    ctx.lineTo(q.bl.sx, q.bl.sy);
+    ctx.closePath();
+    ctx.clip();
+    ctx.globalCompositeOperation = "multiply";
+    ctx.globalAlpha = 0.88 * alpha;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.transform(a, b2, cc, d, q.tl.sx, q.tl.sy);
+    ctx.drawImage(ink, 0, 0);
     ctx.restore();
   }
 
@@ -1233,33 +1624,76 @@
     ctx.restore();
   }
 
-  function roundRect(c, x, y, w, h, r) {
-    r = Math.min(r, w / 2, h / 2);
-    c.beginPath();
-    c.moveTo(x + r, y);
-    c.arcTo(x + w, y, x + w, y + h, r);
-    c.arcTo(x + w, y + h, x, y + h, r);
-    c.arcTo(x, y + h, x, y, r);
-    c.arcTo(x, y, x + w, y, r);
-    c.closePath();
+  function drawAimGuide() {
+    if (!drag || drag.samples.length < 2) return;
+    var a = drag.samples[0];
+    var b2 = drag.samples[drag.samples.length - 1];
+    ctx.save();
+    ctx.globalAlpha = 0.32;
+    ctx.strokeStyle = "#e2a548";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b2.x, b2.y);
+    ctx.stroke();
+    ctx.restore();
   }
 
   function draw() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    drawRoom();
+    drawRoomArt();
     if (!room) return;
-    drawObstacle();
-    drawBowl();
-    drawTrail();
-    drawCard();
+
+    // One painter's list sorted by depth, so props always occlude what is
+    // behind them — landed cards included.
+    var items = [];
+    for (var i = 0; i < litter.length; i++) {
+      (function (d) {
+        var z = d.body.pos.y > 0.1 ? d.body.pos.z - 0.6 : d.body.pos.z;
+        items.push({ z: z, paint: function () {
+          if (d.body.pos.y < 0.1) drawShadow(d.body);
+          drawCardBody(d.body, d.card);
+        } });
+      })(litter[i]);
+    }
+    items.push({ z: room.bowlZ, paint: drawBowl });
+    if (room.obstacle) items.push({ z: room.obstacle.z, paint: drawObstacle });
+    if (body) {
+      items.push({ z: body.pos.z, paint: function () {
+        if (!(body.settled && body.outcome === "in")) {
+          drawTrail();
+          drawShadow(body);
+          drawCardBody(body, setup.cards[Math.min(throwIdx, setup.cards.length - 1)]);
+        }
+      } });
+    }
+    items.sort(function (a, b2) { return b2.z - a.z; });
+    for (var k = 0; k < items.length; k++) items[k].paint();
+
     drawFloaters();
-    drawHeld();
+
+    if (state === "aim") {
+      // the pose the real game holds the card in before a throw
+      var ease = heldIntro;
+      var settle = Math.sin(t * 1.6) * 0.004;
+      held.pitch = -1.05 + ease * 0.28;
+      held.roll = 0.16 - ease * 0.1;
+      held.phi = -0.08 + ease * 0.13;
+      held.pos = {
+        x: -0.02 + ease * 0.02,
+        y: LAUNCH.y - 0.58 + ease * 0.5 + settle,
+        z: LAUNCH.z - 0.06 + ease * 0.08
+      };
+      drawHeldCardHand(held, setup.cards[throwIdx], HELD_CARD_SCALE * (0.94 + ease * 0.06), 1);
+    }
+
     drawAimGuide();
     if (flash > 0) {
       ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.globalAlpha = flash * 0.16;
+      ctx.globalCompositeOperation = "screen";
+      ctx.globalAlpha = flash * 0.14;
       ctx.fillStyle = "#f5a25c";
       ctx.fillRect(0, 0, W, H);
       ctx.restore();
@@ -1284,19 +1718,24 @@
         steps++;
         stepCard(body, room, FIXED_DT);
         if (body.event) {
-          var pan = panFor(body.pos.x);
-          if (body.event === "bowl") { sndBowl(pan); bowlPulse = 1; flash = 0.6; }
-          else if (body.event === "rim") { sndRim(pan); bowlPulse = 0.5; }
-          else if (body.event === "floor") sndFloor(pan);
-          else if (body.event === "obstacle") sndProp(pan);
+          if (body.event === "bowl") { sfx.bowl(); bowlPulse = 1; flash = 0.6; }
+          else if (body.event === "rim") { sfx.rim(); bowlPulse = 0.5; }
+          else if (body.event === "floor") sfx.floor();
+          else if (body.event === "obstacle") sfx.thud();
         }
         if (body.settled) break;
       }
-      if (body.settled) {
+      // the flutter follows the card's own spin and speed while it is in the air
+      if (!body.settled) {
+        updateFlutter(body.spin, Math.hypot(body.vel.x, body.vel.y, body.vel.z));
+      } else {
+        stopFlutter();
         settleT += dt;
         if (settleT > 0.55) resolveThrow();
       }
     }
+
+    if (state === "aim" && heldIntro < 1) heldIntro = Math.min(1, heldIntro + dt / 0.48);
 
     for (var i = floaters.length - 1; i >= 0; i--) {
       floaters[i].t += dt;
