@@ -1178,7 +1178,7 @@
     // No practice-page link; the daily is the destination worth having.
     window.OPT_SHARE_TEXT =
       "Brick Smasher (practice): " + score + ", longest chain " + comboBestRun + "." +
-      "\nPlay today's wall against everyone \u2192 https://bricksmasher.com/?utm_source=onepagetoys&utm_medium=share";
+      "\nPlay today's wall against everyone \u2192 https://www.bricksmasher.com/?utm_source=onepagetoys&utm_medium=share";
     if (window.OPT_SHARE && window.OPT_SHARE.refresh) window.OPT_SHARE.refresh();
   }
 
@@ -1724,6 +1724,9 @@
   }
 
   // ================================================================= FEEDER
+  // Links name www explicitly: Vercel serves www.bricksmasher.com and 308s the
+  // apex to it, so pointing at the apex would cost every CTA a redirect hop.
+
   // bricksmasher.com keys its daily on a LOCAL date (ROLLOVER = "local" in the
   // game's src/game/daily.ts), so this counts down to local midnight. If that
   // constant ever flips to UTC, this has to flip with it or the banner lies.
