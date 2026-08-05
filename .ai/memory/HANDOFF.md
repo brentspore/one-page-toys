@@ -36,6 +36,22 @@ this file when they disagree; `project.md` here is pre-2026-06 and stale.)
 - **Shuriken Night:** sprite-art build is live (`6a5ddc8`, 66 .webp frames). `toys/shuriken-night-visual-pass/` remains ANOTHER session's uncommitted sandbox — never stage it. Two machines have edited this toy concurrently: always `git pull` before touching it.
 - **Latest shared-asset versions** (bump uniformly when touching): hub `main.js?v=92` / `styles.css?v=102` (8 hub pages: index + all-toys/ + 6 category pages), `more-games.js?v=14`, `tickets.js?v=16` (brick-smasher only; feeder page v=15, most pages v=12–14 — sweep uniform on next shared change. The v=16 rule addition is `bricksmash_best`; other pages keeping a stale copy is harmless, they never write that key), `share.js?v=5`, `prizes.js?v=1`, store `store.js?v=6`/`store.css?v=7`.
 
+## Search visibility audit (2026-08-04)
+
+**Verdict: OPT's crawl fundamentals were HEALTHY** — unlike buildutilities, this site was never broken. Full sweep of all 105 sitemap URLs: **105/105 unique descriptions, 104 unique titles (the 105th was the dead URL below), canonical tag on every live page and ZERO canonical mismatches, all 200s except one.**
+
+✅ **FIXED — one real bug, the same class that bit buildutilities: a dead URL in the sitemap, plus a missing key page.** `sitemap.xml` advertised **`/all-tools.html` which 404s** (a stale name still referenced by `archive/tools/*` pages), while **`/all-toys/` — the hub linking every toy — was NOT in the sitemap at all.** So the single page Google most wants for discovering the other 100+ was never submitted, and crawl budget was going to a dead URL. Swapped one for the other (`210c83e`); live-verified 0 dead entries, 105 unique URLs, `/all-toys/` 200 "All toys — One Page Toys".
+
+✅ **Bing verified** — `BingSiteAuth.xml` committed to the repo root (public verification file by design), serving 200 `application/xml`.
+
+✅ **IndexNow live, all 105 URLs submitted (HTTP 202 accepted).** Key at `/968d91aa1ae69835ed25661037ad6557.txt` (**public by design** — that is how domain control is proven). Run `node scripts/indexnow-submit.mjs`, or pass paths for a subset, or `--dry-run`. ⚠ **Bing/Yandex/Seznam/Naver only — Google does NOT participate.** ⚠ **Re-run it after adding a toy** — that's the whole point, it beats waiting for a crawl.
+
+⚠ **Redirect direction is the OPPOSITE of what older notes said.** It is now **`www` → apex** (apex serves 200), not apex → www. **Verify against `https://onepagetoys.com/`.** ⚠ It is a **307 TEMPORARY** redirect; a 308/301 permanent would be better for canonicalisation. Impact is small because every page carries a canonical pointing at the apex, so Google will consolidate anyway — **not fixed, owner's call**, since adding a `vercel.json` to a site that currently has none carries more risk than the marginal gain.
+
+⚠ **No `google-site-verification` meta tag in the HTML** — the GSC property was claimed by another method (DNS or file). Fine, just don't expect to find a tag.
+
+⚠ **The real ceiling for OPT search traffic is THIN CONTENT, not crawlability.** A canvas toy page carries roughly 470 characters of visible text, so there is very little for Google to match a query against. **OPT is a share-and-word-of-mouth asset more than a search asset** — treat IndexNow/sitemap work as hygiene, not as the growth lever.
+
 ## Open next steps
 
 - **Owner audio-by-ear on toys 093–101** — headless measures level/spectrum, never character. Brick Smasher first (the combo pentatonic ladder: does the pitch climb stay addictive or turn shrill by the sixth brick? plus the room hum's presence). Singing Bowl most of all (its `BEATS` paired-oscillator array is ear-tuning only). Also still owed ears: Perfect Timing whiff/miss, Deep Hollow crystal/milestone, Shuriken Night, the 6 generative visuals + Mandelbrot, Spelling Blocks, Minesweeper, Bubble Wrap.
