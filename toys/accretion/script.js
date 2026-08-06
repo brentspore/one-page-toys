@@ -427,7 +427,10 @@
   function fallInterval() {
     // the demo runs brisk so the disk fills while someone reads the panel
     if (attract) return 215;
-    return Math.max(110, 820 - (level - 1) * 68);
+    // The disk is only 9 rings deep, so a piece reaches the stack in a handful
+    // of steps — far fewer than a tall field gives you. Keep the opening
+    // unhurried and let the ramp do the work.
+    return Math.max(130, 1000 - (level - 1) * 55);
   }
 
   // ----------------------------------------------------------------- score
