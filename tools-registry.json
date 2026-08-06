@@ -1,5 +1,35 @@
 [
   {
+    "slug": "accretion",
+    "name": "Accretion",
+    "shortDescription": "A falling-block puzzle played on a disk instead of in a rectangle. Gravity points inward: debris arrives at the rim and falls toward a burning core, and you orbit each piece around the ring to seat it in the stack. Complete a whole ring and it flares white and collapses into the star, dragging everything outside it inward. No side walls — a piece can circle as long as you need.",
+    "category": "game",
+    "tags": [
+      "accretion",
+      "puzzle",
+      "falling-blocks",
+      "stacking",
+      "radial",
+      "polar",
+      "space",
+      "star",
+      "arcade",
+      "score-chase",
+      "keyboard",
+      "drag",
+      "mesmerizing",
+      "satisfying",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/accretion/",
+    "related": [
+      "stack-tower",
+      "brick-smasher",
+      "trio"
+    ]
+  },
+  {
     "slug": "tossing-cards",
     "name": "Tossing Cards",
     "shortDescription": "Flick playing cards across a lamplit room and into a bowl — the unlimited practice edition. Drag back and snap upward: a quick swipe throws harder, a sideways swipe hooks, and wind or a prop can bend the card mid-air. Ten cards a room, scored by card value. The daily room, streaks and stats are at tossingcards.com.",

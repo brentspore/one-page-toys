@@ -67,6 +67,7 @@
    * bankrolls that legitimately go down (bj_bank) must NOT earn. */
   var RULES = [
     // higher is better
+    { test: "accretion_best", dir: "up", label: "Accretion score" },
     { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },
     { test: "bricksmash_best", dir: "up", label: "Brick Smasher score" },

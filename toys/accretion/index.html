@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Accretion — One Page Toys</title>
+    <meta name="description" content="Gravity points inward. Debris falls from the rim toward a burning core, orbits where you steer it, and settles into the disk — complete a whole ring and it collapses into the core in a flash of light. A falling-block puzzle rebuilt in the round. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/accretion/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#07050f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Accretion — One Page Toys" />
+    <meta property="og:description" content="A falling-block puzzle in the round. Debris falls inward toward a burning core — orbit it, seat it, and complete a ring to collapse it into the star." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/accretion/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/accretion.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Accretion — One Page Toys" />
+    <meta name="twitter:description" content="Gravity points inward. Fill a whole ring around the core and watch it collapse." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/accretion.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Accretion",
+        "url": "https://onepagetoys.com/toys/accretion/",
+        "description": "A falling-block puzzle played on a disk instead of in a rectangle. Debris drifts in from the rim and falls toward a burning core; you orbit each piece around the ring and rotate it to seat it in the stack. Complete an entire ring of the disk and it flares white and collapses into the core, pulling everything outside it inward. There are no side walls — pieces orbit forever — and the cells tighten as they near the centre, so the disk grows harder to seat the deeper it fills.",
+        "applicationCategory": "GameApplication",
+        "genre": "Puzzle",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Score</span><span id="score" class="hud__score">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Rings</span><span id="rings" class="hud__rings">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Best</span><span id="best" class="hud__best">0</span></div>
+    </div>
+
+    <div class="next" id="next" hidden>
+      <span class="next__k">Next</span>
+      <canvas id="nextCanvas" width="112" height="112" aria-label="Next piece"></canvas>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Gravity points inward</p>
+        <h1 class="panel__title" id="ovTitle">Accretion</h1>
+        <p class="panel__text" id="ovText">
+          Debris falls from the rim toward the core. <b>Orbit it around the disk</b> and rotate it to
+          seat it in the stack — there are no walls out here, so a piece can circle as long as you
+          need. Fill an entire ring and it collapses into the star, dragging everything outside it
+          inward. The cells tighten as they near the centre.
+        </p>
+        <button type="button" class="play-btn" id="ovBtn">Begin</button>
+        <p class="panel__keys" id="ovKeys">drag to orbit · tap to rotate · swipe down to drop</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 103</span>
+      <span class="frame__corner frame__corner--tr">Accretion</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag to orbit · tap to rotate</p>
+
+    <script src="../../assets/tickets.js?v=17" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=14" defer></script>
+  </body>
+</html>

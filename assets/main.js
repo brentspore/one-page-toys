@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "accretion":
+    "accretion accretion disk falling blocks block puzzle falling block puzzle stacking puzzle block stacking drop blocks stack blocks fill the ring ring clear line clear clear the ring radial puzzle polar grid circular puzzle round board play in the round orbit the piece rotate and drop soft drop hard drop lock delay next piece bag randomizer gravity points inward inward gravity fall toward the core burning core star collapse into the star space puzzle cosmic puzzle astronomy protoplanetary disk debris field asteroid belt orbital mechanics mineral plates cooling matter geometry puzzle spatial puzzle tessellation fill the gaps no walls wrap around endless puzzle score chase high score arcade puzzle relaxing puzzle mesmerizing satisfying one more go",
   "five-second-game":
     "5 second game five second game 5secondgame stop the clock at five seconds count to five internal clock body clock timing test reaction stop watch stopwatch hidden timer guess five seconds one tap precision daily challenge streak leaderboard practice mode how good is your sense of time perfect 5.000 exactly five",
   "tossing-cards":

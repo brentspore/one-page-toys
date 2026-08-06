@@ -66,6 +66,10 @@ function clipRect() {
   const page = await browser.newPage({
     viewport: { width: VW, height: VH },
     deviceScaleFactor: 1,
+    // Headless Chromium reports prefers-reduced-motion: reduce, so any toy that
+    // gates particles/drift on it renders a stripped-down scene. Opt in with
+    // --motion to capture what a real visitor actually sees.
+    ...(has("motion") ? { reducedMotion: "no-preference" } : {}),
   });
   const errs = [];
   page.on("pageerror", (e) => errs.push(e.message));

@@ -11,8 +11,12 @@ blocks.push(`  <url>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>`);
+// /all-toys/ is the hub that links every toy — the single most valuable page
+// for discovery. It used to be emitted as `all-tools.html`, which 404s (the
+// 2026-08-04 search audit caught it); regenerating reintroduced the dead URL
+// every time. Keep this pointing at the directory that actually serves.
 blocks.push(`  <url>
-    <loc>${SITE}/all-tools.html</loc>
+    <loc>${SITE}/all-toys/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>`);
@@ -39,4 +43,6 @@ ${blocks.join("\n")}
 `;
 
 fs.writeFileSync(path.join(ROOT, "sitemap.xml"), out);
-console.log("sitemap.xml urls:", 2 + reg.length);
+// count the blocks actually emitted — a hardcoded offset here under-reported by
+// one and made audits chase a phantom missing URL
+console.log("sitemap.xml urls:", blocks.length);
