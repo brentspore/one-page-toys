@@ -1,5 +1,89 @@
 [
   {
+    "slug": "typing-speed",
+    "name": "Typing Speed",
+    "shortDescription": "How fast do you actually type? A clean timed test over 30 seconds, a minute or two minutes: words per minute and accuracy update live, a trail draws your speed across the whole run, and the finish tells you which keys were costing you time. Your best is kept on your own device.",
+    "category": "utility",
+    "tags": [
+      "typing-speed",
+      "typing-test",
+      "wpm",
+      "words-per-minute",
+      "keyboard",
+      "accuracy",
+      "speed-test",
+      "practice",
+      "score-chase",
+      "focus",
+      "measurement",
+      "touch-typing",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/typing-speed/",
+    "related": [
+      "chimp-test",
+      "echo",
+      "perfect-timing"
+    ]
+  },
+  {
+    "slug": "golden-hour",
+    "name": "Golden Hour",
+    "shortDescription": "The whole day drawn as one ribbon of light — night, blue hour, golden hour, full daylight and back again — with the sun's own arc traced across it. Get today's sunrise, sunset, both golden hours, blue hour and day length for your city, plus a live countdown to the next golden hour.",
+    "category": "utility",
+    "tags": [
+      "golden-hour",
+      "blue-hour",
+      "sunrise",
+      "sunset",
+      "photography",
+      "light",
+      "sun",
+      "twilight",
+      "day-length",
+      "planner",
+      "calculator",
+      "calm",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/golden-hour/",
+    "related": [
+      "world-clock",
+      "sleep-cycle",
+      "alpenglow"
+    ]
+  },
+  {
+    "slug": "moon-phase",
+    "name": "Moon Phase",
+    "shortDescription": "Tonight's moon, drawn as it actually looks — the real seas and rayed craters of the near side, lit exactly as far as the sun has reached. Drag across the sky to travel through the days, check any date, and see how long until the next full moon and what it is called.",
+    "category": "utility",
+    "tags": [
+      "moon-phase",
+      "moon",
+      "lunar",
+      "full-moon",
+      "new-moon",
+      "astronomy",
+      "night-sky",
+      "calendar",
+      "stargazing",
+      "calm",
+      "beautiful",
+      "science",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/moon-phase/",
+    "related": [
+      "life-in-numbers",
+      "gravity-orbits",
+      "star-click-sky"
+    ]
+  },
+  {
     "slug": "accretion",
     "name": "Accretion",
     "shortDescription": "A falling-block puzzle played on a disk instead of in a rectangle. Gravity points inward: debris arrives at the rim and falls toward a burning core, and you orbit each piece around the ring to seat it in the stack. Complete a whole ring and it flares white and collapses into the star, dragging everything outside it inward. No side walls — a piece can circle as long as you need.",

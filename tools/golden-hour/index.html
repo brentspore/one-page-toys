@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Golden Hour — One Page Toys</title>
+    <meta name="description" content="Today's light, drawn as one ribbon: night, blue hour, golden hour, full daylight and back again. See exactly when to shoot, with sunrise, sunset and a live countdown to the next golden hour. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/golden-hour/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f6f8fb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Golden Hour — One Page Toys" />
+    <meta property="og:description" content="Today's light as one ribbon: blue hour, golden hour, daylight. With a live countdown to the next golden hour." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/golden-hour/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/golden-hour.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Golden Hour — One Page Toys" />
+    <meta name="twitter:description" content="Today's light as one ribbon, with a live countdown to the next golden hour." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/golden-hour.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Golden Hour",
+        "url": "https://onepagetoys.com/tools/golden-hour/",
+        "description": "A golden hour and blue hour calculator that draws the whole day as a single colour ribbon, with sunrise, sunset, civil twilight, solar noon, day length and a live countdown to the next golden hour, computed in the browser from your location.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 105 · Golden Hour</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="gh" aria-label="Golden hour">
+        <p class="eyebrow" id="eyebrow">Next golden hour</p>
+        <h1 class="headline" id="countdown">—</h1>
+        <p class="sub" id="subline">Finding your light…</p>
+
+        <div class="ribbon" id="ribbon">
+          <canvas id="band" class="ribbon__canvas" aria-label="The day drawn as a colour ribbon from night through golden hour to daylight" role="img"></canvas>
+          <div class="ribbon__now" id="nowMark" hidden><span class="ribbon__grip"></span><span class="ribbon__lab" id="nowLab"></span></div>
+          <div class="ribbon__ticks" id="ticks" aria-hidden="true"></div>
+        </div>
+
+        <ul class="legend" id="legend" aria-label="Light phases"></ul>
+
+        <div class="times" id="times" role="group" aria-label="Sun times"></div>
+
+        <div class="controls">
+          <label class="place">
+            <span class="place__k">Place</span>
+            <select id="placeSel" aria-label="Choose a location"></select>
+          </label>
+          <button type="button" class="btn btn--primary" id="locBtn">Use my location</button>
+        </div>
+        <p class="note" id="note"></p>
+      </section>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="../../assets/tickets.js?v=18" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

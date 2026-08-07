@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Typing Speed — One Page Toys</title>
+    <meta name="description" content="How fast do you actually type? A clean timed typing test: live words per minute, a speed trail of the whole run, accuracy, and the keys that slowed you down. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/typing-speed/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f6f8fb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Typing Speed — One Page Toys" />
+    <meta property="og:description" content="A clean typing test with live words per minute, accuracy, and a trail showing which keys slowed you down." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/typing-speed/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/typing-speed.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Typing Speed — One Page Toys" />
+    <meta name="twitter:description" content="How fast do you actually type? Live WPM, accuracy, and the keys that slowed you down." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/typing-speed.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Typing Speed",
+        "url": "https://onepagetoys.com/tools/typing-speed/",
+        "description": "A typing speed test measuring words per minute and accuracy over a timed run, with a live speed trail, per-word review of every mistake, and your personal best kept in the browser.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 106 · Typing Speed</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="ts" aria-label="Typing speed test">
+        <div class="hud">
+          <div class="hud__cell">
+            <span class="hud__k">WPM</span>
+            <span class="hud__v" id="wpm">0</span>
+          </div>
+          <div class="hud__cell">
+            <span class="hud__k">Accuracy</span>
+            <span class="hud__v" id="acc">100%</span>
+          </div>
+          <div class="hud__cell">
+            <span class="hud__k" id="clockK">Time</span>
+            <span class="hud__v" id="clock">60</span>
+          </div>
+          <div class="hud__cell">
+            <span class="hud__k">Best</span>
+            <span class="hud__v" id="best">—</span>
+          </div>
+        </div>
+
+        <canvas id="trail" class="trail" aria-hidden="true"></canvas>
+
+        <div class="typebox" id="typebox" tabindex="0" role="textbox" aria-label="Typing area — start typing to begin">
+          <div class="words" id="words"></div>
+          <div class="caretHint" id="caretHint">Click here, then just start typing</div>
+        </div>
+        <!-- Real input, visually hidden: this is what actually receives keys, so
+             mobile keyboards open and IME/autocorrect behave normally. -->
+        <input id="sink" class="sink" autocomplete="off" autocorrect="off" autocapitalize="off"
+               spellcheck="false" aria-label="Type here" />
+
+        <div class="controls">
+          <div class="seg" role="group" aria-label="Test length">
+            <button type="button" class="seg__b is-on" data-secs="30">30s</button>
+            <button type="button" class="seg__b" data-secs="60">60s</button>
+            <button type="button" class="seg__b" data-secs="120">2m</button>
+          </div>
+          <button type="button" class="btn" id="restart">Restart</button>
+        </div>
+
+        <div class="result" id="result" hidden>
+          <p class="result__eyebrow" id="resultEyebrow">Time</p>
+          <h2 class="result__big"><span id="rWpm">0</span> <small>wpm</small></h2>
+          <p class="result__line" id="resultLine"></p>
+          <div class="result__grid" id="resultGrid"></div>
+          <div class="result__actions">
+            <button type="button" class="btn btn--primary" id="againBtn">Go again</button>
+            <button type="button" class="btn" id="shareBtn">Share result</button>
+          </div>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="../../assets/tickets.js?v=18" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

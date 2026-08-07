@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Moon Phase Tonight — One Page Toys</title>
+    <meta name="description" content="See tonight's moon drawn as it actually looks, with the real maria and craters. Drag to scrub through the days, check the moon on any date, and count down to the next full moon. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/moon-phase/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f6f8fb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Moon Phase Tonight — One Page Toys" />
+    <meta property="og:description" content="Tonight's moon, drawn with the real maria and craters. Drag to scrub the days and count down to the next full moon." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/moon-phase/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/moon-phase.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Moon Phase Tonight — One Page Toys" />
+    <meta name="twitter:description" content="Tonight's moon with the real maria and craters, plus a countdown to the next full moon." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/moon-phase.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Moon Phase Tonight",
+        "url": "https://onepagetoys.com/tools/moon-phase/",
+        "description": "A moon phase viewer that draws the moon as it actually appears tonight, with the real lunar maria and rayed craters, a draggable date scrubber, illumination and moon age readouts, and countdowns to the next full and new moon.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 104 · Moon Phase</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="mp" aria-label="Moon phase">
+        <p class="eyebrow" id="eyebrow">Tonight's moon</p>
+        <h1 class="headline" id="phaseName">—</h1>
+
+        <div class="sky" id="sky">
+          <canvas id="moon" class="sky__moon" aria-label="A drawing of the moon at the selected phase" role="img"></canvas>
+          <p class="sky__hint" id="skyHint">Drag across the moon to travel through the days</p>
+        </div>
+
+        <div class="stats" role="group" aria-label="Moon details">
+          <div class="stat">
+            <span class="stat__k">Illuminated</span>
+            <span class="stat__v" id="statLit">—</span>
+          </div>
+          <div class="stat">
+            <span class="stat__k">Moon age</span>
+            <span class="stat__v" id="statAge">—</span>
+          </div>
+          <div class="stat">
+            <span class="stat__k">Distance</span>
+            <span class="stat__v" id="statDist">—</span>
+          </div>
+        </div>
+
+        <div class="scrub">
+          <label class="scrub__lab" for="dayRange" id="dateLabel">Tonight</label>
+          <input type="range" id="dayRange" min="-182" max="182" step="0.25" value="0"
+                 aria-label="Days from today" />
+          <div class="scrub__ends" aria-hidden="true"><span>6 months back</span><span>6 months on</span></div>
+        </div>
+
+        <div class="next">
+          <div class="next__card">
+            <span class="next__k">Next full moon</span>
+            <span class="next__v" id="nextFull">—</span>
+            <span class="next__sub" id="nextFullName"></span>
+          </div>
+          <div class="next__card">
+            <span class="next__k">Next new moon</span>
+            <span class="next__v" id="nextNew">—</span>
+            <span class="next__sub" id="nextNewSub"></span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="btn btn--primary" id="todayBtn">Back to tonight</button>
+          <label class="datepick">
+            <span class="datepick__k">Any date</span>
+            <input type="date" id="datePick" aria-label="Pick a date" />
+          </label>
+        </div>
+      </section>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="../../assets/tickets.js?v=18" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

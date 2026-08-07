@@ -1,0 +1,185 @@
+/* Golden Hour — the whole day drawn as one colour ribbon.
+ * One Page Toys tool family, self-contained, theme-aware (light/dark). */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap");
+
+:root{
+  --font-display: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --ink: #1a2230;
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --surface-2: #eef2f8;
+  --muted: #6a7688;
+  --line: #e3e9f1;
+  --line-strong: #cdd6e3;
+  --accent: #e08a2e;
+  --accent-hover: #c8761c;
+  --accent-soft: rgba(224, 138, 46, 0.16);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+  --shadow: 0 2px 8px rgba(20, 32, 52, 0.06);
+  --shadow-md: 0 8px 22px rgba(20, 32, 52, 0.10);
+  --shadow-lg: 0 16px 40px rgba(20, 32, 52, 0.12);
+  --glass: rgba(255, 255, 255, 0.74);
+}
+:root[data-theme="dark"]{
+  --ink: #e7edf6;
+  --bg: #0e1420;
+  --surface: #172030;
+  --surface-2: #1f2a3c;
+  --muted: #93a1b6;
+  --line: #232f42;
+  --line-strong: #35435c;
+  --accent: #f0a94b;
+  --accent-hover: #f6bd6f;
+  --accent-soft: rgba(240, 169, 75, 0.18);
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 10px 30px -6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 18px 48px -10px rgba(0, 0, 0, 0.6);
+  --glass: rgba(23, 32, 48, 0.62);
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+html, body{ height: 100%; -webkit-tap-highlight-color: transparent; }
+body{
+  margin: 0; min-height: 100%;
+  display: flex; flex-direction: column;
+  font-family: var(--font-sans); color: var(--ink);
+  background: radial-gradient(64% 46% at 50% 0%, var(--accent-soft), transparent 70%), var(--bg);
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position: relative; z-index: 3;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  padding: 14px clamp(16px, 4vw, 30px);
+  padding-top: max(14px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.brand{ display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 0.86rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); text-decoration: none; }
+.brand__mark{ width: 1.1em; height: 1.1em; border: 1.5px solid var(--ink); border-radius: 6px; background: linear-gradient(90deg, var(--ink) 0 50%, var(--surface) 50% 100%); }
+.topbar__right{ display: inline-flex; align-items: center; gap: 12px; }
+.topbar__tag{ font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.iconbtn{ appearance: none; display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; font-size: 1rem; line-height: 1; border: 1.5px solid var(--line-strong); border-radius: var(--radius-pill); background: var(--surface); color: var(--ink); cursor: pointer; box-shadow: var(--shadow); transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease; }
+.iconbtn:hover{ transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--ink); }
+.iconbtn:focus-visible{ outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 5px var(--accent-soft); }
+.theme-toggle__sun, .theme-toggle__moon, .theme-toggle__auto{ display: none; }
+:root[data-theme-mode="system"] .theme-toggle__auto{ display: inline; }
+:root[data-theme-mode="light"] .theme-toggle__sun{ display: inline; }
+:root[data-theme-mode="dark"] .theme-toggle__moon{ display: inline; }
+
+/* ---------- Stage ---------- */
+.stage{
+  position: relative; z-index: 2; flex: 1 0 auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 22px;
+  padding: clamp(20px, 4vw, 40px) 18px clamp(48px, 6vw, 72px);
+  padding-bottom: max(clamp(48px, 6vw, 72px), env(safe-area-inset-bottom));
+}
+.gh{ width: 100%; max-width: 620px; text-align: center; }
+
+.eyebrow{ margin: 0 0 4px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.headline{
+  margin: 0 0 6px; font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(1.7rem, 7vw, 2.8rem); line-height: 1.03; letter-spacing: -0.02em; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.sub{ margin: 0 0 24px; font-size: 0.9rem; color: var(--muted); }
+
+/* ---------- Ribbon ---------- */
+.ribbon{
+  position: relative; width: 100%;
+  border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--line); box-shadow: var(--shadow-lg);
+}
+.ribbon__canvas{ display: block; width: 100%; height: 118px; }
+.ribbon__now{
+  position: absolute; top: 0; bottom: 0; width: 0;
+  border-left: 2px solid rgba(255,255,255,0.92);
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+.ribbon__now[hidden]{ display: none; }
+.ribbon__grip{ position: absolute; top: -5px; left: -5px; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,0.55); }
+.ribbon__lab{
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-display); font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em;
+  color: #16202f; background: rgba(255,255,255,0.92); padding: 2px 7px; border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+.ribbon__ticks{
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; justify-content: space-between; padding: 0 9px 5px;
+  font-family: var(--font-display); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.05em;
+  /* The 06:00 and 24:00 ticks land on the bright dawn/dusk bands, where a
+     single soft shadow is not enough to hold white text. A tight dark halo
+     plus a wider glow keeps them legible over any colour in the ribbon. */
+  color: rgba(255,255,255,0.86);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+  pointer-events: none;
+}
+
+/* ---------- Legend ---------- */
+.legend{ list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; }
+.legend li{ display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--muted); }
+.legend i{ width: 11px; height: 11px; border-radius: 3px; flex: 0 0 auto; }
+
+/* ---------- Times ---------- */
+/* min track has to hold "5:38 AM – 6:35 AM" on one line — the spans are the
+   widest values here, and they are nowrap so a narrow track overflows the card
+   rather than wrapping inside it */
+.times{ margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(164px, 1fr)); gap: 10px; }
+.tcard{
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 13px 8px; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.tcard--hero{ border-color: var(--accent); background: var(--accent-soft); }
+.tcard__k{ font-family: var(--font-display); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.tcard__v{ font-family: var(--font-display); font-size: clamp(0.86rem, 3vw, 1rem); font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tcard__sub{ font-size: 0.64rem; color: var(--muted); }
+
+/* ---------- Controls ---------- */
+.controls{ margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
+.place{
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 8px 0 16px; border: 1.5px solid var(--line-strong); border-radius: var(--radius-pill);
+  background: var(--surface); box-shadow: var(--shadow); cursor: pointer;
+}
+.place__k{ font-family: var(--font-display); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.place select{
+  appearance: none; -webkit-appearance: none; border: 0; background: transparent;
+  font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; color: var(--ink);
+  padding: 12px 10px 12px 0; cursor: pointer; outline: none; max-width: 46vw;
+}
+.place:focus-within{ border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.btn{
+  appearance: none; font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
+  padding: 12px 22px; border-radius: var(--radius-pill);
+  border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--muted);
+  cursor: pointer; box-shadow: var(--shadow);
+  transition: transform 160ms ease, box-shadow 160ms ease, color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.btn--primary{ background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn--primary:hover{ transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn:disabled{ opacity: 0.55; cursor: default; transform: none; }
+.btn:focus-visible{ outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 5px var(--accent-soft), var(--shadow); }
+
+.note{ margin: 14px 0 0; font-size: 0.72rem; color: var(--muted); min-height: 1em; }
+
+.backlink{ font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); text-decoration: none; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
+.backlink:hover{ color: var(--ink); border-bottom-color: var(--accent); }
+
+@media (max-width: 430px){
+  .ribbon__canvas{ height: 96px; }
+  .place select{ max-width: 40vw; }
+}
+@media (prefers-reduced-motion: reduce){ .btn, .iconbtn{ transition: none; } }

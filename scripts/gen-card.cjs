@@ -10,9 +10,21 @@
  * Usage (dev server must be running: python3 -m http.server 3000):
  *   node scripts/gen-card.cjs <slug> [--at 6000] [--size 1080] [--start "Begin the night"]
  *                                    [--out assets/cards/<slug>.png] [--probe]
+ *                                    [--dir tools] [--el ".sky"] [--show ".hud"]
  *
  *   --probe   capture a strip of candidate frames instead of one image, so you
  *             can eyeball which moment to freeze, then re-run with --at
+ *   --dir     which family the page lives in: "toys" (default) or "tools"
+ *   --el      capture this element instead of a square viewport crop. The
+ *             tool family wants this — its pages are light chrome around one
+ *             signature panel, so a centred square crop catches mostly padding.
+ *             Cards are drawn with `center / cover`, so a non-square image is
+ *             fine (world-clock is 1080x434).
+ *   --show    comma-separated selectors to EXCLUDE from the hide list, for
+ *             pages where the HUD is the thing worth showing.
+ *   --eval    JS evaluated in the page before the wait, to pose the scene —
+ *             deal a hand, type some words, set a slider. Without this, posing
+ *             a toy means a throwaway script that nobody can re-run later.
  *
  * NOTE: capture at deviceScaleFactor 1. Playwright tears canvas screenshots at
  * higher scale factors — it produces torn/half-painted frames that look like a
@@ -44,14 +56,22 @@ const AT = parseInt(flag("at", "6000"), 10);
 const START = flag("start", "");
 const BASE = flag("base", "http://localhost:3000");
 const OUT = flag("out", path.join("assets", "cards", slug + ".png"));
+const DIR = flag("dir", "toys");
+const EL = flag("el", null);
+const EVAL = flag("eval", null);
+const SHOW = (flag("show", "") || "").split(",").map((s) => s.trim()).filter(Boolean);
 
 // Everything that must not appear in a thumbnail: the toy's own HUD/frame, plus
 // every shared badge injected by tip-jar.js / fullscreen.js / tickets.js /
 // more-games.js / share.js.
+const HIDE_SEL = [
+  ".hud", ".frame", ".abilities", ".hint", ".sound-btn", ".overlay",
+  ".opt-tipjar", ".opt-fs", ".opt-tickets", ".opt-share", ".mg-root",
+  '[class*="tipjar"]', '[class*="fullscreen"]', '[id*="Overlay"]',
+].filter((s) => !SHOW.includes(s));
+
 const HIDE = `
-  .hud, .frame, .abilities, .hint, .sound-btn, .overlay,
-  .opt-tipjar, .opt-fs, .opt-tickets, .opt-share, .mg-root,
-  [class*="tipjar"], [class*="fullscreen"], [id*="Overlay"] { display: none !important; opacity: 0 !important; }
+  ${HIDE_SEL.join(", ")} { display: none !important; opacity: 0 !important; }
   html, body { cursor: none !important; }
 `;
 
@@ -74,7 +94,7 @@ function clipRect() {
   const errs = [];
   page.on("pageerror", (e) => errs.push(e.message));
 
-  await page.goto(`${BASE}/toys/${slug}/`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE}/${DIR}/${slug}/`, { waitUntil: "networkidle" });
   await page.waitForTimeout(700);
 
   if (START) {
@@ -83,6 +103,11 @@ function clipRect() {
     } catch (e) {
       console.warn("start control not found:", START);
     }
+  }
+
+  if (EVAL) {
+    await page.evaluate(EVAL);
+    await page.waitForTimeout(250);
   }
 
   if (has("probe")) {
@@ -98,8 +123,15 @@ function clipRect() {
     await page.waitForTimeout(AT);
     await page.addStyleTag({ content: HIDE });
     await page.waitForTimeout(120);
-    await page.screenshot({ path: OUT, clip: clipRect() });
-    console.log("wrote", OUT, `(${SIZE}x${SIZE} from ${VW}x${VH}, frozen at ${AT}ms)`);
+    if (EL) {
+      const target = page.locator(EL).first();
+      if (!(await target.count())) throw new Error("--el matched nothing: " + EL);
+      await target.screenshot({ path: OUT });
+      console.log("wrote", OUT, `(element ${EL} from ${VW}x${VH}, frozen at ${AT}ms)`);
+    } else {
+      await page.screenshot({ path: OUT, clip: clipRect() });
+      console.log("wrote", OUT, `(${SIZE}x${SIZE} from ${VW}x${VH}, frozen at ${AT}ms)`);
+    }
   }
 
   if (errs.length) console.warn("page errors:", errs);
