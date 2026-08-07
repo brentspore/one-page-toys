@@ -596,6 +596,8 @@ function toolSearchFields(tool) {
   const name = String(tool.name || "").toLowerCase();
   const slug = String(tool.slug || "").toLowerCase();
   const desc = String(tool.shortDescription || "").toLowerCase();
+  const cat = String(tool.category || "").toLowerCase();
+  const catLabel = (cat && CATEGORY_LABELS[cat] ? String(CATEGORY_LABELS[cat]) : "").toLowerCase();
   tool.__sx = {
     name: name,
     nameWords: words(name),
@@ -604,6 +606,8 @@ function toolSearchFields(tool) {
     tagWords: words(tags.join(" ")),
     desc: desc,
     descWords: words(desc),
+    cat: cat,
+    catWords: words(cat + " " + catLabel),
     nl: nl,
     nlWords: new Set(words(nl))
   };
@@ -628,6 +632,14 @@ function scoreToken(f, tok) {
   else if (f.name.indexOf(tok) !== -1) s += 20;
   // slug
   if (hasWord(f.slugWords, tok)) s += 60;
+  /* category — the authoritative classification, so it outranks a mere tag.
+   * normalizeHaystack has always included category, so "simulation" matched
+   * every physics toy; without scoring it here they all tied at 0 and fell
+   * back to A–Z, which put three visual toys that merely CARRY the tag above
+   * every real simulation and left Newton's Cradle last of thirteen. Same
+   * class of bug as the name-vs-keywords one, in a field that was missed. */
+  if (f.cat === tok) s += 55;
+  else if (hasWord(f.catWords, tok)) s += 40;
   // tags — curated, so an exact tag is a strong intent signal
   if (hasWord(f.tags, tok)) s += 50;
   else if (hasWord(f.tagWords, tok)) s += 30;
