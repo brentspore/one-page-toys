@@ -39,9 +39,14 @@ GA4 + JSON-LD structured data in place.
 - **Toys** (`toys/<slug>/`) — full-bleed dark experiences: `index.html` + `styles.css` + `script.js`,
   frame corners (`No. NNN` / name / back-link), a hint line, full SEO meta + JSON-LD + GA + no-flash
   theme init + `assets/tip-jar.js` + `assets/fullscreen.js`. Copy any recent toy as a template.
-- **Tools** (`tools/<slug>/`) — the small utility family (Meeting Cost Meter, Time Is Money, Life in
-  Numbers, The Latte Factor): a shared light/dark Geist "tool" chrome (topbar + brand + theme toggle
-  + odometer hero + glassy console). Copy `tools/meeting-cost-meter/` and recolor.
+- **Tools** (`tools/<slug>/`) — the utility family, **13 as of 2026-08-06** (countdown, decision-wheel,
+  golden-hour, latte-factor, life-in-numbers, meeting-cost-meter, moon-phase, pomodoro, sleep-cycle,
+  time-is-money, tip-splitter, typing-speed, world-clock): a shared light/dark Geist "tool" chrome
+  (topbar + brand + theme toggle + hero + glassy console). Copy a RECENT one (`tools/world-clock/`
+  or `tools/moon-phase/`) rather than meeting-cost-meter, which is the oldest.
+  - **The family has a through-line worth keeping:** each is a calculator with an emotional payoff,
+    not a dry form — Meeting Cost Meter watches money burn, Time Is Money prices a purchase in hours
+    of your working life, Golden Hour tells you to go shoot. Judge new tool ideas against that.
 
 **Key shared files:**
 - `tools-registry.json` — drives the gallery; prepend new toys newest-first (slug/name/
