@@ -68,6 +68,7 @@
   var RULES = [
     // higher is better
     { test: "accretion_best", dir: "up", label: "Accretion score" },
+    { test: "bowling_best", dir: "up", label: "Bowling series" },
     { test: "typing_best", dir: "up", label: "Typing Speed wpm" },
     { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },

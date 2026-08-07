@@ -1,5 +1,36 @@
 [
   {
+    "slug": "bowling",
+    "name": "Bowling",
+    "shortDescription": "A full ten-frame game on a late-night lane, in real 3D. Pull back to load power, slide across to pick your line, and the flick as you let go sets the ball's spin — the front of the lane is oiled so the ball skids, then it grips on the dry back end and hooks into the pocket. Ten pins are real rigid bodies, so most of the scatter comes from pins knocking into each other. Strikes, spares and tenth-frame bonus balls all score properly.",
+    "category": "game",
+    "tags": [
+      "bowling",
+      "ten-pin",
+      "strike",
+      "spare",
+      "sports",
+      "3d",
+      "webgl",
+      "physics",
+      "rigid-body",
+      "hook",
+      "pins",
+      "alley",
+      "score-chase",
+      "drag",
+      "arcade",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/bowling/",
+    "related": [
+      "skee-ball",
+      "mini-golf",
+      "pool"
+    ]
+  },
+  {
     "slug": "typing-speed",
     "name": "Typing Speed",
     "shortDescription": "How fast do you actually type? A clean timed test over 30 seconds, a minute or two minutes: words per minute and accuracy update live, a trail draws your speed across the whole run, and the finish tells you which keys were costing you time. Your best is kept on your own device.",

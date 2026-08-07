@@ -65,7 +65,7 @@ const SHOW = (flag("show", "") || "").split(",").map((s) => s.trim()).filter(Boo
 // every shared badge injected by tip-jar.js / fullscreen.js / tickets.js /
 // more-games.js / share.js.
 const HIDE_SEL = [
-  ".hud", ".frame", ".abilities", ".hint", ".sound-btn", ".overlay",
+  ".hud", ".frame", ".abilities", ".hint", ".sound-btn", ".overlay", ".sheet", ".callout",
   ".opt-tipjar", ".opt-fs", ".opt-tickets", ".opt-share", ".mg-root",
   '[class*="tipjar"]', '[class*="fullscreen"]', '[id*="Overlay"]',
 ].filter((s) => !SHOW.includes(s));

@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "bowling":
+    "bowling ten pin tenpin 10 pin bowling game bowling alley bowl a game lane gutter gutter ball strike spare turkey split pocket head pin pin deck pin action rack of pins knock down the pins score a strike bowling score sheet ten frames frame scoring open frame hook the ball hook curve the ball spin side roll release the ball oil pattern lane oil dry back end skid and grip approach foul line arrows house ball sixteen pound ball perfect game 300 game league night candlepin duckpin wii bowling arcade bowling sports game 3d bowling physics bowling knock em down satisfying crash",
   "typing-speed":
     "typing speed typing test typing speed test wpm words per minute how fast do i type how fast can you type keyboard test key speed touch typing type racer typeracer monkeytype 10fastfingers keybr typing practice typing drill accuracy percent characters per minute cpm net wpm gross wpm one minute typing test 60 second typing test 30 second typing test two minute test speed test measure typing improve typing learn to touch type home row qwerty keystrokes error rate mistakes personal best score chase office skill data entry transcription words test utility tool",
   "golden-hour":
