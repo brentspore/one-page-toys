@@ -561,6 +561,107 @@ function toolMatchesSearch(tool, tokens) {
   });
 }
 
+/* ---- relevance scoring ---------------------------------------------------
+ *
+ * Matching above decides IF a toy shows up; this decides in what ORDER. They
+ * are deliberately separate: the flattened haystack gives good recall (a
+ * 35-query benchmark found the right toy for every one), but it throws away
+ * WHERE the hit landed, and results were then sorted alphabetically. At 106
+ * toys that fails in a specific, repeatable way — the toy actually named for
+ * the query loses to whatever matched incidentally and sorts earlier:
+ *
+ *   "tip"       -> Alpenglow first (substring inside "mul-TIP-lier"),
+ *                  Tip Splitter LAST of four
+ *   "solitaire" -> Minesweeper first (the word is a genuine comparable in its
+ *                  keyword blob), Solitaire second
+ *   "moon"      -> Floating Lanterns first ("under a full moon" in its copy)
+ *
+ * So: score by WHICH FIELD matched and whether it matched a whole word. Field
+ * weights are wide apart on purpose — a name hit must beat any number of
+ * keyword-blob hits, or the same failure comes back.
+ */
+function toolSearchFields(tool) {
+  if (tool.__sx) return tool.__sx;
+  const words = function (s) {
+    return String(s || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  };
+  const tags = (Array.isArray(tool.tags) ? tool.tags : []).map(function (t) {
+    return String(t).toLowerCase();
+  });
+  const nl = tags
+    .map(function (t) { return TYPE_NL_PHRASES[t] || ""; })
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  const name = String(tool.name || "").toLowerCase();
+  const slug = String(tool.slug || "").toLowerCase();
+  const desc = String(tool.shortDescription || "").toLowerCase();
+  tool.__sx = {
+    name: name,
+    nameWords: words(name),
+    slugWords: words(slug),
+    tags: tags,
+    tagWords: words(tags.join(" ")),
+    desc: desc,
+    descWords: words(desc),
+    nl: nl,
+    nlWords: new Set(words(nl))
+  };
+  return tool.__sx;
+}
+
+function hasWord(list, tok) {
+  for (let i = 0; i < list.length; i++) if (list[i] === tok) return true;
+  return false;
+}
+function hasPrefix(list, tok) {
+  for (let i = 0; i < list.length; i++) if (list[i].indexOf(tok) === 0) return true;
+  return false;
+}
+
+function scoreToken(f, tok) {
+  let s = 0;
+  // name — by far the strongest signal
+  if (f.name === tok) s += 300;
+  else if (hasWord(f.nameWords, tok)) s += 120;
+  else if (hasPrefix(f.nameWords, tok)) s += 70;
+  else if (f.name.indexOf(tok) !== -1) s += 20;
+  // slug
+  if (hasWord(f.slugWords, tok)) s += 60;
+  // tags — curated, so an exact tag is a strong intent signal
+  if (hasWord(f.tags, tok)) s += 50;
+  else if (hasWord(f.tagWords, tok)) s += 30;
+  else if (hasPrefix(f.tagWords, tok)) s += 15;
+  // description
+  if (hasWord(f.descWords, tok)) s += 20;
+  else if (hasPrefix(f.descWords, tok)) s += 8;
+  // natural-language keyword blob — real signal, but the weakest
+  if (f.nlWords.has(tok)) s += 10;
+  else if (f.nl.indexOf(tok) !== -1) s += 1;   // bare substring: recall only
+  return s;
+}
+
+function scoreTool(tool, tokens, phrase) {
+  if (!tokens.length) return 0;
+  const f = toolSearchFields(tool);
+  let s = 0;
+  for (let i = 0; i < tokens.length; i++) s += scoreToken(f, tokens[i]);
+  // whole-phrase bonuses, so "mini golf" beats a toy that merely has both words
+  if (phrase && tokens.length > 1) {
+    if (f.name === phrase) s += 400;
+    else if (f.name.indexOf(phrase) !== -1) s += 180;
+    if (f.desc.indexOf(phrase) !== -1) s += 40;
+  }
+  // nudge shorter names up: for "pool", "Pool" should beat "Coin Pusher Pool Hall"
+  if (f.nameWords.length) s += Math.max(0, 6 - f.nameWords.length);
+  return s;
+}
+
+function currentSearchPhrase() {
+  const el = document.getElementById("toolsSearch");
+  return ((el && el.value) || "").trim().toLowerCase().replace(/\s+/g, " ");
+}
+
 function toolMatchesTag(tool) {
   if (!activeTag) return true;
   const tags = Array.isArray(tool.tags) ? tool.tags : [];
@@ -595,29 +696,68 @@ function getSearchTokens() {
   });
 }
 
+/* Set when every token together matched nothing and we loosened to ANY token,
+ * so the meta line can say so rather than quietly showing looser results. */
+let searchFellBack = false;
+
 function getFilteredTools() {
   const tokens = getSearchTokens();
-  return allTools.filter(function (tool) {
-    return (
-      toolMatchesCategory(tool) &&
-      toolMatchesTag(tool) &&
-      toolMatchesSearch(tool, tokens)
-    );
+  const base = allTools.filter(function (tool) {
+    return toolMatchesCategory(tool) && toolMatchesTag(tool);
   });
+  searchFellBack = false;
+  if (!tokens.length) return base;
+
+  const strict = base.filter(function (tool) {
+    return toolMatchesSearch(tool, tokens);
+  });
+  if (strict.length || tokens.length < 2) return strict;
+
+  // All-tokens found nothing. An empty page is the worst possible answer to a
+  // long natural query ("relaxing game with water"), so fall back to ANY token
+  // and let relevance float the best ones up.
+  const loose = base.filter(function (tool) {
+    const hay = normalizeHaystack(tool);
+    return tokens.some(function (tok) {
+      return tokenMatchesHaystack(tok, hay);
+    });
+  });
+  if (loose.length) searchFellBack = true;
+  return loose;
 }
 
 /** Sort modes offered by the All Toys control. */
-const SORT_MODES = ["name", "category", "newest", "oldest"];
+const SORT_MODES = ["relevance", "name", "category", "newest", "oldest"];
 
 function currentSortMode() {
   const el = document.getElementById("toolsSort");
   const v = el ? String(el.value || "") : "";
-  return SORT_MODES.indexOf(v) === -1 ? "name" : v;
+  return SORT_MODES.indexOf(v) === -1 ? "relevance" : v;
 }
 
 function sortToolsForDisplay(tools) {
   const sortMode = currentSortMode();
   const slice = tools.slice();
+  /* Best match. With no query every score is 0, so this collapses to A–Z —
+   * i.e. the browsing experience is byte-for-byte what it was before. */
+  if (sortMode === "relevance") {
+    const tokens = getSearchTokens();
+    const phrase = currentSearchPhrase();
+    if (!tokens.length) {
+      slice.sort(function (a, b) {
+        return String(a.name || "").localeCompare(String(b.name || ""));
+      });
+      return slice;
+    }
+    const scored = slice.map(function (t, i) {
+      return { t: t, s: scoreTool(t, tokens, phrase), i: i };
+    });
+    scored.sort(function (a, b) {
+      if (b.s !== a.s) return b.s - a.s;
+      return String(a.t.name || "").localeCompare(String(b.t.name || ""));
+    });
+    return scored.map(function (x) { return x.t; });
+  }
   // __ord is the registry index, stamped at load. The registry is maintained
   // newest-first, so a low index means a recent toy.
   if (sortMode === "newest" || sortMode === "oldest") {
@@ -702,7 +842,7 @@ function syncURL() {
   if (activeTag) params.set("tag", activeTag);
   if (activeCategory && activeCategory !== forcedCategory()) params.set("cat", activeCategory);
   const sortMode = currentSortMode();
-  if (sortMode !== "name") params.set("sort", sortMode);
+  if (sortMode !== "relevance") params.set("sort", sortMode);
   const qs = params.toString();
   const path = location.pathname;
   const hash = location.hash || "";
@@ -841,10 +981,14 @@ function updateMeta(filteredCount, total) {
     return;
   }
   if (filtered) {
-    meta.textContent =
+    const base =
       filteredCount === total
         ? "Showing all " + total
         : "Showing " + filteredCount + " of " + total;
+    // Say when the query was loosened, so looser results don't read as a bug.
+    meta.textContent = searchFellBack
+      ? base + " — no toy matches every word, so these match some of it"
+      : base;
   } else {
     meta.textContent = total === 1 ? "1 toy" : total + " toys";
   }
@@ -1142,7 +1286,7 @@ function wireSearchAndFilters() {
       activeTag = "";
       activeCategory = "";
       const sortEl = document.getElementById("toolsSort");
-      if (sortEl) sortEl.value = "name";
+      if (sortEl) sortEl.value = "relevance";
       renderTagChips();
       renderCategoryChips();
       applyFilters();
@@ -1200,7 +1344,7 @@ async function loadRegistryAndRender() {
       activeCategory = urlState.cat || forcedCategory();
       const sortEl = document.getElementById("toolsSort");
       if (sortEl) {
-        sortEl.value = SORT_MODES.indexOf(urlState.sort) === -1 ? "name" : urlState.sort;
+        sortEl.value = SORT_MODES.indexOf(urlState.sort) === -1 ? "relevance" : urlState.sort;
       }
     }
     validateActiveTag();
