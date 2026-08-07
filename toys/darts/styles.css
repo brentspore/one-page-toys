@@ -93,6 +93,8 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   justify-content: center;
   font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+/* the display above outranks the UA's [hidden]{display:none} */
+.hud[hidden] { display: none; }
 .hud__cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .hud__k { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(246, 238, 228, 0.44); }
 .hud__cell span:last-child { font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; text-shadow: 0 0 16px rgba(240, 179, 84, 0.28); }

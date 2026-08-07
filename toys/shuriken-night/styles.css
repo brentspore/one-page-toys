@@ -229,6 +229,8 @@ body:not(.is-menu) .frame__corner--tr { opacity: 0; }
   display: flex;
   gap: 10px;
 }
+/* the display above outranks the UA's [hidden]{display:none} */
+.abilities[hidden] { display: none; }
 .ab {
   position: relative;
   width: 78px;

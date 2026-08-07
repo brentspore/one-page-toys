@@ -92,6 +92,8 @@ body.is-playing .frame__corner--tr { opacity: 0; transition: opacity 0.3s ease; 
   justify-content: center;
   font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+/* the display above outranks the UA's [hidden]{display:none} */
+.hud[hidden] { display: none; }
 .hud__cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .hud__cell[hidden] { display: none; }
 .hud__k { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(251, 243, 230, 0.5); }
