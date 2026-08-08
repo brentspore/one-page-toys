@@ -174,8 +174,8 @@
     [0.268, 0.0299], [0.298, 0.0332], [0.328, 0.0379], [0.352, 0.0349],
     [0.372, 0.0231], [0.381, 0.0000]
   ];
-  function pinMesh() {
-    var pos = [], nor = [], col = [], seg = 34;
+  function pinGeo(sub, seg) {
+    var pos = [], nor = [], col = [];
     function shade(h) {
       // two red bands near the neck, like a real pin
       var band = (h > 0.276 && h < 0.298) || (h > 0.308 && h < 0.330);
@@ -208,7 +208,7 @@
       return out;
     }
 
-    var prof = catmull(PIN_PROFILE, 5);
+    var prof = catmull(PIN_PROFILE, sub);
 
     // per-profile-point normal in the (radius, height) plane
     var pn = [];
@@ -256,7 +256,11 @@
         col.push(0.74, 0.72, 0.68);
       }
     }
-    return buildMesh(pos, nor, col);
+    return { pos: pos, nor: nor, col: col };
+  }
+  function pinMesh(sub, seg) {
+    var g = pinGeo(sub, seg);
+    return buildMesh(g.pos, g.nor, g.col);
   }
 
   /* The lane is a single upward face, not a box. A box has a bottom, and the
@@ -272,7 +276,7 @@
     return buildMesh(pos, nor, col);
   }
 
-  function boxMesh(sx, sy, sz, c) {
+  function boxGeo(sx, sy, sz, c) {
     var pos = [], nor = [], col = [];
     var faces = [
       [[ 1,0,0], [[1,-1,-1],[1,1,-1],[1,1,1],[1,-1,1]]],
@@ -289,6 +293,29 @@
         pos.push(p[0] * sx / 2, p[1] * sy / 2, p[2] * sz / 2);
         nor.push(n[0], n[1], n[2]);
         col.push(c[0], c[1], c[2]);
+      }
+    });
+    return { pos: pos, nor: nor, col: col };
+  }
+  function boxMesh(sx, sy, sz, c) {
+    var g = boxGeo(sx, sy, sz, c);
+    return buildMesh(g.pos, g.nor, g.col);
+  }
+
+  /* Bake several transformed copies into ONE buffer.
+   *
+   * Scenery is cheap in vertices and expensive in DRAW CALLS: forty background
+   * pins and thirty light fixtures as individual draws cost ~100 buffer rebinds
+   * a frame and took this from 66fps to 19. Baked, each rack or light row is a
+   * single draw. */
+  function bake(parts) {
+    var pos = [], nor = [], col = [];
+    parts.forEach(function (q) {
+      var g = q.geo, t = q.at;
+      for (var i = 0; i < g.pos.length; i += 3) {
+        pos.push(g.pos[i] + t[0], g.pos[i + 1] + t[1], g.pos[i + 2] + t[2]);
+        nor.push(g.nor[i], g.nor[i + 1], g.nor[i + 2]);
+        col.push(g.col[i], g.col[i + 1], g.col[i + 2]);
       }
     });
     return buildMesh(pos, nor, col);
@@ -311,13 +338,15 @@
     "precision highp float;",
     "varying vec3 vN, vW, vC;",
     "uniform vec3 uEye;",
-    "uniform int uMode;",       // 0 plain, 1 lane, 2 ball
+    "uniform int uMode;",       // 0 plain, 1 lane, 2 ball, 3 emissive
     "uniform float uAlpha;",
     "uniform float uOilEnd;",
+    "uniform float uDim;",      // scales the result — background copies fade back
     "",
     "float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }",
     "",
     "void main(){",
+    "  if (uMode == 3) { gl_FragColor = vec4(vC * uDim, uAlpha); return; }",
     "  vec3 N = normalize(vN);",
     "  vec3 V = normalize(uEye - vW);",
     // one raking key light down the lane, plus a cool fill so nothing goes flat black
@@ -344,7 +373,7 @@
     "",
     "  float d1 = max(dot(N, L1), 0.0);",
     "  float d2 = max(dot(N, L2), 0.0);",
-    "  vec3 diff = base * (0.16 + 0.92 * d1 + 0.20 * d2);",
+    "  vec3 diff = base * (0.24 + 0.90 * d1 + 0.26 * d2);",
     "  vec3 H1 = normalize(L1 + V);",
     "  float s1 = pow(max(dot(N, H1), 0.0), shine) * spec;",
     "  vec3 H2 = normalize(L2 + V);",
@@ -367,7 +396,7 @@
     // distance haze so the far end of the room falls away
     "  float fog = 1.0 - exp(-max(vW.z - 8.0, 0.0) * 0.020);",
     "  c = mix(c, vec3(0.045, 0.043, 0.062), clamp(fog, 0.0, 0.62));",
-    "  gl_FragColor = vec4(c, uAlpha);",
+    "  gl_FragColor = vec4(c * uDim, uAlpha);",
     "}"
   ].join("\n");
 
@@ -390,7 +419,7 @@
     col: gl.getAttribLocation(prog, "aCol")
   };
   var U = {};
-  ["uProj","uView","uModel","uNorm","uEye","uMode","uAlpha","uOilEnd"].forEach(function (n) {
+  ["uProj","uView","uModel","uNorm","uEye","uMode","uAlpha","uOilEnd","uDim"].forEach(function (n) {
     U[n] = gl.getUniformLocation(prog, n);
   });
 
@@ -406,18 +435,42 @@
     var s = Math.sin(u * Math.PI * 4 + v * 5.0) * 0.5 + 0.5;
     return [0.06 + 0.10 * s, 0.07 + 0.05 * s, 0.16 + 0.16 * s];
   });
-  var meshPin = pinMesh();
+  var meshPin = pinMesh(3, 22);
+  // one draw per background rack instead of ten
+  var pinLowGeo = pinGeo(1, 12);
+  var meshPinRack = bake(PIN_SPOTS.map(function (sp) {
+    return { geo: pinLowGeo, at: [sp[0], PIN_COM, LANE_LEN + sp[1]] };
+  }));
   var meshLane = planeMesh(LANE_HALF * 2, DECK_END + 1.3, [0.36, 0.23, 0.13]);
+  var meshLaneFlat = planeMesh(LANE_HALF * 2, DECK_END + 1.3, [0.30, 0.195, 0.115]);
   var LEN = DECK_END + 2.6;
   var meshGutterFloor = boxMesh(GUTTER_W, 0.02, LEN, [0.135, 0.140, 0.170]);
   var meshGutterWall  = boxMesh(0.030, 0.150, LEN, [0.095, 0.100, 0.125]);
   var meshLaneCap     = boxMesh(0.038, 0.030, LEN, [0.30, 0.215, 0.135]);
-  var meshWall = boxMesh(9.0, 3.4, 0.3, [0.055, 0.055, 0.075]);
+  var meshWall = boxMesh(13.0, 3.9, 0.3, [0.052, 0.050, 0.066]);
   var meshSide = boxMesh(0.3, 1.2, DECK_END + 2.6, [0.05, 0.05, 0.068]);
   var meshDeck = boxMesh(LANE_HALF * 2 + GUTTER_W * 2, 0.1, 1.2, [0.10, 0.10, 0.13]);
   var meshMarker = boxMesh(0.045, 0.006, 0.30, [0.55, 0.40, 0.20]);
+  /* Scenery. The room was a black void with one lane in it — these are what
+   * make it read as an alley: lanes either side receding into haze, the lit
+   * masking unit that sits above every pin deck, and a row of ceiling fixtures
+   * that finally give the lane's oil sheen something to be a reflection OF. */
+  var meshDivider   = boxMesh(0.10, 0.26, LEN, [0.085, 0.085, 0.105]);
+  var meshMask      = boxMesh(LANE_HALF * 2 + GUTTER_W * 2, 1.85, 0.12, [0.145, 0.118, 0.105]);
+  var meshMaskGlow  = boxMesh(LANE_HALF * 2 + GUTTER_W * 2 - 0.08, 0.10, 0.05, [0.78, 0.52, 0.28]);
+  var meshCeiling   = boxMesh(15.0, 0.20, LEN + 3.0, [0.030, 0.030, 0.042]);
+  var meshFixture   = boxMesh(1.35, 0.05, 0.16, [0.95, 0.82, 0.62]);
+  var meshFixHous   = boxMesh(1.50, 0.14, 0.26, [0.055, 0.055, 0.070]);
+  var meshBackGlow  = boxMesh(11.0, 0.75, 0.05, [0.19, 0.12, 0.085]);
+  // the whole receding row of ceiling fixtures, baked: housings and lamps
+  var fixHousGeo = boxGeo(1.50, 0.14, 0.26, [0.055, 0.055, 0.070]);
+  var fixLampGeo = boxGeo(1.35, 0.05, 0.16, [0.95, 0.82, 0.62]);
+  var lightZ = [];
+  for (var lzi = 1.5; lzi < DECK_END; lzi += 3.6) lightZ.push(lzi);
+  var meshLightHous = bake(lightZ.map(function (z) { return { geo: fixHousGeo, at: [0, 3.42, z] }; }));
+  var meshLightLamp = bake(lightZ.map(function (z) { return { geo: fixLampGeo, at: [0, 3.36, z] }; }));
 
-  function drawMesh(m, model, mode, alpha) {
+  function drawMesh(m, model, mode, alpha, dim) {
     gl.bindBuffer(gl.ARRAY_BUFFER, m.pos);
     gl.enableVertexAttribArray(A.pos); gl.vertexAttribPointer(A.pos, 3, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, m.nor);
@@ -428,6 +481,7 @@
     gl.uniformMatrix3fv(U.uNorm, false, new Float32Array(mNormal(model)));
     gl.uniform1i(U.uMode, mode || 0);
     gl.uniform1f(U.uAlpha, alpha === undefined ? 1 : alpha);
+    gl.uniform1f(U.uDim, dim === undefined ? 1 : dim);
     gl.drawArrays(gl.TRIANGLES, 0, m.n);
   }
 
@@ -1489,15 +1543,51 @@
 
     // room
     var zc = LEN / 2 - 1.3;
+
+    /* Neighbouring lanes. Two either side, dimmed with distance so the eye
+     * stays on the one you are bowling — this is what turns a lit strip in a
+     * void into somewhere. Their pins use the low-poly mesh: scenery is not
+     * worth twenty full-detail lathes a frame. */
+    var LANE_PITCH = 1.72;
+    for (var nb = -1; nb <= 1; nb++) {
+      if (nb === 0) continue;
+      var nx = nb * LANE_PITCH;
+      var dim = 0.5;
+      drawMesh(meshLaneFlat, mTranslate(nx, 0, (DECK_END - 1.3) / 2), 0, 1, dim);
+      for (var ng = -1; ng <= 1; ng += 2) {
+        drawMesh(meshLaneCap, mTranslate(nx + ng * (LANE_HALF + 0.019), -0.014, zc), 0, 1, dim);
+      }
+      drawMesh(meshDeck, mTranslate(nx, -0.062, DECK_END + 0.6), 0, 1, dim);
+      drawMesh(meshPinRack, mTranslate(nx, 0, 0), 0, 1, dim);
+      // each lane gets its own lit masking unit over the deck
+      drawMesh(meshMask, mTranslate(nx, 1.36, DECK_END + 0.32), 0, 1, dim);
+      drawMesh(meshMaskGlow, mTranslate(nx, 0.50, DECK_END + 0.24), 3, 1, dim * 0.9);
+    }
+
+    // this lane's gutters and dividers
     for (var g = -1; g <= 1; g += 2) {
       drawMesh(meshGutterFloor, mTranslate(g * (LANE_HALF + GUTTER_W / 2), -0.085, zc), 0);
       drawMesh(meshGutterWall, mTranslate(g * (LANE_HALF + GUTTER_W + 0.015), -0.010, zc), 0);
       drawMesh(meshLaneCap, mTranslate(g * (LANE_HALF + 0.019), -0.014, zc), 0);
+      drawMesh(meshDivider, mTranslate(g * (LANE_PITCH / 2), 0.07, zc), 0, 1, 0.8);
     }
-    drawMesh(meshSide, mTranslate(-(LANE_HALF + GUTTER_W + 0.15), 0.5, (DECK_END + 2.6) / 2 - 1.3), 0);
-    drawMesh(meshSide, mTranslate(LANE_HALF + GUTTER_W + 0.15, 0.5, (DECK_END + 2.6) / 2 - 1.3), 0);
+
     drawMesh(meshDeck, mTranslate(0, -0.062, DECK_END + 0.6), 0);
-    drawMesh(meshWall, mTranslate(0, 1.6, DECK_END + 1.4), 0);
+    drawMesh(meshMask, mTranslate(0, 1.36, DECK_END + 0.32), 0);
+    drawMesh(meshMaskGlow, mTranslate(0, 0.50, DECK_END + 0.24), 3);
+    drawMesh(meshWall, mTranslate(0, 1.95, DECK_END + 0.62), 0);
+    drawMesh(meshBackGlow, mTranslate(0, 2.58, DECK_END + 0.45), 3, 1, 0.7);
+    drawMesh(meshCeiling, mTranslate(0, 3.62, zc), 0);
+
+    /* Ceiling fixtures receding down the room. They are the reason the lane
+     * has a long wet highlight, and they give the empty upper half of the
+     * frame something to read. */
+    for (var lr = -1; lr <= 1; lr++) {
+      var lx = lr * LANE_PITCH * 2, ld = lr === 0 ? 1 : 0.26;
+      drawMesh(meshLightHous, mTranslate(lx, 0, 0), 0, 1, ld);
+      drawMesh(meshLightLamp, mTranslate(lx, 0, 0), 3, 1, ld * 0.95);
+    }
+
     for (var a = -3; a <= 3; a++) {
       if (a === 0) continue;
       drawMesh(meshMarker, mTranslate(a * 0.135, 0.0015, 4.57), 0);
