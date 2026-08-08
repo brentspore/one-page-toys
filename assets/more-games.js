@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Bowling",
+      "tagline": "Hook it into the pocket",
+      "url": "https://onepagetoys.com/toys/bowling/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307070b'/><path d='M6 32h3l4.4-20h-1.7z' fill='%2314161f'/><path d='M26 32h-3l-4.4-20h1.7z' fill='%2314161f'/><path d='M9 32h14l-4.3-20h-5.4z' fill='%238d5c30'/><g fill='%23f2efe8'><rect x='11.3' y='5.4' width='2.6' height='6.6' rx='1.3'/><rect x='14.7' y='4.4' width='2.6' height='7.6' rx='1.3'/><rect x='18.1' y='5.4' width='2.6' height='6.6' rx='1.3'/></g><g fill='%23c8392e'><rect x='11.3' y='7.1' width='2.6' height='1.1'/><rect x='14.7' y='6.1' width='2.6' height='1.1'/><rect x='18.1' y='7.1' width='2.6' height='1.1'/></g><circle cx='16' cy='25' r='3.6' fill='%231a1e3c'/><circle cx='14.9' cy='23.9' r='1.1' fill='%237986d8' opacity='0.55'/></svg>",
+      "initial": "B",
+      "slug": "bowling"
+    },
+    {
       "name": "Tossing Cards",
       "tagline": "Flick them in the bowl",
       "url": "https://onepagetoys.com/toys/tossing-cards/",
