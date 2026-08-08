@@ -932,6 +932,7 @@
     frames = [];
     for (var i = 0; i < 10; i++) frames.push({ rolls: [], score: null });
     frameIdx = 0; rollIdx = 0;
+    keyAim = 0; keySpin = 0;      // a new game starts from the middle
     rackPins(true);
     resetBall();
     phase = "aim";
@@ -1527,6 +1528,11 @@
     else if (e.key === "ArrowRight") { e.preventDefault(); keyAim = clamp(keyAim + 0.09, -1, 1); }
     else if (e.key === "ArrowUp") { e.preventDefault(); keySpin = clamp(keySpin + 1.5, -15, 15); }
     else if (e.key === "ArrowDown") { e.preventDefault(); keySpin = clamp(keySpin - 1.5, -15, 15); }
+    else if (e.key === "Home" || e.key === "0") {
+      // a way back to the middle: arrowing yourself into the gutter and having
+      // to count presses back out is a nasty little trap
+      e.preventDefault(); keyAim = 0; keySpin = 0;
+    }
     else return;
     aim.x = SX * keyAim * AIM_LIMIT;
     aim.spin = SX * keySpin;

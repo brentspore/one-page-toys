@@ -45,6 +45,16 @@
   var score = 0, combo = 0, best = 0;
   var running = false, over = false, toppling = false, toppleT = 0;
   var particles = [], perfectPops = [];
+  /* Reduced motion. Gate the DECORATIVE motion only — the swinging crane and
+   * the topple are the game itself, and switching those off would leave
+   * nothing to play. So: no sparkle bursts, and the starfield stops twinkling. */
+  var reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var onMQ = function (e) { reduceMotion = e.matches; };
+    if (mq.addEventListener) mq.addEventListener("change", onMQ);
+    else if (mq.addListener) mq.addListener(onMQ);
+  }
   var soundOn = true;
   var NIGHT_GLOW = 0;          // 0..1 interior-light bloom, ramps as the sky darkens
   var clouds = [];
@@ -216,6 +226,7 @@
   }
 
   function spawnSparkle(x, y, n) {
+    if (reduceMotion) return;
     for (var i = 0; i < n; i++) {
       var a = Math.random() * Math.PI * 2, sp = 60 + Math.random() * 180;
       particles.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40, life: 0, max: 0.5 + Math.random() * 0.4, hue: 48 });
@@ -560,7 +571,7 @@
       var sa = Math.min(1, (sk.f - 0.35) / 0.4);
       for (var i = 0; i < stars.length; i++) {
         var s = stars[i];
-        var tw = 0.6 + 0.4 * Math.sin(swayT * 2 + s.tw);
+        var tw = reduceMotion ? 0.85 : 0.6 + 0.4 * Math.sin(swayT * 2 + s.tw);
         ctx.globalAlpha = sa * tw;
         ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(s.x * W, s.y * H * 0.8, s.r, 0, Math.PI * 2); ctx.fill();
       }
