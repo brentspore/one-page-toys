@@ -451,6 +451,70 @@
   var meshSide = boxMesh(0.3, 1.2, DECK_END + 2.6, [0.05, 0.05, 0.068]);
   var meshDeck = boxMesh(LANE_HALF * 2 + GUTTER_W * 2, 0.1, 1.2, [0.10, 0.10, 0.13]);
   var meshMarker = boxMesh(0.045, 0.006, 0.30, [0.55, 0.40, 0.20]);
+
+  /* Aim guide — a ribbon rebuilt every frame while you are holding the ball.
+   *
+   * It is produced by running the SAME friction model the throw uses, not an
+   * approximation, so the line you are shown cannot disagree with the ball you
+   * get. Without it the hook is invisible until after you have committed. */
+  var guide = { pos: gl.createBuffer(), nor: gl.createBuffer(), col: gl.createBuffer(), n: 0 };
+
+  function predictPath(x0, power, spin) {
+    var p = [x0, BALL_R, 0], v = [0, 0, power];
+    var roll = power / BALL_R;
+    var w = [-roll * 0.94, spin * 0.18, -spin];
+    var dt = 1 / 120, pts = [[x0, 0]];
+    for (var i = 0; i < 1200; i++) {
+      var r = [0, -BALL_R, 0];
+      var vc = add(v, cross(w, r));
+      var vch = [vc[0], 0, vc[2]];
+      var sp = len3(vch);
+      if (sp > 1e-4) {
+        var mu = laneMu(p[2]);
+        var fdir = scale3(vch, -1 / sp);
+        var maxJ = sp / (1 / BALL_M + (BALL_R * BALL_R) / BALL_I);
+        var imp = scale3(fdir, Math.min(mu * BALL_M * G * dt, maxJ));
+        v = add(v, scale3(imp, 1 / BALL_M));
+        w = add(w, scale3(cross(r, imp), 1 / BALL_I));
+      }
+      v = scale3(v, 1 - 0.02 * dt);
+      w = scale3(w, 1 - 0.05 * dt);
+      p = add(p, scale3(v, dt));
+      if (i % 5 === 0) pts.push([p[0], p[2]]);
+      if (p[2] >= LANE_LEN || Math.abs(p[0]) > GUTTER_EDGE) break;
+    }
+    return pts;
+  }
+
+  function buildGuide(pts) {
+    var pos = [], nor = [], col = [];
+    var HW = 0.020;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var a = pts[i], b = pts[i + 1];
+      var dx = b[0] - a[0], dz = b[1] - a[1];
+      var l = Math.sqrt(dx * dx + dz * dz) || 1;
+      var nx = (-dz / l) * HW, nz = (dx / l) * HW;
+      var t = i / (pts.length - 1);
+      // fade down the lane so it guides without becoming the brightest thing
+      var f = (1 - t * 0.72) * (0.55 + 0.45 * Math.max(0, Math.sin(t * 22)));
+      var c = [0.95 * f, 0.72 * f, 0.34 * f];
+      // wound for a +y normal — the same trap that deleted the lane plane
+      // earlier: get this backwards and back-face culling silently eats it
+      var q = [
+        [a[0] - nx, a[1] - nz], [b[0] + nx, b[1] + nz], [b[0] - nx, b[1] - nz],
+        [a[0] - nx, a[1] - nz], [a[0] + nx, a[1] + nz], [b[0] + nx, b[1] + nz]
+      ];
+      for (var k = 0; k < 6; k++) {
+        pos.push(q[k][0], 0.006, q[k][1]);
+        nor.push(0, 1, 0);
+        col.push(c[0], c[1], c[2]);
+      }
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, guide.pos); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, guide.nor); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(nor), gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, guide.col); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(col), gl.DYNAMIC_DRAW);
+    guide.n = pos.length / 3;
+  }
   /* Scenery. The room was a black void with one lane in it — these are what
    * make it read as an alley: lanes either side receding into haze, the lit
    * masking unit that sits above every pin deck, and a row of ceiling fixtures
@@ -1358,6 +1422,14 @@
    * range drops straight into the channel. Stopping short of it is not enough:
    * a dead-straight ball riding the edge never drifts, so it could still never
    * gutter. You have to be able to throw a genuinely bad one. */
+  /* Screen-x to world-x sign.
+   *
+   * The camera looks along +z, so mLookAt's right vector is cross(up, z) = -x:
+   * world +x renders on the LEFT. Every aim input was therefore mirrored —
+   * press right, ball goes left; ArrowRight moves it left. That is almost
+   * certainly why steering never felt learnable. Confirmed by pressing at 82%
+   * of screen width and reading back where the ball actually rendered. */
+  var SX = -1;
   var GUTTER_EDGE = LANE_HALF - BALL_R * 0.55;      // 0.467
   var AIM_LIMIT = GUTTER_EDGE + 0.018;              // 0.485 — past the lip on purpose
 
@@ -1366,12 +1438,31 @@
     return { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height };
   }
 
+  /* Input model.
+   *
+   * Spin used to come from drag.vx — the lateral velocity at the INSTANT of
+   * release. That is invisible, unrepeatable and unlearnable: drag straight
+   * down, let go, and you get spin 0 every single time, which puts the ball
+   * dead centre, which is precisely the shot that splits the rack. There was
+   * no way to discover the hook at all.
+   *
+   * Now all three inputs are explicit and previewed:
+   *   press      -> where you stand (the ball snaps to your finger's line)
+   *   pull back  -> power
+   *   slide across during the pull -> how much hook
+   * and the predicted path is drawn on the lane while you hold, so you can see
+   * the curve before you commit. Re-press to move your line.
+   */
   canvas.addEventListener("pointerdown", function (e) {
     audio.init();
     if (phase === "over" || phase === "idle") return;
     if (phase !== "aim") return;
     var pt = pointer(e);
-    drag = { sx: pt.x, sy: pt.y, lx: pt.x, ly: pt.y, vx: 0, t: performance.now() };
+    aim.x = clamp(SX * (pt.x - 0.5) * 2 * AIM_LIMIT, -AIM_LIMIT, AIM_LIMIT);
+    aim.power = MIN_POWER;
+    aim.spin = 0;
+    ball.p[0] = aim.x;
+    drag = { sx: pt.x, sy: pt.y };
     canvas.setPointerCapture(e.pointerId);
     hideHint();
   });
@@ -1379,23 +1470,17 @@
   canvas.addEventListener("pointermove", function (e) {
     if (!drag || phase !== "aim") return;
     var pt = pointer(e);
-    var now = performance.now();
-    var dtms = Math.max(8, now - drag.t);
-    drag.vx = (pt.x - drag.lx) / dtms * 1000;   // px/s across, for the release flick
-    drag.lx = pt.x; drag.ly = pt.y; drag.t = now;
-
-    // back = power, across = line
     var pull = clamp(pt.y - drag.sy, 0, 0.42) / 0.42;
     aim.power = lerp(MIN_POWER, MAX_POWER, pull);
-    aim.x = clamp((pt.x - 0.5) * 2 * AIM_LIMIT, -AIM_LIMIT, AIM_LIMIT);
-    ball.p[0] = aim.x;
+    // sideways travel during the pull is the hook, and it is previewed live
+    aim.spin = clamp(SX * (pt.x - drag.sx) * 46, -15, 15);
   });
 
   function releaseDrag() {
     if (!drag || phase !== "aim") { drag = null; return; }
-    if (aim.power < MIN_POWER + 0.05) { drag = null; return; }   // a tap is not a throw
-    aim.spin = clamp(drag.vx * 2.4, -14, 14);
+    var wasPull = aim.power > MIN_POWER + 0.35;
     drag = null;
+    if (!wasPull) return;               // a tap just re-places your line
     throwBall();
   }
   canvas.addEventListener("pointerup", releaseDrag);
@@ -1429,19 +1514,22 @@
     } catch (e) {}
   }
 
-  var keyAim = 0;
+  var keyAim = 0, keySpin = 0;
   window.addEventListener("keydown", function (e) {
     if (e.key === " " || e.key === "Spacebar") {
       e.preventDefault();
       if (phase === "idle" || phase === "over") { ovBtn.click(); return; }
-      if (phase === "aim") { aim.power = 9.8; aim.spin = keyAim * -6.5; throwBall(); }
+      if (phase === "aim") { aim.power = 9.8; aim.spin = keySpin; throwBall(); }
       return;
     }
     if (phase !== "aim") return;
-    if (e.key === "ArrowLeft") { e.preventDefault(); keyAim = clamp(keyAim - 0.12, -1, 1); }
-    else if (e.key === "ArrowRight") { e.preventDefault(); keyAim = clamp(keyAim + 0.12, -1, 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); keyAim = clamp(keyAim - 0.09, -1, 1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); keyAim = clamp(keyAim + 0.09, -1, 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); keySpin = clamp(keySpin + 1.5, -15, 15); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); keySpin = clamp(keySpin - 1.5, -15, 15); }
     else return;
-    aim.x = keyAim * AIM_LIMIT;
+    aim.x = SX * keyAim * AIM_LIMIT;
+    aim.spin = SX * keySpin;
     ball.p[0] = aim.x;
     hideHint();
   });
@@ -1591,6 +1679,19 @@
     for (var a = -3; a <= 3; a++) {
       if (a === 0) continue;
       drawMesh(meshMarker, mTranslate(a * 0.135, 0.0015, 4.57), 0);
+    }
+
+    // aim guide, on top of the lane while you are lining up
+    if (phase === "aim") {
+      buildGuide(predictPath(aim.x, aim.power, aim.spin));
+      if (guide.n) {
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+        gl.depthMask(false);
+        drawMesh(guide, mIdent(), 3, 1);
+        gl.depthMask(true);
+        gl.disable(gl.BLEND);
+      }
     }
 
     // real geometry
