@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Glass Harp — One Page Toys</title>
+    <meta name="description" content="A rank of tuned wine glasses you play with a wet fingertip. Drag across the rims to make them sing, and drag a glass's water line to retune it. Fully synthesized, no samples. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/glass-harp/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#05070f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Glass Harp — One Page Toys" />
+    <meta property="og:description" content="Wine glasses that sing under your finger. Drag the rims to play, drag the water to tune." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/glass-harp/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/glass-harp.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Glass Harp — One Page Toys" />
+    <meta name="twitter:description" content="Drag across the rims to make them sing. Drag the water to retune." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/glass-harp.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Glass Harp",
+        "url": "https://onepagetoys.com/toys/glass-harp/",
+        "description": "A playable glass harp in the browser: a rank of tuned wine glasses that sing when you drag across their rims, exactly as they do under a wet fingertip. The tone only sounds while you are moving and blooms in slowly, because a rubbed glass is a stick-slip oscillator rather than a struck one. Drag a glass's side tab to pour, and the note moves with the water: more water gives a lower note. The tuning snaps to a major scale so every pour stays musical. Every sound is synthesized in the browser with Web Audio; there are no samples.",
+        "applicationCategory": "MultimediaApplication",
+        "genre": "Music",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas and Web Audio.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <p class="readout" id="readout" hidden></p>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+    <button type="button" class="reset-btn" id="resetBtn">Refill</button>
+
+    <div class="intro" id="hint">
+      <h1 class="intro__title">Glass Harp</h1>
+      <p class="intro__text">Drag across the glasses to make them sing. Drag a side tab to pour, and the note moves.</p>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 110</span>
+      <span class="frame__corner frame__corner--tr">Glass Harp</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <script src="../../assets/tickets.js?v=20" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=15" defer></script>
+  </body>
+</html>

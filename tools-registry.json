@@ -1,5 +1,124 @@
 [
   {
+    "slug": "chord-harp",
+    "name": "Chord Harp",
+    "shortDescription": "A chord zither: pick one of six chords, then sweep the whole field of strings. The bar damps every string outside that chord, so a careless strum is still in key and there is no wrong note to hit. Each string is a plucked-string model synthesized live, so a hard strum sounds brighter than a soft one and the high strings ring down faster than the low ones.",
+    "category": "audio",
+    "tags": [
+      "chord-harp",
+      "zither",
+      "strum",
+      "strings",
+      "chords",
+      "instrument",
+      "music",
+      "folk",
+      "relaxing",
+      "satisfying",
+      "synthesis",
+      "karplus-strong",
+      "plucked",
+      "beginner-friendly",
+      "audio"
+    ],
+    "status": "live",
+    "path": "toys/chord-harp/",
+    "related": [
+      "kalimba",
+      "tongue-drum",
+      "music-box"
+    ]
+  },
+  {
+    "slug": "glass-harp",
+    "name": "Glass Harp",
+    "shortDescription": "A rank of tuned wine glasses that sing when you drag across them, the way they do under a wet fingertip. The tone only sounds while you are moving and blooms in slowly, because a rubbed glass is a stick-slip oscillator rather than a struck one. Drag a glass's side tab to pour, and the note moves with the water. Tuning snaps to a major scale so every pour stays musical.",
+    "category": "audio",
+    "tags": [
+      "glass-harp",
+      "wine-glass",
+      "singing-glass",
+      "instrument",
+      "music",
+      "ambient",
+      "relaxing",
+      "meditative",
+      "synthesis",
+      "stick-slip",
+      "drag",
+      "tuning",
+      "water",
+      "mesmerizing",
+      "audio"
+    ],
+    "status": "live",
+    "path": "toys/glass-harp/",
+    "related": [
+      "singing-bowl",
+      "wind-chimes",
+      "kalimba"
+    ]
+  },
+  {
+    "slug": "twisty-cube",
+    "name": "Twisty Cube",
+    "shortDescription": "A twisty puzzle in real 3D, in 2x2, 3x3 and 4x4. Drag across a face to turn that slice; drag the background to orbit and see the far side. Every scramble is built from random quarter turns, so it is always solvable. The clock starts on your first turn and stops the instant the cube is solved, and your best time for each size is kept.",
+    "category": "game",
+    "tags": [
+      "twisty-cube",
+      "speed-cube",
+      "cube-puzzle",
+      "puzzle",
+      "3d",
+      "webgl",
+      "brain-teaser",
+      "logic",
+      "timer",
+      "score-chase",
+      "drag",
+      "orbit",
+      "classic",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/twisty-cube/",
+    "related": [
+      "slide-puzzle",
+      "jigsaw-puzzle",
+      "minesweeper"
+    ]
+  },
+  {
+    "slug": "claw-machine",
+    "name": "Claw Machine",
+    "shortDescription": "A prize crane in real 3D, stocked with miniatures of this site's other toys: an 8-ball, a d20, a bowling pin, a shooter marble, a gacha capsule, a star plush. Steer the claw over the pit, drop, and lift. Real cabinets rig the grip so nothing you do matters; here it is a function of how well you centred the grab and how heavy the prize is, so a clean catch holds and an edge grab slips. Mind the swing on the way to the chute. Ten drops a run.",
+    "category": "game",
+    "tags": [
+      "claw-machine",
+      "crane-game",
+      "arcade",
+      "prize",
+      "grabber",
+      "skill-crane",
+      "ufo-catcher",
+      "3d",
+      "webgl",
+      "physics",
+      "rigid-body",
+      "score-chase",
+      "drag",
+      "carnival",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/claw-machine/",
+    "related": [
+      "skee-ball",
+      "coin-pusher",
+      "bowling"
+    ]
+  },
+  {
     "slug": "bowling",
     "name": "Bowling",
     "shortDescription": "A full ten-frame game on a late-night lane, in real 3D. Pull back to load power, slide across to pick your line, and the flick as you let go sets the ball's spin — the front of the lane is oiled so the ball skids, then it grips on the dry back end and hooks into the pocket. Ten pins are real rigid bodies, so most of the scatter comes from pins knocking into each other. Strikes, spares and tenth-frame bonus balls all score properly.",

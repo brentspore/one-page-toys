@@ -66,6 +66,10 @@ const SHOW = (flag("show", "") || "").split(",").map((s) => s.trim()).filter(Boo
 // more-games.js / share.js.
 const HIDE_SEL = [
   ".hud", ".frame", ".abilities", ".hint", ".sound-btn", ".overlay", ".sheet", ".callout",
+  // transient HUD text that fires on a win/selection and otherwise sits at zero
+  // opacity — invisible in normal play, but a caption baked into a thumbnail
+  ".prize", ".readout", ".status", ".grip", ".intro", ".controls", ".drop-btn", ".bars",
+  ".size", ".scramble-btn", ".reset-btn",
   ".opt-tipjar", ".opt-fs", ".opt-tickets", ".opt-share", ".mg-root",
   '[class*="tipjar"]', '[class*="fullscreen"]', '[id*="Overlay"]',
 ].filter((s) => !SHOW.includes(s));

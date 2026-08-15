@@ -68,6 +68,9 @@
   var RULES = [
     // higher is better
     { test: "accretion_best", dir: "up", label: "Accretion score" },
+    { test: "claw_best", dir: "up", label: "Claw Machine haul" },
+    // one rule for all three cube sizes; a solve time is better when lower
+    { test: /^cube_best_[234]$/, dir: "down", label: "Twisty Cube solve" },
     { test: "bowling_best", dir: "up", label: "Bowling series" },
     { test: "typing_best", dir: "up", label: "Typing Speed wpm" },
     { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },

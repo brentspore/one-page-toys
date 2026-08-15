@@ -1,0 +1,183 @@
+/* Glass Harp — No. 110
+ * Cold glass, a pool of light, water. Self-contained. */
+
+:root {
+  --bg: #05070f;
+  --ink: #eaf4ff;
+  --glass: #8fd4f0;
+  --line: rgba(234, 244, 255, 0.14);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------------ frame */
+
+.frame { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
+.frame__corner {
+  position: absolute;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: rgba(234, 244, 255, 0.26);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); }
+/* the sound toggle owns the top-right corner, so the toy name stops short of it */
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: calc(max(16px, env(safe-area-inset-right)) + 44px); }
+.frame__corner--bl { bottom: max(14px, env(safe-area-inset-bottom)); left: max(16px, env(safe-area-inset-left)); pointer-events: auto; }
+.frame__corner--bl a { color: inherit; text-decoration: none; transition: color 0.18s ease; }
+.frame__corner--bl a:hover { color: var(--glass); }
+.frame__corner--bl a:focus-visible { outline: 2px solid var(--glass); outline-offset: 3px; }
+
+/* --------------------------------------------------------------- overlays */
+
+/* Not a modal. An instrument should be playable the instant it loads, so this
+   is a title that steps aside on the first touch rather than a gate. */
+.intro {
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+  text-align: center;
+  padding: 0 20px;
+  width: 100%;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.intro.is-gone { opacity: 0; transform: translateX(-50%) translateY(-14px); }
+.intro__title {
+  margin: 0 0 10px;
+  font-size: clamp(30px, 7vw, 52px);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-shadow: 0 0 48px rgba(143, 212, 240, 0.42);
+}
+.intro__text {
+  margin: 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 244, 255, 0.42);
+  line-height: 1.9;
+}
+
+.readout {
+  position: fixed;
+  z-index: 6;
+  margin: 0;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  background: rgba(8, 19, 36, 0.86);
+  border: 1px solid rgba(143, 212, 240, 0.34);
+  border-radius: 999px;
+  padding: 4px 10px;
+  text-shadow: 0 0 18px rgba(143, 212, 240, 0.6);
+}
+.readout[hidden] { display: none; }
+
+/* ---------------------------------------------------------------- buttons */
+
+.sound-btn {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 7;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 19, 36, 0.74);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: rgba(234, 244, 255, 0.8);
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.sound-btn:hover { color: var(--glass); border-color: var(--glass); }
+.sound-btn:focus-visible { outline: 2px solid var(--glass); outline-offset: 3px; }
+.sound-btn[aria-pressed="false"] { color: rgba(234, 244, 255, 0.28); }
+
+.reset-btn {
+  position: fixed;
+  top: calc(max(12px, env(safe-area-inset-top)) + 44px);
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 7;
+  appearance: none;
+  border: 1px solid var(--line);
+  background: rgba(8, 19, 36, 0.74);
+  color: rgba(234, 244, 255, 0.72);
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.reset-btn:hover { color: var(--ink); border-color: var(--glass); }
+.reset-btn:focus-visible { outline: 2px solid var(--glass); outline-offset: 3px; }
+
+/* -------------------------------------------------- shared-badge docking
+ * The rank runs the full width, so the default right-centre badges land on the
+ * last glass's bowl and swallow taps meant for it. Dock them bottom-right,
+ * below the table line where only reflection sits. */
+.opt-tipjar.opt-tipjar { top: auto; bottom: max(14px, env(safe-area-inset-bottom)); transform: none; }
+.opt-fs.opt-fs { top: auto; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 54px); transform: none; }
+.opt-tipjar.opt-tipjar.tj-nudge { animation: none; }
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 560px) {
+  .intro { top: 13%; }
+  .intro__text { font-size: 9.5px; letter-spacing: 0.1em; }
+  .frame__corner--tr { display: none; }
+}
+@media (max-height: 520px) {
+  .intro { top: 8%; }
+  .intro__title { font-size: clamp(22px, 6vh, 32px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { transition: opacity 0.2s ease; }
+  .sound-btn, .reset-btn { transition: none; }
+}

@@ -66,6 +66,14 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "claw-machine":
+    "claw machine crane game skill crane prize crane grabber claw grab a prize ufo catcher toy crane arcade claw claw game prize machine plush machine capsule machine gacha gashapon carnival midway arcade cabinet coin op drop the claw pick it up grip strength weak claw rigged claw win a prize prize chute stuffed animal grabber machine toy grabber crane operator boardwalk fairground amusement arcade 3d claw physics claw satisfying grab tension score chase ten drops",
+  "twisty-cube":
+    "twisty cube speed cube speedcube cube puzzle 3x3 cube 2x2 cube 4x4 cube pocket cube revenge cube magic cube puzzle cube twisty puzzle turn the face rotate a slice scramble solve the cube cube timer solve time personal best cube solving algorithm layer by layer cross f2l corners edges permutation orientation brain teaser logic puzzle spatial puzzle fidget puzzle desk puzzle 3d puzzle webgl cube orbit the cube colour sides six faces stickers classic toy retro puzzle",
+  "glass-harp":
+    "glass harp wine glass music singing glasses glass harmonica musical glasses rub the rim wet finger on a glass make a glass sing crystal glasses armonica verrophone tuned glasses water tuning pour water to tune pitch from water level ethereal tone pure tone sustained tone ambient relaxing meditative calming soothing haunting angelic shimmering resonance resonant frequency stick slip friction physically modelled synthesis no samples instrument music toy sound toy play a tune drag across the rims",
+  "chord-harp":
+    "chord harp chord zither zither lap harp strum harp strumming strum the strings chord bars pick a chord damped strings folk instrument beginner instrument anyone can play no wrong notes always in key plucked string karplus strong string synthesis guitar like harp like campfire chords c f g7 am dm e7 sing along accompaniment easy instrument music toy relaxing satisfying soothing arpeggio sweep the strings play by ear music maker sound toy",
   "bowling":
     "bowling ten pin tenpin 10 pin bowling game bowling alley bowl a game lane gutter gutter ball strike spare turkey split pocket head pin pin deck pin action rack of pins knock down the pins score a strike bowling score sheet ten frames frame scoring open frame hook the ball hook curve the ball spin side roll release the ball oil pattern lane oil dry back end skid and grip approach foul line arrows house ball sixteen pound ball perfect game 300 game league night candlepin duckpin wii bowling arcade bowling sports game 3d bowling physics bowling knock em down satisfying crash",
   "typing-speed":

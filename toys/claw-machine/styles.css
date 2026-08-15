@@ -1,0 +1,361 @@
+/* Claw Machine — No. 108
+ * A prize cabinet: violet steel, amber marquee light, glass you look through.
+ * Self-contained. */
+
+:root {
+  --bg: #050410;
+  --ink: #f6f1e8;
+  --neon: #ff5c8a;      /* marquee pink — the cabinet's brand colour */
+  --amber: #ffc056;     /* the warm light inside the box */
+  --steel: #8f97b5;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* The glass you are looking through. A single soft diagonal sheen plus a
+   vignette does more for "this is a cabinet" than any amount of geometry, and
+   costs nothing to draw. */
+.glass {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.015) 17%, rgba(255, 255, 255, 0) 34%),
+    radial-gradient(130% 100% at 50% 42%, rgba(255, 192, 86, 0.05) 0%, rgba(5, 4, 16, 0) 52%, rgba(3, 2, 10, 0.72) 100%);
+}
+
+/* ------------------------------------------------------------------ frame */
+
+.frame { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
+.frame__corner {
+  position: absolute;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 232, 0.26);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); }
+/* the sound toggle owns the top-right corner, so the toy name stops short of it */
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: calc(max(16px, env(safe-area-inset-right)) + 44px); }
+.frame__corner--bl { bottom: max(14px, env(safe-area-inset-bottom)); left: max(16px, env(safe-area-inset-left)); pointer-events: auto; }
+.frame__corner--bl a { color: inherit; text-decoration: none; transition: color 0.18s ease; }
+.frame__corner--bl a:hover { color: var(--neon); }
+.frame__corner--bl a:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+
+.hint {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  /* clears the DROP button, which owns the bottom centre */
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 142px);
+  margin: 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 232, 0.26);
+  pointer-events: none;
+  z-index: 6;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.4s ease;
+}
+
+/* -------------------------------------------------------------------- HUD */
+
+.hud {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+  justify-content: center;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+/* `display:flex` is an author rule and outranks the UA's `[hidden]{display:none}` —
+   without this the score row paints straight over the intro panel. */
+.hud[hidden] { display: none; }
+.hud__cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.hud__k { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(246, 241, 232, 0.38); }
+.hud__cell span:last-child { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.hud__score { color: var(--amber); text-shadow: 0 0 20px rgba(255, 192, 86, 0.42); }
+.hud__best { color: rgba(246, 241, 232, 0.46); font-size: 15px !important; }
+
+/* grip meter — only appears once something is actually in the jaws, because
+   until then there is nothing honest to report */
+.grip {
+  position: fixed;
+  top: calc(max(12px, env(safe-area-inset-top)) + 52px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+  width: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.grip[hidden] { display: none; }
+.grip__k {
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 232, 0.4);
+}
+.grip__track {
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(246, 241, 232, 0.12);
+  overflow: hidden;
+}
+.grip__fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff5c8a 0%, #ffc056 62%, #b6f36a 100%);
+  transition: width 0.1s linear;
+}
+
+/* the prize name, punched up as it hits the bin */
+.prize {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  pointer-events: none;
+  font-size: clamp(28px, 8vw, 54px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-shadow: 0 0 40px rgba(255, 92, 138, 0.7), 0 0 90px rgba(255, 192, 86, 0.45);
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+/* ------------------------------------------------------------ sound button */
+
+.sound-btn {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 7;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: rgba(18, 12, 34, 0.74);
+  border: 1px solid rgba(143, 151, 181, 0.34);
+  border-radius: 50%;
+  color: rgba(246, 241, 232, 0.8);
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.sound-btn:hover { color: var(--neon); border-color: var(--neon); }
+.sound-btn:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+.sound-btn[aria-pressed="false"] { color: rgba(246, 241, 232, 0.28); }
+
+/* ------------------------------------------------------------- drop button */
+
+.drop-btn {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 30px);
+  z-index: 7;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a0a18;
+  background:
+    radial-gradient(72% 72% at 38% 30%, #ffd0dd 0%, #ff5c8a 46%, #d92e5c 100%);
+  box-shadow:
+    0 12px 30px rgba(217, 46, 92, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -6px 14px rgba(120, 8, 40, 0.5);
+  transition: transform 0.1s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.drop-btn[hidden] { display: none; }
+.drop-btn:hover { filter: brightness(1.06); }
+.drop-btn:active { transform: translateX(-50%) translateY(4px); box-shadow: 0 5px 14px rgba(217, 46, 92, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.4); }
+.drop-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.drop-btn:disabled { filter: grayscale(0.6) brightness(0.7); cursor: default; }
+
+/* ---------------------------------------------------------------- overlay */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  /* semi-transparent on purpose: the claw drifts over a full pit behind this
+     panel, and that drifting cabinet is the pitch */
+  background: radial-gradient(120% 100% at 50% 44%, rgba(46, 16, 40, 0.36) 0%, rgba(4, 3, 12, 0.76) 76%);
+  -webkit-backdrop-filter: blur(1.5px);
+  backdrop-filter: blur(1.5px);
+  animation: ovIn 0.35s ease both;
+}
+.overlay[hidden] { display: none; }
+@keyframes ovIn { from { opacity: 0; } to { opacity: 1; } }
+
+.panel {
+  width: min(460px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 26px 26px 24px;
+  text-align: center;
+  background: linear-gradient(170deg, rgba(52, 28, 62, 0.88) 0%, rgba(8, 5, 18, 0.93) 100%);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 92, 138, 0.28);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 214, 200, 0.13);
+  color: var(--ink);
+}
+.panel__eyebrow {
+  margin: 0 0 8px;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--neon);
+}
+.panel__title {
+  margin: 0 0 12px;
+  font-size: clamp(32px, 7.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+  text-shadow: 0 0 44px rgba(255, 92, 138, 0.42);
+}
+.panel__text { margin: 0 0 20px; font-size: 14.5px; line-height: 1.6; color: rgba(246, 241, 232, 0.74); }
+.panel__text b { color: var(--ink); font-weight: 700; }
+.panel__keys {
+  margin: 14px 0 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 232, 0.34);
+  line-height: 1.9;
+}
+
+.haul {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: center;
+}
+.haul[hidden] { display: none; }
+.haul li {
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 11px;
+  border-radius: 999px;
+  color: rgba(246, 241, 232, 0.86);
+  background: rgba(255, 192, 86, 0.12);
+  border: 1px solid rgba(255, 192, 86, 0.3);
+}
+
+.play-btn {
+  display: inline-block;
+  padding: 13px 34px;
+  font-size: 14.5px;
+  font-weight: 800;
+  font-family: inherit;
+  color: #3a0a18;
+  background: linear-gradient(180deg, #ffd0dd 0%, #ff5c8a 56%, #d92e5c 100%);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(217, 46, 92, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.14s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.play-btn:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 14px 34px rgba(217, 46, 92, 0.58); }
+.play-btn:active { transform: translateY(1px); }
+.play-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* -------------------------------------------------- shared-badge docking
+ * The cabinet fills the viewport and the DROP button owns the bottom centre,
+ * so the shared badges dock bottom-right clear of both. */
+.opt-tipjar.opt-tipjar { top: auto; bottom: max(14px, env(safe-area-inset-bottom)); transform: none; }
+.opt-fs.opt-fs { top: auto; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 54px); transform: none; }
+.opt-tipjar.opt-tipjar.tj-nudge { animation: none; }
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 560px) {
+  .panel { padding: 22px 18px 20px; border-radius: 15px; }
+  .hud { gap: 18px; }
+  .hud__cell span:last-child { font-size: 17px; }
+  .drop-btn { width: 84px; height: 84px; font-size: 11px; }
+  .hint { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 128px); }
+  /* the score row runs the full width of a phone and collides with the toy
+     name, which is the least useful of the two */
+  .frame__corner--tr { display: none; }
+}
+@media (max-height: 560px) {
+  .drop-btn { width: 70px; height: 70px; font-size: 10px; bottom: calc(max(10px, env(safe-area-inset-bottom)) + 12px); }
+  .hint { display: none; }
+  .panel { padding: 16px 18px 16px; }
+  .panel__title { font-size: clamp(22px, 5vh, 30px); margin-bottom: 6px; }
+  .panel__text { font-size: 12.5px; margin-bottom: 12px; }
+  .panel__keys { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay { animation: none; }
+  .play-btn, .sound-btn, .drop-btn, .hint, .prize { transition: none; }
+}

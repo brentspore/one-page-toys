@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Chord Harp — One Page Toys</title>
+    <meta name="description" content="Pick a chord, then strum the whole field of strings. The bars damp everything outside the chord, so you cannot play a wrong note. Plucked strings synthesized in the browser. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/chord-harp/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0913" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Chord Harp — One Page Toys" />
+    <meta property="og:description" content="Pick a chord, sweep the strings. Everything outside the chord is damped, so every strum is in key." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/chord-harp/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/chord-harp.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Chord Harp — One Page Toys" />
+    <meta name="twitter:description" content="Hold a chord, sweep the strings, and you cannot play a wrong note." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/chord-harp.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Chord Harp",
+        "url": "https://onepagetoys.com/toys/chord-harp/",
+        "description": "A chord zither you can play in the browser. Choose one of six chords, then sweep your finger across a field of strings: the chord bar damps every string outside that chord, so a careless strum is still in key and there is no wrong note to hit. Each string is a plucked-string model synthesized in real time with Karplus-Strong, so a hard strum sounds brighter than a soft one and high strings ring down faster than low ones. Nothing is sampled.",
+        "applicationCategory": "MultimediaApplication",
+        "genre": "Music",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas and Web Audio.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="bars" id="bars" role="group" aria-label="Chord bars"></div>
+
+    <div class="intro" id="hint">
+      <h1 class="intro__title">Chord Harp</h1>
+      <p class="intro__text">Pick a chord, then sweep the strings. The rest are damped, so there is no wrong note.</p>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 111</span>
+      <span class="frame__corner frame__corner--tr">Chord Harp</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <script src="../../assets/tickets.js?v=20" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=15" defer></script>
+  </body>
+</html>

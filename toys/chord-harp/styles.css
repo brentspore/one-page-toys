@@ -1,0 +1,185 @@
+/* Chord Harp — No. 111
+ * Violet dusk, filaments of light. Self-contained. */
+
+:root {
+  --bg: #0a0913;
+  --ink: #ece8ff;
+  --violet: #a896ff;
+  --line: rgba(236, 232, 255, 0.14);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------------ frame */
+
+.frame { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
+.frame__corner {
+  position: absolute;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: rgba(236, 232, 255, 0.26);
+}
+.frame__corner--tl { top: max(14px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); }
+/* the sound toggle owns the top-right corner, so the toy name stops short of it */
+.frame__corner--tr { top: max(14px, env(safe-area-inset-top)); right: calc(max(16px, env(safe-area-inset-right)) + 44px); }
+.frame__corner--bl { bottom: max(14px, env(safe-area-inset-bottom)); left: max(16px, env(safe-area-inset-left)); pointer-events: auto; }
+.frame__corner--bl a { color: inherit; text-decoration: none; transition: color 0.18s ease; }
+.frame__corner--bl a:hover { color: var(--violet); }
+.frame__corner--bl a:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+
+/* ----------------------------------------------------------------- intro */
+
+/* A title that steps aside on first touch, not a gate — an instrument should
+   be playable the instant it loads. */
+.intro {
+  position: fixed;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+  text-align: center;
+  padding: 0 20px;
+  width: 100%;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.intro.is-gone { opacity: 0; transform: translateX(-50%) translateY(-14px); }
+.intro__title {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 6.4vw, 46px);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-shadow: 0 0 48px rgba(168, 150, 255, 0.5);
+}
+.intro__text {
+  margin: 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(236, 232, 255, 0.42);
+  line-height: 1.9;
+}
+
+/* ------------------------------------------------------------ sound button */
+
+.sound-btn {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 7;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: rgba(18, 16, 31, 0.74);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: rgba(236, 232, 255, 0.8);
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.sound-btn:hover { color: var(--violet); border-color: var(--violet); }
+.sound-btn:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+.sound-btn[aria-pressed="false"] { color: rgba(236, 232, 255, 0.28); }
+
+/* ------------------------------------------------------------- chord bars */
+
+.bars {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 16px);
+  z-index: 7;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 16px;
+  max-width: 100%;
+}
+
+.bar {
+  appearance: none;
+  min-width: 58px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(38, 34, 62, 0.92) 0%, rgba(20, 18, 34, 0.92) 100%);
+  color: rgba(236, 232, 255, 0.66);
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition: color 0.16s ease, transform 0.1s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.bar:hover { color: var(--ink); border-color: rgba(168, 150, 255, 0.5); }
+.bar:active { transform: translateY(2px); }
+.bar:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+.bar.is-on {
+  color: #150f2e;
+  background: linear-gradient(180deg, #d8ccff 0%, #a896ff 60%, #7d68e0 100%);
+  border-color: rgba(216, 204, 255, 0.7);
+  box-shadow: 0 8px 22px rgba(125, 104, 224, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* -------------------------------------------------- shared-badge docking
+ * The string field spans the full width and the chord bars own the bottom
+ * strip, so the badges stay right-edge but ride above the bars. */
+.opt-tipjar.opt-tipjar { top: auto; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 84px); transform: none; }
+.opt-fs.opt-fs { top: auto; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 138px); transform: none; }
+.opt-tipjar.opt-tipjar.tj-nudge { animation: none; }
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 560px) {
+  .intro { top: 4%; }
+  .intro__text { font-size: 9.5px; letter-spacing: 0.1em; }
+  .frame__corner--tr { display: none; }
+  .bar { min-width: 50px; padding: 11px 12px; font-size: 12px; }
+}
+@media (max-height: 520px) {
+  .intro { top: 2%; }
+  .intro__title { font-size: clamp(20px, 5.5vh, 30px); margin-bottom: 4px; }
+  .bar { padding: 8px 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { transition: opacity 0.2s ease; }
+  .sound-btn, .bar { transition: none; }
+}
