@@ -730,55 +730,125 @@
     return b;
   }
 
-  /* The speedcube click. Moulded ABS clicking against ABS is a dry, bright,
-   * very short event: a filtered noise transient plus two high inharmonic
-   * partials gone inside 60ms. Any sustain at all and it stops sounding like
-   * plastic and starts sounding like a woodblock. */
+  /* Modal percussion: noise driven through parallel resonant bandpasses tuned
+   * to the object's own modes, rather than oscillators summed at those
+   * frequencies. A pair of clean oscillators in a simple ratio is a CHORD, and
+   * that is what "computery" sounds like; a filter bank rings the way the
+   * object does — dense noisy attack, each mode decaying at its own rate, and
+   * never twice the same, because the excitation is noise.
+   *
+   * A high-Q bandpass rings for about Q/(pi*f) seconds, so Q comes from the
+   * decay each mode should have rather than being a magic number. */
+  function modalHitAt(t, opts) { opts.at = t; modalHit(opts); }
+  function modalHit(opts) {
+    if (!actx || muted) return;
+    var t = opts.at || actx.currentTime;
+    var dest = opts.dest || comp;
+
+    var ex = actx.createBufferSource();
+    ex.buffer = noiseBuf(0.05);
+    var hp = actx.createBiquadFilter();
+    hp.type = "highpass"; hp.frequency.value = opts.exHighpass || 200;
+    var exGain = actx.createGain();
+    var burst = opts.burst || 0.003;
+    exGain.gain.setValueAtTime(1.0, t);   // shape only — amp is applied per mode
+    exGain.gain.exponentialRampToValueAtTime(0.0001, t + burst);
+    ex.connect(hp); hp.connect(exGain);
+
+    var longest = 0;
+    for (var i = 0; i < opts.modes.length; i++) {
+      var m = opts.modes[i];
+      var f = opts.base * m[0];
+      if (f > 16000) continue;
+      var decay = m[2] * (0.85 + Math.random() * 0.3);
+      longest = Math.max(longest, decay);
+      var bp = actx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = f * (1 + (Math.random() - 0.5) * 0.05);
+      var Q = Math.max(1.2, Math.PI * f * decay);
+      bp.Q.value = Q;
+      /* Compensate the gain for Q. A bandpass is unity-gain at its centre for a
+       * SINE, but only passes a band of width f/Q out of broadband noise, so
+       * the tighter the resonance the quieter it gets — deriving Q from a short
+       * decay made the whole click inaudible (measured peak RMS 0.00001, with
+       * the modes landing at exactly the right frequencies). Output RMS from
+       * noise scales as 1/sqrt(Q), so put that back. */
+      var g = actx.createGain();
+      g.gain.setValueAtTime(m[1] * opts.amp * Math.sqrt(Q) * 6, t);
+      g.gain.exponentialRampToValueAtTime(0.0004, t + decay);
+      exGain.connect(bp); bp.connect(g); g.connect(dest);
+      if (opts.verb !== false && verb) g.connect(verb);
+    }
+    ex.start(t);
+    ex.stop(t + Math.min(2.5, longest + 0.1));
+  }
+
+  /* The turn click. Moulded ABS against ABS is dry, dense and gone in about
+   * 25ms, with a small low thunk from the cube's own mass shifting. Every
+   * click varies, because a real cube never clicks identically twice. */
   var lastClick = 0;
   function sndClick(gain) {
     if (!actx || muted) return;
     var t = actx.currentTime;
     if (t - lastClick < 0.012) return;
     lastClick = t;
-    var amp = 0.16 * (gain === undefined ? 1 : gain);
-    var n = actx.createBufferSource(); n.buffer = noiseBuf(0.05);
-    var nf = actx.createBiquadFilter(); nf.type = "bandpass";
-    nf.frequency.value = 2400 + Math.random() * 900; nf.Q.value = 1.1;
-    var ng = actx.createGain();
-    ng.gain.setValueAtTime(amp, t);
-    ng.gain.exponentialRampToValueAtTime(0.0006, t + 0.038);
-    n.connect(nf); nf.connect(ng); ng.connect(comp); ng.connect(verb);
-    n.start(t); n.stop(t + 0.06);
-    var f0 = 1500 + Math.random() * 420;
-    [1, 2.31].forEach(function (r, i) {
-      var o = actx.createOscillator(); o.type = "triangle"; o.frequency.value = f0 * r;
-      var g = actx.createGain();
-      g.gain.setValueAtTime(amp * 0.42 / (i + 1), t);
-      g.gain.exponentialRampToValueAtTime(0.0005, t + 0.05);
-      o.connect(g); g.connect(comp);
-      o.start(t); o.stop(t + 0.07);
+    var amp = 0.85 * (gain === undefined ? 1 : gain);
+    modalHit({
+      base: 880 * (0.86 + Math.random() * 0.28),
+      amp: amp,
+      burst: 0.0022,
+      exHighpass: 420,
+      modes: [[1, 0.9, 0.026], [2.71, 0.6, 0.016], [4.93, 0.32, 0.010], [7.4, 0.15, 0.007]]
+    });
+    // the mass of the cube arriving, felt more than heard
+    modalHit({
+      base: 132, amp: amp * 0.55, burst: 0.006, exHighpass: 50,
+      modes: [[1, 0.8, 0.045], [2.1, 0.25, 0.026]], verb: false
     });
   }
 
   function sndSolved() {
     if (!actx || muted) return;
-    var t = actx.currentTime;
-    // a bright open fifth stack, arriving quickly so it feels like a stopwatch
-    [0, 7, 12, 16, 19].forEach(function (semi, i) {
-      var f = 440 * Math.pow(2, semi / 12);
-      var st = t + i * 0.055;
-      [1, 2, 3].forEach(function (h, hi) {
-        var o = actx.createOscillator();
-        o.type = hi === 0 ? "triangle" : "sine";
-        o.frequency.value = f * h;
-        var g = actx.createGain();
-        g.gain.setValueAtTime(0.0001, st);
-        g.gain.exponentialRampToValueAtTime(0.10 / (hi + 1) / (i * 0.35 + 1), st + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.0004, st + 1.1);
-        o.connect(g); g.connect(comp); g.connect(verb);
-        o.start(st); o.stop(st + 1.2);
-      });
+    [0, 7, 12].forEach(function (semi, i) {
+      bellHit(523.25 * Math.pow(2, semi / 12), 0.18 / (i * 0.28 + 1), i * 105);
     });
+  }
+
+  /* Bells are ADDITIVE, deliberately, while contacts are modal.
+   *
+   * A noise burst through a bank of very narrow filters cannot drive a tail
+   * that rings for a second — measured, it came out five times quieter than a
+   * click. Long ringing tones are properly synthesized as partials with their
+   * own decays, and for a bell those partials are INHARMONIC (roughly
+   * 1 : 2 : 3.01 : 4.17 : 5.43, the stretch that makes a bell a bell). What
+   * made the first version sound like a synth arpeggio was harmonic ratios and
+   * no strike, so the strike transient below is the other half of the fix. */
+  var BELL_MODES = [[0.5, 0.30, 1.6], [1, 1.0, 1.2], [2.0, 0.55, 0.9],
+                    [3.01, 0.36, 0.62], [4.17, 0.2, 0.42], [5.43, 0.1, 0.28]];
+  function bellHit(base, amp, delayMs) {
+    if (!actx || muted) return;
+    var t = actx.currentTime + (delayMs || 0) / 1000;
+    // the clapper: a short filtered-noise contact, or it starts from nowhere
+    modalHitAt(t, {
+      base: base * 4.2, amp: amp * 0.5, burst: 0.002, exHighpass: 900,
+      modes: [[1, 0.8, 0.020], [1.9, 0.4, 0.012]]
+    });
+    for (var i = 0; i < BELL_MODES.length; i++) {
+      var m = BELL_MODES[i];
+      var f = base * m[0];
+      if (f > 14000) continue;
+      var o = actx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = f;
+      o.detune.value = (Math.random() - 0.5) * 8;
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(m[1] * amp, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0004, t + m[2]);
+      o.connect(g); g.connect(comp);
+      if (verb) g.connect(verb);
+      o.start(t); o.stop(t + m[2] + 0.05);
+    }
   }
 
   soundBtn.addEventListener("click", function () {

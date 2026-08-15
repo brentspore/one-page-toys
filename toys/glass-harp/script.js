@@ -202,11 +202,21 @@
   /* One glass = one continuously running voice, gated by a gain. Starting and
    * stopping oscillators per touch clicks and loses the ring-down; leaving them
    * running and riding the gain is both cheaper and closer to the physics. */
+  /* A rubbed glass is driven by stick-slip AT the mode frequency, so unlike a
+   * struck object its partials really are close to harmonic and the tone
+   * really is close to pure. The ratios below are right and are not the reason
+   * a first pass sounds synthetic.
+   *
+   * What made it sound like a computer was that NOTHING MOVED. A real finger
+   * varies pressure and speed continuously, so the loudness breathes, the
+   * brightness breathes, the pitch wanders by a few cents, the upper partials
+   * only appear when you lean on it, and the contact itself has grain. Those
+   * five things are the difference, not the frequencies. */
   var PARTIALS = [
-    { r: 1.000, g: 1.00 },
-    { r: 2.006, g: 0.34 },   // a rubbed glass is nearly harmonic, very slightly
-    { r: 3.018, g: 0.16 },   // stretched — the small offsets are the shimmer
-    { r: 4.035, g: 0.06 }
+    { r: 1.000, g: 1.00, drive: 0.00 },
+    { r: 2.004, g: 0.30, drive: 0.22 },   // harmonics that GROW as you press
+    { r: 3.012, g: 0.12, drive: 0.26 },   // harder — a leaned-on glass is
+    { r: 4.028, g: 0.04, drive: 0.18 }    // brighter and slightly edgy
   ];
 
   function makeVoice(g) {
@@ -216,7 +226,6 @@
     v.filt = actx.createBiquadFilter();
     v.filt.type = "lowpass"; v.filt.frequency.value = 1200; v.filt.Q.value = 0.6;
 
-    // stereo place each glass where it sits on screen
     if (actx.createStereoPanner) {
       v.pan = actx.createStereoPanner();
       v.pan.pan.value = (g.i / Math.max(1, N - 1)) * 1.5 - 0.75;
@@ -226,32 +235,49 @@
       v.out.connect(v.filt); v.filt.connect(comp); v.filt.connect(verbSend);
     }
 
+    /* The hand. Two incommensurate slow oscillators read as unsteady rather
+     * than as a tremolo — a single LFO sounds like an effect, two sound like a
+     * person. One drives loudness, the other detunes the fundamental. */
+    v.lfoGain = actx.createGain(); v.lfoGain.gain.value = 0;
+    var l1 = actx.createOscillator(); l1.type = "sine"; l1.frequency.value = 0.31 + Math.random() * 0.2;
+    var l2 = actx.createOscillator(); l2.type = "sine"; l2.frequency.value = 0.13 + Math.random() * 0.11;
+    var l1g = actx.createGain(); l1g.gain.value = 1;
+    var l2g = actx.createGain(); l2g.gain.value = 0.6;
+    l1.connect(l1g); l2.connect(l2g);
+    l1g.connect(v.lfoGain); l2g.connect(v.lfoGain);
+    l1.start(); l2.start();
+    v.lfoGain.connect(v.out.gain);         // breathes the loudness
+
+    v.pitchLfo = actx.createGain(); v.pitchLfo.gain.value = 0;
+    var p1 = actx.createOscillator(); p1.type = "sine"; p1.frequency.value = 0.23 + Math.random() * 0.18;
+    p1.connect(v.pitchLfo); p1.start();
+
     for (var i = 0; i < PARTIALS.length; i++) {
       var o = actx.createOscillator();
       o.type = "sine";
       o.frequency.value = g.freq * PARTIALS[i].r;
-      // a couple of cents of detune per partial keeps it from sounding digital
       o.detune.value = (i === 0 ? 0 : (Math.random() * 6 - 3));
+      v.pitchLfo.connect(o.detune);        // a few cents of wander, all together
       var gn = actx.createGain();
-      gn.gain.value = PARTIALS[i].g;
+      gn.gain.value = i === 0 ? PARTIALS[i].g : 0;
       o.connect(gn); gn.connect(v.out);
       o.start();
       v.oscs.push(o); v.gains.push(gn);
     }
 
-    /* The slow beat of the wave travelling around the rim. Two very slightly
-     * detuned copies of the fundamental do it more convincingly than an LFO,
-     * because the beat then lives in the sound rather than on top of it. */
+    // the travelling wave around the rim, as a real beat rather than an LFO
     var beat = actx.createOscillator();
     beat.type = "sine";
-    beat.frequency.value = g.freq * 1.0;
-    beat.detune.value = 7;
-    var bg = actx.createGain(); bg.gain.value = 0.42;
+    beat.frequency.value = g.freq;
+    beat.detune.value = 6 + Math.random() * 4;
+    var bg = actx.createGain(); bg.gain.value = 0.40;
     beat.connect(bg); bg.connect(v.out);
     beat.start();
     v.oscs.push(beat); v.gains.push(bg);
 
-    // friction hiss: the finger itself, barely there but it sells the contact
+    /* Contact grain. Steady bandpassed hiss reads as tape noise; ring-modulating
+     * it with the glass's own frequency puts the noise IN STEP with the
+     * stick-slip cycle, which is what a fingertip skipping round a rim is. */
     v.noise = actx.createBufferSource();
     var nlen = Math.floor(actx.sampleRate * 1.5);
     var nb = actx.createBuffer(1, nlen, actx.sampleRate);
@@ -259,9 +285,15 @@
     for (var k = 0; k < nlen; k++) nd[k] = Math.random() * 2 - 1;
     v.noise.buffer = nb; v.noise.loop = true;
     var nf = actx.createBiquadFilter();
-    nf.type = "bandpass"; nf.frequency.value = g.freq * 3.4; nf.Q.value = 1.4;
+    nf.type = "bandpass"; nf.frequency.value = g.freq * 3.1; nf.Q.value = 1.1;
+    var ring = actx.createGain(); ring.gain.value = 0;        // gated by the carrier
+    v.ringOsc = actx.createOscillator();
+    v.ringOsc.type = "sine"; v.ringOsc.frequency.value = g.freq;
+    var ringDepth = actx.createGain(); ringDepth.gain.value = 1;
+    v.ringOsc.connect(ringDepth); ringDepth.connect(ring.gain);
+    v.ringOsc.start();
     v.noiseGain = actx.createGain(); v.noiseGain.gain.value = 0;
-    v.noise.connect(nf); nf.connect(v.noiseGain); v.noiseGain.connect(v.out);
+    v.noise.connect(nf); nf.connect(ring); ring.connect(v.noiseGain); v.noiseGain.connect(v.out);
     v.noise.start();
     v.noiseFilt = nf;
     return v;
@@ -275,7 +307,8 @@
       v.oscs[i].frequency.setTargetAtTime(g.freq * PARTIALS[i].r, t, 0.04);
     }
     v.oscs[PARTIALS.length].frequency.setTargetAtTime(g.freq, t, 0.04);
-    v.noiseFilt.frequency.setTargetAtTime(g.freq * 3.4, t, 0.05);
+    v.ringOsc.frequency.setTargetAtTime(g.freq, t, 0.04);
+    v.noiseFilt.frequency.setTargetAtTime(g.freq * 3.1, t, 0.05);
   }
 
   function ensureVoice(g) {
@@ -285,14 +318,24 @@
 
   function updateVoice(g) {
     if (!actx || !g.voice) return;
+    var v = g.voice;
     var t = actx.currentTime;
     var d = g.drive;
-    /* Bloom in slowly, ring down slower still. A rubbed glass takes a good
-     * fraction of a second to speak and keeps sounding after you stop. */
+    // bloom in slowly, ring down slower still
     var tc = d > 0.02 ? 0.16 : 0.42;
-    g.voice.out.gain.setTargetAtTime(0.20 * Math.pow(d, 0.85), t, tc);
-    g.voice.filt.frequency.setTargetAtTime(700 + d * 4200, t, 0.14);
-    g.voice.noiseGain.gain.setTargetAtTime(0.010 * d, t, 0.10);
+    var level = 0.20 * Math.pow(d, 0.85);
+    v.out.gain.setTargetAtTime(level, t, tc);
+    v.filt.frequency.setTargetAtTime(700 + d * 4200, t, 0.14);
+
+    // upper partials arrive only when the glass is being leaned on
+    for (var i = 1; i < PARTIALS.length; i++) {
+      var target = PARTIALS[i].g * Math.pow(clamp((d - PARTIALS[i].drive) / (1 - PARTIALS[i].drive), 0, 1), 1.4);
+      v.gains[i].gain.setTargetAtTime(target, t, 0.18);
+    }
+    // the hand's unsteadiness, proportional to how much sound there is to shake
+    v.lfoGain.gain.setTargetAtTime(level * 0.17, t, 0.25);
+    v.pitchLfo.gain.setTargetAtTime(d > 0.02 ? 3.2 : 0, t, 0.4);
+    v.noiseGain.gain.setTargetAtTime(0.016 * d, t, 0.10);
   }
 
   // ----------------------------------------------------------------- input

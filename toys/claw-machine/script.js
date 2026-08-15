@@ -1154,148 +1154,308 @@
     return b;
   }
 
+  /* ---- modal percussion -------------------------------------------------
+   *
+   * Everything struck in this cabinet is synthesized by exciting NOISE through
+   * a bank of parallel resonant bandpasses tuned to the object's own modes,
+   * rather than by summing oscillators at those frequencies.
+   *
+   * That distinction is the whole difference between "a real thing was hit"
+   * and "a computer played a chord". A summed sine/triangle stack has perfectly
+   * steady, perfectly tuned partials that all start and stop together — no
+   * physical object does that. A filter bank rings the way the object does:
+   * each mode decays at its OWN rate (fast for the high ones), the attack is
+   * a dense noisy transient rather than instant tone, and every strike differs
+   * because the excitation is noise.
+   *
+   * A high-Q bandpass rings for roughly Q/(pi*f) seconds, so Q is derived from
+   * the decay each mode should have instead of being a magic number. */
+  function modalHitAt(t, opts) { opts.at = t; modalHit(opts); }
+  function modalHit(opts) {
+    if (!actx || muted) return;
+    var t = opts.at || actx.currentTime;
+    var dest = opts.dest || comp;
+    var base = opts.base;
+    var amp = opts.amp;
+
+    // excitation: a very short noise burst, shaped by how hard the contact was
+    var ex = actx.createBufferSource();
+    ex.buffer = noiseBuf(0.05);
+    var exFilt = actx.createBiquadFilter();
+    exFilt.type = "highpass";
+    exFilt.frequency.value = opts.exHighpass || 200;
+    var exGain = actx.createGain();
+    var burst = opts.burst || 0.004;
+    exGain.gain.setValueAtTime(1.0, t);   // shape only — amp is applied per mode
+    exGain.gain.exponentialRampToValueAtTime(0.0001, t + burst);
+    ex.connect(exFilt); exFilt.connect(exGain);
+
+    var longest = 0;
+    for (var i = 0; i < opts.modes.length; i++) {
+      var m = opts.modes[i];                 // [ratio, gain, decay]
+      var f = base * m[0];
+      if (f > 16000) continue;
+      // a touch of scatter per strike: real objects are never struck twice
+      // in exactly the same place, and the mode gains shift when they are
+      var jitter = 1 + (Math.random() - 0.5) * 0.05;
+      var decay = m[2] * (0.85 + Math.random() * 0.3);
+      longest = Math.max(longest, decay);
+      var bp = actx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = f * jitter;
+      var Q = Math.max(1.2, Math.PI * f * decay);
+      bp.Q.value = Q;
+      /* Compensate the gain for Q. A bandpass is unity-gain at its centre for a
+       * SINE, but only passes a band of width f/Q out of broadband noise, so
+       * the tighter the resonance the quieter it gets — deriving Q from a short
+       * decay made the whole click inaudible (measured peak RMS 0.00001, with
+       * the modes landing at exactly the right frequencies). Output RMS from
+       * noise scales as 1/sqrt(Q), so put that back. */
+      var g = actx.createGain();
+      g.gain.setValueAtTime(m[1] * amp * Math.sqrt(Q) * 6, t);
+      g.gain.exponentialRampToValueAtTime(0.0004, t + decay);
+      exGain.connect(bp); bp.connect(g); g.connect(dest);
+      if (opts.verb !== false && verb) g.connect(verb);
+    }
+    ex.start(t);
+    ex.stop(t + Math.min(2.5, longest + 0.1));
+  }
+
+  /* ---- ambience ---------------------------------------------------------
+   *
+   * A cabinet hum written as 60Hz + 120Hz alone is inaudible on a phone, whose
+   * speaker rolls off long before that — the same lesson Accretion's
+   * gravitational hum paid for. The upper partials are what actually carries. */
   var amb = null;
   function startAmbience() {
     if (!actx || amb) return;
-    // cabinet hum: a quiet mains-ish pair plus filtered noise for the fan
     var g = actx.createGain(); g.gain.value = 0.05;
-    var o1 = actx.createOscillator(); o1.type = "sine"; o1.frequency.value = 60;
-    var o2 = actx.createOscillator(); o2.type = "sine"; o2.frequency.value = 120.6;
     var og = actx.createGain(); og.gain.value = 0.5;
-    o1.connect(og); o2.connect(og); og.connect(g);
+    [[60, 1.0], [120.6, 0.7], [181, 0.34], [241, 0.16], [302, 0.07]].forEach(function (pair) {
+      var o = actx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = pair[0];
+      var pg = actx.createGain(); pg.gain.value = pair[1];
+      o.connect(pg); pg.connect(og);
+      o.start();
+    });
+    og.connect(g);
+    // fan / room air
     var n = actx.createBufferSource(); n.buffer = noiseBuf(2); n.loop = true;
     var nf = actx.createBiquadFilter(); nf.type = "bandpass"; nf.frequency.value = 380; nf.Q.value = 0.7;
     var ng = actx.createGain(); ng.gain.value = 0.22;
     n.connect(nf); nf.connect(ng); ng.connect(g);
     g.connect(comp);
-    o1.start(); o2.start(); n.start();
+    n.start();
     amb = g;
   }
 
+  /* ---- gantry motor -----------------------------------------------------
+   *
+   * The first version was a sawtooth through a bandpass, which is a synth
+   * patch, not a motor: a sawtooth carries every harmonic at 1/n and buzzes.
+   * A real gantry motor is a low rumble, a GEAR-MESH tone an order of
+   * magnitude above the shaft rate with a couple of harmonics, and bearing
+   * hiss on top — and every one of those tracks how fast it is actually
+   * moving. The mesh frequency wobbles slightly because no motor is steady. */
   var motor = null, motorGain = null, motorFilt = null;
+  var meshOsc = [], meshGain = null, rumbleFilt = null, hissGain = null;
   function ensureMotor() {
     if (!actx || motor) return;
-    motor = actx.createBufferSource(); motor.buffer = noiseBuf(2); motor.loop = true;
-    motorFilt = actx.createBiquadFilter(); motorFilt.type = "bandpass";
-    motorFilt.frequency.value = 220; motorFilt.Q.value = 4.5;
-    var saw = actx.createOscillator(); saw.type = "sawtooth"; saw.frequency.value = 84;
-    var sg = actx.createGain(); sg.gain.value = 0.20;
     motorGain = actx.createGain(); motorGain.gain.value = 0;
-    motor.connect(motorFilt); motorFilt.connect(motorGain);
-    saw.connect(sg); sg.connect(motorGain);
-    motorGain.connect(comp);
-    motor.start(); saw.start();
+
+    // rumble: the frame and the belt
+    motor = actx.createBufferSource(); motor.buffer = noiseBuf(2); motor.loop = true;
+    rumbleFilt = actx.createBiquadFilter();
+    rumbleFilt.type = "lowpass"; rumbleFilt.frequency.value = 240; rumbleFilt.Q.value = 0.8;
+    var rg = actx.createGain(); rg.gain.value = 0.9;
+    motor.connect(rumbleFilt); rumbleFilt.connect(rg); rg.connect(motorGain);
+
+    // gear mesh: a small harmonic stack, quiet and slightly detuned
+    meshGain = actx.createGain(); meshGain.gain.value = 0.18;
+    [[1, 1.0], [2, 0.42], [3, 0.18]].forEach(function (h) {
+      var o = actx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = 190 * h[0];
+      o.detune.value = (Math.random() - 0.5) * 14;
+      var g = actx.createGain(); g.gain.value = h[1];
+      o.connect(g); g.connect(meshGain);
+      o.start();
+      meshOsc.push(o);
+    });
+    meshGain.connect(motorGain);
+
+    // bearing hiss
+    var hn = actx.createBufferSource(); hn.buffer = noiseBuf(2); hn.loop = true;
+    var hf = actx.createBiquadFilter(); hf.type = "bandpass"; hf.frequency.value = 3200; hf.Q.value = 1.1;
+    hissGain = actx.createGain(); hissGain.gain.value = 0.05;
+    hn.connect(hf); hf.connect(hissGain); hissGain.connect(motorGain);
+
+    motorFilt = actx.createBiquadFilter();
+    motorFilt.type = "lowpass"; motorFilt.frequency.value = 5200;
+    motorGain.connect(motorFilt); motorFilt.connect(comp);
+    motor.start(); hn.start();
   }
   function motorLevel(speed) {
     if (!actx || !motorGain) return;
     var t = actx.currentTime;
-    motorGain.gain.setTargetAtTime(Math.min(0.14, speed * 0.30), t, 0.05);
-    motorFilt.frequency.setTargetAtTime(190 + speed * 260, t, 0.06);
+    var sp = Math.min(1, speed);
+    motorGain.gain.setTargetAtTime(sp * 0.15, t, 0.06);
+    // everything tracks the speed, which is what reads as a motor under load
+    rumbleFilt.frequency.setTargetAtTime(150 + sp * 220, t, 0.08);
+    var mesh = 150 + sp * 210;
+    for (var i = 0; i < meshOsc.length; i++) {
+      meshOsc[i].frequency.setTargetAtTime(mesh * (i + 1) * (1 + (Math.random() - 0.5) * 0.01), t, 0.09);
+    }
+    // measured almost purely tonal at first (flatness 0.0006); a motor is mostly noise
+    if (meshGain) meshGain.gain.setTargetAtTime(0.06 + sp * 0.14, t, 0.08);
+    if (hissGain) hissGain.gain.setTargetAtTime(0.02 + sp * 0.16, t, 0.08);
   }
 
-  var winch = null, winchGain = null;
+  /* The winch is a smaller, faster motor under load — same construction, higher
+   * mesh rate, and it sags in pitch while lifting because it is working. */
+  var winch = null, winchGain = null, winchOsc = [], winchNoise = null;
   function sndWinch(on) {
     if (!actx) return;
     if (!winch) {
-      winch = actx.createOscillator(); winch.type = "sawtooth"; winch.frequency.value = 190;
-      var f = actx.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = 900; f.Q.value = 3;
       winchGain = actx.createGain(); winchGain.gain.value = 0;
-      winch.connect(f); f.connect(winchGain); winchGain.connect(comp);
-      winch.start();
+      winch = actx.createGain();
+      [[1, 1.0], [2, 0.30], [3.02, 0.14]].forEach(function (h) {
+        var o = actx.createOscillator();
+        o.type = "sine";
+        o.frequency.value = 320 * h[0];
+        o.detune.value = (Math.random() - 0.5) * 10;
+        var g = actx.createGain(); g.gain.value = h[1];
+        o.connect(g); g.connect(winch);
+        o.start();
+        winchOsc.push(o);
+      });
+      winchNoise = actx.createBufferSource(); winchNoise.buffer = noiseBuf(2); winchNoise.loop = true;
+      var wf = actx.createBiquadFilter(); wf.type = "bandpass"; wf.frequency.value = 1800; wf.Q.value = 0.9;
+      var wg = actx.createGain(); wg.gain.value = 0.22;
+      winchNoise.connect(wf); wf.connect(wg); wg.connect(winch);
+      winchNoise.start();
+      var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 4200;
+      winch.connect(winchGain); winchGain.connect(lp); lp.connect(comp);
     }
-    winchGain.gain.setTargetAtTime(on ? 0.055 : 0, actx.currentTime, 0.04);
+    var t = actx.currentTime;
+    winchGain.gain.setTargetAtTime(on ? 0.05 : 0, t, 0.05);
+    if (on) {
+      // spin up, then settle a little flat under load
+      for (var i = 0; i < winchOsc.length; i++) {
+        var base = 320 * (i === 2 ? 3.02 : i + 1);
+        winchOsc[i].frequency.cancelScheduledValues(t);
+        winchOsc[i].frequency.setValueAtTime(base * 0.86, t);
+        winchOsc[i].frequency.linearRampToValueAtTime(base, t + 0.22);
+        winchOsc[i].frequency.linearRampToValueAtTime(base * 0.965, t + 0.9);
+      }
+    }
   }
 
-  /* Jaw clack: a steel transient. Noise burst through a high bandpass for the
-   * contact, then two inharmonic partials that die in 90ms — struck steel has
-   * no sustain, and giving it one is what makes synthesized metal sound like a
-   * marimba instead. */
+  /* Steel jaws closing. Struck steel is dense and INHARMONIC and gone fast —
+   * the earlier pair of triangle oscillators at 1840/2790 read as a tuned
+   * chime because two clean partials in a simple ratio is a chord. */
   function sndJaw() {
-    if (!actx || muted) return;
-    var t = actx.currentTime;
-    var n = actx.createBufferSource(); n.buffer = noiseBuf(0.06);
-    var nf = actx.createBiquadFilter(); nf.type = "bandpass"; nf.frequency.value = 3200; nf.Q.value = 1.2;
-    var ng = actx.createGain();
-    ng.gain.setValueAtTime(0.30, t); ng.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
-    n.connect(nf); nf.connect(ng); ng.connect(comp); ng.connect(verb);
-    n.start(t); n.stop(t + 0.07);
-    [1840, 2790].forEach(function (f, i) {
-      var o = actx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
-      var g = actx.createGain();
-      g.gain.setValueAtTime(0.10 / (i + 1), t);
-      g.gain.exponentialRampToValueAtTime(0.0008, t + 0.09);
-      o.connect(g); g.connect(comp); g.connect(verb);
-      o.start(t); o.stop(t + 0.11);
+    modalHit({
+      base: 1420 * (0.94 + Math.random() * 0.12),
+      amp: 1.15,
+      burst: 0.003,
+      exHighpass: 700,
+      modes: [[1, 0.9, 0.085], [2.31, 0.7, 0.055], [4.07, 0.45, 0.032], [6.62, 0.26, 0.020], [9.4, 0.14, 0.013]]
     });
   }
 
+  /* Prizes landing. The material decides the modes: plush is a damped thud
+   * with no ring at all, plastic is a short mid knock, glass is a bright
+   * short ping. Same synth, three different objects. */
   function sndKnock(vel, mode) {
     if (!actx || muted) return;
-    var t = actx.currentTime;
-    var amp = clamp(vel * 0.22, 0.01, 0.20);
-    var plush = mode === 4;
-    var n = actx.createBufferSource(); n.buffer = noiseBuf(0.08);
-    var nf = actx.createBiquadFilter();
-    nf.type = plush ? "lowpass" : "bandpass";
-    nf.frequency.value = plush ? 420 : (mode === 2 ? 2600 : 1500);
-    nf.Q.value = plush ? 0.7 : 1.6;
-    var ng = actx.createGain();
-    ng.gain.setValueAtTime(amp, t);
-    ng.gain.exponentialRampToValueAtTime(0.0006, t + (plush ? 0.10 : 0.055));
-    n.connect(nf); nf.connect(ng); ng.connect(comp); ng.connect(verb);
-    n.start(t); n.stop(t + 0.12);
-    if (!plush) {
-      var o = actx.createOscillator(); o.type = "triangle";
-      o.frequency.value = mode === 2 ? 1180 : 640;
-      var g = actx.createGain();
-      g.gain.setValueAtTime(amp * 0.5, t);
-      g.gain.exponentialRampToValueAtTime(0.0006, t + 0.06);
-      o.connect(g); g.connect(comp);
-      o.start(t); o.stop(t + 0.08);
+    var amp = clamp(vel * 0.85, 0.05, 0.95);
+    if (mode === 4) {                                  // plush
+      var t = actx.currentTime;
+      var n = actx.createBufferSource(); n.buffer = noiseBuf(0.12);
+      var nf = actx.createBiquadFilter(); nf.type = "lowpass"; nf.frequency.value = 330; nf.Q.value = 0.6;
+      var ng = actx.createGain();
+      ng.gain.setValueAtTime(amp * 0.9, t);
+      ng.gain.exponentialRampToValueAtTime(0.0005, t + 0.11);
+      n.connect(nf); nf.connect(ng); ng.connect(comp);
+      n.start(t); n.stop(t + 0.14);
+      modalHit({ base: 150, amp: amp * 0.5, burst: 0.006, exHighpass: 60,
+                 modes: [[1, 0.8, 0.055], [1.9, 0.3, 0.03]] });
+      return;
     }
+    if (mode === 2) {                                  // glass / hard shell
+      modalHit({ base: 2150 * (0.9 + Math.random() * 0.2), amp: amp,
+                 burst: 0.002, exHighpass: 900,
+                 modes: [[1, 0.9, 0.10], [2.54, 0.55, 0.06], [4.62, 0.3, 0.035], [7.1, 0.15, 0.022]] });
+      return;
+    }
+    modalHit({ base: 620 * (0.88 + Math.random() * 0.24), amp: amp,   // resin / plastic
+               burst: 0.004, exHighpass: 300,
+               modes: [[1, 0.9, 0.055], [2.18, 0.5, 0.035], [3.9, 0.24, 0.022]] });
   }
 
+  // the jaws giving up: one small dry tick, then nothing
   function sndSlip() {
-    if (!actx || muted) return;
-    var t = actx.currentTime;
-    // the little metallic tick of jaws giving up, then nothing
-    [1420, 1960].forEach(function (f, i) {
-      var o = actx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
-      var g = actx.createGain();
-      g.gain.setValueAtTime(0.07 / (i + 1), t);
-      g.gain.exponentialRampToValueAtTime(0.0006, t + 0.13);
-      o.connect(g); g.connect(comp); g.connect(verb);
-      o.start(t); o.stop(t + 0.15);
-    });
+    modalHit({ base: 1180, amp: 0.45, burst: 0.003, exHighpass: 600,
+               modes: [[1, 0.8, 0.11], [2.44, 0.45, 0.07], [4.2, 0.2, 0.04]] });
   }
 
+  /* A win. The chute rumble is the prize physically arriving; the flourish is
+   * struck BELLS rather than a synth arpeggio, so it belongs to the same
+   * cabinet as everything else. Bell modes are famously inharmonic. */
   function sndWin() {
     if (!actx || muted) return;
     var t = actx.currentTime;
-    // chute rumble
     var n = actx.createBufferSource(); n.buffer = noiseBuf(0.4);
     var nf = actx.createBiquadFilter(); nf.type = "lowpass"; nf.frequency.value = 300;
     var ng = actx.createGain();
     ng.gain.setValueAtTime(0.001, t);
-    ng.gain.exponentialRampToValueAtTime(0.18, t + 0.05);
+    ng.gain.exponentialRampToValueAtTime(0.20, t + 0.05);
     ng.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
-    n.connect(nf); nf.connect(ng); ng.connect(comp); ng.connect(verb);
+    n.connect(nf); nf.connect(ng); ng.connect(comp); if (verb) ng.connect(verb);
     n.start(t); n.stop(t + 0.45);
-    // a bright three-note lift, major so it lands as a reward
-    [0, 4, 7, 12].forEach(function (semi, i) {
-      var f = 523.25 * Math.pow(2, semi / 12);
-      var st = t + 0.06 + i * 0.085;
-      [1, 2, 3].forEach(function (h, hi) {
-        var o = actx.createOscillator(); o.type = hi === 0 ? "triangle" : "sine";
-        o.frequency.value = f * h;
-        var g = actx.createGain();
-        g.gain.setValueAtTime(0.0001, st);
-        g.gain.exponentialRampToValueAtTime(0.13 / (hi + 1) / (i * 0.3 + 1), st + 0.008);
-        g.gain.exponentialRampToValueAtTime(0.0004, st + 0.42);
-        o.connect(g); g.connect(comp); g.connect(verb);
-        o.start(st); o.stop(st + 0.45);
-      });
+
+    [0, 4, 7].forEach(function (semi, i) {
+      bellHit(659.25 * Math.pow(2, semi / 12), 0.16 / (i * 0.3 + 1), i * 95);
     });
+  }
+
+  /* Bells are ADDITIVE, deliberately, while contacts are modal.
+   *
+   * A noise burst through a bank of very narrow filters cannot drive a tail
+   * that rings for a second — measured, it came out five times quieter than a
+   * click. Long ringing tones are properly synthesized as partials with their
+   * own decays, and for a bell those partials are INHARMONIC (roughly
+   * 1 : 2 : 3.01 : 4.17 : 5.43, the stretch that makes a bell a bell). What
+   * made the first version sound like a synth arpeggio was harmonic ratios and
+   * no strike, so the strike transient below is the other half of the fix. */
+  var BELL_MODES = [[0.5, 0.30, 1.6], [1, 1.0, 1.2], [2.0, 0.55, 0.9],
+                    [3.01, 0.36, 0.62], [4.17, 0.2, 0.42], [5.43, 0.1, 0.28]];
+  function bellHit(base, amp, delayMs) {
+    if (!actx || muted) return;
+    var t = actx.currentTime + (delayMs || 0) / 1000;
+    // the clapper: a short filtered-noise contact, or it starts from nowhere
+    modalHitAt(t, {
+      base: base * 4.2, amp: amp * 0.5, burst: 0.002, exHighpass: 900,
+      modes: [[1, 0.8, 0.020], [1.9, 0.4, 0.012]]
+    });
+    for (var i = 0; i < BELL_MODES.length; i++) {
+      var m = BELL_MODES[i];
+      var f = base * m[0];
+      if (f > 14000) continue;
+      var o = actx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = f;
+      o.detune.value = (Math.random() - 0.5) * 8;
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(m[1] * amp, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0004, t + m[2]);
+      o.connect(g); g.connect(comp);
+      if (verb) g.connect(verb);
+      o.start(t); o.stop(t + m[2] + 0.05);
+    }
   }
 
   // ------------------------------------------------------------------- HUD
