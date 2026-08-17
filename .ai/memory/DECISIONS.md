@@ -170,3 +170,23 @@ Standing principle: **each release should feel a notch more polished than the la
 **Rationale:** "push" is the owner's approval signal (his most-used command). Codifying here makes the rule survive any session, machine, or tool — instead of depending on summary carry-over.
 
 **Revisit if:** The owner changes the deploy gate, or `.claude/settings.json` stops being machine-local.
+
+---
+
+### 2026-08-16 — Flag daily-viral potential BEFORE building, not after (owner directive)
+
+**Context:** Owner: *"If you think a toy has daily viral possibilities, let me know before I build it with you."* Five games have already graduated out of this repo onto their own domains (spelling-blocks, the-trail-game, 5secondgame, bricksmasher, tossingcards), each leaving a practice feeder behind. Deciding that AFTER a toy is built here means rebuilding it elsewhere.
+
+**Decision:** Before starting any new toy, judge whether it has **daily-ritual potential** and say so up front. It qualifies when it has all four of:
+1. **One puzzle per day, identical for everyone** — there is a single right answer or a knowable maximum, so scores are comparable.
+2. **A 2-5 minute solve.** Longer and it is not a habit; shorter and there is nothing to share.
+3. **A spoiler-free share** — a result line or emoji grid that conveys how you did WITHOUT giving the answer away. This is the hard one and it is what actually drives the spread.
+4. **A reason to return tomorrow** — streaks, or simple curiosity about the next one.
+
+If it qualifies, **route it to its own project via the `new-feeder-game` skill** (own domain, daily + streaks + capture there) and build the **unlimited practice edition** here as a feeder — per the 2026-07-03 keep-builds-small rule, this site has no accounts, no cloud save and no cross-session progression, so a daily game cannot live here properly. If it does not qualify, build it here as a normal self-contained toy.
+
+**Rationale:** The architectural fork happens at the START of the build (where the state lives, whether there is a date-keyed seed, whether scores are comparable across players). Discovering it late costs a rebuild. Owner wants the call surfaced while it is still cheap.
+
+**Revisit if:** One Page Toys ever gains accounts or cloud save, which would remove the reason to route dailies elsewhere.
+
+⚠ **Standing assessment of the 2026-08-16 puzzle cluster** (`BACKLOG.md` `Puzzle #1`-`#9`): **only Word Hunt clearly qualifies** — a daily letter grid gives everyone the same board, a score against a knowable maximum, and a genuinely spoiler-free share ("24 of 61 words, longest BRACKET"). **Nonogram is a maybe** (the daily picture is a strong hook, but the reveal IS the spoiler, so the share is weaker) and it is the only one needing real content authoring. **Sudoku is a daily HABIT but not a daily SHARE** — no spoiler-free result line, and it is utterly commoditized, so it stays here as a search play. **Colour Pour, Circuit, Threads, Sliding Block Escape, Tangram and Untangle are endless/replayable toys, not dailies** — their results are just a time or a move count, which nobody shares.

@@ -16,6 +16,104 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
+### Puzzle #1 — New toy: Colour Pour (water-sort)
+
+**Why it matters:** ⚠ **The single most viral casual-puzzle format of the last several years, and the best fit for this site of anything on this list.** It needs ZERO rules text — one screenshot teaches the whole game — the input is two taps, it is infinitely generatable with guaranteed solvability, and the payoff is liquid pouring, which lands squarely on the "must look and sound intentional" bar. Category `game`.
+
+**When to revisit:** Next puzzle round, and **build this one first.** Small-to-medium scope with no content authoring and no dictionary decision, so it is the cheapest of the top four to ship.
+
+**Notes:** A rack of tall glass tubes part-filled with bands of coloured liquid. Tap a tube to lift its top band, tap another to pour it in; a pour is only legal onto the same colour or into empty space, and the whole band of that colour moves at once. Win when every tube is single-coloured or empty. **Generate by REVERSE-SHUFFLING from a solved state** — that guarantees solvability without writing a solver, which is the trap this genre usually falls into. Undo, plus one "extra tube" get-out per board.
+- **Design bar:** real glass (refraction-ish distortion of the bands behind, specular streak, meniscus at each boundary — the Glass Harp already solved that rendering language and this can share it). The pour is an ARC of liquid between tubes with the receiving surface rising and settling, not an instant swap. Colour-blind safety matters here more than usual: distinct hues AND a subtle pattern or symbol per colour, since the entire game is colour identity.
+- **Audio:** this is the whole appeal — a glug that pitches DOWN as the receiving tube fills (the resonant air column shortens, exactly like filling a real bottle), a soft glass clink on tube select, and a bright settle when a tube completes. Model it, per the 2026-08-14 modal/additive split.
+- Best count + moves in `localStorage`; ticket rule. Real card + OG; full pipeline.
+---
+### Puzzle #2 — New toy: Word Hunt (Boggle-style letter grid)
+
+**Why it matters:** ⚠ **Ranked #2 of the puzzle set: the biggest genre gap on the site, and the only puzzle here that also fixes a search problem.** Word games are text, so they index in a way a canvas toy structurally cannot — which matters given the 2026-08-04 audit's finding that thin content, not crawlability, is OPT's real search ceiling. The site has zero word games — a gap for a huge audience. Drag-to-trace word finding is tactile, satisfying, and endlessly replayable with a fresh grid each round. Category `game`/word.
+
+**When to revisit:** Next puzzle round. Needs a bundled dictionary decision (see notes) — scope that first.
+
+**Notes:** AI suggestion (2026-07-05). 4×4 or 5×5 letter grid (dice-distribution letter frequencies); drag through adjacent letters (incl. diagonals) to trace words; 90-second round or zen mode; scoring by length; found-words list + best score in `localStorage`. Constraint: needs a word list — a compact common-word list (~30-60k words, ~200-400KB raw, less gzipped) bundled locally keeps it self-contained; prefix-trie for live validation. Keep name/trade dress distinct from Boggle. Design: warm wooden letter tiles or glowing runes, a glowing trace line, tile pop + pentatonic pluck per letter (rises with word length), fanfare on rare long words. Real card + OG; full pipeline.
+---
+### Puzzle #3 — New toy: Circuit (rotate-the-tiles network puzzle)
+
+**Why it matters:** ⚠ **The most mesmerizing one-tap puzzle there is, and the best CARD image of anything on this list** — a dark grid of dead wires that lights up as one connected network the instant it is solved. Tap-only input, no dexterity, no reading, infinitely generatable, and the completion moment is a genuine light show. Category `game`/`visual` crossover.
+
+**When to revisit:** Next puzzle round. Small scope — the generator is the only real work and it is easy (see notes).
+
+**Notes:** A grid of tiles, each carrying a fragment of wire (end-stub, elbow, T, straight, cross). Tap a tile to rotate it 90°. Solve by rotating every tile until all wire fragments join into one closed network with no loose ends, at which point current flows from the source and the whole board lights.
+- ⚠ **Generate the SOLVED board first, then scramble the rotations.** Building a random tile soup and checking solvability is the hard way round and mostly produces unsolvable boards. Grow a random spanning tree over the grid, derive each cell's tile shape from which neighbours it connects to, then randomly rotate every tile. Always solvable, any size, no solver required.
+- **Design bar:** unlit wire is a dull etched channel; as segments join the source, current CRAWLS along them (animated, not an instant recolour) with a travelling glow head, so partial progress is visible and rewarding. Solved = a bloom across the whole board. Wrap toggle (edges connect around) as a harder mode.
+- **Audio:** a soft relay click per rotation with pitch tied to how much of the network is now live, a rising hum as coverage grows, and a satisfying power-on swell at completion.
+- Best time per size in `localStorage`; ticket rule (dir `down`). Real card + OG; full pipeline.
+---
+### Puzzle #4 — New toy: Threads (numberlink / flow)
+
+**Why it matters:** ⚠ **The largest mobile-puzzle audience on this list after word games**, and a perfect one-gesture fit: drag from one coloured dot to its twin, fill every cell, cross nothing. Instantly readable, endlessly replayable, and the finished board is a genuinely pretty object. Category `game`.
+
+**When to revisit:** Next puzzle round, after Colour Pour. ⚠ **Scope the generator FIRST** — it is the one real risk on this item (see notes).
+
+**Notes:** Square grid seeded with pairs of coloured dots. Drag from a dot to trace a path to its pair; paths may not cross or overlap, and a proper solve fills EVERY cell. Dragging a new path over an old one truncates the old one rather than refusing, which is what makes it feel fluid rather than fussy.
+- ⚠ **The generator is the whole build.** Naive random dot placement mostly yields boards that are unsolvable or have many solutions. The reliable method is the same trick as Circuit — **construct the solution first**: partition the grid into a set of non-crossing snake paths that between them cover every cell, then keep only each path's two endpoints as the dot pair. Guaranteed solvable and guaranteed full-coverage by construction.
+- **Design bar:** paths are thick rounded ribbons with a soft glow, laid down with a satisfying trailing animation; the cell under the finger snaps. Completion sweeps a shine along every thread in turn. Sizes 5×5 → 9×9.
+- **Audio:** a soft pitched blip per cell entered, rising through a pentatonic run as a path extends (so tracing a long path is musical), a dull thunk on an illegal move, a chord on completion.
+- Best moves/time per size; ticket rule. Real card + OG; full pipeline.
+---
+### Puzzle #5 — New toy: Nonogram / Picture Logic
+
+**Why it matters:** ⚠ **Ranked #5 of the puzzle set: the most share-worthy PAYOFF of any puzzle here (the reveal is a picture), but the slowest to start and the only one needing real content work.** A beloved logic-puzzle genre (huge dedicated audience) absent from the site; solving reveals pixel-art — inherently rewarding and screenshot-friendly. Category `game`/puzzle.
+
+**When to revisit:** Next puzzle round. Main scope: a curated set of solvable puzzles (or a generator + solvability checker).
+
+**Notes:** AI suggestion (2026-07-05). Row/column count clues; tap to fill, long-press/second-tool to mark X; mistake-forgiveness toggle; 5×5 → 15×15 sizes. Content: procedurally generate boards and verify line-solvability, or hand-curate a pack of charming pixel-art reveals (animals, objects) — reveal animates + colorizes on completion. Timer + best per size in `localStorage`. Design: clean paper-grid aesthetic or glowing terminal; satisfying fill thunk, error buzz (gentle), completion chime + the picture coming alive. Keep the name generic ("Picture Logic" etc. — Picross is trademarked). Real card + OG; full pipeline.
+---
+### Puzzle #6 — New toy: Sudoku
+
+**Why it matters:** **Almost certainly the highest evergreen search volume of any puzzle in the world**, which is the entire argument for it — this is a traffic play, not a delight play, and it should be judged that way. Category `game`.
+
+**When to revisit:** When the priority is search traffic rather than novelty. ⚠ **Rank it below the four above on FUN**: it is a serious, slow puzzle in a very crowded space, and it is the largest UI build of the set.
+
+**Notes:** 9×9 with four difficulties. The build cost is not the solver, it is the UX: pencil marks/notes mode, conflict highlighting, same-number highlighting, undo, a proper mobile number pad, and keyboard entry on desktop. Generate by filling a valid grid then removing clues while a solver confirms uniqueness at each step.
+- ⚠ **"Sudoku" is generic worldwide** (Nikoli's trademark is Japan-only), so the name is safe to use plainly — and using it is the entire point, since the search term IS the product.
+- **Design bar:** this is where it earns its place on THIS site rather than being one of ten thousand sudoku pages — a beautiful typographic grid, ink-on-paper or lit-glass, genuinely pleasurable number entry, and restrained, elegant feedback. No garish red error states.
+- Best time per difficulty; ticket rule (dir `down`). Real card + OG; full pipeline.
+---
+### Puzzle #7 — New toy: Sliding Block Escape
+
+**Why it matters:** Instantly recognizable from a single frame ("get the long block out of the jam"), tactile drag input, and a small build. Ranks below the others only because it needs authored or solver-generated levels rather than being freely generatable. Category `game`.
+
+**When to revisit:** Any quick-win puzzle round, once there is appetite for authoring ~30 levels.
+
+**Notes:** A 6×6 tray of blocks that slide only along their own axis; free the target block through the gap in one wall. **⚠ Rush Hour is a ThinkFun trademark — the sliding-block genre is not.** Use our own name, art and framing (a foundry, a log jam, an ice floe — offer options via AskUserQuestion), never their car/traffic dress.
+- Levels: hand-author a set, or generate by breadth-first search from random configurations and keep boards whose minimum solution is long enough to be interesting. The BFS approach doubles as the "minimum moves" par score, which is what makes it replayable.
+- **Design bar:** heavy blocks with real weight — they resist, then slide with momentum and clunk against neighbours. Move counter against par.
+- Best moves per level; ticket rule. Real card + OG; full pipeline.
+---
+### Puzzle #8 — New toy: Tangram
+
+**Why it matters:** The most beautiful puzzle on this list and the most on-brand for the site's visual bar; seven pieces, public domain, thousands of years old. Ranks lower purely on virality — it is a slow, contemplative puzzle with less "one more go" pull than the top four. Category `game`/`visual`.
+
+**When to revisit:** Next visual/craft round, or alongside a cozy release. Small-to-medium scope.
+
+**Notes:** The classic seven pieces (5 triangles, 1 square, 1 parallelogram) dragged and rotated to fill a target silhouette. Snap to position and angle when close; the silhouette fills with colour piece by piece as each one lands.
+- ⚠ **The parallelogram is chiral and cannot be flipped by rotation** — a real tangram set allows turning it over, so the toy must offer an explicit flip control or a meaningful fraction of the classic figures become unsolvable. This is the one rule everyone gets wrong.
+- Content: a curated set of classic silhouettes (cat, rabbit, boat, house, running figure) — public domain, and hand-picking them is cheap.
+- **Design bar:** thick lacquered wooden or glass pieces with real edge lighting and a soft drop shadow; a satisfying magnetic snap. Free-play mode with no target, since people will want to make their own shapes — and that mode is the shareable one.
+- **Audio:** a woody click on snap, a soft slide while dragging, a warm chord on completion.
+- Figures completed in `localStorage`. Real card + OG; full pipeline.
+---
+### Puzzle #9 — New toy: Untangle (planar graph)
+
+**Why it matters:** The cheapest build on this list by a distance, infinitely generatable, and the moment a hairball of crossed lines resolves into a clean shape is genuinely lovely. Ranks last of the set only because the genre has low name recognition — nobody searches for it. Category `game`/`visual`.
+
+**When to revisit:** Any time a small, fast, pretty build is wanted — this is a one-sitting build.
+
+**Notes:** Nodes joined by edges, dropped on screen in a tangle; drag nodes until no two edges cross. **Generate by placing nodes in a guaranteed-planar layout first** (random points, then a Delaunay triangulation or a random planar graph) and only then scattering them — that way a crossing-free arrangement provably exists.
+- Live crossing counter is the whole feedback loop: crossed edges glow red and straighten to calm white as they resolve.
+- **Design bar:** taut glowing filaments with a slight elastic follow when a node is dragged; the final untangled graph should look like a constellation worth screenshotting. Level = node count.
+- **Audio:** a soft tension tone whose pitch tracks the crossing count downward, and a clean resolve chime at zero.
+- Best time per node count; ticket rule (dir `down`). Real card + OG; full pipeline.
+---
 ### New toy: Pinball (mini table)
 
 **Why it matters:** A flagship arcade classic with enormous nostalgia and replay pull — real flipper physics, bumpers, and a score chase. The kind of showpiece that gets shared. Category `game`.
@@ -39,22 +137,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 **When to revisit:** Cozy round / before the holidays.
 
 **Notes:** AI suggestion (2026-07-05). A glass globe (specular + refraction-ish distortion of the tiny scene) over a carved base; shake via drag-flick (or device motion) — hundreds of snow particles swirl with fluid-ish turbulence then settle drift-by-drift; tiny scene inside (cabin + pines, lantern-lit; maybe 2-3 scenes to cycle). Glass glints, warm interior glow, falling-settled snow accumulates. Audio: soft glass-muffled swirl, twinkling music-box phrase that plays as snow falls (reuse Music Box voice), settling hush. Real card + OG; full pipeline.
----
-### New toy: Word Hunt (Boggle-style letter grid)
-
-**Why it matters:** The site has zero word games — a gap for a huge audience. Drag-to-trace word finding is tactile, satisfying, and endlessly replayable with a fresh grid each round. Category `game`/word.
-
-**When to revisit:** Next puzzle round. Needs a bundled dictionary decision (see notes) — scope that first.
-
-**Notes:** AI suggestion (2026-07-05). 4×4 or 5×5 letter grid (dice-distribution letter frequencies); drag through adjacent letters (incl. diagonals) to trace words; 90-second round or zen mode; scoring by length; found-words list + best score in `localStorage`. Constraint: needs a word list — a compact common-word list (~30-60k words, ~200-400KB raw, less gzipped) bundled locally keeps it self-contained; prefix-trie for live validation. Keep name/trade dress distinct from Boggle. Design: warm wooden letter tiles or glowing runes, a glowing trace line, tile pop + pentatonic pluck per letter (rises with word length), fanfare on rare long words. Real card + OG; full pipeline.
----
-### New toy: Nonogram / Picross
-
-**Why it matters:** A beloved logic-puzzle genre (huge dedicated audience) absent from the site; solving reveals pixel-art — inherently rewarding and screenshot-friendly. Category `game`/puzzle.
-
-**When to revisit:** Next puzzle round. Main scope: a curated set of solvable puzzles (or a generator + solvability checker).
-
-**Notes:** AI suggestion (2026-07-05). Row/column count clues; tap to fill, long-press/second-tool to mark X; mistake-forgiveness toggle; 5×5 → 15×15 sizes. Content: procedurally generate boards and verify line-solvability, or hand-curate a pack of charming pixel-art reveals (animals, objects) — reveal animates + colorizes on completion. Timer + best per size in `localStorage`. Design: clean paper-grid aesthetic or glowing terminal; satisfying fill thunk, error buzz (gentle), completion chime + the picture coming alive. Keep the name generic ("Picture Logic" etc. — Picross is trademarked). Real card + OG; full pipeline.
 ---
 ### New toy: Omnichord / Strum Pad
 
