@@ -190,3 +190,33 @@ If it qualifies, **route it to its own project via the `new-feeder-game` skill**
 **Revisit if:** One Page Toys ever gains accounts or cloud save, which would remove the reason to route dailies elsewhere.
 
 ⚠ **Standing assessment of the 2026-08-16 puzzle cluster** (`BACKLOG.md` `Puzzle #1`-`#9`): **only Word Hunt clearly qualifies** — a daily letter grid gives everyone the same board, a score against a knowable maximum, and a genuinely spoiler-free share ("24 of 61 words, longest BRACKET"). **Nonogram is a maybe** (the daily picture is a strong hook, but the reveal IS the spoiler, so the share is weaker) and it is the only one needing real content authoring. **Sudoku is a daily HABIT but not a daily SHARE** — no spoiler-free result line, and it is utterly commoditized, so it stays here as a search play. **Colour Pour, Circuit, Threads, Sliding Block Escape, Tangram and Untangle are endless/replayable toys, not dailies** — their results are just a time or a move count, which nobody shares.
+
+---
+
+### 2026-08-19 — Modal synthesis: burst length sets the LEVEL, and level must be measured
+
+**Context:** Word Kraven shipped with audio the owner could not hear at all. The graph was fine —
+context running, voices firing — so it was never silence. Measured peak output was **0.013, about
+-38dBFS**: technically non-zero, practically nothing. This is the second time modal voices have
+shipped inaudible (the 2026-08-14 claw/cube rebuild was the first, at 0.00001).
+
+**Decision — three rules for any modal (noise-through-resonators) voice:**
+
+1. ⚠ **The EXCITATION BURST LENGTH drives the level more than the gain does.** Measured at a fixed
+   amp: a **2ms burst gives 0.19 peak, a 20ms burst 0.47**. A very short click cannot push energy
+   into a narrow resonator, so a "crisper" burst is quietly also a *quieter* one. Pair short bursts
+   with proportionally larger amps, or lengthen the burst.
+2. ⚠ **Never trust a single render when measuring a noise-excited voice.** Each render seeds fresh
+   noise, so peaks scatter enough to invert an A/B. A single render "proved" that a highpass above
+   the fundamental was killing the level; **averaging 8 renders showed 40Hz, 120Hz and 220Hz all
+   within noise of each other — the highpass was innocent.** Average before concluding.
+3. **Headless CAN measure level, and must.** Splice an `AnalyserNode` in front of `destination` by
+   wrapping the AudioContext constructor before the page's script runs (no debug hook needed), drive
+   real input, and read `getFloatTimeDomainData`. **Target peak for a foreground voice is roughly
+   0.15-0.30.** Character still needs ears; level never did.
+
+**Rationale:** "Headless cannot hear" was being used to excuse not checking anything about the
+audio, and twice that let a completely inaudible build ship. Character and level are different
+questions, and only one of them needs a human.
+
+**Revisit if:** voices move to an AudioWorklet, where the level maths changes.
