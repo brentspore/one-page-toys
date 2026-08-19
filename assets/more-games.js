@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Word Kraven",
+      "tagline": "Hunt the words out",
+      "url": "https://onepagetoys.com/toys/word-kraven/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230d0b14'/><rect x='4' y='4' width='10' height='10' rx='2.6' fill='%232e2740'/><rect x='18' y='4' width='10' height='10' rx='2.6' fill='%232e2740'/><rect x='4' y='18' width='10' height='10' rx='2.6' fill='%232e2740'/><rect x='18' y='18' width='10' height='10' rx='2.6' fill='%23f0a832'/><path d='M9 9 L23 9 L9 23 L23 23' fill='none' stroke='%236fd08c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' opacity='0.95'/></svg>",
+      "initial": "W",
+      "slug": "word-kraven"
+    },
+    {
       "name": "Bowling",
       "tagline": "Hook it into the pocket",
       "url": "https://onepagetoys.com/toys/bowling/",
