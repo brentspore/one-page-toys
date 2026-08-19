@@ -301,12 +301,15 @@
 
   function commit() {
     var w = word();
+    var drawn = samples.slice();
+    samples = [];
     if (w.length >= MINLEN && isWord(w) && found.indexOf(w) < 0) {
       var before = rankFor(found.length, total).name;
       found.push(w); score += scoreWord(w);
       playFound(w.length);
       if (rankFor(found.length, total).name !== before) playRank();
       showCta();
+      if (drawn.length > 1) celebrate(drawn);
     } else if (path.length >= MINLEN) {
       playDud();
     }
@@ -316,23 +319,27 @@
 
 
   // ------------------------------------------------------------------ trail
-  /* The drag trail, using the same technique as Perfect Circle: an additive
-   * WIDE low-alpha glow underlay with a thin bright core on top, round-capped.
-   * One stroke looks like a line; two stacked with `lighter` look like light.
+  /* A light trail showing where the cursor actually went.
    *
-   * It draws the locked path between tile centres AND the loose segment out to
-   * wherever the finger actually is — that loose end is the whole point of a
-   * drag trail, and without it the line snaps between cells and stops feeling
-   * attached to the cursor. Core alphas stay well under 1 because the trail is
-   * drawn OVER the tiles and an opaque core washes out the letters. */
-  var TRAIL = {
-    idle:    { glow: "rgba(240,168,50,0.14)",  core: "rgba(255,236,205,0.55)", dot: "rgba(255,236,205,0.40)" },
-    maybe:   { glow: "rgba(240,168,50,0.20)",  core: "rgba(255,226,168,0.68)", dot: "rgba(255,226,168,0.50)" },
-    word:    { glow: "rgba(111,208,140,0.30)", core: "rgba(190,255,210,0.80)", dot: "rgba(190,255,210,0.60)" },
-    already: { glow: "rgba(127,155,214,0.24)", core: "rgba(200,222,255,0.66)", dot: "rgba(200,222,255,0.46)" },
-    dead:    { glow: "rgba(122,116,136,0.10)", core: "rgba(180,175,196,0.34)", dot: "rgba(180,175,196,0.22)" }
+   * ⚠ This strokes the FREEHAND PATH — every sampled pointer position — the way
+   * Perfect Circle does. An earlier version connected tile CENTRES and it was
+   * wrong in the way that matters: the line popped from letter to letter
+   * instead of following the hand, and ended inside a tile rather than at the
+   * cursor. The tiles already show which letters are locked in; the trail's job
+   * is to record the gesture.
+   *
+   * ⚠ Trace the path in ONE continuous stroke per pass. Under `lighter` the
+   * round cap at every sample overlaps its neighbour, and stroking segment by
+   * segment beads the trail into a dotted line. */
+  var TONE = {
+    idle:    { h: 38,  s: 100, l: 72 },
+    maybe:   { h: 42,  s: 100, l: 74 },
+    word:    { h: 145, s: 85,  l: 70 },
+    already: { h: 215, s: 90,  l: 76 },
+    dead:    { h: 265, s: 12,  l: 62 }
   };
-  var loosePt = null;
+  var MIN_STEP = 2.5, MAX_POINTS = 320, CELEBRATE_MS = 650;
+  var samples = [], celebration = null, celebRaf = 0;
 
   function sizeTrail() {
     var r = trailCanvas.getBoundingClientRect();
@@ -344,42 +351,127 @@
     return ctx;
   }
 
+  function pushSample(x, y) {
+    var r = trailCanvas.getBoundingClientRect();
+    var p = { x: x - r.left, y: y - r.top };
+    var last = samples[samples.length - 1];
+    if (last) {
+      var dx = p.x - last.x, dy = p.y - last.y;
+      if (dx * dx + dy * dy < MIN_STEP * MIN_STEP) return;
+    }
+    if (samples.length >= MAX_POINTS) samples.shift();
+    samples.push(p);
+  }
+
+  function tracePts(ctx, pts, from) {
+    ctx.beginPath();
+    if (pts.length - from < 2) {
+      var only = pts[pts.length - 1];
+      ctx.moveTo(only.x, only.y); ctx.lineTo(only.x + 0.01, only.y); ctx.stroke();
+      return;
+    }
+    ctx.moveTo(pts[from].x, pts[from].y);
+    for (var i = from + 1; i < pts.length - 1; i++) {
+      var mx = (pts[i].x + pts[i + 1].x) / 2, my = (pts[i].y + pts[i + 1].y) / 2;
+      ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
+    }
+    var last = pts[pts.length - 1];
+    ctx.lineTo(last.x, last.y);
+    ctx.stroke();
+  }
+
   function drawTrail() {
+    if (celebration) return;                 // the payoff owns the canvas
     var ctx = sizeTrail();
     var r = trailCanvas.getBoundingClientRect();
     ctx.clearRect(0, 0, r.width, r.height);
-    if (!path.length) return;
-    var pts = [];
-    for (var i = 0; i < path.length; i++) {
-      var el = gridEl.children[path[i]];
-      if (!el) continue;
-      var b = el.getBoundingClientRect();
-      pts.push({ x: b.left + b.width / 2 - r.left, y: b.top + b.height / 2 - r.top });
-    }
-    if (loosePt) pts.push(loosePt);
-    if (!pts.length) return;
-    var c = TRAIL[state] || TRAIL.idle;
+    if (!samples.length) return;
+    var t = TONE[state] || TONE.idle;
+    function hsl(l, a) { return "hsla(" + t.h + ", " + t.s + "%, " + l + "%, " + a + ")"; }
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     ctx.lineJoin = "round"; ctx.lineCap = "round";
-    function stroke() {
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      for (var k = 1; k < pts.length; k++) ctx.lineTo(pts[k].x, pts[k].y);
-      ctx.stroke();
-    }
-    if (pts.length > 1) {
-      ctx.strokeStyle = c.glow; ctx.lineWidth = 18; stroke();
-      ctx.strokeStyle = c.core; ctx.lineWidth = 3.4; stroke();
-    }
-    var head = pts[pts.length - 1];
-    var g = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 15);
-    g.addColorStop(0, c.dot);
-    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.strokeStyle = hsl(t.l - 6, 0.16); ctx.lineWidth = 26; tracePts(ctx, samples, 0);
+    ctx.strokeStyle = hsl(t.l + 4, 0.30);  ctx.lineWidth = 11; tracePts(ctx, samples, 0);
+    ctx.strokeStyle = hsl(Math.min(96, t.l + 20), 0.92); ctx.lineWidth = 3; tracePts(ctx, samples, 0);
+    // the head carries the light
+    ctx.strokeStyle = hsl(Math.min(98, t.l + 24), 0.55); ctx.lineWidth = 7;
+    tracePts(ctx, samples, Math.max(0, samples.length - 26));
+
+    var head = samples[samples.length - 1];
+    var g = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 20);
+    g.addColorStop(0, hsl(96, 0.95));
+    g.addColorStop(0.4, hsl(t.l + 10, 0.35));
+    g.addColorStop(1, hsl(t.l, 0));
     ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(head.x, head.y, 15, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(head.x, head.y, 20, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
+  }
+
+  /* When a word lands the trail pays off rather than vanishing: it flares
+   * white-hot along its length, throws sparks, then lifts and fades. Short on
+   * purpose — a reward that outstays the next gesture becomes lag. */
+  function makeSparks(pts, hue) {
+    var out = [], count = Math.min(22, 8 + Math.floor(pts.length / 8));
+    for (var i = 0; i < count; i++) {
+      var t = Math.pow(Math.random(), 0.6);
+      var p = pts[Math.min(pts.length - 1, Math.floor(t * pts.length))];
+      var ang = Math.random() * Math.PI * 2, sp = 26 + Math.random() * 90;
+      out.push({ x: p.x, y: p.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 30,
+                 life: 0.55 + Math.random() * 0.45, hue: hue + Math.random() * 26 - 8 });
+    }
+    return out;
+  }
+
+  function drawCelebration(pts, sparks, prog) {
+    var ctx = sizeTrail();
+    var r = trailCanvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, r.width, r.height);
+    if (!pts.length) return;
+    var t = TONE.word;
+    var p = Math.max(0, Math.min(1, prog));
+    var flare = p < 0.18 ? p / 0.18 : 1;
+    var fade = p < 0.30 ? 1 : 1 - (p - 0.30) / 0.70;
+    function hsl(l, a) { return "hsla(" + t.h + ", " + t.s + "%, " + l + "%, " + a + ")"; }
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    ctx.translate(0, -p * 14);
+    ctx.strokeStyle = hsl(t.l, 0.30 * flare * fade); ctx.lineWidth = 34 + 26 * flare; tracePts(ctx, pts, 0);
+    ctx.strokeStyle = hsl(t.l + 14, 0.45 * flare * fade); ctx.lineWidth = 13; tracePts(ctx, pts, 0);
+    ctx.strokeStyle = "hsla(" + t.h + ", " + t.s + "%, 98%, " + (0.95 * flare * fade) + ")";
+    ctx.lineWidth = 3.5; tracePts(ctx, pts, 0);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    var tt = p * (CELEBRATE_MS / 1000);
+    for (var i = 0; i < sparks.length; i++) {
+      var s2 = sparks[i], life = 1 - p / s2.life;
+      if (life <= 0) continue;
+      var x = s2.x + s2.vx * tt, y = s2.y + s2.vy * tt + 160 * tt * tt;
+      var rad = 2.4 * life + 0.6;
+      var sg = ctx.createRadialGradient(x, y, 0, x, y, rad * 3.4);
+      sg.addColorStop(0, "hsla(" + s2.hue + ", 95%, 92%, " + (0.9 * life) + ")");
+      sg.addColorStop(1, "hsla(" + s2.hue + ", 95%, 70%, 0)");
+      ctx.fillStyle = sg;
+      ctx.beginPath(); ctx.arc(x, y, rad * 3.4, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function celebrate(pts) {
+    celebration = { pts: pts, sparks: makeSparks(pts, 145), start: performance.now() };
+    cancelAnimationFrame(celebRaf);
+    (function step() {
+      if (!celebration) return;
+      var prog = (performance.now() - celebration.start) / CELEBRATE_MS;
+      if (prog >= 1) { celebration = null; drawTrail(); return; }
+      drawCelebration(celebration.pts, celebration.sparks, prog);
+      celebRaf = requestAnimationFrame(step);
+    })();
   }
   window.addEventListener("resize", drawTrail);
 
@@ -393,24 +485,26 @@
     if (!t || !gridEl.contains(t)) return -1;
     return parseInt(t.getAttribute("data-index"), 10);
   }
-  function localPoint(x, y) {
-    var r = trailCanvas.getBoundingClientRect();
-    return { x: x - r.left, y: y - r.top };
-  }
   gridEl.addEventListener("pointerdown", function (e) {
     initAudio();
     var i = indexAt(e.clientX, e.clientY);
     if (i < 0) return;
     dragging = true;
-    loosePt = null;
+    celebration = null;
+    samples = [];
+    pushSample(e.clientX, e.clientY);
     if (gridEl.setPointerCapture) { try { gridEl.setPointerCapture(e.pointerId); } catch (er) {} }
     path = [i]; setState(); playStep(0); render();
     dismissHint();
   });
   gridEl.addEventListener("pointermove", function (e) {
     if (!dragging) return;
-    // the trail follows the CURSOR, not the last tile
-    loosePt = localPoint(e.clientX, e.clientY);
+    /* Sample coalesced moves too: on a fast flick the browser batches several
+     * positions into one event, and taking only the last turns a curve into a
+     * straight chord. */
+    var raw = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    if (raw && raw.length) { for (var q = 0; q < raw.length; q++) pushSample(raw[q].clientX, raw[q].clientY); }
+    else pushSample(e.clientX, e.clientY);
     var i = indexAt(e.clientX, e.clientY);
     if (i < 0) { drawTrail(); return; }
     if (path.length >= 2 && i === path[path.length - 2]) { path.pop(); setState(); render(); return; }
@@ -420,7 +514,7 @@
     if (Math.abs(ar - br) > 1 || Math.abs(ac - bc) > 1) return;
     path.push(i); setState(); playStep(path.length - 1); render();
   });
-  function up() { if (!dragging) return; dragging = false; loosePt = null; commit(); }
+  function up() { if (!dragging) return; dragging = false; commit(); }
   gridEl.addEventListener("pointerup", up);
   gridEl.addEventListener("pointercancel", up);
 
