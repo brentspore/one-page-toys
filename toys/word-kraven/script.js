@@ -177,6 +177,12 @@
 
   /* Modal: noise through resonant bandpasses at the object's own modes. A
    * stack of clean oscillators is a chord, not an object. */
+  /* ⚠ LEVELS. Measured, after this shipped inaudible at a peak of 0.013 (about
+   * -38dBFS). Gain scales roughly linearly with amp, but the EXCITATION BURST
+   * LENGTH matters more: at the same amp a 2ms burst measured 0.19 peak and a
+   * 20ms burst 0.47, because a very short click cannot push energy into a
+   * narrow resonator. Short bursts plus amps around 0.2 compounded to silence.
+   * A highpass above the fundamental was suspected and measured innocent. */
   function modal(base, amp, modes, burst, hp) {
     if (!actx || !target || muted) return;
     var t = actx.currentTime;
@@ -203,17 +209,17 @@
     ex.start(t); ex.stop(t + longest + 0.1);
   }
   var LADDER = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24, 26];
-  function playStep(i) { modal(196 * Math.pow(2, LADDER[Math.min(i, 11)] / 12), 0.22, [[1,0.9,0.10],[2.01,0.4,0.06],[3.02,0.16,0.04]], 0.002, 220); }
+  function playStep(i) { modal(196 * Math.pow(2, LADDER[Math.min(i, 11)] / 12), 2.6, [[1,0.9,0.10],[2.01,0.4,0.06],[3.02,0.16,0.04]], 0.007, 120); }
   function playFound(len) {
     var f = 261.63 * Math.pow(2, LADDER[Math.min(len - 2, 11)] / 12);
     [1, 1.5, 2].forEach(function (m, i) {
-      setTimeout(function () { modal(f * m, 0.18 / (i + 1), [[1,0.9,0.5],[2,0.5,0.36],[3.01,0.3,0.24]], 0.002, 260); }, i * 55);
+      setTimeout(function () { modal(f * m, 5.5 / (i + 1), [[1,0.9,0.5],[2,0.5,0.36],[3.01,0.3,0.24]], 0.006, 140); }, i * 55);
     });
   }
-  function playDud() { modal(150, 0.14, [[1,0.8,0.07],[1.9,0.3,0.04]], 0.004, 80); }
+  function playDud() { modal(150, 2.2, [[1,0.8,0.07],[1.9,0.3,0.04]], 0.010, 60); }
   function playRank() {
     [0, 7, 12, 16].forEach(function (s, i) {
-      setTimeout(function () { modal(392 * Math.pow(2, s / 12), 0.16, [[1,0.9,0.9],[2,0.5,0.6],[3.01,0.28,0.4]], 0.002, 300); }, i * 90);
+      setTimeout(function () { modal(392 * Math.pow(2, s / 12), 4.5, [[1,0.9,0.9],[2,0.5,0.6],[3.01,0.28,0.4]], 0.006, 160); }, i * 90);
     });
   }
 
