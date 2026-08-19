@@ -66,6 +66,8 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "word-kraven":
+    "word kraven word hunt word search letter grid find words in a grid trace words connect letters adjacent letters drag to spell word game words game vocabulary game spelling game anagram find as many words as you can boggle style letter cube grid four by four grid daily word game wordle like word puzzle brain game brain training lexicon dictionary game longest word rank ladder practice grid unlimited grids wordkraven daily word grid"
   "claw-machine":
     "claw machine crane game skill crane prize crane grabber claw grab a prize ufo catcher toy crane arcade claw claw game prize machine plush machine capsule machine gacha gashapon carnival midway arcade cabinet coin op drop the claw pick it up grip strength weak claw rigged claw win a prize prize chute stuffed animal grabber machine toy grabber crane operator boardwalk fairground amusement arcade 3d claw physics claw satisfying grab tension score chase ten drops",
   "twisty-cube":

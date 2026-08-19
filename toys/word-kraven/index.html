@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Word Kraven — One Page Toys</title>
+    <meta name="description" content="Trace through touching letters to hunt words out of a grid. Unlimited practice grids, a rank to climb, and a fresh screened board whenever you want one. The daily version lives at wordkraven.com. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/word-kraven/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0d0b14" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Word Kraven — One Page Toys" />
+    <meta property="og:description" content="Hunt words out of a letter grid. Unlimited practice; the daily grid lives at wordkraven.com." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/word-kraven/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/word-kraven.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Word Kraven — One Page Toys" />
+    <meta name="twitter:description" content="Trace through touching letters and hunt the words out of the grid." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/word-kraven.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Word Kraven",
+        "url": "https://onepagetoys.com/toys/word-kraven/",
+        "description": "A word hunt on a four by four letter grid. Drag through touching letters, including diagonals, to trace words of four letters or more; every grid is screened so it always holds a satisfying number of words, and a rank ladder tracks how much of it you have found. This is the unlimited practice edition, with a fresh grid whenever you want one. The daily version, where everyone gets the same grid and a streak for coming back, lives at wordkraven.com.",
+        "applicationCategory": "GameApplication",
+        "genre": "Word",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <a class="daily" id="daily" href="https://wordkraven.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=wordkraven_practice" target="_blank" rel="noopener">
+      <span class="daily__k">Today's grid</span>
+      <span class="daily__t" id="dailyTime">--</span>
+      <span class="daily__go">wordkraven.com →</span>
+    </a>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <main class="shell">
+      <p class="trail" id="trail" aria-live="polite"> </p>
+      <div class="grid" id="grid" role="application" aria-label="4 by 4 letter grid"></div>
+
+      <section class="progress">
+        <div class="rankrow">
+          <span class="rank" id="rank">Stirring</span>
+          <span class="tonext" id="toNext"></span>
+        </div>
+        <div class="meter"><span id="meterFill"></span></div>
+        <p class="stat" id="stat">0 of 0 · 0 pts</p>
+      </section>
+
+      <p class="hint" id="hint">Drag through touching letters. Four or more.</p>
+      <section class="found" id="found"></section>
+
+      <div class="cta" id="cta" hidden>
+        <p class="cta__line" id="ctaLine"></p>
+        <a class="cta__btn" id="ctaBtn" href="https://wordkraven.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=wordkraven_solved" target="_blank" rel="noopener">Play today's grid →</a>
+      </div>
+
+      <button type="button" class="new-btn" id="newBtn">New grid</button>
+    </main>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">Hunt them out of the grid</p>
+        <h1 class="panel__title">Word Kraven</h1>
+        <p class="panel__text">
+          Drag through <b>touching letters</b>, diagonals included, to trace words of four letters or
+          more. Every grid is screened so it always holds a good haul, and a rank ladder tracks how
+          much of it you have found. Unlimited practice here; the <b>daily grid</b>, where everyone
+          plays the same board, is at wordkraven.com.
+        </p>
+        <button type="button" class="play-btn" id="ovBtn" disabled>Loading the dictionary…</button>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 112</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <script src="../../assets/tickets.js?v=20" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=15" defer></script>
+  </body>
+</html>

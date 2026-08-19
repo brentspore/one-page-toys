@@ -1,5 +1,35 @@
 [
   {
+    "slug": "word-kraven",
+    "name": "Word Kraven",
+    "shortDescription": "Trace through touching letters, diagonals included, to hunt words out of a 4x4 grid. Every board is screened so it always holds a good haul, and a rank ladder tracks how much of it you have found. This is the unlimited practice edition; the daily grid, where everyone plays the same board and keeps a streak, lives at wordkraven.com.",
+    "category": "game",
+    "tags": [
+      "word-kraven",
+      "word-game",
+      "word-search",
+      "letter-grid",
+      "trace",
+      "vocabulary",
+      "puzzle",
+      "brain",
+      "spelling",
+      "anagram",
+      "daily",
+      "practice",
+      "score-chase",
+      "drag",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/word-kraven/",
+    "related": [
+      "spelling-blocks",
+      "trail-game",
+      "five-second-game"
+    ]
+  },
+  {
     "slug": "chord-harp",
     "name": "Chord Harp",
     "shortDescription": "A chord zither: pick one of six chords, then sweep the whole field of strings. The bar damps every string outside that chord, so a careless strum is still in key and there is no wrong note to hit. Each string is a plucked-string model synthesized live, so a hard strum sounds brighter than a soft one and the high strings ring down faster than the low ones.",
