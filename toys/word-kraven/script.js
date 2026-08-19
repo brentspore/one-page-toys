@@ -39,6 +39,9 @@
   var ctaEl = document.getElementById("cta");
   var ctaLine = document.getElementById("ctaLine");
   var ctaBtn = document.getElementById("ctaBtn");
+  var badgeEl = document.getElementById("badge");
+  var clearPanel = document.getElementById("clearPanel");
+  var clearSub = document.getElementById("clearSub");
 
   var RANKS = [
     { name: "Stirring", at: 0.00 }, { name: "Prowling", at: 0.08 },
@@ -49,6 +52,8 @@
   var trie = null, letters = [], total = 0, found = [], score = 0, path = [], state = "idle";
   var runs = 0;
   try { runs = parseInt(localStorage.getItem("wordkraven_runs") || "0", 10) || 0; } catch (e) {}
+  var cleared = 0;
+  try { cleared = parseInt(localStorage.getItem("wordkraven_cleared") || "0", 10) || 0; } catch (e) {}
 
   // ------------------------------------------------------------- dictionary
 
@@ -217,6 +222,15 @@
     });
   }
   function playDud() { modal(150, 2.2, [[1,0.8,0.07],[1.9,0.3,0.04]], 0.010, 60); }
+  /* Clearing the board. Deliberately unlike every other sound here: a rising
+   * arpeggio with long tails rather than a short percussive hit, so it reads
+   * as an event and not a louder "found a word". */
+  function playPerfect() {
+    var RING = [[1,0.9,1.4],[2,0.5,1.0],[3.01,0.3,0.7],[4.17,0.16,0.45]];
+    [0,4,7,12,16,19].forEach(function (semi, i) {
+      setTimeout(function () { modal(392 * Math.pow(2, semi / 12), 5.0 / (i * 0.22 + 1), RING, 0.008, 150); }, i * 110);
+    });
+  }
   function playRank() {
     [0, 7, 12, 16].forEach(function (s, i) {
       setTimeout(function () { modal(392 * Math.pow(2, s / 12), 4.5, [[1,0.9,0.9],[2,0.5,0.6],[3.01,0.28,0.4]], 0.006, 160); }, i * 90);
@@ -244,6 +258,8 @@
     var picked = screenedGrid();
     letters = picked.g; total = picked.n;
     found = []; score = 0; path = []; state = "idle";
+    if (badgeEl) badgeEl.hidden = true;
+    if (clearPanel) clearPanel.hidden = true;
     renderGrid();
     render();
   }
@@ -271,7 +287,8 @@
     statEl.textContent = found.length + " of " + total + " · " + score + " pts";
     var rk = rankFor(found.length, total), nx = nextRank(found.length, total);
     rankEl.textContent = rk.name;
-    toNextEl.textContent = nx ? (Math.max(1, Math.ceil(nx.at * total) - found.length) + " more to " + nx.name) : "top rank";
+    var isClear = total > 0 && found.length >= total;
+    toNextEl.textContent = isClear ? "" : (nx ? (Math.max(1, Math.ceil(nx.at * total) - found.length) + " more to " + nx.name) : "top rank");
     meterEl.style.width = (total ? Math.round(found.length / total * 100) : 0) + "%";
     if (found.length) {
       var groups = {};
@@ -315,7 +332,20 @@
       playFound(w.length);
       if (rankFor(found.length, total).name !== before) playRank();
       showCta();
-      if (drawn.length > 1) celebrate(drawn);
+      if (found.length >= total) {
+        /* Clearing the board is not a rank — the ladder tops out at 62% — so it
+         * gets its own badge, panel and fanfare. */
+        cleared++;
+        try { localStorage.setItem("wordkraven_cleared", String(cleared)); } catch (e) {}
+        badgeEl.hidden = false;
+        clearSub.textContent = "All " + total + " of them" + (cleared > 1 ? " · " + cleared + " boards cleared" : "");
+        clearPanel.hidden = false;
+        playPerfect();
+        celebratePerfect();
+        track("board_cleared", { total: total });
+      } else if (drawn.length > 1) {
+        celebrate(drawn);
+      }
     } else if (path.length >= MINLEN) {
       playDud();
     }
@@ -468,6 +498,62 @@
     ctx.restore();
   }
 
+  var PERFECT_MS = 1500;
+  /* The board-clear burst is about the GRID, not the path, so it blooms from
+   * the centre rather than being a brighter version of the per-word flare. */
+  function makeBurst(w, h) {
+    var out = [];
+    for (var i = 0; i < 60; i++) {
+      var ang = Math.random() * Math.PI * 2, sp = 90 + Math.random() * 260;
+      out.push({ x: w / 2, y: h / 2, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 60,
+                 life: 0.5 + Math.random() * 0.5, hue: 38 + Math.random() * 26 });
+    }
+    return out;
+  }
+  function drawPerfect(sparks, prog) {
+    var ctx = sizeTrail();
+    var r = trailCanvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, r.width, r.height);
+    var p = Math.max(0, Math.min(1, prog));
+    var flare = p < 0.12 ? p / 0.12 : 1;
+    var fade = p < 0.35 ? 1 : 1 - (p - 0.35) / 0.65;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    var rad = Math.max(r.width, r.height) * (0.15 + 0.75 * p);
+    var g = ctx.createRadialGradient(r.width/2, r.height/2, 0, r.width/2, r.height/2, rad);
+    g.addColorStop(0, "hsla(46, 100%, 88%, " + (0.55 * flare * fade) + ")");
+    g.addColorStop(0.45, "hsla(40, 100%, 66%, " + (0.22 * flare * fade) + ")");
+    g.addColorStop(1, "hsla(38, 100%, 60%, 0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, r.width, r.height);
+    var t = p * (PERFECT_MS / 1000);
+    for (var i = 0; i < sparks.length; i++) {
+      var s2 = sparks[i], life = 1 - p / s2.life;
+      if (life <= 0) continue;
+      var x = s2.x + s2.vx * t, y = s2.y + s2.vy * t + 210 * t * t;
+      var sr = 2.8 * life + 0.7;
+      var sg = ctx.createRadialGradient(x, y, 0, x, y, sr * 3.6);
+      sg.addColorStop(0, "hsla(" + s2.hue + ", 100%, 92%, " + (0.95 * life) + ")");
+      sg.addColorStop(1, "hsla(" + s2.hue + ", 100%, 70%, 0)");
+      ctx.fillStyle = sg;
+      ctx.beginPath(); ctx.arc(x, y, sr * 3.6, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function celebratePerfect() {
+    var r = trailCanvas.getBoundingClientRect();
+    var burst = makeBurst(r.width, r.height), start = performance.now();
+    celebration = { pts: [], sparks: [], start: start };
+    cancelAnimationFrame(celebRaf);
+    (function step() {
+      if (!celebration) return;
+      var prog = (performance.now() - start) / PERFECT_MS;
+      if (prog >= 1) { celebration = null; drawTrail(); return; }
+      drawPerfect(burst, prog);
+      celebRaf = requestAnimationFrame(step);
+    })();
+  }
+
   function celebrate(pts) {
     celebration = { pts: pts, sparks: makeSparks(pts, 145), start: performance.now() };
     cancelAnimationFrame(celebRaf);
@@ -561,7 +647,8 @@
     var t = e.target && e.target.closest ? e.target.closest(".opt-share") : null;
     if (t) track("share", { method: "wordkraven_feeder", value: found.length });
   });
-  [[dailyEl, "banner"], [ctaBtn, "post_round"]].forEach(function (pair) {
+  var clearCta = document.getElementById("clearCta");
+  [[dailyEl, "banner"], [ctaBtn, "post_round"], [clearCta, "board_cleared"]].forEach(function (pair) {
     pair[0].addEventListener("click", function () {
       track("outbound_click", { destination: "wordkraven.com", link_id: pair[1] });
     });

@@ -57,7 +57,7 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=2" />
+    <link rel="stylesheet" href="styles.css?v=3" />
   </head>
   <body>
     <a class="daily" id="daily" href="https://wordkraven.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=wordkraven_practice" target="_blank" rel="noopener">
@@ -79,9 +79,19 @@
         <div class="rankrow">
           <span class="rank" id="rank">Stirring</span>
           <span class="tonext" id="toNext"></span>
+          <span class="badge" id="badge" hidden>◆ Cleared</span>
         </div>
         <div class="meter"><span id="meterFill"></span></div>
         <p class="stat" id="stat">0 of 0 · 0 pts</p>
+      </section>
+
+      <section class="clearpanel" id="clearPanel" role="status" hidden>
+        <p class="clearpanel__eyebrow">Every word</p>
+        <h2 class="clearpanel__title">Board cleared</h2>
+        <p class="clearpanel__sub" id="clearSub"></p>
+        <a class="cta__btn" id="clearCta"
+           href="https://wordkraven.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=wordkraven_cleared"
+           target="_blank" rel="noopener">Try today's grid →</a>
       </section>
 
       <p class="hint" id="hint">Drag through touching letters. Four or more.</p>
@@ -115,7 +125,7 @@
     </div>
 
     <script src="../../assets/tickets.js?v=20" defer></script>
-    <script src="script.js?v=4" defer></script>
+    <script src="script.js?v=5" defer></script>
     <script src="../../assets/prizes.js?v=1" defer></script>
     <script src="../../assets/tip-jar.js?v=10" defer></script>
     <script src="../../assets/share.js?v=5" defer></script>
