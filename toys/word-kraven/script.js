@@ -22,6 +22,7 @@
   var GRID = 4, MINLEN = 4, BAND_LO = 30, BAND_HI = 65;
 
   var gridEl = document.getElementById("grid");
+  var trailCanvas = document.getElementById("trailCanvas");
   var trailEl = document.getElementById("trail");
   var statEl = document.getElementById("stat");
   var rankEl = document.getElementById("rank");
@@ -281,6 +282,7 @@
       foundEl.innerHTML = "";
       hintEl.hidden = false;
     }
+    drawTrail();
   }
 
   function word() {
@@ -312,6 +314,75 @@
     render();
   }
 
+
+  // ------------------------------------------------------------------ trail
+  /* The drag trail, using the same technique as Perfect Circle: an additive
+   * WIDE low-alpha glow underlay with a thin bright core on top, round-capped.
+   * One stroke looks like a line; two stacked with `lighter` look like light.
+   *
+   * It draws the locked path between tile centres AND the loose segment out to
+   * wherever the finger actually is — that loose end is the whole point of a
+   * drag trail, and without it the line snaps between cells and stops feeling
+   * attached to the cursor. Core alphas stay well under 1 because the trail is
+   * drawn OVER the tiles and an opaque core washes out the letters. */
+  var TRAIL = {
+    idle:    { glow: "rgba(240,168,50,0.14)",  core: "rgba(255,236,205,0.55)", dot: "rgba(255,236,205,0.40)" },
+    maybe:   { glow: "rgba(240,168,50,0.20)",  core: "rgba(255,226,168,0.68)", dot: "rgba(255,226,168,0.50)" },
+    word:    { glow: "rgba(111,208,140,0.30)", core: "rgba(190,255,210,0.80)", dot: "rgba(190,255,210,0.60)" },
+    already: { glow: "rgba(127,155,214,0.24)", core: "rgba(200,222,255,0.66)", dot: "rgba(200,222,255,0.46)" },
+    dead:    { glow: "rgba(122,116,136,0.10)", core: "rgba(180,175,196,0.34)", dot: "rgba(180,175,196,0.22)" }
+  };
+  var loosePt = null;
+
+  function sizeTrail() {
+    var r = trailCanvas.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+    if (trailCanvas.width !== w || trailCanvas.height !== h) { trailCanvas.width = w; trailCanvas.height = h; }
+    var ctx = trailCanvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return ctx;
+  }
+
+  function drawTrail() {
+    var ctx = sizeTrail();
+    var r = trailCanvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, r.width, r.height);
+    if (!path.length) return;
+    var pts = [];
+    for (var i = 0; i < path.length; i++) {
+      var el = gridEl.children[path[i]];
+      if (!el) continue;
+      var b = el.getBoundingClientRect();
+      pts.push({ x: b.left + b.width / 2 - r.left, y: b.top + b.height / 2 - r.top });
+    }
+    if (loosePt) pts.push(loosePt);
+    if (!pts.length) return;
+    var c = TRAIL[state] || TRAIL.idle;
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    function stroke() {
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (var k = 1; k < pts.length; k++) ctx.lineTo(pts[k].x, pts[k].y);
+      ctx.stroke();
+    }
+    if (pts.length > 1) {
+      ctx.strokeStyle = c.glow; ctx.lineWidth = 18; stroke();
+      ctx.strokeStyle = c.core; ctx.lineWidth = 3.4; stroke();
+    }
+    var head = pts[pts.length - 1];
+    var g = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 15);
+    g.addColorStop(0, c.dot);
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(head.x, head.y, 15, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+  window.addEventListener("resize", drawTrail);
+
   // ---------------------------------------------------------------- pointer
   /* One pointer path. With touch, events keep firing at the element the gesture
    * STARTED on, so the handlers live on the container and hit-test the point. */
@@ -322,19 +393,26 @@
     if (!t || !gridEl.contains(t)) return -1;
     return parseInt(t.getAttribute("data-index"), 10);
   }
+  function localPoint(x, y) {
+    var r = trailCanvas.getBoundingClientRect();
+    return { x: x - r.left, y: y - r.top };
+  }
   gridEl.addEventListener("pointerdown", function (e) {
     initAudio();
     var i = indexAt(e.clientX, e.clientY);
     if (i < 0) return;
     dragging = true;
+    loosePt = null;
     if (gridEl.setPointerCapture) { try { gridEl.setPointerCapture(e.pointerId); } catch (er) {} }
     path = [i]; setState(); playStep(0); render();
     dismissHint();
   });
   gridEl.addEventListener("pointermove", function (e) {
     if (!dragging) return;
+    // the trail follows the CURSOR, not the last tile
+    loosePt = localPoint(e.clientX, e.clientY);
     var i = indexAt(e.clientX, e.clientY);
-    if (i < 0) return;
+    if (i < 0) { drawTrail(); return; }
     if (path.length >= 2 && i === path[path.length - 2]) { path.pop(); setState(); render(); return; }
     if (path.indexOf(i) >= 0) return;
     var last = path[path.length - 1];
@@ -342,7 +420,7 @@
     if (Math.abs(ar - br) > 1 || Math.abs(ac - bc) > 1) return;
     path.push(i); setState(); playStep(path.length - 1); render();
   });
-  function up() { if (!dragging) return; dragging = false; commit(); }
+  function up() { if (!dragging) return; dragging = false; loosePt = null; commit(); }
   gridEl.addEventListener("pointerup", up);
   gridEl.addEventListener("pointercancel", up);
 
