@@ -503,6 +503,19 @@ let knownCategories = [];
 let galleryMode = "all";
 let homeFeatured = null;
 let newestTool = null;
+let featuredTool = null;
+
+// Toys with bespoke 16:9 key art in assets/featured/<slug>.webp. The home
+// spotlight rotates through these — one per page load — instead of always
+// showing the newest toy. Add a slug here only once its art exists.
+const FEATURED_ART = [
+  "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher", "darts",
+  "deep-descent", "deep-hollow", "dot-loop", "five-second-game", "mini-golf",
+  "nova-coil", "paper-plane", "perfect-circle", "pool", "puffling",
+  "shuriken-night", "skee-ball", "sky-fortress", "slice-it", "spelling-blocks",
+  "stack-tower", "tossing-cards", "trail-game", "trio", "twisty-cube",
+  "word-kraven"
+];
 
 function shuffleInPlace(arr, rand) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -1182,7 +1195,8 @@ function applyFilters() {
   if (galleryMode === "home") {
     if (!homeFeatured) {
       // exclude the spotlight toy so it isn't repeated in the Fresh picks grid
-      const featuredSlug = newestTool && newestTool.slug;
+      const spotlight = featuredTool || newestTool;
+      const featuredSlug = spotlight && spotlight.slug;
       const pool = allTools.filter(function (t) {
         return t && t.path && t.slug !== featuredSlug;
       });
@@ -1234,15 +1248,32 @@ function wireRandomButton() {
   });
 }
 
-// Home landing: fill the live toy count + spotlight the newest toy
+// Pick this page load's spotlight: any toy that has key art, avoiding an
+// immediate repeat within the session so a reload always feels like a reshuffle
+function pickFeaturedTool(tools) {
+  const pool = tools.filter(function (t) {
+    return t && t.path && t.slug && FEATURED_ART.indexOf(t.slug) !== -1;
+  });
+  if (!pool.length) return null;
+  let last = "";
+  try { last = sessionStorage.getItem("opt-featured-last") || ""; } catch (e) {}
+  const fresh = pool.length > 1
+    ? pool.filter(function (t) { return t.slug !== last; })
+    : pool;
+  const pick = fresh[Math.floor(Math.random() * fresh.length)];
+  try { sessionStorage.setItem("opt-featured-last", pick.slug); } catch (e) {}
+  return pick;
+}
+
+// Home landing: fill the live toy count + spotlight one toy
 function renderHomeHero() {
   if (galleryMode !== "home") return;
   const countEl = document.getElementById("heroCount");
   if (countEl) countEl.textContent = String(allTools.length);
 
   const sec = document.getElementById("homeFeatured");
-  if (!sec || !newestTool || !newestTool.path) return;
-  const t = newestTool;
+  const t = featuredTool || newestTool;
+  if (!sec || !t || !t.path) return;
   const nameEl = document.getElementById("featuredName");
   const catEl = document.getElementById("featuredCat");
   const descEl = document.getElementById("featuredDesc");
@@ -1254,7 +1285,22 @@ function renderHomeHero() {
   const catKey = String(t.category || "").toLowerCase();
   if (catEl) catEl.textContent = CATEGORY_LABELS[catKey] || "";
   if (descEl) descEl.textContent = t.shortDescription || "";
-  if (prev && t.slug) prev.dataset.slug = t.slug;
+  if (prev && t.slug) {
+    if (FEATURED_ART.indexOf(t.slug) !== -1) {
+      // real key art wins outright: skip data-slug so no card motif can show
+      // through, and paint every background longhand so slug rules can't win
+      prev.removeAttribute("data-slug");
+      prev.classList.add("card__preview--art");
+      prev.style.background =
+        '#07070b url("/assets/featured/' + t.slug + '.webp?v=1") center / cover no-repeat';
+      // the art carries the toy's own logo, so the heading would just repeat it:
+      // keep it for screen readers only and let the panel re-space itself
+      sec.classList.add("home-featured--art");
+      if (nameEl) nameEl.classList.add("sr-only");
+    } else {
+      prev.dataset.slug = t.slug;
+    }
+  }
 
   function go() {
     track("toy_launch", {
@@ -1347,6 +1393,8 @@ async function loadRegistryAndRender() {
 
     // registry is maintained newest-first, so the first toy with a path is the newest
     newestTool = tools.find(function (t) { return t && t.path; }) || null;
+    // one key-art toy per page load; falls back to the newest if art is missing
+    featuredTool = pickFeaturedTool(tools) || newestTool;
     // keep the registry position on each toy; the alphabetical sort below
     // destroys the ordering the newest/oldest sort modes need
     tools.forEach(function (t, i) { if (t) t.__ord = i; });

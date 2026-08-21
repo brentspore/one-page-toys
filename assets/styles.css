@@ -306,9 +306,15 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 }
 .home-featured__media{ display: block; text-decoration: none; }
 .home-featured__media .card__preview{
-  height: clamp(180px, 26vw, 280px); margin: 0; border-radius: 14px;
+  height: auto; aspect-ratio: 16 / 9; margin: 0; border-radius: 14px;
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
+/* key art is 16:9, so let it fill the slot edge to edge */
+.home-featured__media .card__preview--art{ background-size: cover; }
+/* with key art the logo already says the name, so the heading drops to sr-only:
+   hand its vertical space to the label below so the column still reads composed */
+.home-featured--art .home-featured__cat{ margin-top: 18px; }
+.home-featured--art .home-featured__desc{ margin-top: 14px; }
 .home-featured__media:hover .card__preview{ transform: translateY(-2px); box-shadow: var(--shadow-md), inset 0 0 0 1px rgba(255,255,255,0.05); }
 .home-featured__body{ min-width: 0; }
 .home-featured__title{
