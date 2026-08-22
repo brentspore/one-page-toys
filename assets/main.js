@@ -66,6 +66,7 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "pinball": "pinball pin ball flippers flipper table arcade machine cabinet bumpers pop bumper slingshot plunger launch drop targets orbit lane scoop kickback tilt nudge silver ball steel ball score chase high score retro arcade neon space table classic coin op amusement pinball wizard flip the ball keep it alive drain skill shot multiplier",
   "word-kraven":
     "word kraven word hunt word search letter grid find words in a grid trace words connect letters adjacent letters drag to spell word game words game vocabulary game spelling game anagram find as many words as you can boggle style letter cube grid four by four grid daily word game wordle like word puzzle brain game brain training lexicon dictionary game longest word rank ladder practice grid unlimited grids wordkraven daily word grid",
   "claw-machine":

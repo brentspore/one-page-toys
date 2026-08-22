@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Pinball — One Page Toys</title>
+    <meta name="description" content="A real pinball table in your browser. Pull the plunger, work the flippers, and hunt the pop bumpers, drop-target bank, orbits and the scoop. Three balls, live scoring, and a multiplier you build yourself. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/pinball/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#05050a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Pinball — One Page Toys" />
+    <meta property="og:description" content="One lovingly built neon table. Pull the plunger, work the flippers, light T-O-Y for the multiplier, and chase the scoop." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/pinball/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/pinball.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pinball — One Page Toys" />
+    <meta name="twitter:description" content="A neon table with real flipper physics, pop bumpers, a drop-target bank and a scoop. Three balls." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/pinball.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Pinball",
+        "url": "https://onepagetoys.com/toys/pinball/",
+        "description": "A single curated pinball table simulated with continuous collision, so the ball can never pass through a wall no matter how fast it travels. The flippers are rotating segments driven by angular impulse: where you catch the ball along the flipper, and how fast the flipper is moving at contact, decide where it goes. The table has three pop bumpers, two slingshots, a three-bank of drop targets, left and right orbit lanes, a captive scoop and three top rollover lanes that spell T-O-Y to raise the multiplier. Three balls per game, with a skill shot on every launch and best score kept locally.",
+        "applicationCategory": "GameApplication",
+        "genre": "Arcade",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell hud__cell--score">
+        <span class="hud__k">Score</span><span id="score">0</span>
+      </div>
+      <div class="hud__cell"><span class="hud__k">Ball</span><span id="ballNo">1/3</span></div>
+      <div class="hud__cell"><span class="hud__k">Mult</span><span id="mult">1×</span></div>
+      <div class="hud__cell"><span class="hud__k">Best</span><span id="best">—</span></div>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">One table, three balls</p>
+        <h1 class="panel__title" id="ovTitle">Pinball</h1>
+        <p class="panel__text" id="ovText">
+          <b>Hold</b> to draw the plunger, release to launch — the longer you hold, the
+          harder it goes. Then <b>tap the left or right half</b> of the screen for that
+          flipper. Light <b>T-O-Y</b> across the top lanes to raise the multiplier, knock
+          down all three targets for the bank, and find the scoop.
+        </p>
+        <button type="button" class="play-btn" id="ovBtn">Pull the plunger</button>
+        <p class="panel__keys" id="ovKeys">← → or A D flippers · space plunger · Z X nudge</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 113</span>
+      <span class="frame__corner frame__corner--tr">Pinball</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">hold to pull the plunger &middot; tap a side or press &larr; &rarr; for its flipper</p>
+
+    <script src="../../assets/tickets.js?v=21" defer></script>
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=16" defer></script>
+  </body>
+</html>

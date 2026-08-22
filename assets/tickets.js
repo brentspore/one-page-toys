@@ -72,6 +72,9 @@
     // one rule for all three cube sizes; a solve time is better when lower
     { test: /^cube_best_[234]$/, dir: "down", label: "Twisty Cube solve" },
     { test: "bowling_best", dir: "up", label: "Bowling series" },
+    // rule only, never a direct award() call — the rule already fires on the
+    // setItem, and doing both double-counts (the Skee Ball trap)
+    { test: "pinball_best", dir: "up", label: "Pinball score" },
     { test: "typing_best", dir: "up", label: "Typing Speed wpm" },
     { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },

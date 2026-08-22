@@ -1,5 +1,36 @@
 [
   {
+    "slug": "pinball",
+    "name": "Pinball",
+    "shortDescription": "One lovingly built neon table with real flipper physics. Draw the plunger, work both flippers, and hunt the pop bumpers, the drop-target bank, the orbit lanes and the scoop. Light T-O-Y across the top to raise your multiplier. Three balls, a skill shot on every launch, and where you catch the ball on the bat decides where it goes.",
+    "category": "game",
+    "tags": [
+      "pinball",
+      "arcade",
+      "flippers",
+      "physics",
+      "bumpers",
+      "table",
+      "score-chase",
+      "retro",
+      "neon",
+      "reflex",
+      "timing",
+      "tap",
+      "keyboard",
+      "classic",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/pinball/",
+    "related": [
+      "skee-ball",
+      "bowling",
+      "marble-drop",
+      "air-hockey"
+    ]
+  },
+  {
     "slug": "word-kraven",
     "name": "Word Kraven",
     "shortDescription": "Trace through touching letters, diagonals included, to hunt words out of a 4x4 grid. Every board is screened so it always holds a good haul, and a rank ladder tracks how much of it you have found. This is the unlimited practice edition; the daily grid, where everyone plays the same board and keeps a streak, lives at wordkraven.com.",
