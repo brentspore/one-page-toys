@@ -1,5 +1,35 @@
 [
   {
+    "slug": "steady-hand",
+    "name": "Steady Hand",
+    "shortDescription": "The buzz-wire game. A metal loop sits around a bent wire and follows your finger; get from the green post to the gold one without ever letting the two touch. The wire glows hotter and a hum rises as you close in. One touch ends the run, and every wire you clear is tighter than the last.",
+    "category": "game",
+    "tags": [
+      "steady-hand",
+      "buzz-wire",
+      "wire-loop",
+      "precision",
+      "nerve",
+      "reflex",
+      "one-touch",
+      "score-chase",
+      "neon",
+      "drag",
+      "arcade",
+      "fairground",
+      "operation",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/steady-hand/",
+    "related": [
+      "perfect-circle",
+      "perfect-timing",
+      "five-second-game",
+      "color-match"
+    ]
+  },
+  {
     "slug": "dominoes",
     "name": "Dominoes",
     "shortDescription": "Drag a line across the table and the dominoes lay themselves along it at the right spacing, following every curve. Draw again to branch the run, merge it, or cross it back over itself. Then tap any tile and the camera drops low to ride the cascade all the way to the end.",

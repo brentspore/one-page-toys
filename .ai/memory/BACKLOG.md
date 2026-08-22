@@ -294,7 +294,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 - Drawing surface itself is well-trodden (canvas pointer strokes, pressure/size, palette, undo) and reuses the repo's canvas/audio discipline; the hard part is entirely the shared-state + moderation layer.
 ---
 
-### New toy: Steady Hand (buzz-wire)
+### ✅ SHIPPED 2026-08-22 — New toy: Steady Hand (buzz-wire)
 
 **Why it matters:** The last of the Perfect Circle precision family. Same proven DNA — one dead-simple input, an instantly brutal score, a share-worthy number — but sustained motor control rather than a single gesture, so it plays differently from its siblings. (Perfect Timing shipped as No. 092 and Color Match as No. 099, both 2026-07-25.)
 
