@@ -513,9 +513,10 @@ const FEATURED_ART = [
   "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher",
   "darts", "deep-descent", "deep-hollow", "dot-loop", "five-second-game",
   "mini-golf", "nova-coil", "paper-plane", "perfect-circle",
-  "perfect-timing", "pool", "puffling", "random-maze", "shuriken-night",
-  "skee-ball", "sky-fortress", "slice-it", "spelling-blocks", "stack-tower",
-  "tossing-cards", "trail-game", "trio", "twisty-cube", "word-kraven"
+  "perfect-timing", "pinball", "pool", "puffling", "random-maze",
+  "shuriken-night", "skee-ball", "sky-fortress", "slice-it",
+  "spelling-blocks", "stack-tower", "tossing-cards", "trail-game", "trio",
+  "twisty-cube", "word-kraven"
 ];
 
 function shuffleInPlace(arr, rand) {
