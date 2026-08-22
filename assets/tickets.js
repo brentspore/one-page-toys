@@ -75,6 +75,7 @@
     // rule only, never a direct award() call — the rule already fires on the
     // setItem, and doing both double-counts (the Skee Ball trap)
     { test: "pinball_best", dir: "up", label: "Pinball score" },
+    { test: "dominoes_best", dir: "up", label: "Dominoes toppled" },
     { test: "typing_best", dir: "up", label: "Typing Speed wpm" },
     { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },
     { test: "alpenglow_best", dir: "up", label: "Alpenglow score" },

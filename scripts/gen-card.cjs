@@ -69,7 +69,7 @@ const HIDE_SEL = [
   // transient HUD text that fires on a win/selection and otherwise sits at zero
   // opacity — invisible in normal play, but a caption baked into a thumbnail
   ".prize", ".readout", ".status", ".grip", ".intro", ".controls", ".drop-btn", ".bars",
-  ".size", ".scramble-btn", ".reset-btn",
+  ".size", ".scramble-btn", ".reset-btn", ".bar",
   ".opt-tipjar", ".opt-fs", ".opt-tickets", ".opt-share", ".mg-root",
   '[class*="tipjar"]', '[class*="fullscreen"]', '[id*="Overlay"]',
 ].filter((s) => !SHOW.includes(s));

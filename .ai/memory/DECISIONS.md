@@ -220,3 +220,77 @@ audio, and twice that let a completely inaudible build ship. Character and level
 questions, and only one of them needs a human.
 
 **Revisit if:** voices move to an AudioWorklet, where the level maths changes.
+
+---
+
+### 2026-08-21 — A machine's contacts need the MECHANICAL layer, not just a tone (owner-confirmed)
+
+**Context:** Pinball's first audio pass was modal contacts plus a bell chime per the existing
+house technique. It measured fine and still sounded like a toy rather than a machine. Owner
+play-tested the rebuild and confirmed: *"pinball look and sounds good."*
+
+**Decision:** When a toy models a MACHINE — anything where a mechanism drives the event — the
+contact sound is not just the object resonating. **A pop bumper, a slingshot and a flipper are the
+same physical event: a solenoid slams a plunger into a stop.** Layer that underneath the tonal
+voice:
+- **`solenoid()`** = a fast low thump (sine ~150→46Hz in 75ms) + a hard short metal clack (26ms
+  noise through a bandpass ~1.5kHz) + a brief ~118Hz square coil buzz. Copy it from
+  `toys/pinball/script.js`.
+- **Run everything percussive through a BODY.** The machine is a big hollow box and every solenoid
+  in it is heard through that box: two peaking filters (196Hz Q1.1 +3.5dB, 430Hz Q1.5 +2dB) plus a
+  high-shelf cut. This is most of what makes the set read as one machine rather than a pile of
+  separate samples.
+- Velocity-scale, detune each hit slightly, and add a **knocker** (one loud mechanical rap) for a
+  real award.
+
+⚠ **THE TRAP, and it is not obvious: a contact persists across many physics substeps, so the
+collision handler fires the voice once PER SUBSTEP.** Unthrottled, a single flipper stroke measured
+**3.35 peak — four times into clipping** — while every individual voice was correctly scaled.
+**Throttle every contact voice to one hit per physical event** (flip 70ms, bumper 55, sling 60,
+wall 34). The level meter is what catches this; by ear it just sounds like distortion.
+
+**Rationale:** The existing modal rule ("contacts are modal, long tails are additive") is about the
+*object*. This is about the *mechanism driving it*, and it is a separate layer. Without it a
+machine sounds like a chime; with it, it sounds like a machine.
+
+**Revisit if:** a toy models a resonating object with no mechanism behind it — then the plain modal
+contact is still correct and a solenoid would be wrong.
+
+---
+
+### 2026-08-21 — Featured key art is a CURATED highlight list, not a coverage gap (owner directive)
+
+**Context:** The home spotlight rotates toys that have bespoke key art. With 30 of 113 covered, the
+obvious reading was "83 to go" and it was sitting in the backlog as work.
+
+**Decision:** Wrong reading. Owner: *"Not all toys will have featured key art. Only the ones I want
+to highlight."* The manifest is **deliberately partial** — it is an editorial choice about what gets
+promoted on the home page, not a checklist. **Do not treat the uncovered toys as a gap, do not
+propose batch-generating art for them, and do not count coverage as a metric.** Art arrives when the
+owner decides a toy is worth highlighting and supplies the piece.
+
+**Rationale:** Every toy already has a real rendered card in the gallery; the spotlight is a
+different, smaller promise.
+
+**Revisit if:** the owner asks for a coverage push, or the spotlight's role changes.
+
+---
+
+### 2026-08-21 — Retro-tuning existing toys' sound and feel is CLOSED (owner directive)
+
+**Context:** A standing list of "owner ears owed" and "feel play-tests" had accumulated across many
+toys (108-111 audio, Rain Stick's `gyroSign`, Bowling power/hook, Accretion `LOCK_MS`, Air Hockey
+difficulty, Darts windows, Skee Ball's divisor, and more). Each was logged as open and
+owner-blocked.
+
+**Decision:** Owner: *"As far as sound and play on any of the existing toys, I don't need that. We
+move forward from here."* **All of it is closed.** Stop carrying owed-ears and feel-tuning items for
+shipped toys, stop opening sessions by offering them, and stop listing them as next steps. Build new
+things instead.
+
+⚠ This closes the *backlog of retro-tuning*. It does **not** lower the bar for NEW work: audio still
+gets built to the house standard and levels still get measured, because that is about shipping it
+right the first time rather than going back.
+
+**Revisit if:** the owner raises a specific complaint about a specific toy — that is new
+information, not a contradiction of this.

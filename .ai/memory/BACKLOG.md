@@ -118,7 +118,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 - **Audio:** a soft tension tone whose pitch tracks the crossing count downward, and a clean resolve chime at zero.
 - Best time per node count; ticket rule (dir `down`). Real card + OG; full pipeline.
 ---
-### New toy: Pinball (mini table)
+### ✅ SHIPPED 2026-08-21 — New toy: Pinball (mini table)
 
 **Why it matters:** A flagship arcade classic with enormous nostalgia and replay pull — real flipper physics, bumpers, and a score chase. The kind of showpiece that gets shared. Category `game`.
 

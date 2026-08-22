@@ -1,5 +1,35 @@
 [
   {
+    "slug": "dominoes",
+    "name": "Dominoes",
+    "shortDescription": "Drag a line across the table and the dominoes lay themselves along it at the right spacing, following every curve. Draw again to branch the run, merge it, or cross it back over itself. Then tap any tile and the camera drops low to ride the cascade all the way to the end.",
+    "category": "simulation",
+    "tags": [
+      "dominoes",
+      "domino",
+      "topple",
+      "chain-reaction",
+      "cascade",
+      "physics",
+      "3d",
+      "sandbox",
+      "build",
+      "satisfying",
+      "drawing",
+      "drag",
+      "oddly-satisfying",
+      "simulation"
+    ],
+    "status": "live",
+    "path": "toys/dominoes/",
+    "related": [
+      "marble-machine",
+      "marble-drop",
+      "newtons-cradle",
+      "falling-sand"
+    ]
+  },
+  {
     "slug": "pinball",
     "name": "Pinball",
     "shortDescription": "One lovingly built neon table with real flipper physics. Draw the plunger, work both flippers, and hunt the pop bumpers, the drop-target bank, the orbit lanes and the scoop. Light T-O-Y across the top to raise your multiplier. Three balls, a skill shot on every launch, and where you catch the ball on the bat decides where it goes.",

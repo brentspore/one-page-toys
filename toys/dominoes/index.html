@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Dominoes — One Page Toys</title>
+    <meta name="description" content="Draw a line and the dominoes lay themselves along it. Curve it, branch it, cross it back over itself, then tap a tile and watch the whole run go over in 3D while the camera rides the cascade. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/dominoes/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#04040a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Dominoes — One Page Toys" />
+    <meta property="og:description" content="Draw a path, the tiles lay themselves along it, then tap one and watch the whole thing go over. Branches, spirals and all." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/dominoes/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/dominoes.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dominoes — One Page Toys" />
+    <meta name="twitter:description" content="Draw the path, the tiles place themselves, then knock the first one over and watch it run." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/dominoes.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Dominoes",
+        "url": "https://onepagetoys.com/toys/dominoes/",
+        "description": "A 3D domino run you build by drawing. Drag a line across the table and dominoes lay themselves along it at the correct spacing, following every curve; draw more lines to branch the run, merge it, or cross it back over itself. Tap any tile to start the fall and the camera drops low to ride the cascade. Each tile topples by rotating about its bottom leading edge, exactly as a real domino does, so it has to be pushed past its balance point before gravity takes over, and the wave spreads by proximity rather than along a fixed chain.",
+        "applicationCategory": "GameApplication",
+        "genre": "Simulation",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires WebGL.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Tiles</span><span id="count">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Best run</span><span id="best">—</span></div>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <button type="button" class="btn btn--go" id="btnGo">Topple</button>
+      <span class="bar__sep" aria-hidden="true"></span>
+      <button type="button" class="btn" data-preset="spiral">Spiral</button>
+      <button type="button" class="btn" data-preset="wave">Wave</button>
+      <button type="button" class="btn" data-preset="fork">Fork</button>
+      <span class="bar__sep" aria-hidden="true"></span>
+      <button type="button" class="btn" id="btnUndo">Undo</button>
+      <button type="button" class="btn" id="btnClear">Clear</button>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">Draw it, then knock it over</p>
+        <h1 class="panel__title">Dominoes</h1>
+        <p class="panel__text">
+          <b>Drag across the table</b> and the tiles lay themselves along your line
+          at the right spacing, following every curve. Draw again to <b>branch</b> the
+          run or cross it back over itself. Then <b>tap any tile</b> — or hit Topple —
+          and the camera drops low to ride the cascade.
+        </p>
+        <button type="button" class="play-btn" id="ovBtn">Start building</button>
+        <p class="panel__keys">drag to lay · tap a tile to start · space reset · backspace undo</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 114</span>
+      <span class="frame__corner frame__corner--tr">Dominoes</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag to lay a run &middot; tap a tile to topple it</p>
+
+    <script src="../../assets/tickets.js?v=22" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=16" defer></script>
+  </body>
+</html>
