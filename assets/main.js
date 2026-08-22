@@ -1294,7 +1294,7 @@ function renderHomeHero() {
       prev.removeAttribute("data-slug");
       prev.classList.add("card__preview--art");
       prev.style.background =
-        '#07070b url("/assets/featured/' + t.slug + '.webp?v=2") center / cover no-repeat';
+        '#07070b url("/assets/featured/' + t.slug + '.webp?v=3") center / cover no-repeat';
       // the art carries the toy's own logo, so the heading would just repeat it:
       // keep it for screen readers only and let the panel re-space itself
       sec.classList.add("home-featured--art");
