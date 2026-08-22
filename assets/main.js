@@ -509,12 +509,12 @@ let featuredTool = null;
 // spotlight rotates through these — one per page load — instead of always
 // showing the newest toy. Add a slug here only once its art exists.
 const FEATURED_ART = [
-  "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher", "darts",
-  "deep-descent", "deep-hollow", "dot-loop", "five-second-game", "mini-golf",
-  "nova-coil", "paper-plane", "perfect-circle", "pool", "puffling",
-  "shuriken-night", "skee-ball", "sky-fortress", "slice-it", "spelling-blocks",
-  "stack-tower", "tossing-cards", "trail-game", "trio", "twisty-cube",
-  "word-kraven"
+  "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher",
+  "darts", "deep-descent", "deep-hollow", "dot-loop", "five-second-game",
+  "mini-golf", "nova-coil", "paper-plane", "perfect-circle",
+  "perfect-timing", "pool", "puffling", "random-maze", "shuriken-night",
+  "skee-ball", "sky-fortress", "slice-it", "spelling-blocks", "stack-tower",
+  "tossing-cards", "trail-game", "trio", "twisty-cube", "word-kraven"
 ];
 
 function shuffleInPlace(arr, rand) {
@@ -1292,7 +1292,7 @@ function renderHomeHero() {
       prev.removeAttribute("data-slug");
       prev.classList.add("card__preview--art");
       prev.style.background =
-        '#07070b url("/assets/featured/' + t.slug + '.webp?v=1") center / cover no-repeat';
+        '#07070b url("/assets/featured/' + t.slug + '.webp?v=2") center / cover no-repeat';
       // the art carries the toy's own logo, so the heading would just repeat it:
       // keep it for screen readers only and let the panel re-space itself
       sec.classList.add("home-featured--art");
