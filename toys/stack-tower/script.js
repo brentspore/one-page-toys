@@ -221,6 +221,11 @@
     bestEl.textContent = "Best " + best;
     ovTitle.textContent = score >= best && score > 0 ? "New best!" : "Toppled!";
     ovText.textContent = "You stacked " + score + " floor" + (score === 1 ? "" : "s") + ". Best: " + best + ".";
+    if (score > 0) {
+      window.OPT_SHARE_TEXT = "I stacked " + score + " floor" + (score === 1 ? "" : "s") + " on Stack Tower. Beat that.";
+      window.OPT_SHARE_LINE = score + " floor" + (score === 1 ? "" : "s");
+      window.OPT_SHARE_IMAGE = function () { return canvas; };
+    } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
     ovBtn.textContent = "Build again";
     overlay.hidden = false; overlay.classList.remove("is-hidden");
   }

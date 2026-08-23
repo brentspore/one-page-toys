@@ -396,6 +396,9 @@
     burstConfetti(); sndWin();
     ovTitle.textContent = isBest ? "New best!" : "Table cleared";
     ovText.textContent = "You cleared the table in " + strokes + " shot" + (strokes === 1 ? "" : "s") + ". Best: " + best + ".";
+    window.OPT_SHARE_TEXT = "I cleared the table in " + strokes + " shot" + (strokes === 1 ? "" : "s") + " on Pool. Can you do it in fewer?";
+    window.OPT_SHARE_LINE = "cleared in " + strokes + " shot" + (strokes === 1 ? "" : "s");
+    window.OPT_SHARE_IMAGE = function () { return canvas; };
     ovBtn.textContent = "Rack 'em again";
     showOverlay();
   }

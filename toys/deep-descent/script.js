@@ -296,6 +296,11 @@
     setTimeout(function () {
       ovTitle.textContent = isBest ? "New record!" : "Crushed.";
       ovText.innerHTML = "You made it <span class='stat'>" + score + "m</span> down" + (gemScore > 0 ? " and pocketed <span class='stat'>" + gemScore + "</span> in gems" : "") + "." + (best > 0 ? " Best: <span class='stat'>" + best + "m</span>." : "");
+      if (score > 0) {
+        window.OPT_SHARE_TEXT = "I made it " + score + "m down Deep Descent" + (gemScore > 0 ? " with " + gemScore + " in gems" : "") + ". How deep can you get?";
+        window.OPT_SHARE_LINE = score + "m down";
+        window.OPT_SHARE_IMAGE = function () { return canvas; };
+      } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
       ovBtn.textContent = "Descend again";
       overlay.hidden = false; overlay.classList.remove("is-hidden");
     }, 620);

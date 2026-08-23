@@ -203,6 +203,11 @@
     sndOver();
     ovTitle.textContent = "Sliced " + score + "!";
     ovText.innerHTML = nb ? "&#11088; New personal best! Nicely done." : "Nice run. Think you can beat it?";
+    if (score > 0) {
+      window.OPT_SHARE_TEXT = "I sliced " + score + " on Slice It. Beat that.";
+      window.OPT_SHARE_LINE = score + " sliced";
+      window.OPT_SHARE_IMAGE = function () { return canvas; };
+    } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
     ovBest.textContent = "Best " + best;
     ovBtn.textContent = "Play again";
     overlay.classList.remove("is-hidden");

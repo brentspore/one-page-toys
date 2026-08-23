@@ -941,6 +941,11 @@
       try { localStorage.setItem("claw_best", String(best)); } catch (e) {}
     }
     setHud();
+    if (won.length > 0) {
+      window.OPT_SHARE_TEXT = "I scored " + score + " on Claw Machine and grabbed " + won.length + " prize" + (won.length === 1 ? "" : "s") + " in ten drops. Beat that.";
+      window.OPT_SHARE_LINE = score + " pts \u00b7 " + won.length + " prize" + (won.length === 1 ? "" : "s");
+      window.OPT_SHARE_IMAGE = function () { draw(); return canvas; };
+    } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
     showResults();
     if (typeof gtag === "function") gtag("event", "claw_run_end", { value: score, prizes: won.length });
   }

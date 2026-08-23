@@ -136,6 +136,11 @@
     setTimeout(function () {
       ovTitle.textContent = score >= best && score > 0 ? "New best!" : "Grounded";
       ovText.textContent = "You cleared " + score + " gap" + (score === 1 ? "" : "s") + ". Best: " + best + ".";
+      if (score > 0) {
+        window.OPT_SHARE_TEXT = "I cleared " + score + " gap" + (score === 1 ? "" : "s") + " on Paper Plane. Beat that.";
+        window.OPT_SHARE_LINE = score + " gap" + (score === 1 ? "" : "s") + " cleared";
+        window.OPT_SHARE_IMAGE = function () { return canvas; };
+      } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
       ovBtn.textContent = "Fly again";
       overlay.hidden = false; overlay.classList.remove("is-hidden");
     }, 750);

@@ -872,6 +872,11 @@
     }
     cam.tx = 0; cam.tz = 0; cam.dist = 26; cam.height = 17;
     say(toppledCount + " of " + tiles.length + " fell — " + pct + "%", 2600);
+    if (toppledCount > 1) {
+      window.OPT_SHARE_TEXT = "I toppled " + toppledCount + " of " + tiles.length + " dominoes \u2014 " + pct + "%. Your turn.";
+      window.OPT_SHARE_LINE = toppledCount + " of " + tiles.length + " fell";
+      window.OPT_SHARE_IMAGE = function () { render(); return cv; };
+    } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
     if (pct >= 100 && tiles.length >= 12) Audio2.done(toppledCount);
     if (window.gtag) {
       window.gtag("event", "toy_score", { toy_slug: "dominoes", value: toppledCount });

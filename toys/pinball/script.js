@@ -1754,6 +1754,11 @@
     ovEyebrow.textContent = G.score >= G.best && G.score > 0 ? "New best" : "Game over";
     ovTitle.textContent = fmt(G.score);
     ovText.innerHTML = "Three balls played. Best so far <b>" + fmt(G.best) + "</b>.";
+    if (G.score > 0) {
+      window.OPT_SHARE_TEXT = "I scored " + fmt(G.score) + " on Pinball \u2014 three balls, one table. Beat that.";
+      window.OPT_SHARE_LINE = fmt(G.score) + " points";
+      window.OPT_SHARE_IMAGE = function () { return cv; };
+    } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
     ovBtn.textContent = "Play again";
     if (window.gtag) {
       window.gtag("event", "toy_score", { toy_slug: "pinball", value: G.score });

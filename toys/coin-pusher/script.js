@@ -233,6 +233,11 @@
       payoutSound();
     }
     if (payout > best) { best = payout; try { localStorage.setItem("coinpush_best", String(best)); } catch (e) {} bestEl.textContent = "Best " + best; }
+    if (payout > 0) {
+      window.OPT_SHARE_TEXT = "I pushed a " + payout + " payout on Coin Pusher. Beat that.";
+      window.OPT_SHARE_LINE = payout + " payout";
+      window.OPT_SHARE_IMAGE = function () { return canvas; };
+    }
   }
 
   function loseCoin(c) {

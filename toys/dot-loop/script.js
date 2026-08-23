@@ -125,6 +125,11 @@
   function addScore(n) {
     score += n; scoreEl.textContent = String(score);
     if (score > best) { best = score; try { localStorage.setItem("dotloop_best", String(best)); } catch (e) {} bestEl.textContent = "Best " + best; }
+    if (score > 0) {
+      window.OPT_SHARE_TEXT = "I scored " + score + " on Dot Loop. Beat that.";
+      window.OPT_SHARE_LINE = score + " points";
+      window.OPT_SHARE_IMAGE = function () { return canvas; };
+    }
     if (!crossed && score > prevBest && prevBest >= 0) { crossed = true; sparkle(); }   // one celebratory sparkle when you beat your record
   }
   function sparkle() { for (var i = 0; i < 14; i++) { var a = Math.random() * 6.283, sp = 60 + Math.random() * 160; particles.push({ x: W / 2, y: 70, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40, life: 0, max: 0.7, r: 2 + Math.random() * 2, sp: 1, col: PAL[(Math.random() * PAL.length) | 0].line }); } }

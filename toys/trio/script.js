@@ -216,6 +216,11 @@
     setTimeout(function () {
       ovTitle.textContent = "No moves left";
       ovText.innerHTML = "Biggest tile <b>" + mx + "</b> · score <b>" + score.toLocaleString() + "</b>. Nicely done. Try to beat it.";
+      if (score > 0) {
+        window.OPT_SHARE_TEXT = "I scored " + score.toLocaleString() + " on Trio, biggest tile " + mx + ". Beat that.";
+        window.OPT_SHARE_LINE = score.toLocaleString() + " points \u00b7 tile " + mx;
+        window.OPT_SHARE_IMAGE = function () { return canvas; };
+      } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
       ovBtn.textContent = "Play again";
       overlay.hidden = false;
       overlay.classList.remove("is-hidden");

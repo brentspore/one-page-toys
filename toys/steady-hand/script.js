@@ -171,6 +171,11 @@
       try { localStorage.setItem("steady_best", String(G.best)); } catch (e) {}
     }
     if (window.gtag) window.gtag("event", "toy_score", { toy_slug: "steady-hand", value: G.cleared });
+    if (G.cleared > 0) {
+      window.OPT_SHARE_TEXT = "I cleared " + G.cleared + " wire" + (G.cleared === 1 ? "" : "s") + " on Steady Hand without a buzz. Steady enough to beat it?";
+      window.OPT_SHARE_LINE = G.cleared + " wire" + (G.cleared === 1 ? "" : "s") + " cleared";
+      window.OPT_SHARE_IMAGE = function () { return cv; };
+    } else { window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null; }
     showOver();
   }
 
