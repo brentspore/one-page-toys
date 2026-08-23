@@ -1,5 +1,35 @@
 [
   {
+    "slug": "skyscrapers",
+    "name": "Skyscrapers",
+    "shortDescription": "A logic puzzle you build instead of write. Raise a tower in every square so each height appears once per row and column, and the numbers around the edge match how many towers you can see looking down that line — a taller one hides every shorter one behind it. Tap an edge number and a beam sweeps the row, lighting what is seen and dimming what is hidden.",
+    "category": "game",
+    "tags": [
+      "skyscrapers",
+      "logic-puzzle",
+      "latin-square",
+      "deduction",
+      "sudoku-like",
+      "brain-teaser",
+      "sightline",
+      "city",
+      "night",
+      "puzzle",
+      "no-guessing",
+      "timed",
+      "isometric",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/skyscrapers/",
+    "related": [
+      "minesweeper",
+      "trio",
+      "slide-puzzle",
+      "twisty-cube"
+    ]
+  },
+  {
     "slug": "pendulum-wave",
     "name": "Pendulum Wave",
     "shortDescription": "Fifteen pendulums hung in a row, each tuned to swing exactly one more time per cycle than the one before it. Draw them back, let go, and watch them sweep into a travelling wave, split into two helices, scatter into apparent chaos, and then fall back into perfect line. Each bob chimes as it passes the bottom, so the rhythm comes from the tuning.",

@@ -66,6 +66,7 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "skyscrapers": "skyscrapers skyscraper puzzle building heights logic puzzle latin square deduction reasoning brain teaser sudoku like sudoku alternative kenken futoshiki nonogram sightline how many can you see towers city skyline night grid puzzle no guessing pure logic daily brain training think smart clever puzzle game 4x4 5x5 6x6 timed best time",
   "pendulum-wave": "pendulum wave pendulums swinging balls harmonic motion resonance physics demo science museum harvard pendulum snake wave travelling wave out of phase in phase hypnotic mesmerizing satisfying relaxing meditative kinetic sculpture newton cradle chimes ambient generative rhythm",
   "steady-hand": "steady hand buzz wire buzzwire wire loop game don't touch the sides operation game shaky hand nerves precision steady nerve fairground carnival game thread the loop electric buzzer hot wire maze trace the wire without touching one touch and you lose reflex accuracy control tremor",
   "dominoes": "dominoes domino topple toppling chain reaction cascade knock over falling tiles domino run domino rally line of dominoes set them up knock them down branching fork spiral wave build and topple satisfying oddly satisfying chain physics simulation 3d tiles clatter draw a path sandbox",

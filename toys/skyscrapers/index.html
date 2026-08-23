@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Skyscrapers — One Page Toys</title>
+    <meta name="description" content="A logic puzzle you build instead of write. Raise a tower in every square so each height appears once per row and column, and the numbers around the edge match how many towers you can see from there. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/skyscrapers/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#05060e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Skyscrapers — One Page Toys" />
+    <meta property="og:description" content="The logic puzzle where the numbers are building heights. A taller tower hides every shorter one behind it, so each edge clue tells you how many you would see standing there." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/skyscrapers/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/skyscrapers.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Skyscrapers — One Page Toys" />
+    <meta name="twitter:description" content="Build a skyline that satisfies every sightline. A logic puzzle with no numbers to write." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/skyscrapers.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Skyscrapers",
+        "url": "https://onepagetoys.com/toys/skyscrapers/",
+        "description": "A Latin-square logic puzzle played as a city at night. Every square holds a tower, and every height from one upwards appears exactly once in each row and each column. The numbers around the edge of the grid are sightlines: standing at that number and looking down the row, they tell you how many towers you would be able to count, because a taller tower hides every shorter one standing behind it. Drag a tower up or down to set its height and the windows light floor by floor; tap any edge number and a beam sweeps the row, lighting what you can see and dimming what is hidden, so the rule is something you watch rather than memorise. Grids run from four by four up to six by six, every puzzle is generated with a single solution that can be reached by pure deduction, and your best time for each size is kept.",
+        "applicationCategory": "GameApplication",
+        "genre": "Puzzle",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Filled</span><span id="filled">0/25</span></div>
+      <div class="hud__cell"><span class="hud__k">Time</span><span id="time">0:00</span></div>
+      <div class="hud__cell"><span class="hud__k">Best</span><span id="best">—</span></div>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <button type="button" class="btn" data-size="4">4&times;4</button>
+      <button type="button" class="btn" data-size="5">5&times;5</button>
+      <button type="button" class="btn" data-size="6">6&times;6</button>
+      <span class="bar__sep" aria-hidden="true"></span>
+      <button type="button" class="btn btn--go" id="btnNew">New city</button>
+      <button type="button" class="btn" id="btnClear">Clear</button>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Build to the sightlines</p>
+        <h1 class="panel__title" id="ovTitle">Skyscrapers</h1>
+        <p class="panel__text" id="ovText">
+          Every square gets a tower, and <b>each height appears once per row and once per column</b>.
+          The number outside a row is a <b>sightline</b>: how many towers you can count standing
+          there, since a taller one hides every shorter one behind it.
+        </p>
+        <svg class="demo" id="ovDemo" viewBox="0 0 340 116" role="img" aria-label="Looking along a row of towers two, one, four, three: only two of them are visible, because the four hides the one behind it and the three is hidden too.">
+          <line x1="18" y1="94" x2="326" y2="94" stroke="rgba(150,180,255,0.22)" stroke-width="1" />
+          <g font-family="Geist Mono, monospace" font-size="10" text-anchor="middle" fill="rgba(238,242,255,0.42)">
+            <text x="42" y="98">from here</text>
+          </g>
+          <circle cx="42" cy="66" r="15" fill="rgba(255,180,74,0.16)" stroke="#ffb44a" stroke-width="1.4" />
+          <text x="42" y="71" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="16" fill="#ffdca6">2</text>
+          <path d="M62 66 H88 M82 61 L88 66 L82 71" stroke="#ffb44a" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <rect x="100" y="62" width="46" height="32" rx="2" fill="#ffb44a" opacity="0.9" />
+          <rect x="156" y="78" width="46" height="16" rx="2" fill="#232a44" stroke="rgba(150,180,255,0.3)" stroke-width="1" />
+          <rect x="212" y="30" width="46" height="64" rx="2" fill="#ffb44a" opacity="0.9" />
+          <rect x="268" y="46" width="46" height="48" rx="2" fill="#232a44" stroke="rgba(150,180,255,0.3)" stroke-width="1" />
+          <g font-family="Archivo, sans-serif" font-weight="800" font-size="13" text-anchor="middle">
+            <text x="123" y="84" fill="#2c1703">2</text>
+            <text x="179" y="91" fill="rgba(238,242,255,0.45)">1</text>
+            <text x="235" y="84" fill="#2c1703">4</text>
+            <text x="291" y="68" fill="rgba(238,242,255,0.45)">3</text>
+          </g>
+          <g font-family="Geist Mono, monospace" font-size="10" text-anchor="middle" fill="rgba(238,242,255,0.34)">
+            <text x="123" y="110">seen</text>
+            <text x="179" y="110">hidden</text>
+            <text x="235" y="110">seen</text>
+            <text x="291" y="110">hidden</text>
+          </g>
+        </svg>
+        <button type="button" class="play-btn" id="ovBtn">Start building</button>
+        <p class="panel__keys">drag a square up or down to raise a tower &middot; tap an edge number to look down that row</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 117</span>
+      <span class="frame__corner frame__corner--tr">Skyscrapers</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag to raise a tower &middot; tap an edge number to look down that line</p>
+
+    <script src="../../assets/tickets.js?v=24" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=16" defer></script>
+  </body>
+</html>
