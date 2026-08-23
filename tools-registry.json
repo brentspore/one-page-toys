@@ -1,5 +1,35 @@
 [
   {
+    "slug": "pendulum-wave",
+    "name": "Pendulum Wave",
+    "shortDescription": "Fifteen pendulums hung in a row, each tuned to swing exactly one more time per cycle than the one before it. Draw them back, let go, and watch them sweep into a travelling wave, split into two helices, scatter into apparent chaos, and then fall back into perfect line. Each bob chimes as it passes the bottom, so the rhythm comes from the tuning.",
+    "category": "simulation",
+    "tags": [
+      "pendulum-wave",
+      "pendulum",
+      "physics",
+      "harmonic",
+      "resonance",
+      "hypnotic",
+      "mesmerizing",
+      "relaxing",
+      "meditative",
+      "oddly-satisfying",
+      "science",
+      "ambient",
+      "kinetic",
+      "simulation"
+    ],
+    "status": "live",
+    "path": "toys/pendulum-wave/",
+    "related": [
+      "newtons-cradle",
+      "double-pendulum",
+      "chladni-plate",
+      "wind-chimes"
+    ]
+  },
+  {
     "slug": "steady-hand",
     "name": "Steady Hand",
     "shortDescription": "The buzz-wire game. A metal loop sits around a bent wire and follows your finger; get from the green post to the gold one without ever letting the two touch. The wire glows hotter and a hum rises as you close in. One touch ends the run, and every wire you clear is tighter than the last.",

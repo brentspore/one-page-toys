@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Pendulum Wave — One Page Toys</title>
+    <meta name="description" content="Fifteen pendulums, each tuned to swing one more time per cycle than the last. Released together they sweep into a travelling wave, break into helices, scatter, and then snap back into perfect line. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/pendulum-wave/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#04050a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Pendulum Wave — One Page Toys" />
+    <meta property="og:description" content="Fifteen pendulums drift out of step and back into perfect line, every thirty seconds. Draw them back and let go." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/pendulum-wave/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/pendulum-wave.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pendulum Wave — One Page Toys" />
+    <meta name="twitter:description" content="Fifteen pendulums, tuned a swing apart. Watch them drift out of step and back into line." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/pendulum-wave.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Pendulum Wave",
+        "url": "https://onepagetoys.com/toys/pendulum-wave/",
+        "description": "A pendulum wave: fifteen pendulums hung in a row, each tuned to complete exactly one more swing per cycle than the one before it. Draw them back together and release, and because their frequencies are neighbours they drift steadily out of phase — first a travelling wave down the row, then two counter-rotating helices at half the cycle, then apparent chaos, and then, at the end of the cycle, perfect alignment again. Each pendulum's length is derived from its frequency rather than chosen, so what you are watching is the real relationship between a pendulum's length and its period. Each bob chimes as it passes through the lowest point, so the rhythm emerges from the tuning.",
+        "applicationCategory": "GameApplication",
+        "genre": "Simulation",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Into cycle</span><span id="phase">0.0s</span></div>
+      <div class="hud__cell"><span class="hud__k">Realigns every</span><span id="cycle">30s</span></div>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <span class="bar__k">Cycle</span>
+      <button type="button" class="btn" data-cycle="20">20s</button>
+      <button type="button" class="btn is-on" data-cycle="30">30s</button>
+      <button type="button" class="btn" data-cycle="60">60s</button>
+      <span class="bar__sep" aria-hidden="true"></span>
+      <span class="bar__k">Bobs</span>
+      <button type="button" class="btn" data-count="9">9</button>
+      <button type="button" class="btn is-on" data-count="15">15</button>
+      <button type="button" class="btn" data-count="21">21</button>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">Out of step, then back in</p>
+        <h1 class="panel__title">Pendulum Wave</h1>
+        <p class="panel__text">
+          Fifteen pendulums, each tuned to swing exactly <b>one more time per cycle</b>
+          than the one before it. Released together they sweep into a travelling wave,
+          split into two helices, scatter into what looks like chaos — and then fall
+          back into perfect line. <b>Drag down</b> to draw them back and let go.
+        </p>
+        <button type="button" class="play-btn" id="ovBtn">Set them going</button>
+        <p class="panel__keys">drag down to draw back &middot; release to start &middot; space resets</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 116</span>
+      <span class="frame__corner frame__corner--tr">Pendulum Wave</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag down to draw them back &middot; let go to release</p>
+
+    <script src="../../assets/tickets.js?v=23" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=16" defer></script>
+  </body>
+</html>

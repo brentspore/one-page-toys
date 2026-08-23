@@ -16,6 +16,62 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
+### Daily #1 — Numbers Target (own domain + practice feeder here)
+
+**Why it matters:** ⚠ **Passes the daily-viral test on all four criteria AND fills the single clearest genre gap in the catalogue: `arithmetic` returns NOTHING across all 116 toys.** Four numbers and a target; combine them with + − × to hit it exactly, or get as close as you can. Mental arithmetic pulls a completely different audience from the word and reflex games, so it widens the network rather than competing inside it. Category `game`/number.
+
+**When to revisit:** Next daily-game round. Nothing blocks it — no content authoring, no backend, no word list.
+
+**Notes:** Spotted 2026-08-23 while reviewing daily games the owner sent through (numbobulate.com is a live example of this mechanic; the family is the Countdown numbers round). Ranked above every other candidate in that review.
+- ⚠ **ROUTE VIA `new-feeder-game`, NOT as a toy here** (project `DECISIONS.md`, 2026-08-16): one set a day identical for everyone, a knowable best answer so scores are comparable, a 2-5 minute solve, and a reason to return. A daily with streaks cannot live in this repo.
+- ⚠ **The reason this one is buildable and Seldom is not: the puzzle is GENERATED AND SCREENED ALGORITHMICALLY**, the same property that made Word Kraven work. Pick four numbers plus a target, then solve it exhaustively before publishing to guarantee the target is reachable and to know the optimum. **Never ship a set you have not solved** — an unreachable target is the one bug that destroys trust in a daily.
+- **The share is genuinely spoiler-free and is the whole spread mechanism.** Numbobulate's version: green squares for correct, blue for a fast correct, orange for close, with the square count encoding how many operators were used. Reveals the difficulty and your performance, never the solution.
+- **Feeder here** = unlimited practice edition per the `new-toy` "Feeder toys" checklist: practice only, no daily, no streaks, **no email capture** (that belongs on the game's domain), two UTM-tagged CTAs, `outbound_click` + `share` events, self-canonical, countdown targeting the daily site's ACTUAL rollover.
+
+---
+
+### Daily #2 — Cryptogram (own domain + practice feeder here)
+
+**Why it matters:** Numbers map consistently to letters and you decode the phrase; there is exactly one right answer, difficulty is comparable between players, and the share can report mistakes or time **without leaking a single letter**. `cryptogram` returns nothing in the catalogue — the only near-neighbour is Aurebesh Translator, which is a transliterator, not a puzzle. A classic with real standing search demand. Category `game`/word.
+
+**When to revisit:** After Numbers Target, or instead of it if a word game is preferred over an arithmetic one.
+
+**Notes:** Spotted 2026-08-23 in the same review (cyphrgame.com is a live example, laid out as a pyramid where each row is a word). Second-ranked of that set.
+- ⚠ **ROUTE VIA `new-feeder-game`** per the same rule as Daily #1.
+- **Generable, so no daily authoring:** the only content needed is a phrase list; the substitution is randomised per day. That keeps it in the same "generate and screen" family as Word Kraven and Numbers Target.
+- **Design the difficulty deliberately:** letter-frequency crib, a starting letter or two revealed, and a cap on wrong guesses (Cyphr allows 26). The interesting knob is how much of the alphabet is pre-filled — too little and it is a chore, too much and it solves itself.
+- **Feeder here** = unlimited practice edition, same checklist as Daily #1.
+
+---
+
+### Daily — Inverse trivia (Seldom-style) ⚠ NEEDS A BACKEND — own project, not a feeder
+
+**Why it matters:** The most original mechanic in the 2026-08-23 review and worth recording even though it cannot be built the usual way. Name something in a category, and score by how **common** your answer was — lowest wins, and zero is the perfect round. The share is spoiler-free by construction, because your score is a bare number that reveals nothing about your answer.
+
+**When to revisit:** Only if the network ever gains a shared backend with enough players to score against. Not before.
+
+**Notes:** playseldom.com is the live example ("Rare beats obvious", new puzzle daily at midnight UTC).
+- ⚠ **THE BLOCKER IS STRUCTURAL, NOT EFFORT: scoring requires a corpus of everyone else's answers.** It needs both a backend and a population before it works at all — with ten players the scores are meaningless. That is the opposite of every other game in the network, which is self-contained and works for player one on day one.
+- Recorded so it is not re-proposed as a feeder. If it is ever built it is a product with a database, not a static daily.
+
+---
+
+### Reviewed and NOT recommended (2026-08-23)
+
+**Why it matters:** Saves re-reviewing the same daily games. The owner sent eight sites; these are the ones deliberately passed over, with the reason.
+
+**When to revisit:** Only if the constraint named against each one changes.
+
+**Notes:**
+- **Waffle (wafflegame.net)** — qualifies well (knowable optimum, star-rating share, ~2-3 min) but it is a well-known existing game and cloning its trade dress directly is off-brand. **The transferable idea is the FAMILY: fix-a-grid-by-swapping with a limited swap budget**, which is worth a future original take.
+- **GridChain (gridchain.fisherloop.com)** — word-association chain across a 5×5 grid. Qualifies on share but **needs hand-authored content every day**, which is an ongoing operational commitment rather than a build. Same objection as Connections.
+- **Timeline / chronology games (wasthatbefore.com)** — ordering events by date. Strong share (a tick/cross per item) but again **daily content authoring**, plus fact-checking risk.
+- **NYT Games** — the reference set, not a target. Of them, **Letter Boxed** and **Pips** are the two whose mechanics are least cloned elsewhere if an original take is ever wanted.
+- ⚠ **The filter that produced this split is worth keeping: a daily works for this network when the puzzle can be GENERATED AND SCREENED algorithmically.** Anything needing authored content each day is a different kind of commitment and should be judged as one.
+- ⚠ **Two of the eight could not be assessed: `playpocketpuzzles.com` and `wasthatbefore.com` are JS-rendered and only their titles were readable.** Their mechanics are unverified — look at them in a browser before acting on either.
+
+---
+
 ### Puzzle #1 — New toy: Colour Pour (water-sort)
 
 **Why it matters:** ⚠ **The single most viral casual-puzzle format of the last several years, and the best fit for this site of anything on this list.** It needs ZERO rules text — one screenshot teaches the whole game — the input is two taps, it is infinitely generatable with guaranteed solvability, and the payoff is liquid pouring, which lands squarely on the "must look and sound intentional" bar. Category `game`.

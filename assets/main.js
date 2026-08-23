@@ -66,6 +66,7 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "pendulum-wave": "pendulum wave pendulums swinging balls harmonic motion resonance physics demo science museum harvard pendulum snake wave travelling wave out of phase in phase hypnotic mesmerizing satisfying relaxing meditative kinetic sculpture newton cradle chimes ambient generative rhythm",
   "steady-hand": "steady hand buzz wire buzzwire wire loop game don't touch the sides operation game shaky hand nerves precision steady nerve fairground carnival game thread the loop electric buzzer hot wire maze trace the wire without touching one touch and you lose reflex accuracy control tremor",
   "dominoes": "dominoes domino topple toppling chain reaction cascade knock over falling tiles domino run domino rally line of dominoes set them up knock them down branching fork spiral wave build and topple satisfying oddly satisfying chain physics simulation 3d tiles clatter draw a path sandbox",
   "pinball": "pinball pin ball flippers flipper table arcade machine cabinet bumpers pop bumper slingshot plunger launch drop targets orbit lane scoop kickback tilt nudge silver ball steel ball score chase high score retro arcade neon space table classic coin op amusement pinball wizard flip the ball keep it alive drain skill shot multiplier",
