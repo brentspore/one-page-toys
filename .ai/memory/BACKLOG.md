@@ -72,6 +72,21 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
+### New toy: Skyscrapers (Latin-square logic, as a literal skyline)
+
+**Why it matters:** ⚠ **The catalogue has NO logic puzzle at all — Minesweeper is the only deduction game in 116 toys.** Skyscrapers is the same deduction family as Sudoku but fixes the thing that makes a number grid visually dead: **the numbers ARE building heights**, and the edge clues say how many towers you can see looking down that row, because a taller one hides a shorter one behind it. You are not typing digits into boxes, you are building a skyline. Category `game`/puzzle.
+
+**When to revisit:** Any time a logic puzzle is wanted. Nothing blocks it — generable and uniquely-solvable algorithmically, so no content authoring.
+
+**Notes:** Proposed 2026-08-23 when the owner asked about a Sudoku-type game.
+- ⚠ **DECIDED: this is a TOY here, NOT a daily.** It passes same-puzzle-for-everyone, a 2-5 minute solve at 5×5/6×6, and a reason to return — but **fails the spoiler-free share** (the solved grid IS the answer, leaving only a time), and more decisively **it needs teaching before the clues mean anything**. A daily gets one shot with someone who clicked a shared link; Wordle and Waffle explain themselves in a sentence and this needs a diagram. Same reasoning that parks Sudoku here (project `DECISIONS.md`, 2026-08-16).
+- **The mechanic teaches itself IN PLAY, which is the whole argument for it over Sudoku:** drag a tower up and down and watch it grow; light the visible towers and dim the hidden ones live as you work, so the clue "3" is something you can SEE rather than a rule you memorised. Verification becomes physical — crouch at the edge and count.
+- **Design:** glass towers at night on a dark grid, warm windows, a low sun casting the sightline. 4×4 to 6×6. Timer + best per size in `localStorage`; ticket rule if it stores a best.
+- **Generator:** build a random Latin square, derive the four edge clue sets, then remove clues while a solver confirms the solution stays UNIQUE. ⚠ **Never ship a grid without verifying uniqueness** — the same rule as Numbers Target, and the one bug that destroys trust in a logic puzzle.
+- **A Latin square underneath means the generator and solver would largely carry over to a plain Sudoku later**, if the search play is ever wanted — the standing assessment says Sudoku is commoditised but has enormous volume and the site has nothing in the category.
+
+---
+
 ### Puzzle #1 — New toy: Colour Pour (water-sort)
 
 **Why it matters:** ⚠ **The single most viral casual-puzzle format of the last several years, and the best fit for this site of anything on this list.** It needs ZERO rules text — one screenshot teaches the whole game — the input is two taps, it is infinitely generatable with guaranteed solvability, and the payoff is liquid pouring, which lands squarely on the "must look and sound intentional" bar. Category `game`.
@@ -126,6 +141,9 @@ Items in this file follow the structure below so that any AI tool or human editi
 **When to revisit:** Next puzzle round. Main scope: a curated set of solvable puzzles (or a generator + solvability checker).
 
 **Notes:** AI suggestion (2026-07-05). Row/column count clues; tap to fill, long-press/second-tool to mark X; mistake-forgiveness toggle; 5×5 → 15×15 sizes. Content: procedurally generate boards and verify line-solvability, or hand-curate a pack of charming pixel-art reveals (animals, objects) — reveal animates + colorizes on completion. Timer + best per size in `localStorage`. Design: clean paper-grid aesthetic or glowing terminal; satisfying fill thunk, error buzz (gentle), completion chime + the picture coming alive. Keep the name generic ("Picture Logic" etc. — Picross is trademarked). Real card + OG; full pipeline.
+- ⚠ **THE SHARE PROBLEM MIGHT BE SOLVABLE — this is what the "maybe" in the standing daily assessment was waiting on.** Nonogram was rated a maybe because **the picture reveal IS the spoiler**, so there is nothing to post that does not give the puzzle away. **The fix: colour the shared emoji grid by WHEN each cell was filled, not by what is in it** — early greens through to late reds, or first-try versus corrected. That shows the SHAPE of your solve, where you found the foothold and where you struggled, and reveals not one cell of the picture.
+- **This is Wordle's actual trick — share the journey, not the answer** — and it is the general fix for any puzzle whose completed state is the spoiler. Worth trying here first because a nonogram's solve order genuinely varies between people (everyone attacks a different line first), so the grids differ enough to be worth comparing. It does NOT rescue Sudoku or Skyscrapers, whose bigger problem is that they need teaching before a shared link means anything (2026-08-23).
+- **If that share works, re-run the daily test on this entry** — it already passes same-puzzle-for-everyone, a 2-5 minute solve at small sizes, and a reason to return; the share was the only failing criterion. ⚠ It would still be **the only candidate needing real content authoring**, so weigh that against Numbers Target and Cryptogram, which generate themselves.
 ---
 ### Puzzle #6 — New toy: Sudoku
 
