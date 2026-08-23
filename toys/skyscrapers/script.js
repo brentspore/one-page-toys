@@ -15,6 +15,7 @@
   var bar = document.getElementById("bar");
   var filledEl = document.getElementById("filled");
   var timeEl = document.getElementById("time");
+  var linesEl = document.getElementById("lines");
   var bestEl = document.getElementById("best");
   var calloutEl = document.getElementById("callout");
   var soundBtn = document.getElementById("soundBtn");
@@ -187,7 +188,7 @@
     started: false, solved: false,
     t0: 0, elapsed: 0,
     sweep: null,            // { side, i, t, count }
-    winT: 0,
+    winT: 0, clock: 0, wasFull: false,
     bump: null              // per-cell placement bounce, keyed r*n+c
   };
   var best = {};
@@ -339,6 +340,19 @@
     return bad;
   }
 
+  function clueTally() {
+    var sides = ["top", "bottom", "left", "right"], ok = 0, total = 0, wrong = 0;
+    for (var s2 = 0; s2 < sides.length; s2++) {
+      for (var i = 0; i < G.n; i++) {
+        if (!G.clues[sides[s2]][i]) continue;
+        total++;
+        var st = clueState(sides[s2], i);
+        if (st === 1) ok++; else if (st === -1) wrong++;
+      }
+    }
+    return { ok: ok, total: total, wrong: wrong };
+  }
+
   function filledCount() {
     var k = 0; for (var i = 0; i < G.cell.length; i++) if (G.cell[i]) k++;
     return k;
@@ -366,7 +380,7 @@
     G.cell = new Uint8Array(G.n * G.n);
     G.sel = { r: 0, c: 0 }; G.hasSel = false;
     G.started = false; G.solved = false; G.elapsed = 0; G.t0 = 0;
-    G.sweep = null; G.winT = 0; G.bump = {};
+    G.sweep = null; G.winT = 0; G.bump = {}; G.wasFull = false;
     layout();
     updateHud();
     window.OPT_SHARE_TEXT = window.OPT_SHARE_LINE = window.OPT_SHARE_IMAGE = null;
@@ -375,7 +389,7 @@
   function clearCity() {
     if (!G.cell) return;
     G.cell = new Uint8Array(G.n * G.n);
-    G.solved = false; G.sweep = null; G.winT = 0;
+    G.solved = false; G.sweep = null; G.winT = 0; G.wasFull = false;
     updateHud();
   }
 
@@ -387,6 +401,8 @@
   function updateHud() {
     var n = G.n;
     filledEl.textContent = filledCount() + "/" + n * n;
+    var tally = clueTally();
+    linesEl.textContent = tally.ok + "/" + tally.total;
     timeEl.textContent = fmtTime(G.elapsed);
     bestEl.textContent = best[String(n)] ? fmtTime(best[String(n)]) : "—";
     var btns = bar.querySelectorAll("[data-size]");
@@ -407,7 +423,7 @@
    * a chord is what "computery" sounds like.
    */
   var Audio2 = (function () {
-    var actx = null, master = null, comp = null, verb = null, delay = null, muted = false;
+    var actx = null, master = null, comp = null, verb = null, delay = null, body = null, muted = false;
     try { muted = localStorage.getItem("sky_sound") === "off"; } catch (e) {}
 
     function init() {
@@ -422,7 +438,13 @@
       var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 13500;
       comp = actx.createDynamicsCompressor();
       comp.threshold.value = -15; comp.ratio.value = 3; comp.attack.value = 0.003; comp.release.value = 0.2;
-      comp.connect(lp); lp.connect(master); master.connect(actx.destination);
+      /* ⚠ The bus compressor is GLUE, not a limiter: at ratio 3 a big enough
+       * burst still walks straight past 1.0 — a pile of placements landing at
+       * once measured 2.6, eight times into clipping. A brickwall after it costs
+       * nothing and means no combination of voices can ever distort. */
+      var lim = actx.createDynamicsCompressor();
+      lim.threshold.value = -1.5; lim.ratio.value = 20; lim.knee.value = 0; lim.attack.value = 0.001; lim.release.value = 0.09;
+      comp.connect(lp); lp.connect(lim); lim.connect(master); master.connect(actx.destination);
 
       // a city block at night, not a desk: a longer tail with air on top
       var len = Math.floor(actx.sampleRate * 1.9);
@@ -442,12 +464,68 @@
       var vg = actx.createGain(); vg.gain.value = 0.3;
       verb.connect(hpv); hpv.connect(shelf); shelf.connect(vg); vg.connect(comp);
 
+      /* Everything percussive is heard across a block of concrete and glass, so
+       * it all runs through one body. This is most of what makes the set sound
+       * like one place rather than a pile of separate effects. */
+      body = actx.createGain();
+      var b1 = actx.createBiquadFilter(); b1.type = "peaking"; b1.frequency.value = 240; b1.Q.value = 1.0; b1.gain.value = 2.5;
+      var b2 = actx.createBiquadFilter(); b2.type = "peaking"; b2.frequency.value = 620; b2.Q.value = 1.4; b2.gain.value = 1.5;
+      var b3 = actx.createBiquadFilter(); b3.type = "highshelf"; b3.frequency.value = 6500; b3.gain.value = -3;
+      body.connect(b1); b1.connect(b2); b2.connect(b3); b3.connect(comp);
+      var bv = actx.createGain(); bv.gain.value = 0.22;
+      b3.connect(bv); bv.connect(verb);
+
       delay = actx.createDelay(1.0); delay.delayTime.value = 0.28;
       var fb = actx.createGain(); fb.gain.value = 0.26;
       var dlp = actx.createBiquadFilter(); dlp.type = "lowpass"; dlp.frequency.value = 2600;
       delay.connect(dlp); dlp.connect(fb); fb.connect(delay);
       var dg = actx.createGain(); dg.gain.value = 0.5;
       dlp.connect(dg); dg.connect(comp); dg.connect(verb);   // repeats bloom into the hall
+    }
+
+    /* ⚠ THE MISSING LAYER, and it is why the first pass sounded synthetic:
+     * every voice ran ENTIRELY through narrow resonators. A resonator output is
+     * a tone, and a stack of tones is a synth no matter how carefully the mode
+     * ratios are chosen. What says "two solid things touched" is the broadband
+     * contact noise BEFORE the object starts ringing — Dominoes learned this and
+     * this build did not inherit it. A tack is deliberately wide (Q well under
+     * 1) and lowpassed, because highpassed noise runs all the way to Nyquist and
+     * turns into hiss. */
+    function tack(o) {
+      if (!actx || muted) return;
+      var t = o.at || actx.currentTime;
+      var src = actx.createBufferSource(); src.buffer = noiseBuf();
+      var bp = actx.createBiquadFilter();
+      bp.type = "bandpass"; bp.frequency.value = o.freq; bp.Q.value = o.q || 0.6;
+      var lp = actx.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = o.lp || 8200;
+      var g = actx.createGain();
+      var d = o.dur || 0.004;
+      g.gain.setValueAtTime(o.amp, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      var p = actx.createStereoPanner ? actx.createStereoPanner() : null;
+      src.connect(bp); bp.connect(lp); lp.connect(g);
+      if (p) { p.pan.value = Math.max(-1, Math.min(1, o.pan || 0)); g.connect(p); p.connect(o.dest || body); }
+      else g.connect(o.dest || body);
+      src.start(t); src.stop(t + d + 0.02);
+    }
+
+    // A low sine falling under the contact: the mass of the thing that landed.
+    function thump(f0, f1, amp, dur, pan) {
+      if (!actx || muted) return;
+      var t = actx.currentTime;
+      var o = actx.createOscillator(); o.type = "sine";
+      o.frequency.setValueAtTime(f0, t);
+      o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(amp, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      var p = actx.createStereoPanner ? actx.createStereoPanner() : null;
+      o.connect(g);
+      if (p) { p.pan.value = Math.max(-1, Math.min(1, pan || 0)); g.connect(p); p.connect(body); }
+      else g.connect(body);
+      o.start(t); o.stop(t + dur + 0.03);
     }
 
     var nb = null;
@@ -539,50 +617,114 @@
         if (master) master.gain.setTargetAtTime(muted ? 0 : 0.9, actx.currentTime, 0.02);
         return muted;
       },
-      // A tower settling: glass and concrete, dense and gone fast. A taller
-      // building is a bigger object, so it lands lower.
+      /* A tower settling into the block. Concrete and glass, in three layers:
+       * the grit of the contact, the dense irregular body of a big slab, and
+       * the mass of it arriving.
+       *
+       * ⚠ The pitch range across heights is deliberately NARROW (about a
+       * fourth, not the octave-and-a-half of the first pass). A wide geometric
+       * spread turns a row of towers into a tune, and a tune is the other half
+       * of why this read as synthetic. Height belongs in the WEIGHT — deeper
+       * thump, longer body — far more than in the pitch. */
       place: function (h, n, pan) {
         init();
-        var base = 520 * Math.pow(0.86, h - 1);
-        modal({ base: base, amp: 1.15, burst: 0.015, exHighpass: 240, pan: pan,
-                modes: [[1, 1, 0.055], [2.41, 0.62, 0.036], [4.09, 0.34, 0.022], [6.31, 0.17, 0.014]] });
-        modal({ base: 96 - h * 5, amp: 0.75 + h * 0.05, burst: 0.020, exHighpass: 40, pan: pan,
-                modes: [[1, 1, 0.10], [2.05, 0.3, 0.05]] });
+        var k = (h - 1) / Math.max(1, n - 1);          // 0 short .. 1 tall
+        var vary = 0.94 + Math.random() * 0.12;
+        tack({ freq: 1500 - k * 420, q: 0.55, lp: 7600, amp: 0.60 - k * 0.06,
+               dur: 0.005 + k * 0.002, pan: pan });
+        modal({ base: (322 - k * 78) * vary, amp: 0.62, burst: 0.013, exHighpass: 150, pan: pan, dest: body,
+                modes: [[1, 1, 0.075 + k * 0.05], [1.83, 0.66, 0.055], [2.67, 0.44, 0.040],
+                        [3.41, 0.28, 0.030], [4.72, 0.17, 0.021], [6.05, 0.09, 0.015]] });
+        thump(112 - k * 26, 44 - k * 10, 0.30 + k * 0.13, 0.11 + k * 0.05, pan);
+        // dust off the edges as it beds in
+        tack({ freq: 3400, q: 0.9, lp: 9000, amp: 0.10, dur: 0.045, pan: pan });
       },
       tick: function (pan) {
         init();
-        modal({ base: 2100, amp: 0.62, burst: 0.006, exHighpass: 900, pan: pan, verb: false,
-                modes: [[1, 1, 0.008], [2.3, 0.4, 0.005]] });
+        tack({ freq: 2600, q: 0.7, lp: 8600, amp: 0.19, dur: 0.005, pan: pan });
+        modal({ base: 1180, amp: 0.09, burst: 0.004, exHighpass: 600, pan: pan, verb: false, dest: body,
+                modes: [[1, 1, 0.010], [2.3, 0.4, 0.006]] });
       },
-      // A wrong height is the same contact heavily damped: no ring, just mass.
+      // A wrong height is the same contact with the ring taken out of it:
+      // no tone to speak of, just mass landing badly.
       bad: function (pan) {
         init();
-        modal({ base: 150, amp: 1.0, burst: 0.018, exHighpass: 50, pan: pan,
-                modes: [[1, 1, 0.055], [1.72, 0.4, 0.03], [2.6, 0.2, 0.018]] });
+        tack({ freq: 700, q: 0.5, lp: 3400, amp: 0.55, dur: 0.020, pan: pan });
+        modal({ base: 132, amp: 0.42, burst: 0.020, exHighpass: 40, pan: pan, dest: body,
+                modes: [[1, 1, 0.060], [1.72, 0.4, 0.034], [2.6, 0.2, 0.020]] });
+        thump(96, 40, 0.26, 0.16, pan);
       },
+      /* Looking down a line: air moving over the block, not a filter sweep.
+       * A resonant bandpass gliding upward is one of the most recognisably
+       * synthetic gestures there is, so this is a wide LOWPASS opening. */
       look: function () {
         init();
         if (!actx || muted) return;
         var t = actx.currentTime;
         var src = actx.createBufferSource(); src.buffer = noiseBuf(); src.loop = true;
-        var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 1.3;
-        bp.frequency.setValueAtTime(300, t);
-        bp.frequency.exponentialRampToValueAtTime(2400, t + 0.5);
+        var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.4;
+        lp.frequency.setValueAtTime(320, t);
+        lp.frequency.exponentialRampToValueAtTime(3600, t + 0.42);
+        lp.frequency.exponentialRampToValueAtTime(900, t + 0.62);
+        var hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 180;
         var g = actx.createGain();
         g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(0.34, t + 0.09);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
-        src.connect(bp); bp.connect(g); g.connect(comp); if (verb) g.connect(verb);
-        src.start(t); src.stop(t + 0.6);
+        g.gain.exponentialRampToValueAtTime(0.30, t + 0.10);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.62);
+        src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(comp); if (verb) g.connect(verb);
+        src.start(t); src.stop(t + 0.68);
       },
-      seen: function (i, pan) { init(); bell(pent(i + 5), 0.13, pan, 1.1); },
-      lineDone: function (pan) { init(); bell(pent(7), 0.16, pan, 1.6); },
+      // A tower catching the light: struck glass, so it starts with a chip of
+      // noise rather than a clean onset.
+      seen: function (i, pan) {
+        init();
+        var f = pent(i + 5);
+        tack({ freq: f * 3.1, q: 1.1, lp: 11000, amp: 0.20, dur: 0.006, pan: pan });
+        bell(f, 0.11, pan, 0.85);
+      },
+      lineDone: function (pan) {
+        init();
+        tack({ freq: 2400, q: 1.0, lp: 10000, amp: 0.18, dur: 0.008, pan: pan });
+        bell(pent(7), 0.15, pan, 1.5);
+      },
+      // Every square filled and a sightline still wrong: the sound of being
+      // told, not the sound of failing. Two dull knocks, no ring.
+      wrong: function () {
+        init();
+        tack({ freq: 620, q: 0.5, lp: 3000, amp: 0.33, dur: 0.024, pan: -0.15 });
+        thump(104, 52, 0.18, 0.14, -0.15);
+        var self = this;
+        setTimeout(function () {
+          tack({ freq: 560, q: 0.5, lp: 2800, amp: 0.29, dur: 0.026, pan: 0.15 });
+          thump(96, 46, 0.16, 0.15, 0.15);
+        }, 155);
+      },
+      /* The city coming on. Evenly spaced bells are an arpeggio, which is the
+       * synthetic tell again, so the timing is deliberately uneven and a low
+       * warm swell sits underneath to give it a floor. */
       win: function () {
         init();
         if (!actx || muted) return;
-        for (var i = 0; i < 6; i++) {
-          (function (i) { setTimeout(function () { bell(pent(3 + i), 0.17 - i * 0.012, (i % 2 ? 0.4 : -0.4), 2.4); }, i * 118); })(i);
+        var gaps = [0, 96, 218, 300, 452, 540, 700], amps = [0.17, 0.15, 0.16, 0.13, 0.14, 0.11, 0.12];
+        for (var i = 0; i < gaps.length; i++) {
+          (function (i) {
+            setTimeout(function () {
+              var f = pent(3 + i);
+              tack({ freq: f * 3.0, q: 1.1, lp: 11000, amp: 0.14, dur: 0.006, pan: i % 2 ? 0.45 : -0.45 });
+              bell(f, amps[i], i % 2 ? 0.45 : -0.45, 2.2);
+            }, gaps[i]);
+          })(i);
         }
+        var t = actx.currentTime;
+        var o = actx.createOscillator(); o.type = "triangle"; o.frequency.value = pent(0) / 2;
+        var o2 = actx.createOscillator(); o2.type = "sine"; o2.frequency.value = pent(0) / 2 * 1.005;
+        var g = actx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.085, t + 0.5);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 2.8);
+        var lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 900;
+        o.connect(g); o2.connect(g); g.connect(lp); lp.connect(comp); if (verb) lp.connect(verb);
+        o.start(t); o2.start(t); o.stop(t + 2.9); o2.stop(t + 2.9);
       }
     };
   })();
@@ -788,10 +930,13 @@
         var rr = L.chip;
         var fill = "rgba(12,15,30,0.85)", edge = "rgba(150,185,255,0.3)", ink = "rgba(224,232,255,0.82)";
         if (st === 1) { fill = "rgba(60,42,12,0.9)"; edge = "rgba(255,180,74,0.9)"; ink = "#ffdca6"; }
-        if (st === -1) { fill = "rgba(58,14,24,0.9)"; edge = "rgba(255,95,109,0.9)"; ink = "#ffc2c8"; }
+        if (st === -1) {
+          var pul = 0.72 + 0.28 * Math.sin(G.clock * 5.2);
+          fill = "rgba(58,14,24,0.9)"; edge = "rgba(255,95,109," + pul.toFixed(3) + ")"; ink = "#ffc2c8";
+        }
         if (focus) { edge = "rgba(111,216,255,1)"; ink = "#dff4ff"; }
         ctx.save();
-        if (focus || st === 1) { ctx.shadowColor = edge; ctx.shadowBlur = 14; }
+        if (focus || st === 1 || st === -1) { ctx.shadowColor = edge; ctx.shadowBlur = st === -1 ? 18 : 14; }
         roundRect(p.x - rr, p.y - rr * 0.82, rr * 2, rr * 1.64, rr * 0.42);
         ctx.fillStyle = fill; ctx.fill();
         ctx.strokeStyle = edge; ctx.lineWidth = 1.4; ctx.stroke();
@@ -822,7 +967,8 @@
     ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(x, y); ctx.stroke();
     ctx.restore();
 
-    var lbl = info.count + (info.count === 1 ? " seen" : " seen");
+    var want = G.clues[sw.side][sw.i];
+    var lbl = info.count + " seen" + (want && info.full && info.count !== want ? "  \u00b7  needs " + want : "");
     ctx.font = "800 " + (L.chip * 0.78).toFixed(0) + 'px "Archivo", system-ui, sans-serif';
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
     ctx.globalAlpha = fade;
@@ -951,7 +1097,18 @@
   }
 
   function checkWin() {
-    if (G.solved || !isSolved()) return;
+    if (G.solved) return;
+    if (!isSolved()) {
+      var full = filledCount() === G.n * G.n;
+      if (full && !G.wasFull) {
+        G.wasFull = true;
+        var w = clueTally().wrong;
+        Audio2.wrong();
+        // kept to one line on purpose: two lines reach the bottom clue chips
+        say("Grid full \u2014 " + w + (w === 1 ? " sightline wrong" : " sightlines wrong"), 3400);
+      } else if (!full) { G.wasFull = false; }
+      return;
+    }
     G.solved = true;
     G.winT = 0.0001;
     G.elapsed = G.started ? (performance.now() - G.t0) / 1000 : 0;
@@ -1093,6 +1250,7 @@
   function frame(ms) {
     var dt = lastT ? Math.min(0.05, (ms - lastT) / 1000) : 0;
     lastT = ms;
+    G.clock += dt;
     if (G.sweep) { G.sweep.t += dt; if (G.sweep.t > 2.2) G.sweep = null; }
     if (G.winT > 0) G.winT = calm ? 1.6 : Math.min(1.6, G.winT + dt * 0.7);
     for (var k in G.bump) { G.bump[k] = calm ? 0 : G.bump[k] - dt * 5; if (G.bump[k] <= 0) delete G.bump[k]; }

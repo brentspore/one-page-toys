@@ -166,7 +166,10 @@ canvas{
   .frame__corner--tr{ display: none; }
   /* the tickets pill docks bottom-left and is 32px tall, so the hint clears it */
   .hint{ display: none; }
-  .hud{ gap: 18px; padding: 6px 12px; }
+  /* the fourth readout pushed the HUD into the "No. 117" corner mark */
+  .hud{ gap: 11px; padding: 6px 10px; }
+  .hud__k{ font-size: 7px; letter-spacing: 0.12em; }
+  .hud__cell span:last-child{ font-size: 15px; }
   .bar{ bottom: max(74px, calc(env(safe-area-inset-bottom) + 64px)); }
   .callout{ bottom: max(178px, calc(env(safe-area-inset-bottom) + 168px)); }
 }
