@@ -46,7 +46,8 @@
       "tagline": "Daily estimation game",
       "url": "https://eyeball-it.com",
       "favicon": "https://eyeball-it.com/favicon.svg",
-      "initial": "E"
+      "initial": "E",
+      "slug": "eyeball-it"
     },
     {
       "name": "Word Kraven",
