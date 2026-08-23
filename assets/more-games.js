@@ -10,6 +10,45 @@
 
   var GAMES = [
     {
+      "name": "Skyscrapers",
+      "tagline": "Build to the sightlines",
+      "url": "https://onepagetoys.com/toys/skyscrapers/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2305060e'/><rect x='3' y='17' width='7' height='12' rx='1' fill='%233d4870'/><rect x='12' y='9' width='8' height='20' rx='1' fill='%234a5580'/><rect x='22' y='14' width='7' height='15' rx='1' fill='%233d4870'/><g fill='%23ffb44a'><rect x='4.4' y='19' width='1.9' height='2'/><rect x='7.1' y='19' width='1.9' height='2'/><rect x='4.4' y='23' width='1.9' height='2'/><rect x='7.1' y='23' width='1.9' height='2'/><rect x='13.4' y='11.5' width='2' height='2.1'/><rect x='16.5' y='11.5' width='2' height='2.1'/><rect x='13.4' y='16' width='2' height='2.1'/><rect x='16.5' y='16' width='2' height='2.1'/><rect x='13.4' y='20.5' width='2' height='2.1'/><rect x='16.5' y='20.5' width='2' height='2.1'/><rect x='23.4' y='16.5' width='1.9' height='2'/><rect x='26.1' y='16.5' width='1.9' height='2'/><rect x='23.4' y='20.5' width='1.9' height='2'/><rect x='26.1' y='20.5' width='1.9' height='2'/></g><rect x='2' y='2.5' width='9' height='7.5' rx='2.2' fill='%23241a09' stroke='%23ffb44a' stroke-width='1.3'/><text x='6.5' y='8.4' font-family='Helvetica,Arial,sans-serif' font-size='7' font-weight='700' fill='%23ffdca6' text-anchor='middle'>3</text></svg>",
+      "initial": "S",
+      "slug": "skyscrapers"
+    },
+    {
+      "name": "Steady Hand",
+      "tagline": "Don't touch the sides",
+      "url": "https://onepagetoys.com/toys/steady-hand/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2304040a'/><path d='M4 21 C8 9 12 27 17 16 S25 19 28 11' fill='none' stroke='%235f8fd6' stroke-width='2.1' stroke-linecap='round'/><path d='M4 21 C6.5 13.5 9 15 11 19' fill='none' stroke='%2346e0b0' stroke-width='2.1' stroke-linecap='round'/><circle cx='4' cy='21' r='2.4' fill='%2346e0b0'/><circle cx='28' cy='11' r='2.4' fill='%23ffc85c'/><circle cx='13.6' cy='20.4' r='4.6' fill='none' stroke='%23eaf2ff' stroke-width='1.9'/></svg>",
+      "initial": "S",
+      "slug": "steady-hand"
+    },
+    {
+      "name": "Dominoes",
+      "tagline": "Draw it, then topple it",
+      "url": "https://onepagetoys.com/toys/dominoes/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080f'/><rect x='3.5' y='18' width='5.4' height='11' rx='1' fill='%23ff5f6d' transform='rotate(-26 6.2 23.5)'/><rect x='11' y='11' width='5.4' height='15' rx='1' fill='%23ffd15c' transform='rotate(-9 13.7 18.5)'/><rect x='18.5' y='10' width='5.4' height='16' rx='1' fill='%236ee7a0' transform='rotate(-3 21.2 18)'/><rect x='25' y='10' width='5.4' height='16' rx='1' fill='%2359c8ff'/><g fill='%2307080f' opacity='0.55'><circle cx='13.7' cy='15' r='0.9'/><circle cx='13.7' cy='22' r='0.9'/><circle cx='21.2' cy='14' r='0.9'/><circle cx='21.2' cy='22' r='0.9'/><circle cx='27.7' cy='14' r='0.9'/><circle cx='27.7' cy='22' r='0.9'/></g></svg>",
+      "initial": "D",
+      "slug": "dominoes"
+    },
+    {
+      "name": "Pinball",
+      "tagline": "Keep it off the drain",
+      "url": "https://onepagetoys.com/toys/pinball/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23090a1a'/><path d='M5 12.5 A8.5 8.5 0 0 1 22 12.5 L22 29 L5 29 Z' fill='%23171d3d'/><path d='M5 12.5 A8.5 8.5 0 0 1 22 12.5' fill='none' stroke='%235b6bb5' stroke-width='1.4'/><rect x='24' y='9' width='4' height='20' rx='2' fill='%231d2450' stroke='%235b6bb5' stroke-width='1'/><circle cx='26' cy='25.5' r='1.5' fill='%23cfd8ff'/><circle cx='10' cy='11.5' r='3.1' fill='%237c5cff'/><circle cx='9.2' cy='10.7' r='1.2' fill='%23cbb8ff'/><g fill='%23ffc85c'><rect x='14' y='15.5' width='6.5' height='1.6' rx='0.8'/><rect x='14' y='18.2' width='6.5' height='1.6' rx='0.8' opacity='0.55'/></g><circle cx='9.5' cy='19.5' r='2.1' fill='%23eef3ff'/><circle cx='8.8' cy='18.8' r='0.8' fill='%23ffffff'/><path d='M7 25 L11.5 28.2' stroke='%23ff4d8d' stroke-width='2.8' stroke-linecap='round'/><path d='M20 25 L15.5 28.2' stroke='%23ff4d8d' stroke-width='2.8' stroke-linecap='round'/></svg>",
+      "initial": "P",
+      "slug": "pinball"
+    },
+    {
+      "name": "Eyeball It",
+      "tagline": "Daily estimation game",
+      "url": "https://eyeball-it.com",
+      "favicon": "https://eyeball-it.com/favicon.svg",
+      "initial": "E"
+    },
+    {
       "name": "Word Kraven",
       "tagline": "Hunt the words out",
       "url": "https://onepagetoys.com/toys/word-kraven/",

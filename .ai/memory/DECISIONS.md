@@ -294,3 +294,42 @@ right the first time rather than going back.
 
 **Revisit if:** the owner raises a specific complaint about a specific toy — that is new
 information, not a contradiction of this.
+
+---
+
+### 2026-08-23 — Cross-promo is part of SHIPPING a game, not a later curation pass (owner directive)
+
+**Context:** Owner: *"when I push a new game, the cross promo piece needs to be a part of it."* The
+list had drifted badly — **every toy from No. 108 onward was missing** (Claw Machine, Twisty Cube,
+Glass Harp, Chord Harp, Pinball, Dominoes, Steady Hand, Pendulum Wave, Skyscrapers), because a prior
+decision framed the list as "curated, not the whole catalogue" and each addition as expensive enough
+to defer. Deferring it just meant it never happened, so a visitor finishing a toy was being pointed
+only at things built six weeks earlier or more.
+
+**Decision:** **Adding the toy to the cross-promo network is a REQUIRED step in the new-toy pipeline**,
+in the same pass as the registry, sitemap, NL phrases, card and OG. A toy is not shipped until it is
+in the list. It is no longer a separate curation exercise and no longer deferred.
+
+**What the step actually is — four surfaces, and all four must move together:**
+1. `assets/more-games.js` here (carries a `slug` field; the widget self-excludes the host toy by it)
+2. `five-second-game/src/components/game/MoreGames.tsx`
+3. `the-trail-game/src/components/site/MoreGames.tsx`
+4. `word-kraven/src/components/MoreGames.tsx`
+
+⚠ **The three sibling lists carry NO `slug` field — each drops ITSELF by omission**, which is why
+their counts are one lower than this one. ⚠ **Key style differs per file** (`"name":` quoted in
+more-games.js and word-kraven, bare `name:` in five-second-game and the-trail-game) — match the file
+you are editing. ⚠ **Feeder entries point at the FEEDER page here, not the external domain**, so the
+click lands on a page with full chrome carrying its own tagged CTAs onward. Then bump
+`more-games.js?v=N` across every page here, and **verify the DEPLOYED bundles, not the source** —
+the siblings are separate Vercel deploys and a green local diff proves nothing about what shipped.
+
+**Rationale:** The cross-promo is the only place the network compounds. A list that lags the
+catalogue by ten toys is worse than useless — it actively advertises the site's older work.
+
+**Revisit if:** the number of surfaces grows enough that a shared generated file is worth building
+(at five sites, hand-mirroring stops being defensible).
+
+⚠ **Drift found on 2026-08-23 while applying this:** "Eyeball It" was on both siblings but missing
+from `more-games.js`, and had been for some time. Hand-mirrored lists drift silently — **diff the
+four lists whenever one is touched.**
