@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Jenga — One Page Toys</title>
+    <meta name="description" content="A real Jenga tower with real physics. Orbit and zoom to choose your block, slide it out, then put it back on top — and every block you place makes the tower taller and less stable. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/jenga/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0806" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Jenga — One Page Toys" />
+    <meta property="og:description" content="Orbit the tower, slide a block out, then stack it back on top. You are building the thing that eventually beats you." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/jenga/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/jenga.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jenga — One Page Toys" />
+    <meta name="twitter:description" content="Real physics, real rules. Pull a block, put it back on top, and see how tall you dare go." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/jenga.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Jenga",
+        "url": "https://onepagetoys.com/toys/jenga/",
+        "description": "A Jenga tower simulated with real rigid-body physics. Orbit and zoom the tower to choose a block from anywhere in three dimensions, slide it out along its own axis, and then place it back on top — the real rule, and the reason the game gets harder as you play, because every block you move makes the tower taller and more top-heavy. Strict rules apply: you may only take from below the highest complete level, and a new level must be filled to three before the next is started. One touch too many and the whole thing comes down.",
+        "applicationCategory": "GameApplication",
+        "genre": "Simulation",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires WebGL.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Moved</span><span id="moved">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Levels</span><span id="levels">12</span></div>
+      <div class="hud__cell"><span class="hud__k">Best</span><span id="best">—</span></div>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">♪</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Take one out, put it back on top</p>
+        <h1 class="panel__title" id="ovTitle">Jenga</h1>
+        <p class="panel__text" id="ovText">
+          <b>Drag the table</b> to orbit and <b>pinch or scroll</b> to zoom, so you can
+          pick your block from any angle. <b>Drag a block</b> to slide it out — only from
+          below the highest complete level. Then <b>tap a glowing slot</b> to set it back
+          on top. Every block you move makes the tower taller and more top-heavy.
+        </p>
+        <button type="button" class="play-btn" id="ovBtn">Build the tower</button>
+        <p class="panel__keys">drag to orbit &middot; drag a block to pull &middot; tap a slot to place</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 116</span>
+      <span class="frame__corner frame__corner--tr">Jenga</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag to orbit &middot; drag a block to slide it out</p>
+
+    <script src="../../assets/tickets.js?v=23" defer></script>
+    <script type="module" src="script.js?v=1"></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=5" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=16" defer></script>
+  </body>
+</html>

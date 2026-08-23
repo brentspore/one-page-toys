@@ -294,3 +294,34 @@ right the first time rather than going back.
 
 **Revisit if:** the owner raises a specific complaint about a specific toy — that is new
 information, not a contradiction of this.
+
+---
+
+### 2026-08-22 — One vendored runtime dependency: cannon-es, for Jenga only (owner-approved exception)
+
+**Context:** Jenga needs an 18-level tower of 54 boxes to stand still and then collapse convincingly.
+A from-scratch 3D rigid-body solver was written and got a long way — verified SAT narrowphase with
+4-point manifolds, correct ground and two-box resting, stable 4-level stacks, 0.55x realtime for 54
+blocks — but deep stacks collapsed. **Ruled out with evidence, not guesses: solver iterations up to
+240, the contact clip threshold, persistent manifolds with body-local anchors, and shock
+propagation.** Three real bugs were found and fixed on the way (an inverted ground normal that sent
+the sim to infinity, a Baumgarte term that injected energy so a box dropped 0.05 bounced to 1.70,
+and unclamped correction velocity) — each helped, none was sufficient.
+
+**Decision (owner, 2026-08-22):** ship **`cannon-es` 0.20.0 (MIT)**, **vendored into
+`toys/jenga/lib/`** with its licence, for **Jenga only**. Also **shorten the tower** rather than
+insist on 18 levels.
+
+**Rationale:** The zero-dep rule exists so the repo stays hand-editable with no build step, and that
+still holds — cannon-es is a plain ES module loaded with `<script type="module">`, no bundler, no
+npm at runtime. It is **vendored rather than pulled from a CDN**, so the site keeps having no
+external runtime dependencies. And a rigid-body solver is the one component where writing it
+yourself buys a visitor nothing they can perceive: it is invisible infrastructure, unlike the
+rendering and audio, which are the house style and stay hand-written.
+
+⚠ **This is a narrow exception, not a new default.** Every other toy stays zero-dep. Do not reach
+for a library for rendering, audio, or anything a user can see, and do not add a second dependency
+without asking.
+
+**Revisit if:** another toy needs real 3D rigid bodies (then reuse this vendored copy rather than
+adding another), or the from-scratch solver is ever finished properly.
