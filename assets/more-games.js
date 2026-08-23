@@ -47,7 +47,7 @@
       "url": "https://eyeball-it.com",
       "favicon": "https://eyeball-it.com/favicon.svg",
       "initial": "E",
-      "slug": "eyeball-it"
+      "slug": null
     },
     {
       "name": "Word Kraven",
