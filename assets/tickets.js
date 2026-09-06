@@ -69,6 +69,7 @@
     // higher is better
     { test: "accretion_best", dir: "up", label: "Accretion score" },
     { test: "claw_best", dir: "up", label: "Claw Machine haul" },
+    { test: "chess_beaten", dir: "up", label: "Chess opponents beaten" },
     // one rule for all three cube sizes; a solve time is better when lower
     { test: /^cube_best_[234]$/, dir: "down", label: "Twisty Cube solve" },
     { test: "bowling_best", dir: "up", label: "Bowling series" },

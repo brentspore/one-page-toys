@@ -1,5 +1,38 @@
 [
   {
+    "slug": "chess",
+    "name": "Chess",
+    "shortDescription": "A full game of chess against six opponents who each want something different from the board. The Merchant counts material and takes the poisoned pawn; the Duelist gives pieces away to reach your king; the Architect plays for structure and will not be rushed; the Oracle does not blunder. Turned obsidian and alabaster under one warm light, with undo, hints and full notation.",
+    "category": "game",
+    "tags": [
+      "chess",
+      "board-game",
+      "strategy",
+      "two-player",
+      "ai-opponent",
+      "classic",
+      "checkmate",
+      "tactics",
+      "puzzle",
+      "turn-based",
+      "thinking",
+      "grid",
+      "single-player",
+      "difficulty-levels",
+      "marble",
+      "3d",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/chess/",
+    "related": [
+      "twisty-cube",
+      "solitaire",
+      "minesweeper",
+      "skyscrapers"
+    ]
+  },
+  {
     "slug": "skyscrapers",
     "name": "Skyscrapers",
     "shortDescription": "A logic puzzle you build instead of write. Raise a tower in every square so each height appears once per row and column, and the numbers around the edge match how many towers you can see looking down that line — a taller one hides every shorter one behind it. Tap an edge number and a beam sweeps the row, lighting what is seen and dimming what is hidden.",

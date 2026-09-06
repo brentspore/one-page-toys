@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Chess",
+      "tagline": "Six opponents, six ways to lose",
+      "url": "https://onepagetoys.com/toys/chess/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080a10'/><g fill='%23bcb096'><rect x='0' y='24' width='8' height='8'/><rect x='16' y='24' width='8' height='8'/></g><g fill='%23171b24'><rect x='8' y='24' width='8' height='8'/><rect x='24' y='24' width='8' height='8'/></g><rect x='15.1' y='2' width='1.9' height='6.6' rx='0.7' fill='%23ece6da'/><rect x='13.3' y='3.7' width='5.5' height='1.9' rx='0.7' fill='%23ece6da'/><path d='M12.5 12.4 C12.5 9.5 19.5 9.5 19.5 12.4 L18.7 14.1 L13.3 14.1 Z' fill='%23ece6da'/><rect x='13.1' y='14' width='5.8' height='2' rx='0.8' fill='%23ece6da'/><path d='M14 16 L13.1 21.5 L18.9 21.5 L18 16 Z' fill='%23ece6da'/><path d='M11.3 21.5 L20.7 21.5 L21.6 24.6 L10.4 24.6 Z' fill='%23ece6da'/><rect x='10.5' y='22.9' width='11' height='1.7' rx='0.85' fill='%23e0a94a'/></svg>",
+      "initial": "C",
+      "slug": "chess"
+    },
+    {
       "name": "Skyscrapers",
       "tagline": "Build to the sightlines",
       "url": "https://onepagetoys.com/toys/skyscrapers/",

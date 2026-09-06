@@ -6,7 +6,7 @@
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**117 toys, live at onepagetoys.com.** Latest on `main`: `68a3a57`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**118 toys** (Chess uncommitted); 117 live at onepagetoys.com. Latest on `main`: `68a3a57`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work
 
@@ -19,6 +19,64 @@ A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities i
 - ⚠ **Card pose is KEYBOARD-driven** (`scripts/poses/skyscrapers.js`) and leaves **one gap per row AND column** — a completed line gets judged, and a judged line missing its clue turns the chip red, which reads as broken.
 
 ⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work; **one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
+
+## No. 118 Chess (`toys/chess/`) — built 2026-09-05, NOT yet committed
+
+The catalogue's first real opponent AI. Four files: `chess-core.js` (rules), `engine.js`
+(search, a Worker), `script.js` (render/audio/UI), `styles.css`. **The core is loaded by
+BOTH threads** — `<script>` in the page, `importScripts` in the worker — so there is exactly
+one move generator and the board can never disagree with the engine about what is legal.
+Keys: `chess_beaten` (ticket rule, dir `up`), `chess_defeated`, `chess_wins|losses|draws`,
+`chess_sound`. Owner supplied the key art; the board palette was pulled toward it.
+
+- ⚠⚠ **THE BUG WORTH REMEMBERING — a narrowing root window silently breaks any
+  score-based personality system.** Root moves were searched with `(-INF, -alpha)`, so only
+  the best move returned a TRUE score; every other came back as a **fail-low bound sitting
+  just under alpha**. Sorting still worked, so it looked fine — but the personality layer
+  reads those numbers as centipawns, and a losing move scored ~alpha instead of −900 sat
+  well inside the temperature jitter. Measured: the Architect (temp 32) found mate-in-1
+  **1/20** while the Novice (temp 260) found it **14/20** — a *lower* temperature was
+  *worse*, because deeper search tightens the bounds. **Give every root move a FULL window**;
+  the saving is worthless here and root move counts are tiny.
+- ⚠ **Quiescence is the difficulty lever, not depth.** It is what stops an engine hanging a
+  piece to a one-move recapture, so the Novice searches WITHOUT it on purpose — that is what
+  produces a beginner who leaves pieces en prise. The flag existed on all six personalities
+  and was never read for weeks of tuning; wire the gate before trusting a ladder result.
+- ⚠ **Judge the ladder by adjudicated material, never by win/loss alone.** Weak engines
+  shuffle to the move cap; scoring those as draws gave 9 draws in 10 games and hid the
+  ordering completely. Also ⚠ **scaling time budgets down to speed up a round-robin
+  penalises the DEEPER personalities** and can manufacture an inversion — measured, the
+  depth cap binds, not the clock (2–28ms used against 200–1400ms budgets).
+- ⚠ **Perft is the only honest proof of a move generator.** All six standard positions match
+  exactly (~16M nodes) — that is what makes castling-through-check, en-passant discovered
+  check and promotion trustworthy without hand-testing them.
+- ⚠ **The opening book must verify its own history.** It is indexed by move list, so a stale
+  or desynced history returns a move for a DIFFERENT position — which still passes a legality
+  test often enough to be played. `historyMatches()` replays and compares before trusting it.
+- ⚠ **Camera: a piece hides `height * tan(TILT)` ranks behind it.** That is the entire
+  readability budget. 26° squashed pieces to 44% of their height (bottles); 38° let the king
+  swallow 1.4 ranks and the back row became guesswork. **31.5° off vertical** puts the king
+  near 1.1 ranks with board depth still 85% of its width.
+- ⚠ **A shape drawn in raw model units is stretched by the camera.** The knight is scaled
+  ~1.0 horizontally but only `COS` (0.52) vertically, so a head authored in model units came
+  out past 2:1 — a beak. Map it onto the piece's real on-screen height instead. Related: a
+  muzzle must be nearly as DEEP as it is long (the failing version measured 18px by 5px).
+- ⚠ **Battlements must be built as extruded blocks, not painted as dark gaps.** At this
+  camera the top face is most of what you see, so darkened gaps read as spots on a die.
+- ⚠ **`r | 0 > 255 ? 255 : clamp(r)` does NOT clamp** — `>` binds tighter than `|`, so it
+  evaluates as `r | clamp(r)` and saturates the channel. It turned every obsidian piece
+  bright pink. Colour clamping gets its own named function.
+- ⚠ **Keyboard play is a real feature AND the test/pose harness.** Arrows + Enter drive the
+  board, so `scripts/poses/chess.js` and every headless test use real input with no debug
+  hook. `moveCursor()` clamps at the edges, so spamming Down/Left HOMES the cursor on a1 —
+  that is how the pose navigates absolutely. ⚠ In a pose helper, `for (i=0; i<(n||1); i++)`
+  fires ONCE for `n === 0`; that turned 1.e4 into 1.e3 and scrambled the card position.
+- ⚠ **Audio was measured, never assumed:** 0.114 avg → the bus compressor at −15dB was
+  limiting single hits (raising amp 53% moved the peak 15%) → threshold to −6 and amp ×1.93
+  → **0.200 avg**, inside the 0.15–0.30 target. **Average 7+ real hits**: a single
+  noise-excited render scatters ±20% and will invert an A/B.
+- ⚠ **`.tray` is used by 3 other toys** — chess's material tray is `.captured` so
+  `gen-card.cjs`'s hide list can target it without changing their cards.
 
 ## Image sharing (`assets/share.js?v=6`, 43 pages)
 
