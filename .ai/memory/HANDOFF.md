@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-08-23 (No. 117 Skyscrapers + image sharing, then owner play-test fixes; Jenga parked on a branch).** This is a handoff, not a journal: keep ONE current-state block and overwrite it each session. The full session-by-session journal to this point is preserved verbatim in [archive/HANDOFF-archive-2026-08-29.md](archive/HANDOFF-archive-2026-08-29.md); the earlier archives still exist and hold the per-toy detail — 001–069 ([2026-07-08](archive/HANDOFF-archive-2026-07-08.md)), 070–100 ([2026-07-27](archive/HANDOFF-archive-2026-07-27.md)), 101–107 + the 08-04 search audit ([2026-08-14](archive/HANDOFF-archive-2026-08-14.md)).
+**Last updated: 2026-09-05 (No. 118 Chess shipped: own engine, six opponents; Jenga still parked on a branch).** This is a handoff, not a journal: keep ONE current-state block and overwrite it each session. The full session-by-session journal to this point is preserved verbatim in [archive/HANDOFF-archive-2026-08-29.md](archive/HANDOFF-archive-2026-08-29.md); the earlier archives still exist and hold the per-toy detail — 001–069 ([2026-07-08](archive/HANDOFF-archive-2026-07-08.md)), 070–100 ([2026-07-27](archive/HANDOFF-archive-2026-07-27.md)), 101–107 + the 08-04 search audit ([2026-08-14](archive/HANDOFF-archive-2026-08-14.md)).
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**118 toys** (Chess uncommitted); 117 live at onepagetoys.com. Latest on `main`: `68a3a57`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**118 toys, live at onepagetoys.com.** Latest on `main`: `0365355`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work
 
@@ -20,7 +20,7 @@ A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities i
 
 ⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work; **one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
 
-## No. 118 Chess (`toys/chess/`) — built 2026-09-05, NOT yet committed
+## No. 118 Chess (`toys/chess/`) — shipped 2026-09-05, live and owner-approved
 
 The catalogue's first real opponent AI. Four files: `chess-core.js` (rules), `engine.js`
 (search, a Worker), `script.js` (render/audio/UI), `styles.css`. **The core is loaded by
@@ -75,6 +75,18 @@ Keys: `chess_beaten` (ticket rule, dir `up`), `chess_defeated`, `chess_wins|loss
   limiting single hits (raising amp 53% moved the peak 15%) → threshold to −6 and amp ×1.93
   → **0.200 avg**, inside the 0.15–0.30 target. **Average 7+ real hits**: a single
   noise-excited render scatters ±20% and will invert an A/B.
+- ⚠⚠ **`sampleProfile` CLAMPS past a profile's last control point.** The knight's
+  lathe stops at t=0.34, so every ring above it kept returning the same radius and
+  the lathe quietly drew a full-height CYLINDER to the top of the piece — a literal
+  lollipop stick with the flat head pasted on the front (owner: *"a horse head glued
+  on a lollipop"*). Fixed with a per-piece `latheTo` cap. Any future profile that
+  stops short of 1.0 needs one. ⚠ A sculpted silhouette must also close on a base as
+  WIDE as the collar under it, and wants a darker offset copy behind it for
+  thickness, or it reads as a cut-out standing on the board.
+- ⚠ **The rook's notches are PAINTED, and that is deliberate.** Cutting them through
+  with `destination-out` works, but what shows behind them is the board — so the same
+  rook reads with dark notches on one square and light ones on the next. Owner has
+  seen and accepted the painted top.
 - ⚠ **`.tray` is used by 3 other toys** — chess's material tray is `.captured` so
   `gen-card.cjs`'s hide list can target it without changing their cards.
 
@@ -90,7 +102,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **40 entries, `?v=19` across 40 pages**. Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **41 entries, `?v=20` across 41 pages**. Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -139,11 +151,11 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=111` (8 pages) / `styles.css?v=115` (9 hub/store pages); **`tickets.js?v=24` across all 126 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=19` (40 pages); `share.js?v=6` (43 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=112` (8 pages) / `styles.css?v=116` (9 hub/store pages); **`tickets.js?v=25` across all 127 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=20` (41 pages); `share.js?v=6` (43 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
-**Featured art** — the home panel ROTATES bespoke key art, one of **31** toys per load, not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
+**Featured art** — the home panel ROTATES bespoke key art, one of **32** toys per load, not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
-- ⚠ **All featured URLs share ONE version string (`.webp?v=N` in `renderHomeHero`), so REPLACING any single piece means bumping N for all of them** — currently `?v=4` (bumped 2026-08-23 when the Skyscrapers piece was replaced). ⚠ **ADDING a new piece must NOT bump it**: a new file has no cached copies to invalidate and the bump needlessly re-fetches all 31. **The bump is for REPLACEMENTS only.**
+- ⚠ **All featured URLs share ONE version string (`.webp?v=N` in `renderHomeHero`), so REPLACING any single piece means bumping N for all of them** — currently `?v=4` (bumped 2026-08-23 when the Skyscrapers piece was replaced). ⚠ **ADDING a new piece must NOT bump it**: a new file has no cached copies to invalidate and the bump needlessly re-fetches all 32. **The bump is for REPLACEMENTS only.**
 - ⚠ **The featured media element also carries `data-slug`, so a card motif can bleed through the art** — the art branch must `removeAttribute("data-slug")` and set every background longhand inline, because the `[data-slug]` card rules sit ~700 lines further down `styles.css` and **beat `.home-featured__*` on source order at equal specificity.**
 - ⚠ The art is a CSS background painted after the registry fetch, so it **cannot be `rel=preload`ed** — likely the home LCP, a round-trip late; the fix, if it ever matters, is `<img fetchpriority="high">`.
 
@@ -168,6 +180,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 - **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
 - **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
 - **Jenga's one remaining bug** (see above).
+- **Chess audio has never been heard** — level is measured at 0.20 peak, character never is. Same for the ladder: verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
 
