@@ -11,7 +11,7 @@
   var GAMES = [
     {
       "name": "Tiny Across",
-      "tagline": "A crossword in a minute",
+      "tagline": "A crossword in minutes",
       "url": "https://onepagetoys.com/toys/tiny-across/",
       "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230e1230'/><rect x='4.5' y='7.5' width='23' height='21.5' rx='5' fill='%23169e75'/><rect x='4.5' y='4.5' width='23' height='21.5' rx='5' fill='%233ee6b4'/><text x='8' y='11.4' font-family='Helvetica,Arial,sans-serif' font-size='5.6' font-weight='700' fill='%230b1b1a' opacity='0.75'>1</text><text x='16.6' y='22.4' font-family='Helvetica,Arial,sans-serif' font-size='14.5' font-weight='800' fill='%230b1b1a' text-anchor='middle'>A</text></svg>",
       "initial": "T",
