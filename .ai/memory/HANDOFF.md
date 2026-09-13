@@ -6,7 +6,7 @@
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**119 toys, live at onepagetoys.com.** Latest on `main`: `049a772`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**119 toys, live at onepagetoys.com.** Latest on `main`: `d46bf91`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work
 
@@ -32,6 +32,11 @@ for all feeders."* Global DECISIONS 2026-09-12. Audited all seven feeders and fi
 - Word Kraven, Trail Game, 5 Second Game, Tossing Cards feeders were already clean.
 - ⚠ When touching any feeder: it never ships daily data or answers.
 
+⚠ **Tiny Across copy says "a few minutes", never "most people finish in about a minute"** (owner,
+2026-09-12, `d46bf91`; tiny-across DECISIONS). The hidden NL keyword "one minute crossword" in `main.js`
+stays on purpose. ⚠ **The feeder stays the simple version**: the site's word feedback and two-clue bar are
+NOT ported here, by owner's call ("OPT is just supposed to be simple and not the full game").
+
 ## No. 119 Tiny Across + the All Toys newest-toy panel — shipped 2026-09-12 (`2b214df`), live
 
 Launched the same evening as the daily at tinyacross.com (its repo HANDOFF has the launch record).
@@ -55,7 +60,7 @@ IndexNow accepted. ⚠ **Audio has never been heard** (levels measured in the da
   search, tag or category filter is active, and never on category pages. `renderNewestPanel()` in
   `main.js`, `.newest*` in `styles.css`. Uses featured art when the slug has it, else the card image.
 - Versions bumped for this: `main.js?v=113`, `styles.css?v=117`, `tickets.js?v=26` (128 pages),
-  `more-games.js?v=21` (42 pages).
+  `more-games.js?v=22` (42 pages).
 
 ## No. 118 Chess (`toys/chess/`) — shipped 2026-09-05, live and owner-approved
 
@@ -188,7 +193,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=114` (8 pages) / `styles.css?v=117` (9 hub/store pages); **`tickets.js?v=26` across all 128 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=21` (42 pages); `share.js?v=6` (43 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=114` (8 pages) / `styles.css?v=117` (9 hub/store pages); **`tickets.js?v=26` across all 128 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=22` (42 pages); `share.js?v=6` (43 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **33** toys per load (Tiny Across added 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
