@@ -1350,7 +1350,7 @@ function renderNewestPanel() {
       // same rule as the home spotlight: key art paints every longhand inline so
       // no [data-slug] card motif can bleed through it
       const prev = sec.querySelector(".card__preview");
-      if (prev) prev.style.background = '#07070b url("/assets/featured/' + t.slug + '.webp?v=4") center / cover no-repeat';
+      if (prev) prev.style.background = '#07070b url("/assets/featured/' + t.slug + '.webp?v=5") center / cover no-repeat';
     }
   }
 
@@ -1401,7 +1401,7 @@ function renderHomeHero() {
       prev.removeAttribute("data-slug");
       prev.classList.add("card__preview--art");
       prev.style.background =
-        '#07070b url("/assets/featured/' + t.slug + '.webp?v=4") center / cover no-repeat';
+        '#07070b url("/assets/featured/' + t.slug + '.webp?v=5") center / cover no-repeat';
       // the art carries the toy's own logo, so the heading would just repeat it:
       // keep it for screen readers only and let the panel re-space itself
       sec.classList.add("home-featured--art");
