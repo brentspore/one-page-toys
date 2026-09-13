@@ -1,5 +1,35 @@
 [
   {
+    "slug": "tiny-across",
+    "name": "Tiny Across",
+    "shortDescription": "A tiny 5x5 crossword with ten short clues, solved in about a minute. Tap a square and type; the clock stops when every letter is right. This is the unlimited practice edition with a fresh puzzle whenever you want one; the daily puzzle, where everyone gets the same grid and keeps a streak, lives at tinyacross.com.",
+    "category": "game",
+    "tags": [
+      "tiny-across",
+      "crossword",
+      "mini-crossword",
+      "word-game",
+      "puzzle",
+      "clues",
+      "vocabulary",
+      "daily",
+      "practice",
+      "brain",
+      "quick",
+      "timed",
+      "keyboard",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/tiny-across/",
+    "related": [
+      "word-kraven",
+      "spelling-blocks",
+      "skyscrapers",
+      "trail-game"
+    ]
+  },
+  {
     "slug": "chess",
     "name": "Chess",
     "shortDescription": "A full game of chess against six opponents who each want something different from the board. The Merchant counts material and takes the poisoned pawn; the Duelist gives pieces away to reach your king; the Architect plays for structure and will not be rushed; the Oracle does not blunder. Turned obsidian and alabaster under one warm light, with undo, hints and full notation.",

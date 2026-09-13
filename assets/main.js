@@ -66,6 +66,7 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "tiny-across": "tiny across crossword mini crossword daily crossword small crossword 5x5 crossword five by five crossword quick crossword easy crossword crossword puzzle online free crossword no signup crossword clues across and down word puzzle word game fill in the grid clue solving one minute crossword timed crossword crossword practice unlimited crossword brain game vocabulary morning puzzle coffee break puzzle daily word game streak tinyacross.com",
   "chess": "chess play chess against computer chess ai chess engine chess bot board game strategy game checkmate check stalemate castling en passant promotion queen king rook bishop knight pawn opening gambit sicilian ruy lopez italian queens gambit london caro kann endgame tactics fork pin skewer blunder elo rating beginner chess easy chess hard chess levels of difficulty different opponents personalities play white play black undo takeback hint move list algebraic notation single player offline free chess no signup lichess chess.com alternative marble chess set staunton pieces 3d chess board",
   "skyscrapers": "skyscrapers skyscraper puzzle building heights logic puzzle latin square deduction reasoning brain teaser sudoku like sudoku alternative kenken futoshiki nonogram sightline how many can you see towers city skyline night grid puzzle no guessing pure logic daily brain training think smart clever puzzle game 4x4 5x5 6x6 timed best time",
   "pendulum-wave": "pendulum wave pendulums swinging balls harmonic motion resonance physics demo science museum harvard pendulum snake wave travelling wave out of phase in phase hypnotic mesmerizing satisfying relaxing meditative kinetic sculpture newton cradle chimes ambient generative rhythm",
@@ -1217,6 +1218,7 @@ function applyFilters() {
   }
 
   const filtered = sortToolsForDisplay(getFilteredTools());
+  renderNewestPanel();
   renderCards(filtered);
   updateClearButton();
   syncURL();
@@ -1271,6 +1273,105 @@ function pickFeaturedTool(tools) {
   const pick = fresh[Math.floor(Math.random() * fresh.length)];
   try { sessionStorage.setItem("opt-featured-last", pick.slug); } catch (e) {}
   return pick;
+}
+
+// ---- newest toy panel (All Toys page) -----------------------------------
+// The registry is kept newest-first, so the newest toy is simply its first
+// entry. The panel sits at the top of the list on the unfiltered /all-toys/
+// page only: never on a category page, and never while a search, tag or
+// category filter is active, because it is not one of the results.
+//
+// Collapsing or closing it holds for the SESSION (sessionStorage) and is keyed
+// by slug, so the next toy to ship shows up again even mid-session.
+const NEWEST_KEY = "opt-newest-panel";
+
+function readNewestState(slug) {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(NEWEST_KEY) || "null");
+    return s && s.slug === slug && (s.state === "collapsed" || s.state === "closed") ? s.state : "open";
+  } catch (e) { return "open"; }
+}
+
+function writeNewestState(slug, state) {
+  try { sessionStorage.setItem(NEWEST_KEY, JSON.stringify({ slug: slug, state: state })); } catch (e) {}
+}
+
+const NEWEST_ICONS = {
+  up: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>',
+  down: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+  close: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>'
+};
+
+function renderNewestPanel() {
+  const sec = document.getElementById("newestToy");
+  if (!sec) return;
+  const t = newestTool;
+  const filtering = !!(currentSearchPhrase() || activeTag || activeCategory);
+  const state = t && t.slug ? readNewestState(t.slug) : "closed";
+  if (!t || !t.path || galleryMode !== "all" || forcedCategory() || filtering || state === "closed") {
+    sec.hidden = true;
+    return;
+  }
+
+  const href = toyHref(t.path);
+  const catKey = String(t.category || "").toLowerCase();
+  const cat = CATEGORY_LABELS[catKey] || "";
+  const name = escapeHTML(t.name || t.slug);
+  const art = FEATURED_ART.indexOf(t.slug) !== -1;
+  const controls =
+    '<div class="newest__controls">' +
+      '<button type="button" class="newest__btn" data-newest="' + (state === "open" ? "collapse" : "expand") + '" aria-expanded="' + (state === "open") + '" aria-label="' + (state === "open" ? "Collapse the newest toy" : "Expand the newest toy") + '">' +
+        (state === "open" ? NEWEST_ICONS.up : NEWEST_ICONS.down) +
+      '</button>' +
+      '<button type="button" class="newest__btn" data-newest="close" aria-label="Hide the newest toy for this visit">' + NEWEST_ICONS.close + '</button>' +
+    '</div>';
+
+  sec.classList.toggle("newest--collapsed", state === "collapsed");
+  if (state === "collapsed") {
+    sec.innerHTML =
+      '<a class="newest__strip" href="' + href + '" target="_blank" rel="noopener">' +
+        '<span class="newest__badge">New</span>' +
+        '<span class="newest__stripname">' + name + '</span>' +
+        (cat ? '<span class="newest__stripcat">' + escapeHTML(cat) + '</span>' : '') +
+      '</a>' + controls;
+  } else {
+    sec.innerHTML =
+      '<a class="newest__media" href="' + href + '" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">' +
+        '<span class="card__preview' + (art ? ' card__preview--art' : '') + '"' + (art ? '' : ' data-slug="' + escapeHTML(t.slug) + '"') + '></span>' +
+      '</a>' +
+      '<div class="newest__body">' +
+        '<p class="newest__eyebrow"><span class="newest__badge">New</span>Newest toy</p>' +
+        '<h2 class="newest__title">' + name + '</h2>' +
+        (cat ? '<p class="newest__cat">' + escapeHTML(cat) + '</p>' : '') +
+        '<p class="newest__desc">' + escapeHTML(t.shortDescription || "") + '</p>' +
+        '<a class="btn btn--primary newest__cta" href="' + href + '" target="_blank" rel="noopener">Play it →</a>' +
+      '</div>' + controls;
+    if (art) {
+      // same rule as the home spotlight: key art paints every longhand inline so
+      // no [data-slug] card motif can bleed through it
+      const prev = sec.querySelector(".card__preview");
+      if (prev) prev.style.background = '#07070b url("/assets/featured/' + t.slug + '.webp?v=4") center / cover no-repeat';
+    }
+  }
+
+  sec.querySelectorAll('a[href="' + href + '"]').forEach(function (a) {
+    a.addEventListener("click", function () {
+      track("toy_launch", { toy_slug: t.slug || "", toy_name: t.name || "", toy_category: t.category || "", source: "all_toys_newest" });
+    });
+  });
+  sec.querySelectorAll("[data-newest]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const action = btn.getAttribute("data-newest");
+      const next = action === "collapse" ? "collapsed" : action === "expand" ? "open" : "closed";
+      writeNewestState(t.slug, next);
+      track("newest_panel", { action: action, toy_slug: t.slug || "" });
+      renderNewestPanel();
+      // keep keyboard focus on the panel's control rather than dropping it to <body>
+      const again = sec.querySelector('[data-newest="' + (next === "collapsed" ? "expand" : "collapse") + '"]');
+      if (again && next !== "closed") again.focus();
+    });
+  });
+  sec.hidden = false;
 }
 
 // Home landing: fill the live toy count + spotlight one toy

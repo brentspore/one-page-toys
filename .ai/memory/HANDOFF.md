@@ -1,6 +1,6 @@
 # Handoff
 
-**Last updated: 2026-09-05 (No. 118 Chess shipped: own engine, six opponents; Jenga still parked on a branch).** This is a handoff, not a journal: keep ONE current-state block and overwrite it each session. The full session-by-session journal to this point is preserved verbatim in [archive/HANDOFF-archive-2026-08-29.md](archive/HANDOFF-archive-2026-08-29.md); the earlier archives still exist and hold the per-toy detail — 001–069 ([2026-07-08](archive/HANDOFF-archive-2026-07-08.md)), 070–100 ([2026-07-27](archive/HANDOFF-archive-2026-07-27.md)), 101–107 + the 08-04 search audit ([2026-08-14](archive/HANDOFF-archive-2026-08-14.md)).
+**Last updated: 2026-09-12 (No. 119 Tiny Across + the All Toys newest-toy panel built and verified locally, UNCOMMITTED, waiting on "push"; Chess 118 is the latest shipped).** This is a handoff, not a journal: keep ONE current-state block and overwrite it each session. The full session-by-session journal to this point is preserved verbatim in [archive/HANDOFF-archive-2026-08-29.md](archive/HANDOFF-archive-2026-08-29.md); the earlier archives still exist and hold the per-toy detail — 001–069 ([2026-07-08](archive/HANDOFF-archive-2026-07-08.md)), 070–100 ([2026-07-27](archive/HANDOFF-archive-2026-07-27.md)), 101–107 + the 08-04 search audit ([2026-08-14](archive/HANDOFF-archive-2026-08-14.md)).
 
 ## What this site is / key files
 
@@ -19,6 +19,30 @@ A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities i
 - ⚠ **Card pose is KEYBOARD-driven** (`scripts/poses/skyscrapers.js`) and leaves **one gap per row AND column** — a completed line gets judged, and a judged line missing its clue turns the chip red, which reads as broken.
 
 ⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work; **one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
+
+## ⚠ IN FLIGHT, UNCOMMITTED: No. 119 Tiny Across + the All Toys newest-toy panel (2026-09-12)
+
+Everything below is in the working tree only. On "push", commit it together with the launch of
+tinyacross.com (checklist in `~/Personal Projects/tiny-across/.ai/memory/HANDOFF.md`).
+- **`toys/tiny-across/`** is the practice feeder for the daily crossword at tinyacross.com: a vanilla
+  port of that repo's React game (cursor rules, solve state, audio all ported; keep them in step).
+  `puzzles.js` is GENERATED there (`node scripts/export-feeder.mjs`), never hand-edited. Keys:
+  `tinyacross_best` (clean solve ms, ticket rule dir `down`), `tinyacross_runs`, `tinyacross_seen`,
+  `tinyacross_sound`. Registered everywhere: registry, sitemap, NL phrases, card CSS + `:not()` chain,
+  og-gen, ticket rule, card (`scripts/poses/tiny-across.js`, `--el ".tray"`) and OG, cross-promo in all
+  four lists. Verified headless: 22 flow checks, no console errors, no overflow at 375px.
+  - ⚠ **While typing on a touch screen the tip jar, fullscreen, tickets pill and back link are hidden**
+    (`body.is-typing.is-touch`): the pinned keyboard owns the bottom of the screen. They return on the
+    start and finish panels.
+  - ⚠ **The overlay grid needs `grid-template-columns: minmax(0, 1fr)`**: the More Toys cards' nowrap text
+    otherwise pushed the panel past a phone's right edge.
+- **All Toys newest-toy panel** (owner request): `#newestToy` above the grid on `/all-toys/` only, fed by
+  the registry's first entry. Collapse (one-line strip) or close (×) holds for the SESSION in
+  `sessionStorage['opt-newest-panel']`, keyed by slug so the NEXT new toy shows again. Hidden while any
+  search, tag or category filter is active, and never on category pages. `renderNewestPanel()` in
+  `main.js`, `.newest*` in `styles.css`. Uses featured art when the slug has it, else the card image.
+- Versions bumped for this: `main.js?v=113`, `styles.css?v=117`, `tickets.js?v=26` (128 pages),
+  `more-games.js?v=21` (42 pages).
 
 ## No. 118 Chess (`toys/chess/`) — shipped 2026-09-05, live and owner-approved
 
@@ -102,7 +126,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **41 entries, `?v=20` across 41 pages**. Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **42 entries (Tiny Across added 2026-09-12, uncommitted), `?v=21` across 42 pages**. Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -151,7 +175,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=112` (8 pages) / `styles.css?v=116` (9 hub/store pages); **`tickets.js?v=25` across all 127 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=20` (41 pages); `share.js?v=6` (43 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=113` (8 pages) / `styles.css?v=117` (9 hub/store pages); **`tickets.js?v=26` across all 128 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=21` (42 pages); `share.js?v=6` (43 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **32** toys per load, not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Tiny Across — One Page Toys</title>
+    <meta name="description" content="A tiny 5x5 crossword with ten short clues that most people finish in about a minute. Unlimited practice puzzles here, with a clock and check and reveal help. The daily puzzle lives at tinyacross.com. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/tiny-across/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0b0f24" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Tiny Across — One Page Toys" />
+    <meta property="og:description" content="A tiny crossword you can finish in about a minute. Unlimited practice; the daily puzzle lives at tinyacross.com." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/tiny-across/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/tiny-across.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tiny Across — One Page Toys" />
+    <meta name="twitter:description" content="A tiny crossword you can finish in about a minute." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/tiny-across.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Tiny Across",
+        "url": "https://onepagetoys.com/toys/tiny-across/",
+        "description": "A tiny crossword on a five by five grid with ten short clues. Tap a square and type; the clock stops when every letter is right, and check or reveal help is there if you get stuck. This is the unlimited practice edition, with a fresh puzzle whenever you want one. The daily puzzle, where everyone gets the same grid and keeps a streak, lives at tinyacross.com.",
+        "applicationCategory": "GameApplication",
+        "genre": "Crossword",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,650&family=Outfit:wght@400;500;600;650;700;750;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <a class="daily" id="daily" href="https://tinyacross.com/?utm_source=onepagetoys&utm_medium=feeder&utm_campaign=tinyacross_practice" target="_blank" rel="noopener">
+      <span class="daily__k">Today's puzzle</span>
+      <span class="daily__t" id="dailyTime">--</span>
+      <span class="daily__go">tinyacross.com →</span>
+    </a>
+
+    <div class="app" id="app">
+      <header class="top">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"><span class="mark__n">1</span>A</span>
+          <span class="brand__text">
+            <span class="wordmark">Tiny Across</span>
+            <span class="brand__sub">No. 119 <span class="dot">·</span> Practice</span>
+          </span>
+        </div>
+        <div class="top__tools">
+          <span class="timer" id="timer" aria-label="Time">0:00</span>
+          <div class="menuwrap">
+            <button type="button" class="iconbtn" id="helpBtn" aria-label="Check or reveal" aria-expanded="false" hidden>
+              <svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /></svg>
+            </button>
+            <div class="menu" id="menu" role="menu" hidden>
+              <p class="menu__k">Check</p>
+              <button type="button" class="menu__item" data-act="check" data-scope="square">This square</button>
+              <button type="button" class="menu__item" data-act="check" data-scope="word">This word</button>
+              <button type="button" class="menu__item" data-act="check" data-scope="puzzle">Whole puzzle</button>
+              <p class="menu__k">Reveal</p>
+              <button type="button" class="menu__item" data-act="reveal" data-scope="square">This square</button>
+              <button type="button" class="menu__item" data-act="reveal" data-scope="word">This word</button>
+              <button type="button" class="menu__item" id="revealAllAsk">Whole puzzle</button>
+              <div class="menu__confirm" id="revealAllConfirm" hidden>
+                <p>Show every answer? That ends this puzzle.</p>
+                <div class="menu__row">
+                  <button type="button" class="menu__item menu__item--danger" data-act="reveal" data-scope="puzzle">Show it</button>
+                  <button type="button" class="menu__item" id="revealAllCancel">Keep trying</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" aria-label="Sound on">
+            <svg class="i-on" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" /><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+            <svg class="i-off" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" /><path d="M16 9.5l5 5m0-5l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="stage">
+        <div class="play">
+          <div class="boardwrap">
+            <div class="tray" id="tray">
+              <div class="grid" id="grid" role="grid" aria-label="Crossword grid"></div>
+            </div>
+            <p class="toast" id="toast" role="status" hidden></p>
+          </div>
+          <div class="cluebar" id="cluebar" hidden>
+            <button type="button" class="cluebar__arrow" id="prevClue" aria-label="Previous clue">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </button>
+            <button type="button" class="cluebar__text" id="clueText">
+              <span class="cluebar__tag" id="clueTag">1A</span>
+              <span class="cluebar__clue" id="clueClue"></span>
+            </button>
+            <button type="button" class="cluebar__arrow" id="nextClue" aria-label="Next clue">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="lists" id="lists" hidden>
+          <section class="list"><h2 class="list__h">Across</h2><ol id="listAcross"></ol></section>
+          <section class="list"><h2 class="list__h">Down</h2><ol id="listDown"></ol></section>
+        </div>
+      </main>
+    </div>
+
+    <div class="kb" id="kb" role="group" aria-label="Keyboard" hidden></div>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <div id="panelBody">
+          <p class="panel__eyebrow">A tiny crossword</p>
+          <h1 class="panel__title">Tiny Across</h1>
+          <p class="panel__text">
+            Ten short clues on a <b>five by five grid</b>. Most people finish in about a minute. Tap a
+            square to type, tap it again to switch direction, and the clock stops when every letter is right.
+            Unlimited practice here; the <b>daily puzzle</b>, where everyone gets the same grid and keeps a
+            streak, is at tinyacross.com.
+          </p>
+          <button type="button" class="play-btn" id="startBtn">Start</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <script src="../../assets/tickets.js?v=26" defer></script>
+    <script src="puzzles.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=21" defer></script>
+  </body>
+</html>

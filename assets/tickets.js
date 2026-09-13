@@ -78,6 +78,7 @@
     { test: "pinball_best", dir: "up", label: "Pinball score" },
     { test: "dominoes_best", dir: "up", label: "Dominoes toppled" },
     { test: /^sky_best_[456]$/, dir: "down", label: "Skyscrapers solve" },
+    { test: "tinyacross_best", dir: "down", label: "Tiny Across solve" },
     { test: "steady_best", dir: "up", label: "Steady Hand wires" },
     { test: "typing_best", dir: "up", label: "Typing Speed wpm" },
     { test: "airhockey_best", dir: "up", label: "Air Hockey win streak" },

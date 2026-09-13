@@ -335,6 +335,84 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 }
 
 /* ============================================================
+ * All Toys: newest toy panel (collapsible / closable per session)
+ * ============================================================ */
+.newest{
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: clamp(16px, 2.5vw, 26px);
+  align-items: center;
+  padding: clamp(14px, 2vw, 18px);
+  padding-right: clamp(64px, 8vw, 88px);
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.newest__media{ display: block; text-decoration: none; }
+.newest__media .card__preview{
+  height: auto; aspect-ratio: 16 / 9; margin: 0; border-radius: 10px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.newest__media:hover .card__preview{ transform: translateY(-2px); box-shadow: var(--shadow-md), inset 0 0 0 1px rgba(255,255,255,0.05); }
+.newest__body{ min-width: 0; }
+.newest__eyebrow{
+  display: flex; align-items: center; gap: 8px; margin: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.newest__badge{
+  display: inline-flex; align-items: center; height: 20px; padding: 0 7px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #fff; background: var(--accent);
+}
+.newest__title{ margin: 8px 0 0; font-size: clamp(1.25rem, 2.4vw, 1.6rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; color: var(--ink); }
+.newest__cat{
+  margin: 6px 0 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.newest__desc{
+  margin: 10px 0 0; max-width: 60ch; font-size: 0.94rem; line-height: 1.5; color: var(--muted);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.newest__cta{ margin-top: 14px; }
+.newest__controls{ position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; }
+.newest__btn{
+  appearance: none; width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--muted); cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+.newest__btn:hover{ border-color: var(--line-strong); color: var(--ink); background: var(--surface-2); }
+.newest__btn:focus-visible{ outline: none; box-shadow: var(--ring); }
+
+.newest--collapsed{
+  display: flex; align-items: center;
+  padding: 0; padding-right: 84px; min-height: 48px;
+}
+.newest--collapsed .newest__controls{ top: 50%; transform: translateY(-50%); }
+.newest__strip{
+  flex: 1 1 auto; min-width: 0;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  text-decoration: none; color: var(--ink);
+}
+.newest__stripname{ font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.newest__stripcat{ font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.newest__strip:hover .newest__stripname{ text-decoration: underline; text-underline-offset: 3px; }
+.newest__strip:focus-visible{ outline: none; box-shadow: var(--ring); border-radius: var(--radius); }
+
+@media (max-width: 720px){
+  .newest{ grid-template-columns: 1fr; padding-right: clamp(14px, 2vw, 18px); }
+  .newest__media{ margin-top: 30px; }
+  .newest__stripcat{ display: none; }
+}
+
+/* ============================================================
  * Section header
  * ============================================================ */
 .tools{ margin-top: 4px; }
@@ -1033,6 +1111,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="twisty-cube"]{ background: #0b0b10 url("cards/twisty-cube.png") center / cover no-repeat; }
 .card__preview[data-slug="glass-harp"]{ background: #05070f url("cards/glass-harp.png") center / cover no-repeat; }
 .card__preview[data-slug="chord-harp"]{ background: #0a0913 url("cards/chord-harp.png") center / cover no-repeat; }
+.card__preview[data-slug="tiny-across"]{ background: #0b0f24 url("cards/tiny-across.png") center / cover no-repeat; }
 .card__preview[data-slug="chess"]{ background: #08090c url("cards/chess.png") center / cover no-repeat; }
 .card__preview[data-slug="skyscrapers"]{ background: #05060e url("cards/skyscrapers.png") center / cover no-repeat; }
 .card__preview[data-slug="pendulum-wave"]{ background: #06070f url("cards/pendulum-wave.png") center / cover no-repeat; }
@@ -1042,7 +1121,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="word-kraven"]{ background: #0d0b14 url("cards/word-kraven.png?v=2") center / cover no-repeat; }
 
 /* Default — clean neutral preview for any future toy */
-.card__preview:not([data-slug="chess"]):not([data-slug="skyscrapers"]):not([data-slug="pendulum-wave"]):not([data-slug="steady-hand"]):not([data-slug="dominoes"]):not([data-slug="pinball"]):not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]):not([data-slug="lava-lamp"]):not([data-slug="bubble-wrap"]):not([data-slug="newtons-cradle"]):not([data-slug="spirograph"]):not([data-slug="plasma-ball"]):not([data-slug="kaleidoscope"]):not([data-slug="ripple-pond"]):not([data-slug="wind-chimes"]):not([data-slug="marble-drop"]):not([data-slug="zen-sand-garden"]):not([data-slug="floating-lanterns"]):not([data-slug="aurora-drift"]):not([data-slug="campfire"]):not([data-slug="fireworks"]):not([data-slug="rain-window"]):not([data-slug="perfect-circle"]):not([data-slug="pin-art"]):not([data-slug="chladni-plate"]):not([data-slug="pottery-wheel"]):not([data-slug="aurebesh-translator"]):not([data-slug="double-pendulum"]):not([data-slug="cloth"]):not([data-slug="gravity-orbits"]):not([data-slug="wooly-willy"]):not([data-slug="slide-puzzle"]):not([data-slug="jigsaw-puzzle"]):not([data-slug="kalimba"]):not([data-slug="tongue-drum"]):not([data-slug="time-is-money"]):not([data-slug="life-in-numbers"]):not([data-slug="latte-factor"]):not([data-slug="sleep-cycle"]):not([data-slug="countdown"]):not([data-slug="slice-it"]):not([data-slug="solitaire"]):not([data-slug="blackjack"]):not([data-slug="stack-tower"]):not([data-slug="music-box"]):not([data-slug="theremin"]):not([data-slug="mini-golf"]):not([data-slug="murmuration"]):not([data-slug="trio"]):not([data-slug="coin-pusher"]):not([data-slug="random-maze"]):not([data-slug="nova-coil"]):not([data-slug="paper-plane"]):not([data-slug="dot-loop"]):not([data-slug="vapor"]):not([data-slug="deep-descent"]):not([data-slug="puffling"]):not([data-slug="marble-machine"]):not([data-slug="rain-stick"]):not([data-slug="sky-fortress"]):not([data-slug="alpenglow"]):not([data-slug="tip-splitter"]):not([data-slug="pomodoro"]):not([data-slug="world-clock"]):not([data-slug="pool"]):not([data-slug="minesweeper"]):not([data-slug="mandelbrot"]):not([data-slug="slime-mold"]):not([data-slug="particle-life"]):not([data-slug="flow-field"]):not([data-slug="reaction-diffusion"]):not([data-slug="ink-marbling"]):not([data-slug="stained-glass"]):not([data-slug="trail-game"]):not([data-slug="spelling-blocks"]):not([data-slug="shuriken-night"]):not([data-slug="deep-hollow"]):not([data-slug="skee-ball"]):not([data-slug="perfect-timing"]):not([data-slug="clowns-balloons"]):not([data-slug="darts"]):not([data-slug="air-hockey"]):not([data-slug="video-poker"]):not([data-slug="glow-pegs"]):not([data-slug="decision-wheel"]):not([data-slug="singing-bowl"]):not([data-slug="color-match"]):not([data-slug="five-second-game"]):not([data-slug="brick-smasher"]):not([data-slug="tossing-cards"]):not([data-slug="accretion"]):not([data-slug="moon-phase"]):not([data-slug="golden-hour"]):not([data-slug="typing-speed"]):not([data-slug="claw-machine"]):not([data-slug="twisty-cube"]):not([data-slug="glass-harp"]):not([data-slug="chord-harp"]):not([data-slug="word-kraven"]):not([data-slug="bowling"]){
+.card__preview:not([data-slug="tiny-across"]):not([data-slug="chess"]):not([data-slug="skyscrapers"]):not([data-slug="pendulum-wave"]):not([data-slug="steady-hand"]):not([data-slug="dominoes"]):not([data-slug="pinball"]):not([data-slug="meeting-cost-meter"]):not([data-slug="goo-cursor"]):not([data-slug="breathing-pacer"]):not([data-slug="coin-flipper"]):not([data-slug="dice-roller"]):not([data-slug="magic-eight-ball"]):not([data-slug="blob-choir"]):not([data-slug="tic-tac-toe"]):not([data-slug="rock-paper-scissors"]):not([data-slug="three-doors"]):not([data-slug="memory-match"]):not([data-slug="snake-mini"]):not([data-slug="weird-generative-canvas"]):not([data-slug="star-click-sky"]):not([data-slug="tiny-idle-garden"]):not([data-slug="echo"]):not([data-slug="chimp-test"]):not([data-slug="beat-maker"]):not([data-slug="falling-sand"]):not([data-slug="lava-lamp"]):not([data-slug="bubble-wrap"]):not([data-slug="newtons-cradle"]):not([data-slug="spirograph"]):not([data-slug="plasma-ball"]):not([data-slug="kaleidoscope"]):not([data-slug="ripple-pond"]):not([data-slug="wind-chimes"]):not([data-slug="marble-drop"]):not([data-slug="zen-sand-garden"]):not([data-slug="floating-lanterns"]):not([data-slug="aurora-drift"]):not([data-slug="campfire"]):not([data-slug="fireworks"]):not([data-slug="rain-window"]):not([data-slug="perfect-circle"]):not([data-slug="pin-art"]):not([data-slug="chladni-plate"]):not([data-slug="pottery-wheel"]):not([data-slug="aurebesh-translator"]):not([data-slug="double-pendulum"]):not([data-slug="cloth"]):not([data-slug="gravity-orbits"]):not([data-slug="wooly-willy"]):not([data-slug="slide-puzzle"]):not([data-slug="jigsaw-puzzle"]):not([data-slug="kalimba"]):not([data-slug="tongue-drum"]):not([data-slug="time-is-money"]):not([data-slug="life-in-numbers"]):not([data-slug="latte-factor"]):not([data-slug="sleep-cycle"]):not([data-slug="countdown"]):not([data-slug="slice-it"]):not([data-slug="solitaire"]):not([data-slug="blackjack"]):not([data-slug="stack-tower"]):not([data-slug="music-box"]):not([data-slug="theremin"]):not([data-slug="mini-golf"]):not([data-slug="murmuration"]):not([data-slug="trio"]):not([data-slug="coin-pusher"]):not([data-slug="random-maze"]):not([data-slug="nova-coil"]):not([data-slug="paper-plane"]):not([data-slug="dot-loop"]):not([data-slug="vapor"]):not([data-slug="deep-descent"]):not([data-slug="puffling"]):not([data-slug="marble-machine"]):not([data-slug="rain-stick"]):not([data-slug="sky-fortress"]):not([data-slug="alpenglow"]):not([data-slug="tip-splitter"]):not([data-slug="pomodoro"]):not([data-slug="world-clock"]):not([data-slug="pool"]):not([data-slug="minesweeper"]):not([data-slug="mandelbrot"]):not([data-slug="slime-mold"]):not([data-slug="particle-life"]):not([data-slug="flow-field"]):not([data-slug="reaction-diffusion"]):not([data-slug="ink-marbling"]):not([data-slug="stained-glass"]):not([data-slug="trail-game"]):not([data-slug="spelling-blocks"]):not([data-slug="shuriken-night"]):not([data-slug="deep-hollow"]):not([data-slug="skee-ball"]):not([data-slug="perfect-timing"]):not([data-slug="clowns-balloons"]):not([data-slug="darts"]):not([data-slug="air-hockey"]):not([data-slug="video-poker"]):not([data-slug="glow-pegs"]):not([data-slug="decision-wheel"]):not([data-slug="singing-bowl"]):not([data-slug="color-match"]):not([data-slug="five-second-game"]):not([data-slug="brick-smasher"]):not([data-slug="tossing-cards"]):not([data-slug="accretion"]):not([data-slug="moon-phase"]):not([data-slug="golden-hour"]):not([data-slug="typing-speed"]):not([data-slug="claw-machine"]):not([data-slug="twisty-cube"]):not([data-slug="glass-harp"]):not([data-slug="chord-harp"]):not([data-slug="word-kraven"]):not([data-slug="bowling"]){
   background:
     radial-gradient(120% 120% at 50% 130%, var(--accent-soft), transparent 60%),
     var(--surface-2);
