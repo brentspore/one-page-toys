@@ -524,12 +524,18 @@
     aliveCount = 0;
     // every third cycle through the layouts, another row hardens into armour
     var extra = Math.floor((n - 1) / LEVELS.length);
+    // ⚠ The practice mark, kept in step with practiceLayout() in the
+    // brick-smasher repo: the bottom-row brick in column 4 is always armour here.
+    // It is glass in every layout either way round and a daily only armours its
+    // top two rows, so a practice wall can never be a bricksmasher.com daily.
+    var MARK_COL = 4;
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < COLS; c++) {
         var ch = layout[r].charAt(c);
         if (ch === "." || !TIERS[ch]) continue;
         var t = TIERS[ch];
         if (extra > 0 && !t.steel && r < extra && ch !== "A") { ch = "A"; t = TIERS.A; }
+        else if (!t.steel && r === rows - 1 && c === MARK_COL) { ch = "A"; t = TIERS.A; }
         var hp = t.steel ? Infinity : (t.hp || 1);
         bricks.push({
           col: c, row: r, x: 0, y: 0, w: 0, h: 0,
