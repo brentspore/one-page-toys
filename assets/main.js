@@ -522,7 +522,7 @@ const FEATURED_ART = [
   "perfect-timing", "pinball", "pool", "puffling", "random-maze",
   "shuriken-night", "skee-ball", "sky-fortress", "slice-it",
   "skyscrapers", "spelling-blocks", "stack-tower", "tossing-cards",
-  "trail-game", "trio",
+  "tiny-across", "trail-game", "trio",
   "twisty-cube", "word-kraven"
 ];
 
