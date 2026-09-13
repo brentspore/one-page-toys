@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-09-12 (No. 119 Tiny Across + the All Toys newest-toy panel built and verified locally, UNCOMMITTED, waiting on "push"; Chess 118 is the latest shipped).** This is a handoff, not a journal: keep ONE current-state block and overwrite it each session. The full session-by-session journal to this point is preserved verbatim in [archive/HANDOFF-archive-2026-08-29.md](archive/HANDOFF-archive-2026-08-29.md); the earlier archives still exist and hold the per-toy detail — 001–069 ([2026-07-08](archive/HANDOFF-archive-2026-07-08.md)), 070–100 ([2026-07-27](archive/HANDOFF-archive-2026-07-27.md)), 101–107 + the 08-04 search audit ([2026-08-14](archive/HANDOFF-archive-2026-08-14.md)).
+**Last updated: 2026-09-12 (No. 119 Tiny Across shipped with its daily at tinyacross.com; All Toys gained a session-collapsible newest-toy panel).** This is a handoff, not a journal: keep ONE current-state block and overwrite it each session. The full session-by-session journal to this point is preserved verbatim in [archive/HANDOFF-archive-2026-08-29.md](archive/HANDOFF-archive-2026-08-29.md); the earlier archives still exist and hold the per-toy detail — 001–069 ([2026-07-08](archive/HANDOFF-archive-2026-07-08.md)), 070–100 ([2026-07-27](archive/HANDOFF-archive-2026-07-27.md)), 101–107 + the 08-04 search audit ([2026-08-14](archive/HANDOFF-archive-2026-08-14.md)).
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**118 toys, live at onepagetoys.com.** Latest on `main`: `0365355`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**119 toys, live at onepagetoys.com.** Latest on `main`: `2b214df`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work
 
@@ -20,10 +20,11 @@ A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities i
 
 ⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work; **one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
 
-## ⚠ IN FLIGHT, UNCOMMITTED: No. 119 Tiny Across + the All Toys newest-toy panel (2026-09-12)
+## No. 119 Tiny Across + the All Toys newest-toy panel — shipped 2026-09-12 (`2b214df`), live
 
-Everything below is in the working tree only. On "push", commit it together with the launch of
-tinyacross.com (checklist in `~/Personal Projects/tiny-across/.ai/memory/HANDOFF.md`).
+Launched the same evening as the daily at tinyacross.com (its repo HANDOFF has the launch record).
+Live-verified: toy page 200, gallery renders, All Toys panel shows Tiny Across, feeder plays on a phone,
+IndexNow accepted. ⚠ **Audio has never been heard** (levels measured in the daily repo only).
 - **`toys/tiny-across/`** is the practice feeder for the daily crossword at tinyacross.com: a vanilla
   port of that repo's React game (cursor rules, solve state, audio all ported; keep them in step).
   `puzzles.js` is GENERATED there (`node scripts/export-feeder.mjs`), never hand-edited. Keys:
@@ -126,7 +127,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **42 entries (Tiny Across added 2026-09-12, uncommitted), `?v=21` across 42 pages**. Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **42 entries, `?v=21` across 42 pages** (Tiny Across added 2026-09-12, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
