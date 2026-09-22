@@ -1,14 +1,59 @@
 # Handoff
 
-**Last updated: 2026-09-12 (feeders can no longer preview their dailies; No. 119 Tiny Across shipped with its daily at tinyacross.com; All Toys gained a session-collapsible newest-toy panel).**
+**Last updated: 2026-09-21 (No. 120 Untangle shipped and live — the catalogue's first graph puzzle).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**119 toys, live at onepagetoys.com.** Latest on `main`: `4baa226`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**120 toys, live at onepagetoys.com.** Latest on `main`: `fef4354`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## Newest work
+## Newest work — No. 120 Untangle, shipped 2026-09-21 (`fef4354`), live
+
+**`toys/untangle/`** — drag a knot of stars until no two filaments cross. Crossed filaments burn
+red and cool to white; below 44 crossings each one also shows a pip, so late on they become targets
+rather than a red smear. Keys: `untangle_best` (deepest level cleared, ticket rule **dir `up`**,
+rule only), `untangle_t<level>` (best time per level, deliberately NOT a ticket key), `untangle_sound`.
+Registered everywhere and verified live (toy plays, gallery renders, search hits, all three sibling
+bundles carry the cross-promo, IndexNow accepted). ⚠ **Audio has never been heard** — levels measured,
+character not.
+- ⚠ **The board is a LINE ARRANGEMENT, and that is the whole trick.** n straight lines in general
+  position; every pairwise intersection is a star; each line joins its own intersections in order
+  along itself. Two distinct lines meet exactly once, so that drawing is crossing-free by
+  construction — **every board is provably solvable with no solver written**. Levels add a line:
+  6, 10, 15, 21, 28 stars.
+- ⚠ **A guard that rejected "lopsided" arrangements silently broke every level above ~9 lines**: it
+  fired on nearly every candidate, the 120 retries ran out, and the fallback dealt a **6-node board
+  at level 9**. It was never needed — the scatter throws the arrangement's geometry away and keeps
+  only which edges exist, and by Fary a graph with any planar straight-line drawing is planar. **A
+  generator's fallback must be loud, not a quietly easier puzzle.**
+- ⚠ **The ladder STOPS growing at 8 lines / 28 stars, on purpose.** The authentic ramp keeps adding
+  lines, but level 7 opened with **916 crossings** — a twenty-minute grind against the one-sitting
+  rule. Past level 5 the boards stay full size and the chase becomes the clock. Untested in play.
+- ⚠ **It resumes at your best level, not level 1** ("Back to level 1" is in the bar).
+- ⚠ **A ring scatter can deal a board that is nearly solved already**, which is not a puzzle — it
+  reshuffles until crossings clear a floor of `0.6 x stars`.
+- ⚠ **x and y are mapped by DIFFERENT radii** so a portrait phone is not left with a small disc in a
+  tall frame. Safe because **an affine squash cannot create or remove a crossing.**
+- ⚠ **Crossing detection is incremental**: only the ≤4 edges touching the dragged star can change, so
+  a drag costs a few hundred tests instead of E². Pairs sharing an endpoint are never counted — two
+  consecutive edges of one generating line are collinear, which a naive test reports as an overlap.
+- **Audio, measured** (analyser spliced ahead of `destination`, no debug hook): grab contact 0.198,
+  resolve bell 0.240, one real drag 0.207, finish 0.275 avg — all inside 0.15–0.30; drag-spam
+  stress 0.649, under the 0.84 brickwall. ⚠ **Isolate a bell from the contact by playing on the
+  KEYBOARD** (space lifts, arrows carry) — a measurement that includes the grab reads ~50% high and
+  sent me chasing the wrong voice. ⚠ **The partial stack IS a gain stage**: PGAIN summed to 2.14, so
+  `amp` was never the level it looked like. Normalised to sum 1, then set per voice.
+- ⚠ **Card pose traps** (`scripts/poses/untangle.js`, reads stars off the canvas, drives real
+  PointerEvents): a plain "fewest crossings" search **heaps every star into one corner**, because
+  crossing count says nothing about spacing — candidates are a grid and a move must also leave the
+  star clear of its neighbours. And **re-reading the star list inside the loop RESHUFFLES it** (the
+  clusters come back in scan order), so `list[i]` stops meaning the same star and the search starts
+  dragging whatever is i-th now; read once per sweep and keep your own copy, since drags translate
+  exactly and can be undone blind. ⚠ Clicking `#ovBtn` while the overlay is hidden **restarts the
+  level instead of advancing**, which quietly photographed level 1 twice.
+
+## No. 117 Skyscrapers, and the parked Jenga branch
 
 **No. 117 Skyscrapers** (`toys/skyscrapers/`) — the catalogue's first real logic puzzle: a Latin square where **the numbers ARE building heights** and the edge clues are sightlines. Sizes 4/5/6; keys `sky_best_4|5|6` (one regex ticket rule, **dir `down`**), `sky_size`, `sky_sound`. ✅ Owner play-tested; both findings fixed and live (`a83cc21`).
 - ⚠ Generator: **if arc consistency drives every cell to a single candidate, the puzzle is PROVABLY unique and guess-free** — one pass instead of an exponential count (6×6: 10.7s → 8ms).
@@ -66,8 +111,8 @@ IndexNow accepted. ⚠ **Audio has never been heard** (levels measured in the da
   `sessionStorage['opt-newest-panel']`, keyed by slug so the NEXT new toy shows again. Hidden while any
   search, tag or category filter is active, and never on category pages. `renderNewestPanel()` in
   `main.js`, `.newest*` in `styles.css`. Uses featured art when the slug has it, else the card image.
-- Versions bumped for this: `main.js?v=113`, `styles.css?v=117`, `tickets.js?v=26` (128 pages),
-  `more-games.js?v=22` (42 pages).
+- Versions that release bumped (history — current numbers live under "Shared-asset versions"):
+  `main.js?v=113`, `styles.css?v=117`, `tickets.js?v=26` (128 pages), `more-games.js?v=22` (42 pages).
 
 ## No. 118 Chess (`toys/chess/`) — shipped 2026-09-05, live and owner-approved
 
@@ -151,7 +196,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **42 entries, `?v=21` across 42 pages** (Tiny Across added 2026-09-12, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **43 entries, `?v=23` across 43 pages** (Untangle added 2026-09-21, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -200,7 +245,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=115` (8 pages) / `styles.css?v=117` (9 hub/store pages); **`tickets.js?v=26` across all 128 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=22` (42 pages); `share.js?v=6` (43 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=116` (8 pages) / `styles.css?v=118` (9 hub/store pages); **`tickets.js?v=27` across all 129 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=23` (43 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **33** toys per load (Tiny Across added 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
@@ -229,6 +274,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 - **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
 - **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
 - **Jenga's one remaining bug** (see above).
+- **Untangle audio has never been heard** — levels measured at 0.20–0.27 peak, character never. Its level ceiling (28 stars) and the clue that levels stop growing are also untested in play.
 - **Chess audio has never been heard** — level is measured at 0.20 peak, character never is. Same for the ladder: verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
