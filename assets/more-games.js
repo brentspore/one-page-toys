@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Untangle",
+      "tagline": "Pull the knot open",
+      "url": "https://onepagetoys.com/toys/untangle/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23070b1c'/><g fill='none' stroke-linecap='round'><path d='M8 8 H24' stroke='%238fe9ff' stroke-width='1.1'/><path d='M8 24 H24' stroke='%238fe9ff' stroke-width='1.1'/><path d='M8 8 L24 24' stroke='%23ff5c6e' stroke-width='1.3'/><path d='M24 8 L8 24' stroke='%23ff5c6e' stroke-width='1.3'/></g><circle cx='16' cy='16' r='3' fill='%23ff5c6e' opacity='0.32'/><circle cx='16' cy='16' r='1.1' fill='%23ffecec'/><g fill='%23ffffff'><circle cx='8' cy='8' r='2.2'/><circle cx='24' cy='8' r='2.2'/><circle cx='8' cy='24' r='2.2'/><circle cx='24' cy='24' r='2.2'/></g></svg>",
+      "initial": "U",
+      "slug": "untangle"
+    },
+    {
       "name": "Tiny Across",
       "tagline": "A crossword in minutes",
       "url": "https://onepagetoys.com/toys/tiny-across/",

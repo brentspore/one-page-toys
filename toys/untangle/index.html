@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Untangle — One Page Toys</title>
+    <meta name="description" content="A knot of stars joined by glowing filaments. Drag them apart until no two filaments cross and the tangle falls open into a constellation. Every board is solvable. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/untangle/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#04060f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Untangle — One Page Toys" />
+    <meta property="og:description" content="Drag the stars until none of the filaments cross. Crossed lines burn red, clean ones cool to white, and the knot falls open into a constellation." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/untangle/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/untangle.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Untangle — One Page Toys" />
+    <meta name="twitter:description" content="A knot of stars and glowing filaments. Pull it apart until nothing crosses." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/untangle.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Untangle",
+        "url": "https://onepagetoys.com/toys/untangle/",
+        "description": "A planar graph puzzle played as a constellation. Stars are scattered around a ring and joined by glowing filaments into a knot where dozens of lines cross each other. Drag a star and every filament attached to it follows: a filament that crosses another burns red, and the moment it comes clear it cools to white and the crossing pops. The counter at the top is the whole game, and the goal is to get it to zero. Every board is generated from an arrangement of straight lines, so a crossing-free layout is guaranteed to exist and no puzzle can be impossible. Levels run from six stars upward, adding a line each time, and the deepest level you clear is kept. Play with a mouse, a finger, or the arrow keys.",
+        "applicationCategory": "GameApplication",
+        "genre": "Puzzle",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Crossings</span><span id="crossings">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Level</span><span id="level">1</span></div>
+      <div class="hud__cell"><span class="hud__k">Time</span><span id="time">0.0s</span></div>
+      <div class="hud__cell"><span class="hud__k">Best</span><span id="best">&mdash;</span></div>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <button type="button" class="btn btn--go" id="btnNew">New tangle</button>
+      <button type="button" class="btn" id="btnReset" hidden>Back to level 1</button>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Pull the knot open</p>
+        <h1 class="panel__title" id="ovTitle">Untangle</h1>
+        <p class="panel__text" id="ovText">
+          <b>Drag a star until none of the filaments cross.</b><br />
+          A filament that crosses another burns <b>red</b>; the moment it comes
+          clear it cools to <b>white</b>.<br />
+          Get the crossing count to zero and the knot falls open.
+        </p>
+        <svg class="demo" id="ovDemo" viewBox="0 0 320 104" role="img" aria-label="Two filaments crossing in an X burn red; moving one star apart leaves them side by side and clean.">
+          <g stroke-linecap="round">
+            <line x1="40" y1="26" x2="104" y2="78" stroke="#ff5c6e" stroke-width="6" opacity="0.14" />
+            <line x1="40" y1="78" x2="104" y2="26" stroke="#ff5c6e" stroke-width="6" opacity="0.14" />
+            <line x1="40" y1="26" x2="104" y2="78" stroke="#ff5c6e" stroke-width="1.6" />
+            <line x1="40" y1="78" x2="104" y2="26" stroke="#ff5c6e" stroke-width="1.6" />
+            <line x1="216" y1="26" x2="280" y2="26" stroke="#8fe9ff" stroke-width="6" opacity="0.14" />
+            <line x1="216" y1="78" x2="280" y2="78" stroke="#8fe9ff" stroke-width="6" opacity="0.14" />
+            <line x1="216" y1="26" x2="280" y2="26" stroke="#8fe9ff" stroke-width="1.4" />
+            <line x1="216" y1="78" x2="280" y2="78" stroke="#8fe9ff" stroke-width="1.4" />
+          </g>
+          <circle cx="72" cy="52" r="8" fill="rgba(255,92,110,0.22)" />
+          <circle cx="72" cy="52" r="2.4" fill="#ffcece" />
+          <g fill="#ffffff">
+            <circle cx="40" cy="26" r="4" /><circle cx="104" cy="78" r="4" />
+            <circle cx="40" cy="78" r="4" /><circle cx="104" cy="26" r="4" />
+            <circle cx="216" cy="26" r="4" /><circle cx="280" cy="26" r="4" />
+            <circle cx="216" cy="78" r="4" /><circle cx="280" cy="78" r="4" />
+          </g>
+          <path d="M136 52 H184 M177 46 L184 52 L177 58" stroke="#8fe9ff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <g font-family="Geist Mono, monospace" font-size="9" text-anchor="middle" fill="rgba(234,242,255,0.38)">
+            <text x="72" y="100">1 crossing</text>
+            <text x="248" y="100">0 crossings</text>
+          </g>
+        </svg>
+        <button type="button" class="play-btn" id="ovBtn">Start pulling</button>
+        <p class="panel__keys">drag a star &middot; or arrow keys to pick one, space to lift it</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 120</span>
+      <span class="frame__corner frame__corner--tr">Untangle</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">drag a star to move it &middot; red filaments are the ones still crossing</p>
+
+    <script src="../../assets/tickets.js?v=27" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=23" defer></script>
+  </body>
+</html>
