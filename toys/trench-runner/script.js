@@ -545,11 +545,9 @@
     // incoming
     for (i = 0; i < G.bolts.length; i++) {
       var b2 = G.bolts[i];
-      var kk = Math.max(0, Math.min(1, (b2.z0 - G.z) / b2.span));
-      var kk2 = Math.max(0, Math.min(1, (b2.z0 + 16 - G.z) / b2.span));
-      var bx1 = b2.x + (b2.tx - b2.x) * (1 - kk), by1 = b2.y + (b2.ty - b2.y) * (1 - kk);
-      var bx2 = b2.x + (b2.tx - b2.x) * (1 - kk2), by2 = b2.y + (b2.ty - b2.y) * (1 - kk2);
-      var q1 = px(bx1, by1, b2.z), q2 = px(bx2, by2, Math.min(b2.z0, b2.z + 16));
+      var tailZ = Math.min(b2.z0, b2.z + 18);
+      var q1 = px(boltX(b2, b2.z), boltY(b2, b2.z), b2.z);
+      var q2 = px(boltX(b2, tailZ), boltY(b2, tailZ), tailZ);
       if (!q1 || !q2) continue;
       glowLine([q2, q1], HOT, 0.95, 7, 2.2);
     }
@@ -1610,12 +1608,16 @@
       t2.cd -= dt;
       if (t2.cd <= 0.55 && t2.charge < 1) t2.charge = Math.min(1, t2.charge + dt * 2.2);
       if (t2.cd <= 0) {
-        t2.cd = 1.5 + Math.random() * 1.4; t2.charge = 0; t2.fired++;
+        t2.cd = 0.95 + Math.random() * 0.95; t2.charge = 0; t2.fired++;
+        /* Fired along a fixed line toward where the ship is heading. Once it
+         * is away the line never changes, so moving off it dodges the shot —
+         * which is the whole point of being able to see it coming. */
         var lead = ahead / BOLT_SPD;
+        var span = Math.max(1, ahead);
+        var aimX = G.x + G.vx * lead * 0.3, aimY = G.y + G.vy * lead * 0.3;
         G.bolts.push({
-          x: t2.x, y: t2.y, z: t2.z,
-          tx: G.x + G.vx * lead * 0.5, ty: G.y + G.vy * lead * 0.5,
-          z0: t2.z, span: Math.max(1, ahead), src: t2
+          x: t2.x, y: t2.y, z: t2.z, z0: t2.z, span: span, src: t2,
+          dx: (aimX - t2.x) / span, dy: (aimY - t2.y) / span
         });
         audio.turret(Math.max(-1, Math.min(1, t2.x / HALF)));
       }
@@ -1625,10 +1627,25 @@
       var bo = G.bolts[i];
       var before = bo.z;
       bo.z -= BOLT_SPD * dt;
+
+      /* Line of sight: anything solid between the mount and you eats the shot.
+       * That turns the girders into cover instead of only obstacles. */
+      var blocked = false;
+      for (j = 0; j < G.props.length && !blocked; j++) {
+        var bp = G.props[j];
+        if (bp.dead || bp.z > before || bp.z < bo.z) continue;
+        if (inProp(bp, boltX(bo, bp.z), boltY(bo, bp.z), 0)) blocked = true;
+      }
+      for (j = 0; j < G.bars.length && !blocked; j++) {
+        var bb = G.bars[j];
+        if (bb.z > before || bb.z < bo.z) continue;
+        if (!through(bb, boltX(bo, bb.z), boltY(bo, bb.z), 0)) blocked = true;
+      }
+      if (blocked) { G.bolts.splice(i, 1); continue; }
+
       if (bo.z <= G.z) {
-        var k = Math.max(0, Math.min(1, (bo.z0 - G.z) / bo.span));
-        var bx = bo.x + (bo.tx - bo.x) * (1 - k), by = bo.y + (bo.ty - bo.y) * (1 - k);
-        if (Math.hypot(bx - G.x, by - G.y) < 1.25) takeHit("HIT");
+        // the same line that was drawn, sampled where it passes the ship
+        if (Math.hypot(boltX(bo, G.z) - G.x, boltY(bo, G.z) - G.y) < 1.45) takeHit("HIT");
         G.bolts.splice(i, 1);
         continue;
       }
@@ -1722,6 +1739,11 @@
     spark(14, "255,209,102", 4);
     flashCallout("GLANCED", true);
   }
+
+  // A bolt's position is a pure function of how far IT has travelled, so the
+  // drawn line and the hit test can never drift apart.
+  function boltX(b, z) { return b.x + b.dx * (b.z0 - z); }
+  function boltY(b, z) { return b.y + b.dy * (b.z0 - z); }
 
   var lastScrape = 0;
   function scrape(side) {
