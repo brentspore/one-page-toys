@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-09-23 (No. 121 Trench Runner shipped and live — the catalogue's first flyer that goes INTO the screen).**
+**Last updated: 2026-09-23 (No. 121 Trench Runner live; bolts are now a dodgeable straight line, key art in the spotlight; guns kept as-is by owner call).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**121 toys, live at onepagetoys.com.** Latest on `main`: `b6dcc13`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**121 toys, live at onepagetoys.com.** Latest on `main`: `11f00d8`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work — No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
 
@@ -288,7 +288,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 `main.js?v=117` (8 pages) / `styles.css?v=119` (9 hub/store pages); **`tickets.js?v=28` across all 130 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=24` (44 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
-**Featured art** — the home panel ROTATES bespoke key art, one of **33** toys per load (Tiny Across added 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
+**Featured art** — the home panel ROTATES bespoke key art, one of **34** toys per load (Trench Runner added 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
 - ⚠ **All featured URLs share ONE version string (`.webp?v=N` in `renderHomeHero`), so REPLACING any single piece means bumping N for all of them** — currently `?v=5` (bumped 2026-09-12 when the Tiny Across piece was replaced). ⚠ **ADDING a new piece must NOT bump it**: a new file has no cached copies to invalidate and the bump needlessly re-fetches all 32. **The bump is for REPLACEMENTS only.**
 - ⚠ **The featured media element also carries `data-slug`, so a card motif can bleed through the art** — the art branch must `removeAttribute("data-slug")` and set every background longhand inline, because the `[data-slug]` card rules sit ~700 lines further down `styles.css` and **beat `.home-featured__*` on source order at equal specificity.**
@@ -311,6 +311,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
+- ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
 - **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless.
 - **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
 - **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
