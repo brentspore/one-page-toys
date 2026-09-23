@@ -1,14 +1,50 @@
 # Handoff
 
-**Last updated: 2026-09-21 (No. 120 Untangle shipped and live — the catalogue's first graph puzzle).**
+**Last updated: 2026-09-23 (No. 121 Trench Runner shipped and live — the catalogue's first flyer that goes INTO the screen).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**120 toys, live at onepagetoys.com.** Latest on `main`: `fef4354`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**121 toys, live at onepagetoys.com.** Latest on `main`: `b6dcc13`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## Newest work — No. 120 Untangle, shipped 2026-09-21 (`fef4354`), live
+## Newest work — No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
+
+**`toys/trench-runner/`** — a neon-vector canal flyer. **The ship flies itself and you AIM**: a crosshair
+sits ahead, the gun fires one shot per click, and the ship only leans after it. Wall emplacements shoot
+back, girders block the lane, gates must be threaded, and the run ends holding a lock on the reactor core.
+Keys: `trench_best` (score, ticket rule **dir `up`**, rule only), `trench_time`, `trench_sound`.
+Registered everywhere and live-verified. ⚠ **Audio has been heard once by the owner and rebuilt since;
+the rebuilt version is UNHEARD.**
+- ⚠⚠ **THE SHIP'S REACHABLE BOX MUST COVER THE PLAYFIELD.** At `SHIP_FOLLOW` 0.52 it reached only **65% of
+  the canal's width**, so a gap hard against a wall was *literally unreachable* — and **58% of all deaths
+  were flying into a barrier**. Measured, not guessed. The "it flies for you" feel must come from LAG and a
+  SPEED CAP, never from a scale factor that breaks the map between where you point and where you arrive.
+- ⚠ **Targets must be placed against the hazards, not independently.** Aiming drags the ship, so a gun
+  beyond a gate whose opening is elsewhere makes shooting it and surviving it mutually exclusive.
+  **43.8% of guns were in that trap** until the placer began testing *the position aiming at them would
+  drag the ship into*. Same rule extended to girders.
+- ⚠ **Owner rule: the trench never costs hull** — not walls, floor, or the girders bolted to them, because
+  lateral position is largely the GAME's doing. Only gates and enemy fire take hull; a girder is a glance.
+- ⚠ **A destroyed enemy must take its shots with it.** Killing a gun stopped it firing but left its bolt in
+  the air, so the thing you just destroyed still hit you.
+- ⚠ **The lock must measure what the HUD tells you to do.** It measured the SHIP while the panel said AIM;
+  since the ship only follows the crosshair partway, the lock could never fill. Measure the gun LINE.
+- ⚠ **A goal faded by draw distance is invisible when the final stretch is that long** — the core sat at
+  alpha 0 for the first 3s of the lock phase. Goals get their own curve and a floor.
+- ⚠ **Explosions get DARKER.** The first roar swept its lowpass UP (260→3200), which is a whoosh, not a
+  blast. Every blast now opens bright and closes dark, with a LUMPY rubble tail. Blaster = a dispersive
+  three-partial dive with slapback (a struck cable), not one clean glide. Measured: blaster 0.247 peak,
+  detonation 0.44–0.50, centroid 2719→594Hz.
+- ⚠ **A feedback delay keeps ITSELF alive** — one per shot meant hundreds of live loops by the end of a run.
+  Disconnect the loop explicitly.
+- ⚠⚠ **A missing audio voice HUNG the game**: a deleted `lockTick` threw every frame of the lock phase and
+  killed the rAF loop, freezing the toy at the climax. `frame()` now survives a throw, and a one-line check
+  greps every `audio.*` call against the definitions.
+- ⚠ **Difficulty ramps normalised by `RUN_LEN`** (`p = z / RUN_LEN`) mean shortening the run for a test
+  COMPRESSES the whole curve and spawns late-game difficulty from the start. That harness lies.
+
+## No. 120 Untangle, shipped 2026-09-21 (`fef4354`), live
 
 **`toys/untangle/`** — drag a knot of stars until no two filaments cross. Crossed filaments burn
 red and cool to white; below 44 crossings each one also shows a pip, so late on they become targets
@@ -21,7 +57,12 @@ character not.
   position; every pairwise intersection is a star; each line joins its own intersections in order
   along itself. Two distinct lines meet exactly once, so that drawing is crossing-free by
   construction — **every board is provably solvable with no solver written**. Levels add a line:
-  6, 10, 15, 21, 28 stars.
+  6, 8, 10, 12, 14, 17, 20, 23, 26, 28 stars. ⚠ **A line arrangement can only have C(n,2) nodes**, so the
+  first ladder jumped 6→10→15→21→28 and level 2 arrived with four times level 1's crossings ("too hard too
+  fast"). Build a LARGER arrangement and delete nodes down to a target, splicing each line's chain across
+  the gap — it stays on the same straight line, so the board stays provably solvable. ⚠ A ring scatter is
+  wildly variable, so deal seven and keep the MEDIAN. ⚠ **`hidden` is an HTMLElement property: assigning it
+  to an `<svg>` sets a JS expando and never reflects**, which left the intro diagram on the finish panel.
 - ⚠ **A guard that rejected "lopsided" arrangements silently broke every level above ~9 lines**: it
   fired on nearly every candidate, the 120 retries ran out, and the fallback dealt a **6-node board
   at level 9**. It was never needed — the scatter throws the arrangement's geometry away and keeps
@@ -196,7 +237,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **43 entries, `?v=23` across 43 pages** (Untangle added 2026-09-21, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **44 entries, `?v=24` across 44 pages** (Trench Runner added 2026-09-23, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -245,7 +286,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=116` (8 pages) / `styles.css?v=118` (9 hub/store pages); **`tickets.js?v=27` across all 129 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=23` (43 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=117` (8 pages) / `styles.css?v=119` (9 hub/store pages); **`tickets.js?v=28` across all 130 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=24` (44 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **33** toys per load (Tiny Across added 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
@@ -274,7 +315,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 - **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
 - **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
 - **Jenga's one remaining bug** (see above).
-- **Untangle audio has never been heard** — levels measured at 0.20–0.27 peak, character never. Its level ceiling (28 stars) and the clue that levels stop growing are also untested in play.
+- **Trench Runner's REBUILT audio has never been heard** — the owner heard the first version and asked for better lasers and explosions; the rebuild is measured but unauditioned. **Untangle's audio has never been heard at all.**
 - **Chess audio has never been heard** — level is measured at 0.20 peak, character never is. Same for the ladder: verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
