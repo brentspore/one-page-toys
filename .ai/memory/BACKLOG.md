@@ -16,6 +16,44 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
+### New toy: Trench Run (fly INTO the screen down a corridor) — owner request 2026-09-22
+
+**Why it matters:** Owner asked for it directly: *"a fly through space kinda like the video game star wars trench fly through but without copyright infringement… It's been like 40 years since the original so we can enhance gameplay a bit."* It fills a real hole — **nothing in the 120 flies INTO the screen.** Shuriken Night is first-person but you stand still; Deep Descent and Paper Plane scroll past you; Sky Fortress looks down a diagonal. That first-person rush down a narrowing corridor is a distinct sensation the site does not own yet, and it is the single most imitated arcade set-piece ever made because it works. Category `game`.
+
+**When to revisit:** Next arcade round. ⚠ **Medium-LARGE, not a one-sitting build** — corridor renderer, enemies, a run structure and a full audio set. Budget accordingly, or ship the MVP cut below first.
+
+**Notes:**
+
+**⚠ THE IP GUARDRAIL — read before naming or drawing anything.** Practical, not legal advice:
+- **Game mechanics and rules are NOT copyrightable.** A corridor you fly down, walls to thread, turrets to shoot, a timed shot at the end — all of that is free to build. *Tetris Holding v. Xio* protected the LOOK, not the rules, which is exactly why Accretion exists here.
+- **What is protected and must stay out entirely:** the marks (*Star Wars, Death Star, X-wing, TIE fighter, Rebel Alliance, the Force, Jedi, Sith, Skywalker*), the specific ship and station designs, the Williams score, and any dialogue line ("stay on target").
+- **House precedent is already set:** Accretion keeps "tetris" out of its name, slug, copy, tags AND NL search string; Twisty Cube keeps "Rubik" out. **Same discipline here — accept the keyword cost.** Do not buy search traffic with the trademark.
+- **So invent the fiction.** Do NOT build a moon-sized grey sphere with an equatorial trench, and do NOT fly a four-winged fighter. Strongest original framing: **you are flying into the guts of a derelict megastructure** — the "trench" is a maintenance canal through a dead machine, lit by its own failing systems. That is ours, it is more visually interesting than grey panelling, and it explains the hazards (venting plasma, swinging gantries, half-dead turrets still tracking).
+- Name candidates, owner picks: **Leviathan Run**, **The Long Canal**, **Hullbreaker**, **Spinecrawl**. "Trench" alone is a generic English word and is fine; it is the *combination* with SW-specific markers that is the risk.
+- ⚠ Unrelated observation while checking this, logged not actioned: **`toys/aurebesh-translator/` uses the Star Wars in-universe alphabet by name.** Closer to the marks than anything proposed here. Owner's call whether that matters; not this item's job.
+
+**⚠ OVERLAP TO RESOLVE FIRST — `toys/sky-fortress/` is nearer than it looks.** It is already "fly a starfighter over a floating 3D fortress, climb and dive over walls, duck force fields, blast turrets and drones," in raw WebGL. **What makes this a different toy is the CAMERA and the ENCLOSURE**: Sky Fortress is a diagonal/isometric Zaxxon view over open sky where ALTITUDE is the mechanic; this is first-person (or low chase) down an enclosed canal where walls press in on both sides and the claustrophobia IS the appeal. If the build drifts toward an open-air shooter it has become Sky Fortress and should stop. **Upside: Sky Fortress's renderer is directly reusable scaffolding** — streamed ring-buffer geometry, additive glow sprites, and ship-relative z to dodge float32 drift on long runs.
+
+**Rendering:** raw single-file WebGL, no Three.js, per the standing 3D decision — this genuinely needs volumetric depth and the repo has nine WebGL toys already. ⚠ But **consider Canvas-2D projected geometry for a neon-vector skin first**: a corridor is a series of ribs at increasing z through one perspective divide, banking is a rotation about screen centre, and stroked glowing lines are both cheap and gorgeous. The vector-arcade era was much bigger than one game (Battlezone, Tempest, Star Castle), so that look is an homage to a whole format rather than to one film.
+
+**The forty-years-on enhancements owner invited:**
+- The 1983 original was a **rail with a crosshair** — you aimed, you did not really fly. Give it **real flight**: momentum, bank into turns, a roll that actually slips the ship through a gap.
+- **Boost with heat**, so speed is a resource and the fastest line is the riskiest.
+- **Forks in the canal** — take the tight branch for a shortcut and a multiplier, or the wide one and live.
+- **Near-miss scoring**: reward shaving the wall. This is what makes a corridor game feel good and it is the cheapest juice available.
+- ⚠ **Finite runs with a CLIMAX, not an endless tunnel.** The original's power was that the corridor ENDED and you took the shot. An endless trench has no payoff and nothing to share. Structure it as run 1, run 2, run 3, each longer and tighter, ending in a lock-on and a hit. Store best run reached + best clear time; ticket rule on the run count (dir `up`).
+
+**Design bar:** speed has to be *felt* — wall ribs streaking past, FOV punch and chromatic smear on boost, camera shake near the walls, sparks when you clip. Light the canal from inside the structure so depth reads without fog doing all the work. Signature moment: the lock-on, where the HUD narrows and the world goes quiet for a beat before the shot.
+
+**Audio** (house bar — modal contacts, additive tails, convolver space, stereo, bus compressor + brickwall, measure levels): an engine bed with real movement rather than a drone, doppler on structures passing the cockpit, a laser that is deliberately NOT the iconic one (shorter, drier, more electrical), hull scrape on a clip, a near-miss whoosh panned by which side you shaved, a lock-on tone, and one big hit.
+
+**MVP cut if scope needs trimming:** procedural canal + walls to thread + near-miss scoring + boost + one run that ends in a lock-on shot. Turrets, forks and multiple runs are the second pass.
+
+**Daily-viral test (2026-08-16 rule, assessed):** **FAILS — build it here, do not route it to its own domain.** No single puzzle shared by everyone, no knowable maximum, and the share would be a bare score, which nobody posts. It is an arcade score-chase, which the 2026-07-03 keep-builds-small rule explicitly allows (best in `localStorage`, no accounts).
+
+Real card + OG; full add-a-toy pipeline including cross-promo across all four surfaces.
+---
+
 ### Daily #1 — Numbers Target (own domain + practice feeder here)
 
 **Why it matters:** ⚠ **Passes the daily-viral test on all four criteria AND fills the single clearest genre gap in the catalogue: `arithmetic` returns NOTHING across all 116 toys.** Four numbers and a target; combine them with + − × to hit it exactly, or get as close as you can. Mental arithmetic pulls a completely different audience from the word and reflex games, so it widens the network rather than competing inside it. Category `game`/number.
