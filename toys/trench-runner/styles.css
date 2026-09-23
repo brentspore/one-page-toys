@@ -1,0 +1,248 @@
+/* Trench Runner — full-bleed neon-vector canal. Self-contained. */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap");
+
+:root{
+  --ink: #e8f6ff;
+  --dim: rgba(232, 246, 255, 0.56);
+  --faint: rgba(232, 246, 255, 0.3);
+  --bg: #03040c;
+  --cyan: #8fe4ff;
+  --cyan-lite: #d6f6ff;
+  --hot: #ff3d81;
+  --gold: #ffd166;
+  --lime: #96ffbe;
+  --line: rgba(143, 228, 255, 0.16);
+  --font-display: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+html, body{
+  height: 100%; margin: 0; overflow: hidden;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+canvas{
+  display: block; width: 100%; height: 100%; touch-action: none;
+  -webkit-touch-callout: none; user-select: none; -webkit-user-select: none;
+}
+
+/* ---------- Progress: a hairline across the very top ---------- */
+.prog{
+  position: fixed; z-index: 5; top: 0; left: 0; right: 0; height: 2px;
+  background: rgba(143, 228, 255, 0.1); pointer-events: none;
+}
+.prog[hidden]{ display: none; }
+.prog__fill{
+  height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--cyan), var(--gold));
+  box-shadow: 0 0 10px rgba(143, 228, 255, 0.7);
+}
+
+/* ---------- HUD ---------- */
+.hud{
+  position: fixed; z-index: 5; pointer-events: none;
+  top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+  display: flex; gap: 26px; align-items: flex-end;
+  font-family: var(--font-mono);
+  padding: 7px 18px;
+  border: 1px solid var(--line); border-radius: 12px;
+  background: rgba(4, 7, 20, 0.6);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.hud[hidden]{ display: none; }
+.hud__cell{ display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.hud__k{ font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); }
+.hud__cell span:last-child{ font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+#score{ color: var(--cyan); }
+/* the hull readout is the answer to "did I just get hit?", so it says so */
+#hull{ transition: color 200ms ease; }
+#hull.is-struck{ animation: struck 620ms ease-out; }
+@keyframes struck{
+  0%{ color: var(--hot); transform: scale(1.5); }
+  60%{ color: var(--hot); transform: scale(1); }
+  100%{ transform: scale(1); }
+}
+
+/* ---------- Heat ---------- */
+.heat{
+  position: fixed; z-index: 5; pointer-events: none;
+  left: 50%; transform: translateX(-50%);
+  bottom: max(52px, calc(env(safe-area-inset-bottom) + 40px));
+  width: min(240px, 46vw); height: 4px; border-radius: 3px;
+  background: rgba(143, 228, 255, 0.12);
+  overflow: hidden;
+}
+.heat[hidden]{ display: none; }
+.heat::after{
+  content: "BOOST"; position: absolute; left: 50%; top: -14px; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 7px; letter-spacing: 0.22em; color: var(--faint);
+}
+.heat__fill{
+  height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--cyan), var(--gold));
+  transition: background 200ms ease;
+}
+.heat.is-over .heat__fill{ background: var(--hot); }
+.heat.is-over::after{ content: "OVERHEATED"; color: var(--hot); }
+
+/* ---------- Boost pad (touch only) ---------- */
+.boost{
+  position: fixed; z-index: 7;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(86px, calc(env(safe-area-inset-bottom) + 74px));
+  width: 78px; height: 78px; border-radius: 50%;
+  border: 1px solid rgba(143, 228, 255, 0.4);
+  background: rgba(10, 22, 40, 0.55);
+  color: var(--cyan);
+  font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  touch-action: none; cursor: pointer;
+  transition: transform 90ms ease, background 90ms ease;
+}
+.boost[hidden]{ display: none; }
+.boost.is-on{ background: rgba(143, 228, 255, 0.3); transform: scale(0.94); }
+.boost:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(143, 228, 255, 0.5); }
+
+/* ---------- Lock readout ---------- */
+.lock{
+  position: fixed; z-index: 6; pointer-events: none;
+  left: 50%; transform: translateX(-50%);
+  top: calc(46% - 96px);
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold);
+  padding: 6px 14px 9px;
+  text-shadow: 0 0 20px rgba(255, 209, 102, 0.6);
+}
+.lock[hidden]{ display: none; }
+.lock::after{
+  content: ""; position: absolute; left: 14px; right: 14px; bottom: 3px; height: 2px;
+  background: var(--gold); transform: scaleX(var(--amt, 0)); transform-origin: 0 50%;
+  box-shadow: 0 0 10px rgba(255, 209, 102, 0.8);
+}
+.lock.is-locked{ color: var(--lime); text-shadow: 0 0 24px rgba(150, 255, 190, 0.8); }
+.lock.is-locked::after{ background: var(--lime); box-shadow: 0 0 12px rgba(150, 255, 190, 0.9); }
+
+/* ---------- Callout ---------- */
+.callout{
+  position: fixed; z-index: 6; pointer-events: none;
+  left: 50%; top: calc(46% + 130px); transform: translateX(-50%);
+  font-family: var(--font-display); font-weight: 900; letter-spacing: 0.02em;
+  font-size: clamp(1.1rem, 4.2vw, 1.8rem); line-height: 1;
+  color: var(--lime); text-align: center; white-space: nowrap;
+  text-shadow: 0 0 30px rgba(150, 255, 190, 0.6), 0 4px 22px rgba(0,0,0,0.7);
+}
+/* bad news must never arrive in the colour good news uses */
+/* Pale, not hot: the damage vignette behind it is already red, and red text on
+   a red wash is the one combination that cannot be read. */
+.callout.is-bad{
+  color: #fff2f6;
+  text-shadow: 0 0 10px rgba(255, 61, 129, 1), 0 0 34px rgba(255, 30, 90, 0.9), 0 4px 22px rgba(0,0,0,0.9);
+}
+.callout[hidden]{ display: none; }
+.callout.is-pop{ animation: pop 260ms ease-out; }
+@keyframes pop{ from{ transform: translateX(-50%) scale(0.7); opacity: 0; } to{ transform: translateX(-50%) scale(1); opacity: 1; } }
+
+/* ---------- Sound ---------- */
+.sound-btn{
+  position: fixed; z-index: 6;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--line); background: rgba(6, 10, 24, 0.6); color: var(--ink);
+  font-size: 15px; cursor: pointer; backdrop-filter: blur(8px);
+  transition: transform 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+.sound-btn:hover{ transform: translateY(-1px); border-color: var(--cyan); }
+.sound-btn[aria-pressed="false"]{ opacity: 0.45; }
+.sound-btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(143, 228, 255, 0.4); }
+
+/* ---------- Overlay ---------- */
+.overlay{
+  position: fixed; inset: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px;
+  background: radial-gradient(90% 70% at 50% 44%, rgba(3, 6, 18, 0.72), rgba(1, 2, 6, 0.95));
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  transition: opacity 240ms ease;
+}
+.overlay[hidden]{ display: none; }
+.overlay.is-out{ opacity: 0; pointer-events: none; }
+.panel{
+  max-width: 520px; text-align: center;
+  padding: clamp(22px, 5vw, 34px);
+  border: 1px solid var(--line); border-radius: 16px;
+  background: rgba(4, 8, 22, 0.84);
+  box-shadow: 0 30px 90px -20px rgba(0,0,0,0.85);
+}
+.panel__eyebrow{ margin: 0 0 6px; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cyan); }
+.panel__title{ margin: 0 0 12px; font-size: clamp(1.9rem, 7.4vw, 2.9rem); font-weight: 900; letter-spacing: -0.02em; }
+.panel__text{ margin: 0 0 20px; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.7; color: var(--dim); }
+.panel__text b{ color: var(--ink); font-weight: 600; }
+.demo{ margin: 0 auto 20px; display: block; width: min(330px, 82vw); height: auto; }
+.demo[hidden]{ display: none; }
+.play-btn{
+  appearance: none; font-family: var(--font-display); font-weight: 800; font-size: 1rem;
+  padding: 13px 30px; border-radius: 999px; cursor: pointer;
+  border: 0; background: linear-gradient(180deg, var(--cyan-lite), var(--cyan));
+  color: #03202c; box-shadow: 0 10px 30px -8px rgba(143, 228, 255, 0.6);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.play-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 38px -10px rgba(143, 228, 255, 0.78); }
+.play-btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(143, 228, 255, 0.45); }
+.panel__keys{ margin: 16px 0 0; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; color: var(--faint); }
+
+/* ---------- Frame corners + hint ---------- */
+.frame{ position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+.frame__corner{
+  position: fixed; font-family: var(--font-mono); font-size: 0.6rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint);
+}
+.frame__corner--tl{ top: max(14px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left)); }
+.frame__corner--tr{ top: max(14px, env(safe-area-inset-top)); right: max(58px, calc(env(safe-area-inset-right) + 58px)); }
+.frame__corner--bl{ bottom: max(14px, env(safe-area-inset-bottom)); left: max(14px, env(safe-area-inset-left)); pointer-events: auto; }
+.frame__corner--bl a{ color: var(--faint); text-decoration: none; }
+.frame__corner--bl a:hover{ color: var(--cyan); }
+
+.hint{
+  position: fixed; z-index: 4; pointer-events: none;
+  bottom: max(14px, calc(env(safe-area-inset-bottom) + 6px)); left: 50%; transform: translateX(-50%);
+  margin: 0; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em;
+  color: var(--faint); white-space: nowrap;
+  transition: opacity 500ms ease;
+}
+.hint.is-gone{ opacity: 0; }
+
+@media (max-width: 620px){
+  /* the HUD is centred at the top and the toy name is pinned top-right; below
+     this width they overlap, and the name is the one the page can spare */
+  .frame__corner--tr{ display: none; }
+  /* the tickets pill docks bottom-left, right where a centred hint would run */
+  .hint{ display: none; }
+  .hud{ gap: 13px; padding: 6px 11px; }
+  .hud__k{ font-size: 7px; letter-spacing: 0.12em; }
+  .hud__cell span:last-child{ font-size: 15px; }
+  .heat{ bottom: max(176px, calc(env(safe-area-inset-bottom) + 164px)); width: min(200px, 54vw); }
+  .callout{ top: calc(46% + 104px); }
+}
+@media (max-height: 620px){
+  .hud{ top: max(6px, env(safe-area-inset-top)); padding: 4px 11px; }
+  .lock{ top: calc(46% - 76px); }
+}
+@media (max-height: 500px){
+  .hint{ display: none; }
+  .boost{ width: 62px; height: 62px; bottom: max(14px, calc(env(safe-area-inset-bottom) + 8px)); }
+}
+/* Flight IS the toy, so reduced motion cannot stop the canal — what it removes
+   is the punishment layer: camera shake, full-screen flashes and the drifting
+   starfield, all of which are decoration rather than information. */
+@media (prefers-reduced-motion: reduce){
+  .play-btn, .sound-btn, .overlay, .boost{ transition: none; }
+  .callout.is-pop{ animation: none; }
+  /* the colour change still lands; only the lurch goes */
+  #hull.is-struck{ animation: struck-flat 620ms steps(2, end); }
+  @keyframes struck-flat{ 0%,60%{ color: var(--hot); } 100%{ color: inherit; } }
+}

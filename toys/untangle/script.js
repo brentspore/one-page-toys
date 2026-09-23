@@ -95,11 +95,17 @@
 
   /* ------------------------------------------------------------ generator */
 
-  var MAX_LINES = 8;                     // 28 stars, 48 filaments — the ceiling
-  function linesForLevel(lv) { return Math.min(3 + lv, MAX_LINES); }
-  function atCeiling(lv) { return linesForLevel(lv) === MAX_LINES; }
+  // Hand-picked so each level adds a couple of stars, not half a board again.
+  var LADDER = [6, 8, 10, 12, 14, 17, 20, 23, 26, 28];
+  function nodeTarget(lv) { return LADDER[Math.min(LADDER.length, Math.max(1, lv)) - 1]; }
+  function linesForTarget(t) {
+    var n = 4;
+    while (n * (n - 1) / 2 < t) n++;
+    return n;
+  }
+  function atCeiling(lv) { return lv >= LADDER.length; }
 
-  function buildArrangement(nLines) {
+  function buildArrangement(nLines, target) {
     // Angles spread evenly over a half turn keep every pair well away from
     // parallel, which is what stops an intersection flying off to infinity.
     var ang = [], off = [], i, j;
@@ -127,20 +133,54 @@
       }
     }
 
-    var edges = [];
-    for (i = 0; i < nLines; i++) {
-      onLine[i].sort(function (a, b) { return a.t - b.t; });
-      for (j = 0; j + 1 < onLine[i].length; j++) {
-        edges.push({ a: onLine[i][j].i, b: onLine[i][j + 1].i, cross: 0 });
+    for (i = 0; i < nLines; i++) onLine[i].sort(function (a, b) { return a.t - b.t; });
+
+    // prune down to the level's size, splicing each line as we go
+    var alive = nodes.map(function () { return true; });
+    var live = nodes.length;
+    var guard = 0;
+    while (live > target && guard++ < 400) {
+      var v = (Math.random() * nodes.length) | 0;
+      if (!alive[v]) continue;
+      alive[v] = false; live--;
+      for (i = 0; i < nLines; i++) {
+        for (j = onLine[i].length - 1; j >= 0; j--) {
+          if (onLine[i][j].i === v) onLine[i].splice(j, 1);
+        }
       }
     }
-    return { nodes: nodes, edges: edges };
+
+    // rebuild edges from what survives, and renumber
+    var map = [], out = [];
+    for (i = 0; i < nodes.length; i++) {
+      map.push(alive[i] ? out.length : -1);
+      if (alive[i]) out.push(nodes[i]);
+    }
+    var edges = [], seen = {};
+    for (i = 0; i < nLines; i++) {
+      for (j = 0; j + 1 < onLine[i].length; j++) {
+        var a = map[onLine[i][j].i], b = map[onLine[i][j + 1].i];
+        if (a < 0 || b < 0 || a === b) continue;
+        var k = a < b ? a + ":" + b : b + ":" + a;
+        if (seen[k]) continue;            // a splice can land on an existing edge
+        seen[k] = 1;
+        edges.push({ a: a, b: b, cross: 0 });
+      }
+    }
+
+    // a star with nothing attached is not a puzzle piece; deal again
+    var deg = out.map(function () { return 0; });
+    edges.forEach(function (e) { deg[e.a]++; deg[e.b]++; });
+    for (i = 0; i < deg.length; i++) if (!deg[i]) return null;
+
+    return { nodes: out, edges: edges };
   }
 
   function generate(lv) {
-    var nLines = linesForLevel(lv), out = null, tries = 0;
-    while (!out && tries++ < 120) out = buildArrangement(nLines);
-    if (!out) out = buildArrangement(nLines) || buildArrangement(4);
+    var target = nodeTarget(lv);
+    var nLines = linesForTarget(target), out = null, tries = 0;
+    while (!out && tries++ < 200) out = buildArrangement(nLines, target);
+    if (!out) out = buildArrangement(4, 6);
 
     G.edges = out.edges;
     G.adj = out.nodes.map(function () { return []; });
@@ -156,13 +196,16 @@
     }
     G.nodes = out.nodes.map(function () { return { x: 0, y: 0, aura: 0 }; });
 
-    // A ring scatter can occasionally deal a board that is already nearly
-    // solved, which is not a puzzle. Reshuffle until it is worth pulling on.
-    var floor = Math.max(3, Math.round(N * 0.6));
-    for (var attempt = 0; attempt < 40; attempt++) {
-      for (var k2 = N - 1; k2 > 0; k2--) {
-        var r2 = (Math.random() * (k2 + 1)) | 0;
-        var t2 = order[k2]; order[k2] = order[r2]; order[r2] = t2;
+    /* A ring scatter is wildly variable: the same level could deal 10 crossings
+     * or 33, which reads as the difficulty jumping around rather than climbing.
+     * Deal several and keep the MEDIAN one. That pins each level to its own
+     * typical board without a table of magic numbers to maintain, and it also
+     * rules out the occasional deal that arrives nearly solved. */
+    var deals = [], attempt, k2, r2, t2;
+    for (attempt = 0; attempt < 7; attempt++) {
+      for (k2 = N - 1; k2 > 0; k2--) {
+        r2 = (Math.random() * (k2 + 1)) | 0;
+        t2 = order[k2]; order[k2] = order[r2]; order[r2] = t2;
       }
       order.forEach(function (idx, pos) {
         var a = pos / N * TAU + (Math.random() - 0.5) * (TAU / N) * 0.5;
@@ -171,8 +214,15 @@
         G.nodes[idx].y = Math.sin(a) * rr;
       });
       recountAll();
-      if (G.crossings >= floor) break;
+      deals.push({
+        cross: G.crossings,
+        pos: G.nodes.map(function (n) { return { x: n.x, y: n.y }; })
+      });
     }
+    deals.sort(function (a, b) { return a.cross - b.cross; });
+    var pick = deals[deals.length >> 1];
+    G.nodes.forEach(function (n, i) { n.x = pick.pos[i].x; n.y = pick.pos[i].y; });
+    recountAll();
     G.startCrossings = Math.max(1, G.crossings);
   }
 
@@ -301,14 +351,14 @@
         (atCeiling(G.level)
           ? "Boards stay this size from here. Now it is about the clock."
           : "Level " + (G.level + 1) + " adds " + (nodeCount(G.level + 1) - nodes) + " more stars.");
-      el.ovDemo.hidden = true;
+      el.ovDemo.setAttribute("hidden", "");   // <svg> has no `hidden` IDL property
       el.ovBtn.textContent = "Level " + (G.level + 1);
       el.overlay.hidden = false;
       el.overlay.classList.remove("is-out");
     }, reduceMotion ? 600 : 1750);
   }
 
-  function nodeCount(lv) { var n = linesForLevel(lv); return n * (n - 1) / 2; }
+  function nodeCount(lv) { return nodeTarget(lv); }
 
   function buildWave() {
     // Light the filaments outward from one star so the finish travels through

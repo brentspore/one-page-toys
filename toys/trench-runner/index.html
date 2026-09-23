@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Trench Runner — One Page Toys</title>
+    <meta name="description" content="A neon canal rushing at you. The ship flies itself — you aim the crosshair and shoot: knock out the wall emplacements before they fire back, blast the girders out of your way, then hold the lock and breach the core. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/trench-runner/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#03040c" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Trench Runner — One Page Toys" />
+    <meta property="og:description" content="You aim, the ship flies itself. Shoot the wall guns before they fire back, clear the girders, then breach the core." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/trench-runner/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/trench-runner.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Trench Runner — One Page Toys" />
+    <meta name="twitter:description" content="You aim, the ship flies itself. Take out the wall guns, then breach the core." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/trench-runner.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Trench Runner",
+        "url": "https://onepagetoys.com/toys/trench-runner/",
+        "description": "A first-person arcade flyer down a narrow neon canal. The channel rushes toward you and wanders left and right as it goes, and broken machinery blocks it: slabs across one side, gantries to duck under, pillars with a gap either side, and windows you have to line up on. Steer with a pointer, a finger or the arrow keys, and hold boost to go faster at the cost of a hull that heats up and cuts out when it runs too hot. Points come from shaving the edges rather than playing safe, so a clean pass close to the metal scores many times a cautious one, and a graze streak multiplies it further. The canal ends at a reactor throat: hold the centre of the ring until the targeting locks, then fire to breach it. Three clips and the run is over. Best score and best clear time are kept.",
+        "applicationCategory": "GameApplication",
+        "genre": "Arcade",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <div class="prog" id="prog"><div class="prog__fill" id="progFill"></div></div>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Score</span><span id="score">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Guns</span><span id="kills">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Hull</span><span id="hull">3</span></div>
+      <div class="hud__cell"><span class="hud__k">Time</span><span id="time">0.0s</span></div>
+      <div class="hud__cell"><span class="hud__k">Best</span><span id="best">&mdash;</span></div>
+    </div>
+
+    <div class="heat" id="heat" hidden><div class="heat__fill" id="heatFill"></div></div>
+
+    <button type="button" class="boost" id="boostPad" hidden>BOOST</button>
+
+    <div class="lock" id="lock" hidden>Aim at the core</div>
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Guns first, flying second</p>
+        <h1 class="panel__title" id="ovTitle">Trench Runner</h1>
+        <p class="panel__text" id="ovText">
+          <b>You aim. The ship flies itself.</b><br />
+          Put the crosshair on a gun and <b>click to shoot it</b> — on a phone,
+          tap it.<br />
+          Kill them before they glow <b>red</b> and fire back, and shoot the
+          girders out of your way.<br />
+          Only the <b>gates</b> and enemy fire cost you hull — the trench itself
+          never will. Three hits and you are done.
+        </p>
+        <svg class="demo" id="ovDemo" viewBox="0 0 330 104" role="img" aria-label="A gold wall gun with the crosshair on it is destroyed for a hundred and twenty points. A gun glowing red is about to fire back at you.">
+          <g stroke="#8fe4ff" stroke-width="1" opacity="0.45" fill="none">
+            <path d="M8 10 L44 32 L44 72 L8 94" /><path d="M152 10 L116 32 L116 72 L152 94" />
+          </g>
+          <g stroke="#ffd166" stroke-width="1.4" fill="none">
+            <path d="M52 40 L60 34 L70 38 L70 50 L62 56 L52 52 Z" />
+            <path d="M70 45 H84" stroke-width="2.4" />
+          </g>
+          <circle cx="61" cy="45" r="2.8" fill="#ffd166" />
+          <path d="M104 74 L66 48" stroke="#96ffbe" stroke-width="2" stroke-linecap="round" />
+          <g stroke="#96ffbe" stroke-width="1.8" fill="none">
+            <path d="M48 45 H55 M67 45 H74 M61 32 V39 M61 51 V58" />
+            <circle cx="61" cy="45" r="10" stroke-width="1" opacity="0.5" />
+          </g>
+          <text x="80" y="90" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="12" fill="#96ffbe">+120</text>
+
+          <g stroke="#8fe4ff" stroke-width="1" opacity="0.45" fill="none">
+            <path d="M178 10 L214 32 L214 72 L178 94" /><path d="M322 10 L286 32 L286 72 L322 94" />
+          </g>
+          <g stroke="#ff3d81" stroke-width="1.6" fill="none">
+            <path d="M222 40 L230 34 L240 38 L240 50 L232 56 L222 52 Z" />
+            <path d="M240 45 H254" stroke-width="2.4" />
+          </g>
+          <circle cx="231" cy="45" r="4" fill="#ff3d81" />
+          <circle cx="231" cy="45" r="12" fill="none" stroke="#ff3d81" stroke-width="0.8" opacity="0.55" />
+          <text x="250" y="90" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(255,61,129,0.85)">about to fire</text>
+        </svg>
+        <button type="button" class="play-btn" id="ovBtn">Start the run</button>
+        <p class="panel__keys">move to aim &middot; click or space to fire &middot; shift or a second finger boosts</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 121</span>
+      <span class="frame__corner frame__corner--tr">Trench Runner</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">aim with the pointer &middot; click to fire &middot; shift boosts</p>
+
+    <script src="../../assets/tickets.js?v=28" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=24" defer></script>
+  </body>
+</html>

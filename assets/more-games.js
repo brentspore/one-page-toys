@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Trench Runner",
+      "tagline": "Aim, shoot, breach the core",
+      "url": "https://onepagetoys.com/toys/trench-runner/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23050813'/><g fill='none' stroke='%238fe4ff' stroke-width='1.1'><path d='M1 3 L11 12 L11 21 L1 30'/><path d='M31 3 L21 12 L21 21 L31 30'/><path d='M11 12 H21 M11 21 H21'/></g><circle cx='16' cy='16.5' r='2.6' fill='none' stroke='%2396ffbe' stroke-width='1.2'/><g stroke='%2396ffbe' stroke-width='1.3' stroke-linecap='round'><path d='M10 16.5 H12.6 M19.4 16.5 H22 M16 10.5 V13.1 M16 19.9 V22.5'/></g><circle cx='16' cy='16.5' r='0.9' fill='%23ffffff'/></svg>",
+      "initial": "T",
+      "slug": "trench-runner"
+    },
+    {
       "name": "Untangle",
       "tagline": "Pull the knot open",
       "url": "https://onepagetoys.com/toys/untangle/",

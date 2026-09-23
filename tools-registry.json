@@ -1,5 +1,36 @@
 [
   {
+    "slug": "trench-runner",
+    "name": "Trench Runner",
+    "shortDescription": "A neon canal rushing at you at speed. The ship flies itself — you aim the crosshair and shoot: knock out the wall emplacements before they glow red and fire back, blast the girders out of your lane, then hold the lock on the reactor core and breach it. The trench itself never costs you hull; only the gates and enemy fire do.",
+    "category": "game",
+    "tags": [
+      "trench-runner",
+      "arcade",
+      "shooter",
+      "space",
+      "flying",
+      "neon",
+      "vector",
+      "first-person",
+      "rail-shooter",
+      "reflex",
+      "score-attack",
+      "boost",
+      "targeting",
+      "retro",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/trench-runner/",
+    "related": [
+      "sky-fortress",
+      "nova-coil",
+      "deep-descent",
+      "paper-plane"
+    ]
+  },
+  {
     "slug": "untangle",
     "name": "Untangle",
     "shortDescription": "A knot of stars joined by glowing filaments. Drag them apart until no two filaments cross and the tangle falls open into a constellation. Crossed lines burn red and cool to white as they come clear, every board is generated so a solution is guaranteed to exist, and the levels keep adding stars.",
