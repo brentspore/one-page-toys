@@ -205,18 +205,21 @@ button{ font: inherit; color: inherit; }
 .nextbuy__k{ font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--brass); }
 .nextbuy__list{ display: flex; gap: 8px; flex-wrap: wrap; }
 
+/* The list gets a SOLID gold pill, first in the row: as a thin outline among
+   text links it was easy to miss (owner: "where's the shopping list button?"). */
 .listbtn{
   appearance: none; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 11px; border-radius: var(--radius-pill);
-  border: 1px solid rgba(214, 170, 98, 0.4); background: rgba(214, 170, 98, 0.08);
-  font-size: 0.78rem; font-weight: 600; color: var(--night-ink);
-  transition: background 140ms ease, border-color 140ms ease;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 14px; border-radius: var(--radius-pill);
+  border: 1px solid var(--brass); background: var(--brass);
+  font-size: 0.84rem; font-weight: 700; color: #1a0f07;
+  box-shadow: 0 4px 16px rgba(var(--glow), 0.22);
+  transition: background 140ms ease, transform 140ms ease, box-shadow 140ms ease;
 }
-.listbtn svg{ width: 14px; height: 14px; fill: none; stroke: var(--brass); stroke-width: 2.2; stroke-linecap: round; }
-.listbtn b{ min-width: 1.4em; padding: 1px 6px; border-radius: 999px; background: var(--brass); color: #1a0f07; font-size: 0.72rem; text-align: center; font-variant-numeric: tabular-nums; }
-.listbtn:hover{ background: rgba(214, 170, 98, 0.16); border-color: var(--brass); }
-.listbtn:focus-visible{ outline: 2px solid var(--brass); outline-offset: 2px; }
+.listbtn svg{ width: 15px; height: 15px; fill: none; stroke: #1a0f07; stroke-width: 2.4; stroke-linecap: round; }
+.listbtn b{ min-width: 1.5em; padding: 1px 7px; border-radius: 999px; background: #1a0f07; color: var(--brass); font-size: 0.74rem; text-align: center; font-variant-numeric: tabular-nums; }
+.listbtn:hover{ background: #e6bd78; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(var(--glow), 0.32); }
+.listbtn:focus-visible{ outline: 2px solid var(--night-ink); outline-offset: 2px; }
 .listbtn.bump b{ animation: bump 360ms cubic-bezier(.2,.9,.3,1.5); }
 @keyframes bump{ 40%{ transform: scale(1.35); } }
 
@@ -233,6 +236,27 @@ button{ font: inherit; color: inherit; }
 .buy.is-listed{ background: rgba(214, 170, 98, 0.22); border-color: var(--brass); }
 .buy.is-listed .buy__add{ color: var(--brass); }
 .buy__main:focus-visible, .buy__have:focus-visible{ outline: 2px solid var(--brass); outline-offset: -2px; }
+
+/* the floating list: bottom-centre, clear of the tickets pill (bottom-left)
+   and the tip-jar and fullscreen badges (right edge) */
+.listfab{
+  position: fixed; z-index: 20; left: 50%; bottom: max(18px, env(safe-area-inset-bottom));
+  transform: translate(-50%, 0);
+  appearance: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 18px; border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 226, 180, 0.35); background: #1b120c; color: var(--night-ink);
+  font-size: 0.9rem; font-weight: 700;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.2);
+  transition: transform 260ms cubic-bezier(.2,.9,.3,1.2), opacity 200ms ease;
+}
+.listfab[hidden]{ display: none; }
+.listfab.is-away{ transform: translate(-50%, 140%); opacity: 0; pointer-events: none; }
+.listfab svg{ width: 17px; height: 17px; fill: none; stroke: var(--brass); stroke-width: 2.4; stroke-linecap: round; }
+.listfab b{ min-width: 1.6em; padding: 2px 8px; border-radius: 999px; background: var(--brass); color: #1a0f07; font-size: 0.78rem; text-align: center; font-variant-numeric: tabular-nums; }
+.listfab:hover{ border-color: var(--brass); }
+.listfab:focus-visible{ outline: 2px solid var(--brass); outline-offset: 3px; }
+.listfab.bump b{ animation: bump 360ms cubic-bezier(.2,.9,.3,1.5); }
 
 /* ---------- The book ---------- */
 .book{ display: flex; flex-direction: column; gap: 14px; }
@@ -419,11 +443,11 @@ button{ font: inherit; color: inherit; }
   .search{ flex-basis: 100%; }
   .book__bar .btn{ flex: 1; }
   .backbar__tools{ width: 100%; }
-  /* row one: the count, with Clear across from it; row two: the list and the starter */
-  .backbar__count{ order: 0; flex: 1 1 auto; }
-  #clearBtn{ order: 1; }
-  #listBtn{ order: 2; }
-  #starterBtn{ order: 3; }
+  /* row one: the list and the count; row two: the starter and Clear */
+  #listBtn{ order: 0; }
+  .backbar__count{ order: 1; flex: 1 1 auto; text-align: right; }
+  #starterBtn{ order: 2; flex: 1 1 auto; text-align: left; }
+  #clearBtn{ order: 3; }
 }
 
 @media (prefers-reduced-motion: reduce){

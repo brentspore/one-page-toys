@@ -30,6 +30,7 @@
     rBought: $("rBought"), rCopy: $("rCopy"), rClose: $("rClose"), rZero: $("rZero"),
     sound: $("soundBtn"),
     listBtn: $("listBtn"), listN: $("listN"), rList: $("rList"),
+    fab: $("listFab"), fabN: $("listFabN"),
     sl: $("slist"), slSum: $("slSum"), slItems: $("slItems"), slEmpty: $("slEmpty"), slActions: $("slActions"),
     slShare: $("slShare"), slGot: $("slGot"), slClear: $("slClear"), slClose: $("slClose")
   };
@@ -750,9 +751,30 @@
   /* ---------------------------------------------------------- the list */
 
   function paintListBtn(bump) {
+    var label = "Shopping list, " + list.length + (list.length === 1 ? " item" : " items");
     el.listN.textContent = list.length;
-    el.listBtn.setAttribute("aria-label", "Shopping list, " + list.length + (list.length === 1 ? " item" : " items"));
-    if (bump && !reduceMotion) { el.listBtn.classList.remove("bump"); void el.listBtn.offsetWidth; el.listBtn.classList.add("bump"); }
+    el.fabN.textContent = list.length;
+    el.listBtn.setAttribute("aria-label", label);
+    el.fab.setAttribute("aria-label", label);
+    paintFab();
+    if (bump && !reduceMotion) {
+      [el.listBtn, el.fab].forEach(function (b) { b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); });
+    }
+  }
+
+  /* The floating copy exists for the recipe grid, where you decide you need
+   * something. It only shows when the list has items AND the shelf's own
+   * button is off screen, so the two are never on view together. */
+  var shelfBtnVisible = true;
+  function paintFab() {
+    el.fab.hidden = !list.length;
+    el.fab.classList.toggle("is-away", shelfBtnVisible || !list.length);
+  }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) {
+      shelfBtnVisible = es[es.length - 1].isIntersecting;
+      paintFab();
+    }).observe(el.listBtn);
   }
   function addToList(keys) {
     var added = 0;
@@ -824,11 +846,13 @@
     return lines.join("\n") + "\n\nFrom Barkeep: " + location.origin + location.pathname;
   }
 
-  el.listBtn.addEventListener("click", function () {
+  function openList() {
     renderList();
     if (el.sl.showModal) el.sl.showModal(); else el.sl.setAttribute("open", "");
     if (window.gtag) gtag("event", "barkeep_list_open", { value: list.length });
-  });
+  }
+  el.listBtn.addEventListener("click", openList);
+  el.fab.addEventListener("click", openList);
   function closeList() { if (el.sl.open) { if (el.sl.close) el.sl.close(); else el.sl.removeAttribute("open"); } }
   el.slClose.addEventListener("click", closeList);
   el.sl.addEventListener("click", function (e) { if (e.target === el.sl) closeList(); });

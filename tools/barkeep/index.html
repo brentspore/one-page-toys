@@ -58,7 +58,7 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=5" />
+    <link rel="stylesheet" href="styles.css?v=7" />
   </head>
   <body>
     <header class="topbar" aria-label="One Page Toys">
@@ -92,11 +92,11 @@
         <div class="backbar__head">
           <div class="tabs" role="tablist" aria-label="Shelves" id="tabs"></div>
           <div class="backbar__tools">
-            <span class="backbar__count" id="barCount">0 on the shelf</span>
             <button type="button" class="listbtn" id="listBtn" aria-haspopup="dialog">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
               Shopping list <b id="listN">0</b>
             </button>
+            <span class="backbar__count" id="barCount">0 on the shelf</span>
             <button type="button" class="linkbtn" id="starterBtn">Stock a starter bar</button>
             <button type="button" class="linkbtn" id="clearBtn">Clear</button>
           </div>
@@ -158,6 +158,12 @@
       </div>
     </dialog>
 
+    <!-- follows you down the recipes once the list has something on it -->
+    <button type="button" class="listfab" id="listFab" aria-haspopup="dialog" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
+      <span>Shopping list</span> <b id="listFabN">0</b>
+    </button>
+
     <dialog class="slist" id="slist" aria-labelledby="slTitle">
       <div class="slist__inner">
         <button type="button" class="recipe__close" id="slClose" aria-label="Close shopping list">×</button>
@@ -177,7 +183,7 @@
     <script src="../../assets/tickets.js?v=28" defer></script>
     <script src="../../assets/prizes.js?v=1" defer></script>
     <script src="drinks.js?v=2" defer></script>
-    <script src="script.js?v=5" defer></script>
+    <script src="script.js?v=6" defer></script>
     <script src="../../assets/theme.js?v=8" defer></script>
     <script src="../../assets/tip-jar.js?v=10" defer></script>
     <script src="../../assets/share.js?v=6" defer></script>
