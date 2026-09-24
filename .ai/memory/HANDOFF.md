@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-09-23 (Trench Runner second pass live: zero-g wreckage, a built trench and sky, rebuilt explosions — `a848972`).**
+**Last updated: 2026-09-23 (Trench Runner second pass live, trusses now land on pier blocks — `0c106d1`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**121 toys, live at onepagetoys.com.** Latest on `main`: `a848972`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**121 toys, live at onepagetoys.com.** Latest on `main`: `0c106d1`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work — No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
 
@@ -22,7 +22,7 @@ Registered everywhere and live-verified. ⚠ **The blaster rebuild AND the secon
   clip/graze sparks; shards reflect elastically off walls/floor and leave through the open top.
 - **The trench is SOLID now** (it was wireframe; stars showed through the walls). `drawTrench()` fills slabs
   between ribs far→near, then furniture per slab: raked piers, hatches, floor grates, rim housings, towers,
-  overhead trusses. ⚠ **All furniture is a pure `hash(slabIndex)` — nothing stored**; it sits above the coping
+  overhead trusses. ⚠ **A truss must LAND on something** — it ends in pier blocks on the coping (`0c106d1`; owner: ending in mid-air "looks weird"). ⚠ **All furniture is a pure `hash(slabIndex)` — nothing stored**; it sits above the coping
   or flush with the walls so it is never an obstacle, and is drawn in `DETAIL` grey so it never reads as a
   shootable girder. Sky is pre-rendered once per size (`buildSky`: galaxy band + dust lane) and blitted with
   the roll; rocks and a station drift in front. Headless ~83fps landscape, ~120 phone.
