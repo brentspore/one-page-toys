@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-09-23 (No. 121 Trench Runner live; bolts are now a dodgeable straight line, key art in the spotlight; guns kept as-is by owner call).**
+**Last updated: 2026-09-23 (Trench Runner second pass live: zero-g wreckage, a built trench and sky, rebuilt explosions — `a848972`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**121 toys, live at onepagetoys.com.** Latest on `main`: `11f00d8`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**121 toys, live at onepagetoys.com.** Latest on `main`: `a848972`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work — No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
 
@@ -14,8 +14,21 @@ A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities i
 sits ahead, the gun fires one shot per click, and the ship only leans after it. Wall emplacements shoot
 back, girders block the lane, gates must be threaded, and the run ends holding a lock on the reactor core.
 Keys: `trench_best` (score, ticket rule **dir `up`**, rule only), `trench_time`, `trench_sound`.
-Registered everywhere and live-verified. ⚠ **Audio has been heard once by the owner and rebuilt since;
-the rebuilt version is UNHEARD.**
+Registered everywhere and live-verified. ⚠ **The blaster rebuild AND the second explosion rebuild
+(`a848972`) are both UNHEARD** — levels measured only (kill ~0.30 incl. the 0.14 engine bed, detonation 0.67).
+- **Second pass (`a848972`, owner asks 09-23):** kills EXPLODE, BREAK APART and FADE — the object's own
+  outline cut into tumbling shards (`shatterTurret`/`shatterProp` → `G.frags`, Rodrigues tumble) plus a
+  fireball and embers. ⚠ **Owner: "this is space, no gravity"** — no gravity or drag term on debris OR on the
+  clip/graze sparks; shards reflect elastically off walls/floor and leave through the open top.
+- **The trench is SOLID now** (it was wireframe; stars showed through the walls). `drawTrench()` fills slabs
+  between ribs far→near, then furniture per slab: raked piers, hatches, floor grates, rim housings, towers,
+  overhead trusses. ⚠ **All furniture is a pure `hash(slabIndex)` — nothing stored**; it sits above the coping
+  or flush with the walls so it is never an obstacle, and is drawn in `DETAIL` grey so it never reads as a
+  shootable girder. Sky is pre-rendered once per size (`buildSky`: galaxy band + dust lane) and blitted with
+  the roll; rocks and a station drift in front. Headless ~83fps landscape, ~120 phone.
+- **Explosions rebuilt** (owner: "don't sound very real"): a turbulent puff-cluster roar baked into a stereo
+  buffer; N-wave crack and noise thump through a tanh soft clipper; ONE shared flutter-echo loop for the
+  parallel walls (never per shot — the leak trap below); modal metal debris. The finale's sawtooth groan is noise now.
 - ⚠⚠ **THE SHIP'S REACHABLE BOX MUST COVER THE PLAYFIELD.** At `SHIP_FOLLOW` 0.52 it reached only **65% of
   the canal's width**, so a gap hard against a wall was *literally unreachable* — and **58% of all deaths
   were flying into a barrier**. Measured, not guessed. The "it flies for you" feel must come from LAG and a
