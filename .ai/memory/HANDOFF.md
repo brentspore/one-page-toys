@@ -64,8 +64,7 @@ red and cool to white; below 44 crossings each one also shows a pip, so late on 
 rather than a red smear. Keys: `untangle_best` (deepest level cleared, ticket rule **dir `up`**,
 rule only), `untangle_t<level>` (best time per level, deliberately NOT a ticket key), `untangle_sound`.
 Registered everywhere and verified live (toy plays, gallery renders, search hits, all three sibling
-bundles carry the cross-promo, IndexNow accepted). ⚠ **Audio has never been heard** — levels measured,
-character not.
+bundles carry the cross-promo, IndexNow accepted). ✅ **Audio owner-approved 2026-09-23** (*"untangle sounds good too"*).
 - ⚠ **The board is a LINE ARRANGEMENT, and that is the whole trick.** n straight lines in general
   position; every pairwise intersection is a star; each line joins its own intersections in order
   along itself. Two distinct lines meet exactly once, so that drawing is crossing-free by
@@ -329,7 +328,6 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 - **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
 - **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
 - **Jenga's one remaining bug** (see above).
-- **Untangle's audio has never been heard.** (Trench Runner's was approved 2026-09-23.)
 - **Chess audio has never been heard** — level is measured at 0.20 peak, character never is. Same for the ladder: verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
