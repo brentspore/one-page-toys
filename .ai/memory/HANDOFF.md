@@ -328,7 +328,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 - **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
 - **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
 - **Jenga's one remaining bug** (see above).
-- **Chess audio has never been heard** — level is measured at 0.20 peak, character never is. Same for the ladder: verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
+- ✅ **Chess audio owner-approved 2026-09-23.** Still open: the ladder was verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
 
