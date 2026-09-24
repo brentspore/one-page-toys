@@ -1,14 +1,44 @@
 # Handoff
 
-**Last updated: 2026-09-23 (Trench Runner second pass live, trusses now land on pier blocks — `0c106d1`).**
+**Last updated: 2026-09-23 (No. 122 Barkeep shipped and live — `99edb21`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**121 toys, live at onepagetoys.com.** Latest on `main`: `0c106d1`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**122 toys, live at onepagetoys.com.** Latest on `main`: `99edb21`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## Newest work — No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
+## Newest work — No. 122 Barkeep, shipped 2026-09-23 (`99edb21`), live
+
+**`tools/barkeep/`** — a tool (Moon Phase chrome), not a full-bleed toy: tick the bottles on your shelf,
+see every cocktail you can make, what's one away, and the **best next bottle** (drinks it alone would
+finish). 166 recipes in `drinks.js` (24 zero-proof), every glass drawn by `glassSVG()`, deep links
+`#<slug>`, oz/ml (quarter ounces only), shopping list that shares as plain text. Keys: `barkeep_bar`,
+`barkeep_list`, `barkeep_units`, `barkeep_sound`. No score, so **no ticket rule**; a tool, so **not in the
+cross-promo** (the tool family stays out of it). Live-verified; IndexNow accepted. ⚠ **Audio (glass clink,
+knock, ice rattle) is measured (0.215 / 0.132 / 0.144) but UNHEARD.**
+- ⚠⚠ **NO AFFILIATE LINKS — owner asked 09-23 ("I'm an affiliate", Amazon) and chose the plain list after
+  the conflict with DECISIONS 2026-06-11 was flagged.** Also: Amazon US doesn't generally sell spirits, and
+  Associates can only add to a CART (multi-ASIN add-to-cart link), not to a customer's list. If the owner
+  ever changes the rule, record the exception in DECISIONS first; the suggested home for earning was a
+  bar-tools page on Measure & Buy with a passive text link from here.
+- ⚠ **Recipe text is our own wording; specs are the standard (IBA-ish) builds.** Never paste method text
+  from a recipe site or TheCocktailDB. Brand-y items stay generic ("Zero-proof gin", "Orange liqueur");
+  "Pornstar Martini" is only an aka on "Passion Fruit Martini".
+- ⚠ **Zero-proof swaps are ADVICE, never counted toward "can make"** (NA spirits don't behave like the real
+  thing). The line only shows when EVERY alcoholic ingredient has a stand-in in `SWAPS`; **bitters count as
+  alcoholic**. A classic with its own zero recipe (name `Zero-Proof X` / `X Zero` / aka) links to it — the
+  match runs on the classic's name AND aka, or the G&T ("G&T") and Aperol Spritz ("Spritz") miss.
+- ⚠ **Adding a drink:** validate with the node one-liner pattern (every ingredient key must exist in
+  `SHELF`/`PANTRY`, no duplicate names, every shelf item used). Pantry items never count as missing.
+- ⚠ **`gen-card.cjs`/`gen-og.cjs` default to port 3000, which another app on this machine holds** — pass
+  `--base http://localhost:8123`. Card = `--el ".backbar"` posed by real clicks; the OG motif is a custom SVG
+  (`scripts/og-motifs/barkeep.svg`, three of the page's own glasses) because a square crop of the wide
+  back-bar was blurry and cut labels.
+- ⚠ **The Write tool turns `\u0300` escapes into literal combining characters** — it happened in
+  `fold()`/`slug()`. It still works, but restore the escapes if you see mojibake in a regex.
+
+## No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
 
 **`toys/trench-runner/`** — a neon-vector canal flyer. **The ship flies itself and you AIM**: a crosshair
 sits ahead, the gun fires one shot per click, and the ship only leans after it. Wall emplacements shoot
@@ -298,7 +328,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=117` (8 pages) / `styles.css?v=119` (9 hub/store pages); **`tickets.js?v=28` across all 130 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=24` (44 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=119` (8 pages) / `styles.css?v=120` (9 hub/store pages); **`tickets.js?v=28` across all 130 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=24` (44 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **34** toys per load (Trench Runner added 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
@@ -322,6 +352,8 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 3. Playwright only if needed: `npm install && npx playwright install chromium` (`node_modules` is gitignored on purpose).
 
 ## Open next steps
+
+- **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
 - **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless.
