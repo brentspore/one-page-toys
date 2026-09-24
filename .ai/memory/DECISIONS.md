@@ -333,3 +333,32 @@ catalogue by ten toys is worse than useless — it actively advertises the site'
 ⚠ **Drift found on 2026-08-23 while applying this:** "Eyeball It" was on both siblings but missing
 from `more-games.js`, and had been for some time. Hand-mirrored lists drift silently — **diff the
 four lists whenever one is touched.**
+
+---
+
+### 2026-09-23 — An explosion needs turbulence, overload, width and walls (owner-confirmed)
+
+**Context:** Trench Runner's explosions went through three passes. The first swept its lowpass UP (a
+whoosh). The second opened bright and closed dark and was still "not very real". The third was approved
+by the owner: *"sounds great!"*
+
+**Decision:** Any explosion voice is built from these layers, copied from `blast()` in
+`toys/trench-runner/script.js`:
+1. **Crack:** an N-wave pressure pulse (a linear +1 to -1 ramp, 3-9ms) followed by a spit of decaying
+   white noise, highpassed around 500Hz.
+2. **Thump:** lowpassed NOISE (260 to 55Hz), not a sine glide, which reads as a synth tom. Only a faint
+   sine under it for weight.
+3. **Roar:** a TURBULENT cluster of 5-21 overlapping puffs baked into the noise buffer (times weighted
+   early, each with its own decay), in two decorrelated channels for width. A lowpass sweeps it bright to
+   dark. One smooth envelope is what made pass two sound fake.
+4. **Overload:** crack, thump and roar go through a tanh soft clipper (drive about 3). Real blast
+   recordings are always overloaded, and the harmonics are what a phone speaker can actually play.
+5. **Space:** a flutter echo when the scene has parallel walls (one SHARED feedback loop, never one per
+   shot), plus the convolver send.
+6. **Debris:** a few modal metal clinks (ratios 1 : 2.76 : 5.4, high Q with `sqrt(Q)` makeup) scattered in
+   time and stereo.
+
+Measure the level afterwards: the clipper and puff cluster made the same `amp` about twice as loud.
+
+**Revisit if:** the owner flags a specific explosion. That is new information, not a contradiction.
+

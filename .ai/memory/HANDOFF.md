@@ -14,8 +14,8 @@ A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities i
 sits ahead, the gun fires one shot per click, and the ship only leans after it. Wall emplacements shoot
 back, girders block the lane, gates must be threaded, and the run ends holding a lock on the reactor core.
 Keys: `trench_best` (score, ticket rule **dir `up`**, rule only), `trench_time`, `trench_sound`.
-Registered everywhere and live-verified. ⚠ **The blaster rebuild AND the second explosion rebuild
-(`a848972`) are both UNHEARD** — levels measured only (kill ~0.30 incl. the 0.14 engine bed, detonation 0.67).
+Registered everywhere and live-verified. ✅ **Audio owner-approved 2026-09-23** (*"sounds great!"*) — blaster and
+the rebuilt explosions (`a848972`). Levels: kill ~0.30 incl. the 0.14 engine bed, detonation 0.67.
 - **Second pass (`a848972`, owner asks 09-23):** kills EXPLODE, BREAK APART and FADE — the object's own
   outline cut into tumbling shards (`shatterTurret`/`shatterProp` → `G.frags`, Rodrigues tumble) plus a
   fireball and embers. ⚠ **Owner: "this is space, no gravity"** — no gravity or drag term on debris OR on the
@@ -329,7 +329,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 - **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
 - **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
 - **Jenga's one remaining bug** (see above).
-- **Trench Runner's REBUILT audio has never been heard** — the owner heard the first version and asked for better lasers and explosions; the rebuild is measured but unauditioned. **Untangle's audio has never been heard at all.**
+- **Untangle's audio has never been heard.** (Trench Runner's was approved 2026-09-23.)
 - **Chess audio has never been heard** — level is measured at 0.20 peak, character never is. Same for the ladder: verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
