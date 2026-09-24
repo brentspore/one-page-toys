@@ -121,7 +121,9 @@
     boomT: -1, shockZ: 0, debris: [], whiteout: 0, washed: false,
     bars: [],                // hazards ahead
     sparks: [],
-    stars: []
+    frags: [],               // wreckage of anything shot: tumbling, drifting, fading
+    blasts: [],              // the fireball at the moment of the kill
+    stars: [], rocks: [], station: null
   };
 
   /* The canal wanders. Two slow sines per axis read as a route rather than a
@@ -347,6 +349,356 @@
 
   function fade(dz) { return Math.max(0, Math.min(1, 1 - dz / FAR)); }
 
+  /* ------------------------------------------------------------- scenery */
+
+  /* ⚠ Every piece of trench furniture is a pure function of the rib index, so
+   * nothing is stored and the same stretch of canal always looks the same. */
+  function hash(n, k) {
+    var x = Math.sin(n * 127.1 + k * 311.7) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  function poly(pts, fill, stroke, a, wide) {
+    if (!pts[0] || !pts[1] || !pts[2]) return;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (var i = 1; i < pts.length; i++) { if (!pts[i]) return; ctx.lineTo(pts[i].x, pts[i].y); }
+    ctx.closePath();
+    if (fill) {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+    if (stroke) {
+      ctx.globalCompositeOperation = "lighter";
+      ctx.strokeStyle = "rgba(" + stroke + "," + (a * 0.12).toFixed(3) + ")";
+      ctx.lineWidth = wide || 5;
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(" + stroke + "," + Math.min(1, a).toFixed(3) + ")";
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = "lighter";
+  }
+
+  // a dark surface tone, fogged toward the background with distance
+  function tone(r, g, b, f) {
+    return "rgb(" + Math.round(3 + (r - 3) * f) + "," + Math.round(4 + (g - 4) * f) + "," + Math.round(12 + (b - 12) * f) + ")";
+  }
+
+  /* The trench, far to near. Walls and floor are SOLID now — the first pass
+   * was wireframe, so the stars showed straight through the walls and the
+   * canal read as a diagram of a canal. On each slab, in painter's order:
+   * the plating, the piers down the walls, floor grates and wall hatches,
+   * then whatever stands on the rim above it and anything spanning it. */
+  var DETAIL = "130,150,200";      // furniture: dimmer and cooler than any hazard
+  function drawTrench(ribs, now) {
+    for (var i = 0; i < ribs.length - 1; i++) {
+      var far = ribs[i], near = ribs[i + 1];
+      if (!far.c || !near.c) continue;
+      var n = Math.round(far.z / RIB_GAP) - 1;       // the slab's own index
+      var f = fade(far.z - CAM.z);
+      var boom = !!(far.bt || near.bt);
+      var ft = far.c, nt = near.c;
+      // plating: alternate slabs a shade apart, so the walls read as panels
+      var pv = hash(n, 1) * 0.35 + (n % 2) * 0.12;
+      poly([ft[3], ft[2], nt[2], nt[3]], tone(9 + pv * 6, 12 + pv * 8, 24 + pv * 12, f), null);   // floor
+      poly([ft[0], ft[3], nt[3], nt[0]], tone(13 + pv * 8, 18 + pv * 10, 36 + pv * 14, f), null); // left wall
+      poly([ft[1], ft[2], nt[2], nt[1]], tone(13 + pv * 8, 18 + pv * 10, 36 + pv * 14, f), null); // right wall
+      if (boom || f < 0.04) continue;
+
+      var zs = n * RIB_GAP + RIB_GAP * 0.5;            // mid-slab, off the rib lines
+      if (zs < CAM.z + 3) continue;
+
+      // piers down both walls every third slab, with a raked foot like a buttress
+      if (n % 3 === 0) {
+        for (var sd = -1; sd <= 1; sd += 2) {
+          var xi = sd * (HALF - 0.45), xf = sd * (HALF - 1.25), xw = sd * HALF;
+          var za = zs - 0.8, zb = zs + 0.8;
+          poly([px(xi, TOP, za), px(xi, FLOOR - 1.6, za), px(xf, FLOOR, za), px(xw, FLOOR, za), px(xw, TOP, za)],
+               tone(20, 27, 50, f), DETAIL, f * 0.55, 4);
+          poly([px(xi, TOP, za), px(xi, TOP, zb), px(xi, FLOOR - 1.6, zb), px(xi, FLOOR - 1.6, za)],
+               tone(17, 23, 44, f), DETAIL, f * 0.4, 4);
+          poly([px(xi, FLOOR - 1.6, za), px(xi, FLOOR - 1.6, zb), px(xf, FLOOR, zb), px(xf, FLOOR, za)],
+               tone(15, 20, 40, f), DETAIL, f * 0.35, 4);
+        }
+      }
+
+      // a service hatch on the wall between piers, its lamp lit
+      var hh = hash(n, 2);
+      if (n % 3 !== 0 && hh < 0.3) {
+        var hs = hh < 0.15 ? -1 : 1, hy0 = TOP + 2.2 + hash(n, 3) * 2.5, hy1 = hy0 + 1.8 + hash(n, 4) * 1.6;
+        var hz0 = zs - 2.2, hz1 = zs + 2.2;
+        poly([px(hs * HALF, hy0, hz0), px(hs * HALF, hy0, hz1), px(hs * HALF, hy1, hz1), px(hs * HALF, hy1, hz0)],
+             tone(7, 10, 22, f), DETAIL, f * 0.5, 4);
+        var hl = px(hs * HALF, hy0 - 0.35, zs);
+        if (hl) {
+          var blink = reduceMotion ? 1 : 0.55 + 0.45 * Math.sin(now * 0.004 + n);
+          ctx.fillStyle = "rgba(" + (hash(n, 5) < 0.5 ? GOLD : LAMP) + "," + (f * blink).toFixed(3) + ")";
+          ctx.fillRect(hl.x - 1.5, hl.y - 1.5, 3, 3);
+        }
+      }
+
+      // floor grating in one of the lanes
+      var gh = hash(n, 6);
+      if (gh < 0.4) {
+        var gx0 = -HALF + 1 + Math.floor(gh * 10) % 4 * (HALF * 0.45), gx1 = gx0 + HALF * 0.38;
+        var gz0 = zs - 3, gz1 = zs + 3;
+        poly([px(gx0, FLOOR, gz0), px(gx1, FLOOR, gz0), px(gx1, FLOOR, gz1), px(gx0, FLOOR, gz1)],
+             tone(5, 7, 15, f), DETAIL, f * 0.3, 3);
+        ctx.strokeStyle = "rgba(" + DETAIL + "," + (f * 0.22).toFixed(3) + ")";
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        for (var gk = 1; gk < 6; gk++) {
+          var gz = gz0 + (gz1 - gz0) * gk / 6;
+          var ga = px(gx0, FLOOR, gz), gb = px(gx1, FLOOR, gz);
+          if (ga && gb) { ctx.moveTo(ga.x, ga.y); ctx.lineTo(gb.x, gb.y); }
+        }
+        ctx.stroke();
+      }
+
+      // ON THE RIM: machinery housings, and now and then a tower
+      for (var side = -1; side <= 1; side += 2) {
+        var rh = hash(n, 10 + side);
+        if (rh < 0.34) {
+          // a low housing sat on the coping
+          var bx0 = side * (HALF + 0.2), bx1 = side * (HALF + 1.4 + hash(n, 12 + side) * 1.6);
+          var bh = 0.7 + hash(n, 14 + side) * 1.6, bz0 = zs - 1.5, bz1 = zs + 1.5 + rh * 4;
+          poly([px(bx0, TOP, bz0), px(bx1, TOP, bz0), px(bx1, TOP - bh, bz0), px(bx0, TOP - bh, bz0)],
+               tone(16, 21, 40, f), DETAIL, f * 0.5, 4);
+          poly([px(bx0, TOP, bz0), px(bx0, TOP, bz1), px(bx0, TOP - bh, bz1), px(bx0, TOP - bh, bz0)],
+               tone(12, 16, 32, f), DETAIL, f * 0.4, 4);
+        } else if (rh > 0.93) {
+          drawTower(n, side, zs, f, now);
+        }
+      }
+
+      // overhead: a truss spanning the canal, well clear above the coping
+      if (n % 17 === 5) drawTruss(zs, f);
+    }
+  }
+
+  function drawTower(n, side, zs, f, now) {
+    var xin = side * (HALF + 2.4 + hash(n, 20) * 3);
+    var xout = xin + side * (2.2 + hash(n, 21) * 3.5);
+    var h = 4 + Math.pow(hash(n, 22), 1.6) * 15;
+    var z0 = zs - 2, z1 = zs + 3 + hash(n, 23) * 6;
+    var yt = TOP - h;
+    // the face toward the canal, then the front
+    poly([px(xin, TOP + 0.6, z0), px(xin, TOP + 0.6, z1), px(xin, yt, z1), px(xin, yt, z0)],
+         tone(11, 15, 30, f), DETAIL, f * 0.45, 5);
+    poly([px(xin, TOP + 0.6, z0), px(xout, TOP + 0.6, z0), px(xout, yt, z0), px(xin, yt, z0)],
+         tone(15, 20, 40, f), DETAIL, f * 0.6, 5);
+    // lit windows in rows
+    var rows = Math.floor(h / 1.3);
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < 3; c++) {
+        if (hash(n * 7 + r, c + 30) > 0.45) continue;
+        var wx = xin + (xout - xin) * (0.22 + c * 0.28), wy = TOP - 0.9 - r * 1.3;
+        var w = px(wx, wy, z0);
+        if (!w) continue;
+        var sz = Math.max(1, 0.28 * w.s);
+        ctx.fillStyle = "rgba(" + (hash(n, r + c) < 0.2 ? GOLD : LAMP) + "," + (f * 0.75).toFixed(3) + ")";
+        ctx.fillRect(w.x - sz, w.y - sz * 0.6, sz * 2, sz * 1.2);
+      }
+    }
+    // a mast with a warning light, slow and red
+    var xm = (xin + xout) / 2;
+    var m0 = px(xm, yt, z0), m1 = px(xm, yt - 2.5 - hash(n, 24) * 3, z0);
+    if (m0 && m1) {
+      glowLine([m0, m1], DETAIL, f * 0.6, 4, 1);
+      var on = reduceMotion || Math.sin(now * 0.003 + n) > 0.2;
+      if (on) {
+        ctx.fillStyle = "rgba(255,70,90," + f.toFixed(3) + ")";
+        ctx.beginPath(); ctx.arc(m1.x, m1.y, Math.max(1.5, 0.22 * m1.s), 0, TAU); ctx.fill();
+      }
+    }
+  }
+
+  /* A gantry bridging the canal from coping to coping. It sits ABOVE the top
+   * of the walls, where the ship can never go, so it is scenery and never a
+   * hazard — and it is drawn in the furniture colour so it never reads as
+   * one of the girders you have to shoot. */
+  function drawTruss(zs, f) {
+    var y1 = TOP - 0.5, y0 = TOP - 2.3, xl = -HALF - 1.2, xr = HALF + 1.2;
+    poly([px(xl, y0, zs), px(xr, y0, zs), px(xr, y1, zs), px(xl, y1, zs)], tone(12, 16, 32, f), null);
+    var pts = [], k, n = 8;
+    for (k = 0; k <= n; k++) {
+      var x = xl + (xr - xl) * k / n;
+      pts.push(px(x, k % 2 ? y0 : y1, zs));
+    }
+    var ok = true;
+    for (k = 0; k < pts.length; k++) if (!pts[k]) ok = false;
+    if (!ok) return;
+    glowLine(pts, DETAIL, f * 0.6, 6, 1.4);
+    var e1 = px(xl, y0, zs), e2 = px(xr, y0, zs), e3 = px(xr, y1, zs), e4 = px(xl, y1, zs);
+    glowLine([e1, e2], DETAIL, f * 0.75, 6, 1.6);
+    glowLine([e4, e3], DETAIL, f * 0.75, 6, 1.6);
+    // a strip of light along its underside
+    var u1 = px(xl + 1.5, y1, zs), u2 = px(xr - 1.5, y1, zs);
+    if (u1 && u2) glowLine([u1, u2], LAMP, f * 0.5, 8, 1.2);
+  }
+
+  /* ------------------------------------------------------------------ sky */
+
+  /* The sky is painted ONCE per screen size into its own canvas — a galaxy
+   * band with its dust lane, nebula glow and a few thousand stars — then
+   * blitted each frame, turned with the ship's roll. Rocks and the station
+   * drift in front of it with a little parallax of their own. */
+  var sky = null, SKY_S = 0;
+  function buildSky() {
+    SKY_S = Math.ceil(Math.hypot(W, H) * 1.2);
+    sky = document.createElement("canvas");
+    sky.width = SKY_S; sky.height = SKY_S;
+    var g = sky.getContext("2d");
+    var o = SKY_S / 2;                                    // screen centre in sky space
+    // the band runs up and to the right, across the open top of the canal
+    var ax = o - W * 0.75, ay = o - H * 0.05, bx = o + W * 0.75, by = o - H * 0.62;
+    var dx = bx - ax, dy = by - ay, len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+    function gauss() { return (Math.random() + Math.random() + Math.random() - 1.5) / 1.5; }
+    var k, t, off, x, y;
+    g.globalCompositeOperation = "lighter";
+    var bandW = Math.min(W, H) * 0.16;
+    for (k = 0; k < 90; k++) {
+      t = Math.random(); off = gauss() * bandW * 0.8;
+      x = ax + dx * t + nx * off; y = ay + dy * t + ny * off;
+      var rr = bandW * (0.5 + Math.random() * 0.9);
+      var rg = g.createRadialGradient(x, y, 0, x, y, rr);
+      var col = Math.random() < 0.6 ? "120,150,255" : (Math.random() < 0.5 ? "190,120,255" : "255,170,210");
+      rg.addColorStop(0, "rgba(" + col + ",0.05)");
+      rg.addColorStop(1, "rgba(" + col + ",0)");
+      g.fillStyle = rg; g.fillRect(x - rr, y - rr, rr * 2, rr * 2);
+    }
+    // two big soft nebula clouds, off the band
+    [[o + W * 0.28, o - H * 0.2, "255,90,170"], [o - W * 0.35, o - H * 0.45, "80,220,230"]].forEach(function (c) {
+      var r2 = Math.max(W, H) * 0.3;
+      var ng = g.createRadialGradient(c[0], c[1], 0, c[0], c[1], r2);
+      ng.addColorStop(0, "rgba(" + c[2] + ",0.07)"); ng.addColorStop(1, "rgba(" + c[2] + ",0)");
+      g.fillStyle = ng; g.fillRect(c[0] - r2, c[1] - r2, r2 * 2, r2 * 2);
+    });
+    // stars: thick in the band, thin everywhere else
+    var nb = Math.round(W * H / 260);
+    for (k = 0; k < nb; k++) {
+      var inBand = k < nb * 0.7;
+      if (inBand) { t = Math.random(); off = gauss() * bandW; x = ax + dx * t + nx * off; y = ay + dy * t + ny * off; }
+      else { x = Math.random() * SKY_S; y = Math.random() * SKY_S; }
+      var a2 = Math.random() * (inBand ? 0.5 : 0.35) + 0.08;
+      g.fillStyle = "rgba(" + (Math.random() < 0.15 ? "255,220,200" : "205,220,255") + "," + a2.toFixed(3) + ")";
+      var sz = Math.random() < 0.9 ? 1 : 1.6;
+      g.fillRect(x, y, sz, sz);
+    }
+    // the dust lane down the middle of the band
+    g.globalCompositeOperation = "destination-out";
+    for (k = 0; k < 40; k++) {
+      t = Math.random(); off = gauss() * bandW * 0.18;
+      x = ax + dx * t + nx * off; y = ay + dy * t + ny * off;
+      var dr = bandW * (0.15 + Math.random() * 0.25);
+      var dg = g.createRadialGradient(x, y, 0, x, y, dr);
+      dg.addColorStop(0, "rgba(0,0,0,0.3)"); dg.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = dg; g.fillRect(x - dr, y - dr, dr * 2, dr * 2);
+    }
+    g.globalCompositeOperation = "source-over";
+
+    // bright stars that twinkle, drawn live
+    G.stars = [];
+    for (k = 0; k < 26; k++) {
+      G.stars.push({ x: (Math.random() - 0.5) * W * 1.2, y: -Math.random() * H * 0.6, r: 1.4 + Math.random() * 1.2,
+                     a: 0.5 + Math.random() * 0.5, p: Math.random() * TAU });
+    }
+    // rocks: jagged, lit from one side, tumbling slowly
+    G.rocks = [];
+    var unit = Math.min(W, H) / 800;
+    for (k = 0; k < 9; k++) {
+      var nv = 9 + Math.floor(Math.random() * 5), shape = [];
+      for (var v = 0; v < nv; v++) shape.push(0.72 + Math.random() * 0.36);
+      var big = Math.random() < 0.3;
+      G.rocks.push({
+        x: (Math.random() - 0.5) * W * 1.3, y: -H * (0.12 + Math.random() * 0.4),
+        r: (big ? 22 + Math.random() * 20 : 5 + Math.random() * 12) * unit * (W > H ? 1.2 : 1),
+        shape: shape, rot: Math.random() * TAU, spin: (Math.random() - 0.5) * 0.25,
+        drift: (Math.random() - 0.5) * 5 * unit, par: big ? 1.6 : 0.8
+      });
+    }
+    G.station = { x: W * (W > H ? 0.3 : 0.24), y: -H * (W > H ? 0.33 : 0.25), r: 34 * unit * (W > H ? 1.3 : 1), rot: 0 };
+  }
+
+  function drawSky(now) {
+    if (!sky) return;
+    var dt = 1 / 60;
+    ctx.save();
+    ctx.translate(cx, cy);
+    if (G.roll) ctx.rotate(G.roll);
+    // stars are at infinity: they shift with where the camera LOOKS, a little
+    var sx = Math.max(-50, Math.min(50, -CAM.x * 0.9)), sy = Math.max(-40, Math.min(40, -CAM.y * 0.9));
+    ctx.globalCompositeOperation = "lighter";
+    ctx.drawImage(sky, -SKY_S / 2 + sx, -SKY_S / 2 + sy);
+    var i;
+    for (i = 0; i < G.stars.length; i++) {
+      var st = G.stars[i];
+      var tw = reduceMotion ? 1 : 0.6 + 0.4 * Math.sin(now * 0.0016 + st.p);
+      ctx.fillStyle = "rgba(220,235,255," + (st.a * tw).toFixed(3) + ")";
+      ctx.fillRect(st.x + sx, st.y + sy, st.r, st.r);
+    }
+
+    // the station: a slow wheel on a long spine
+    var S = G.station;
+    if (!reduceMotion) S.rot += dt * 0.08;
+    var X = S.x + sx * 1.4, Y = S.y + sy * 1.4, R = S.r;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "#0a0e1c";
+    ctx.beginPath(); ctx.ellipse(X, Y, R, R * 0.34, -0.18, 0, TAU); ctx.fill();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = "rgba(" + DETAIL + ",0.55)"; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.ellipse(X, Y, R, R * 0.34, -0.18, 0, TAU); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(X, Y, R * 0.8, R * 0.27, -0.18, 0, TAU); ctx.stroke();
+    ctx.beginPath();
+    for (var k = 0; k < 4; k++) {
+      var a = S.rot + k * Math.PI / 2;
+      var ex = Math.cos(a) * R * 0.8, ey = Math.sin(a) * R * 0.27;
+      var c = Math.cos(-0.18), s = Math.sin(-0.18);
+      ctx.moveTo(X, Y); ctx.lineTo(X + ex * c - ey * s, Y + ex * s + ey * c);
+    }
+    // the spine, and a docking arm
+    ctx.moveTo(X - R * 0.06, Y - R * 1.3); ctx.lineTo(X + R * 0.06, Y + R * 1.1);
+    ctx.moveTo(X + R * 0.06, Y + R * 0.9); ctx.lineTo(X + R * 0.7, Y + R * 1.05);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(" + DETAIL + ",0.7)";
+    ctx.beginPath(); ctx.arc(X, Y, R * 0.12, 0, TAU); ctx.fill();
+    for (k = 0; k < 6; k++) {
+      var la = S.rot * 1 + k * TAU / 6;
+      var lx = Math.cos(la) * R, ly = Math.sin(la) * R * 0.34;
+      var lit = reduceMotion || Math.sin(now * 0.004 + k * 1.3) > 0.3;
+      if (!lit) continue;
+      ctx.fillStyle = k % 3 ? "rgba(" + LAMP + ",0.8)" : "rgba(255,90,110,0.9)";
+      ctx.fillRect(X + lx * Math.cos(-0.18) - ly * Math.sin(-0.18) - 1, Y + lx * Math.sin(-0.18) + ly * Math.cos(-0.18) - 1, 2, 2);
+    }
+
+    // rocks
+    for (i = 0; i < G.rocks.length; i++) {
+      var rk = G.rocks[i];
+      if (!reduceMotion) { rk.rot += rk.spin * dt; rk.x += rk.drift * dt; }
+      var span = W * 0.75;
+      if (rk.x > span) rk.x -= span * 2; else if (rk.x < -span) rk.x += span * 2;
+      var qx = rk.x + sx * rk.par, qy = rk.y + sy * rk.par;
+      ctx.beginPath();
+      for (var v = 0; v < rk.shape.length; v++) {
+        var va = rk.rot + v / rk.shape.length * TAU, vr = rk.r * rk.shape[v];
+        var vx = qx + Math.cos(va) * vr, vy = qy + Math.sin(va) * vr * 0.86;
+        if (v) ctx.lineTo(vx, vy); else ctx.moveTo(vx, vy);
+      }
+      ctx.closePath();
+      ctx.globalCompositeOperation = "source-over";
+      var rg = ctx.createRadialGradient(qx - rk.r * 0.4, qy - rk.r * 0.45, rk.r * 0.1, qx, qy, rk.r * 1.1);
+      rg.addColorStop(0, "#3a3f55"); rg.addColorStop(0.55, "#161a28"); rg.addColorStop(1, "#07080f");
+      ctx.fillStyle = rg; ctx.fill();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.strokeStyle = "rgba(150,170,230,0.22)"; ctx.lineWidth = 1; ctx.stroke();
+    }
+    ctx.restore();
+    ctx.globalCompositeOperation = "lighter";
+  }
+
+
   function draw(now) {
     syncCam();
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -363,19 +715,28 @@
 
     ctx.globalCompositeOperation = "lighter";
 
-    /* Sky above the canal walls — the only thing that is not a line, and the
-     * only cue that the channel is open at the top rather than a tube. */
-    var i, s, p;
-    for (i = 0; i < G.stars.length; i++) {
-      s = G.stars[i];
-      var sy = s.y - (G.z * 0.02 % H);
-      if (sy < 0) sy += H;
-      var twinkle = reduceMotion ? 1 : 0.7 + 0.3 * Math.sin(now * 0.0016 + s.p);
-      ctx.fillStyle = "rgba(190,215,255," + (s.a * twinkle).toFixed(3) + ")";
-      ctx.fillRect(s.x, sy, s.r, s.r);
-    }
+    var i, p;
+    drawSky(now);
 
     var z0 = Math.floor((G.z - CAM_BACK) / RIB_GAP) * RIB_GAP;
+
+    /* The rib cross-sections, far to near, computed once: the solid surfaces
+     * are filled between consecutive ones, then the neon is stroked on top. */
+    var ribs = [];
+    for (var zr = z0 + FAR; zr > CAM.z + 2; zr -= RIB_GAP) {
+      var bt = boomTint(zr);
+      var g2 = bt ? 1 + bt.tear : 1;
+      var hw = HALF * g2, ty2 = MIDY + (TOP - MIDY) * g2, fy2 = MIDY + (FLOOR - MIDY) * g2;
+      var c1 = px(-hw, ty2, zr), c2 = px(hw, ty2, zr),
+          c3 = px(hw, fy2, zr), c4 = px(-hw, fy2, zr);
+      ribs.push({ z: zr, bt: bt, c: (c1 && c2 && c3 && c4) ? [c1, c2, c3, c4] : null });
+    }
+    // the slice right at the lens, so the near walls run off the screen edge
+    var zl = CAM.z + 1.4;
+    var l1 = px(-HALF, TOP, zl), l2 = px(HALF, TOP, zl), l3 = px(HALF, FLOOR, zl), l4 = px(-HALF, FLOOR, zl);
+    if (l1 && l2 && l3 && l4) ribs.push({ z: zl, bt: null, c: [l1, l2, l3, l4], lens: true });
+
+    drawTrench(ribs, now);
 
     /* Rails: the long lines running away down the canal. They are what sells
      * speed, because they are the only thing whose motion you can actually
@@ -384,7 +745,9 @@
       [-HALF, TOP], [HALF, TOP],
       [-HALF, MIDY], [HALF, MIDY],
       [-HALF, FLOOR], [HALF, FLOOR],
-      [-HALF * 0.5, FLOOR], [0, FLOOR], [HALF * 0.5, FLOOR]
+      [-HALF * 0.5, FLOOR], [0, FLOOR], [HALF * 0.5, FLOOR],
+      [-HALF, TOP + 1.3], [HALF, TOP + 1.3],               // the seam under the coping
+      [-HALF, FLOOR - 1.5], [HALF, FLOOR - 1.5]            // the conduit run along the base
     ];
     for (var r = 0; r < rails.length; r++) {
       var pts = [];
@@ -396,28 +759,26 @@
         p = px(rails[r][0], rails[r][1], zz);
         if (p) pts.push(p);
       }
-      var faintRail = (r === 2 || r === 3 || r >= 6);
+      var faintRail = (r === 2 || r === 3 || (r >= 6 && r <= 10));
+      var conduit = r >= 11;
       var rt = G.phase === "boom" ? boomTint(G.z + 40) : null;
-      glowLine(pts, rt ? rt.col : CYAN, rt ? rt.a * 0.8 : (faintRail ? 0.26 : 0.62), 7, faintRail ? 0.9 : 1.5);
+      glowLine(pts, rt ? rt.col : (conduit ? LAMP : CYAN),
+        rt ? rt.a * 0.8 : (conduit ? 0.5 : faintRail ? 0.2 : 0.62), conduit ? 9 : 7, faintRail ? 0.9 : 1.5);
     }
 
     // Ribs, far to near, fading out at the draw distance
-    for (var zr = z0 + FAR; zr > CAM.z + 2; zr -= RIB_GAP) {
-      var a = fade(zr - CAM.z) * 0.8;
+    for (var ri = 0; ri < ribs.length; ri++) {
+      var rb = ribs[ri];
+      if (rb.lens || !rb.c) continue;
+      var a = fade(rb.z - CAM.z) * 0.8;
       if (a < 0.02) continue;
-      var bt = boomTint(zr);
-      var g2 = bt ? 1 + bt.tear : 1;
-      var hw = HALF * g2, ty2 = MIDY + (TOP - MIDY) * g2, fy2 = MIDY + (FLOOR - MIDY) * g2;
-      var c1 = px(-hw, ty2, zr), c2 = px(hw, ty2, zr),
-          c3 = px(hw, fy2, zr), c4 = px(-hw, fy2, zr);
-      if (!c1 || !c2 || !c3 || !c4) continue;
-      glowLine([c1, c4, c3, c2], bt ? bt.col : CYAN, (bt ? bt.a : a * 0.5), bt ? 9 : 5, bt ? 2 : 1.1);
+      glowLine([rb.c[0], rb.c[3], rb.c[2], rb.c[1]], rb.bt ? rb.bt.col : CYAN, (rb.bt ? rb.bt.a : a * 0.5), rb.bt ? 9 : 5, rb.bt ? 2 : 1.1);
 
       // a lamp on each wall every fourth rib
-      if (Math.round(zr / RIB_GAP) % 4 === 0) {
+      if (Math.round(rb.z / RIB_GAP) % 4 === 0) {
         for (var sgn = -1; sgn <= 1; sgn += 2) {
-          var l1 = px(sgn * HALF, MIDY - 0.9, zr), l2 = px(sgn * HALF, MIDY + 0.9, zr);
-          if (l1 && l2) glowLine([l1, l2], LAMP, a * 0.9, 9, 2.4);
+          var lm1 = px(sgn * HALF, MIDY - 0.9, rb.z), lm2 = px(sgn * HALF, MIDY + 0.9, rb.z);
+          if (lm1 && lm2) glowLine([lm1, lm2], LAMP, a * 0.9, 9, 2.4);
         }
       }
     }
@@ -532,6 +893,8 @@
       ctx.beginPath(); ctx.arc(core.x, core.y, Math.max(1.4, rad2 * 0.34), 0, TAU); ctx.fill();
     }
 
+    drawWreckage();
+
     // our shots, drawn as streaks so the cadence reads
     for (i = 0; i < G.shots.length; i++) {
       var s2 = G.shots[i];
@@ -586,7 +949,8 @@
       var sp = G.sparks[i];
       sp.life -= 0.045;
       if (sp.life <= 0) { G.sparks.splice(i, 1); continue; }
-      sp.sx += sp.vx; sp.sy += sp.vy; sp.vy += 0.35;
+      // no gravity out here: a spark keeps the line it was thrown on
+      sp.sx += sp.vx; sp.sy += sp.vy;
       ctx.fillStyle = "rgba(" + sp.col + "," + (sp.life * 0.9).toFixed(3) + ")";
       ctx.fillRect(sp.sx, sp.sy, 2.4, 2.4);
     }
@@ -877,6 +1241,179 @@
     }
   }
 
+  /* ------------------------------------------------------------- wreckage */
+
+  /* A kill used to be a gold ring and nothing else: the gun simply stopped
+   * being drawn. Now it EXPLODES, BREAKS APART and DISAPPEARS, in that order:
+   * a fireball at the point of the kill, the object's own outline cut into
+   * pieces that fly off tumbling, and hot embers streaking out ahead of them.
+   *
+   * ⚠ THIS IS SPACE. Nothing falls and nothing slows: every piece keeps the
+   * velocity and the spin the blast gave it, forever, until it fades. No
+   * gravity term, no drag term — if either creeps back in, the wreck reads as
+   * a thing on a planet. Pieces also keep their depth, so you fly THROUGH
+   * the debris of what you just shot, which sells the speed. */
+  var FRAG_CAP = 320;
+
+  // Cut a line into pieces no longer than maxLen, each its own tumbling shard.
+  function shardsOf(x0, y0, x1, y1, z, maxLen, out) {
+    var len = Math.hypot(x1 - x0, y1 - y0);
+    var n = Math.max(1, Math.round(len / maxLen));
+    for (var k = 0; k < n; k++) {
+      // a ragged break, not an even dotted line
+      var t0 = k / n + (k ? (Math.random() - 0.5) * 0.3 / n : 0);
+      var t1 = (k + 1) / n + (k < n - 1 ? (Math.random() - 0.5) * 0.3 / n : 0);
+      out.push([x0 + (x1 - x0) * t0, y0 + (y1 - y0) * t0,
+                x0 + (x1 - x0) * t1, y0 + (y1 - y0) * t1, z]);
+    }
+  }
+
+  function burst(ox, oy, oz, pieces, col, spd, push) {
+    for (var i = 0; i < pieces.length && G.frags.length < FRAG_CAP; i++) {
+      var s = pieces[i];
+      var mx = (s[0] + s[2]) / 2, my = (s[1] + s[3]) / 2;
+      var dx = mx - ox, dy = my - oy, dl = Math.hypot(dx, dy) || 1;
+      var a = Math.random() * TAU;
+      var v = spd * (0.45 + Math.random() * 0.8);
+      // a random tumble axis, so a piece turns edge-on and back as it goes
+      var ax = Math.random() - 0.5, ay = Math.random() - 0.5, az = Math.random() - 0.5;
+      var al = Math.hypot(ax, ay, az) || 1;
+      G.frags.push({
+        x: mx, y: my, z: s[4],
+        vx: dx / dl * v + Math.cos(a) * spd * 0.3 + push,
+        vy: dy / dl * v + Math.sin(a) * spd * 0.3,
+        vz: (Math.random() - 0.3) * spd * 0.9,
+        pts: [[s[0] - mx, s[1] - my, 0], [s[2] - mx, s[3] - my, 0]],
+        kx: ax / al, ky: ay / al, kz: az / al,
+        ang: 0, spin: (Math.random() < 0.5 ? -1 : 1) * (3 + Math.random() * 9),
+        life: 1, decay: 1 / (1.1 + Math.random() * 1.1),
+        col: col
+      });
+    }
+    // embers: fast, short-lived, drawn as streaks along their own velocity
+    var embers = reduceMotion ? 6 : 18;
+    for (var e = 0; e < embers && G.frags.length < FRAG_CAP; e++) {
+      var th = Math.random() * TAU, ph = (Math.random() - 0.5) * 2;
+      var ve = spd * (1.3 + Math.random() * 1.6);
+      G.frags.push({
+        x: ox, y: oy, z: oz,
+        vx: Math.cos(th) * ve + push, vy: Math.sin(th) * ve, vz: ph * ve * 0.7,
+        ember: true, life: 1, decay: 1 / (0.35 + Math.random() * 0.45),
+        col: Math.random() < 0.5 ? "255,255,255" : GOLD
+      });
+    }
+    G.blasts.push({ x: ox, y: oy, z: oz, t: 0, size: 1 + pieces.length / 30 });
+  }
+
+  function shatterTurret(t) {
+    var R = 1.9, pieces = [], k;
+    // the hexagon housing, edge by edge, each edge broken once more
+    for (k = 0; k < 6; k++) {
+      var a0 = k / 6 * TAU + 0.5, a1 = (k + 1) / 6 * TAU + 0.5;
+      shardsOf(t.x + Math.cos(a0) * R, t.y + Math.sin(a0) * R,
+               t.x + Math.cos(a1) * R, t.y + Math.sin(a1) * R, t.z, 1.1, pieces);
+    }
+    if (t.face) shardsOf(t.x + t.face * R * 0.6, t.y, t.x + t.face * R * 1.8, t.y, t.z, 1.2, pieces);
+    // the core it was built around, in a few small bits
+    for (k = 0; k < 4; k++) {
+      var ca = Math.random() * TAU, cl = 0.35 + Math.random() * 0.4;
+      pieces.push([t.x, t.y, t.x + Math.cos(ca) * cl, t.y + Math.sin(ca) * cl, t.z]);
+    }
+    // a gun on a wall is thrown back OUT into the canal, off the plate it sat on
+    burst(t.x, t.y, t.z, pieces, t.charge > 0.05 ? HOT : GOLD, 13, t.face * 5);
+  }
+
+  function shatterProp(pr) {
+    var pieces = [], k, z = pr.z;
+    var w = pr.x1 - pr.x0, h = pr.y1 - pr.y0;
+    // bigger slabs break into bigger chunks, so a girder never becomes confetti
+    var cut = Math.max(1.4, Math.sqrt(w * h) / 3.2);
+    shardsOf(pr.x0, pr.y0, pr.x1, pr.y0, z, cut, pieces);
+    shardsOf(pr.x1, pr.y0, pr.x1, pr.y1, z, cut, pieces);
+    shardsOf(pr.x1, pr.y1, pr.x0, pr.y1, z, cut, pieces);
+    shardsOf(pr.x0, pr.y1, pr.x0, pr.y0, z, cut, pieces);
+    for (k = 1; k < 4; k++) {           // the hatching inside, same as it was drawn
+      var t = k / 4;
+      shardsOf(pr.x0 + w * t, pr.y0, pr.x0 + w * t, pr.y1, z, cut * 1.2, pieces);
+      shardsOf(pr.x0, pr.y0 + h * t, pr.x1, pr.y0 + h * t, z, cut * 1.2, pieces);
+    }
+    var push = pr.x0 <= -HALF + 0.01 ? 4 : (pr.x1 >= HALF - 0.01 ? -4 : 0);
+    burst((pr.x0 + pr.x1) / 2, (pr.y0 + pr.y1) / 2, z, pieces, STEEL, 9, push);
+  }
+
+  function updateWreckage(dt) {
+    for (var i = G.frags.length - 1; i >= 0; i--) {
+      var f = G.frags[i];
+      // straight lines and constant spin: nothing out here to bend or slow them
+      f.x += f.vx * dt; f.y += f.vy * dt; f.z += f.vz * dt;
+      /* The walls and floor are solid, the top is open to space. A piece that
+       * reaches a wall glances off it with its speed intact — a clean
+       * reflection, because there is no air to take the energy out of it. */
+      if (f.x < -HALF && f.vx < 0 || f.x > HALF && f.vx > 0) f.vx = -f.vx;
+      if (f.y > FLOOR && f.vy > 0) f.vy = -f.vy;
+      if (!f.ember) f.ang += f.spin * dt;
+      f.life -= f.decay * dt;
+      if (f.life <= 0 || f.z < CAM.z + 2) G.frags.splice(i, 1);
+    }
+    for (var b = G.blasts.length - 1; b >= 0; b--) {
+      G.blasts[b].t += dt;
+      if (G.blasts[b].t > 0.55) G.blasts.splice(b, 1);
+    }
+  }
+
+  function drawWreckage() {
+    var i;
+    // the fireball first, so the pieces read as coming OUT of it
+    for (i = 0; i < G.blasts.length; i++) {
+      var bl = G.blasts[i], bdz = bl.z - CAM.z;
+      if (bdz < 3) continue;
+      var bp = px(bl.x, bl.y, bl.z);
+      if (!bp) continue;
+      var k = bl.t / 0.55;
+      var rw = bl.size * (1.2 + Math.sqrt(k) * 3.4);      // world radius, fast then slowing
+      var rr = Math.min(Math.max(W, H) * 0.5, rw * FOCAL / bdz);
+      var al = (1 - k) * (1 - k) * fade(bdz - 40);
+      if (al < 0.01 || rr < 1) continue;
+      var g = ctx.createRadialGradient(bp.x, bp.y, 0, bp.x, bp.y, rr);
+      g.addColorStop(0, "rgba(255,255,255," + (al * 0.95).toFixed(3) + ")");
+      g.addColorStop(0.3, "rgba(255,209,102," + (al * 0.55).toFixed(3) + ")");
+      g.addColorStop(0.7, "rgba(255,90,60," + (al * 0.18).toFixed(3) + ")");
+      g.addColorStop(1, "rgba(255,60,40,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(bp.x, bp.y, rr, 0, TAU); ctx.fill();
+    }
+
+    for (i = 0; i < G.frags.length; i++) {
+      var f = G.frags[i], fdz = f.z - CAM.z;
+      if (fdz < 3 || fdz > FAR) continue;
+      var a = Math.pow(Math.max(0, f.life), 0.8) * fade(fdz - 40);
+      if (a < 0.02) continue;
+      if (f.ember) {
+        var e1 = px(f.x, f.y, f.z);
+        var e2 = px(f.x - f.vx * 0.035, f.y - f.vy * 0.035, f.z - f.vz * 0.035);
+        if (e1 && e2) glowLine([e2, e1], f.col, a, 5, 1.5);
+        continue;
+      }
+      // Rodrigues: turn each endpoint about the piece's own tumble axis
+      var c = Math.cos(f.ang), s = Math.sin(f.ang), shrink = 0.55 + 0.45 * f.life;
+      var out = [];
+      for (var p = 0; p < f.pts.length; p++) {
+        var v = f.pts[p];
+        var dot = f.kx * v[0] + f.ky * v[1] + f.kz * v[2];
+        var rx = v[0] * c + (f.ky * v[2] - f.kz * v[1]) * s + f.kx * dot * (1 - c);
+        var ry = v[1] * c + (f.kz * v[0] - f.kx * v[2]) * s + f.ky * dot * (1 - c);
+        var rz = v[2] * c + (f.kx * v[1] - f.ky * v[0]) * s + f.kz * dot * (1 - c);
+        var q = px(f.x + rx * shrink, f.y + ry * shrink, f.z + rz * shrink);
+        if (!q) { out = null; break; }
+        out.push(q);
+      }
+      if (!out) continue;
+      // white-hot as it leaves the blast, cooling to its own colour
+      var hot = f.life > 0.78;
+      glowLine(out, hot ? "255,244,220" : f.col, a, 7, 1.8);
+    }
+  }
+
   function spark(n, col, spread) {
     var sp = px(G.x, G.y, G.z);
     var sx = sp ? sp.x : cx, sy = sp ? sp.y : cy;
@@ -885,7 +1422,7 @@
       G.sparks.push({
         sx: sx, sy: sy, col: col, life: 1,
         vx: Math.cos(a) * spread * (0.4 + Math.random()),
-        vy: Math.sin(a) * spread * (0.4 + Math.random()) - 1.4
+        vy: Math.sin(a) * spread * (0.4 + Math.random())
       });
     }
   }
@@ -920,21 +1457,14 @@
     SCALE = FOCAL / CAM_BACK;              // px per world unit at the ship
     CTRL = SCALE * (1 - CAM_F);            // px per world unit the ship slides on screen
 
-    G.stars = [];
-    var n = Math.round(W * H / 14000);
-    for (var i = 0; i < n; i++) {
-      G.stars.push({
-        x: Math.random() * W, y: Math.random() * H,
-        r: Math.random() < 0.8 ? 1 : 1.8,
-        a: Math.random() * 0.4 + 0.1, p: Math.random() * TAU
-      });
-    }
+    buildSky();
   }
 
   /* ----------------------------------------------------------------- audio */
 
   var audio = (function () {
     var A = null, mix = null, master = null, revIn = null, on = true, ready = false;
+    var flutter = null, sat = null;
     var eng = null;                       // the engine bed, running for the whole flight
 
     function ir(sec, decay) {
@@ -982,6 +1512,25 @@
       revIn.connect(revHP); revHP.connect(rev); rev.connect(revG); revG.connect(mix);
 
       mix.connect(master); master.connect(comp); comp.connect(limit); limit.connect(A.destination);
+
+      /* The trench is two parallel walls, and a bang between parallel walls
+       * comes back as a FLUTTER — a fast train of darkening slaps. One shared
+       * loop for the whole run, so it can never pile up per shot (the per-shot
+       * feedback-delay leak is already in this file's history). */
+      flutter = A.createGain();
+      var fd = A.createDelay(0.2); fd.delayTime.value = 0.047;
+      var ff = A.createBiquadFilter(); ff.type = "lowpass"; ff.frequency.value = 2400;
+      var fb = A.createGain(); fb.gain.value = 0.46;
+      var fo = A.createGain(); fo.gain.value = 0.55;
+      flutter.connect(fd); fd.connect(ff); ff.connect(fb); fb.connect(fd);
+      ff.connect(fo); fo.connect(mix); fo.connect(revIn);
+
+      // a soft clipper: real blasts overload whatever records them
+      sat = new Float32Array(1024);
+      for (var si = 0; si < 1024; si++) {
+        var xx = si / 511.5 - 1;
+        sat[si] = Math.tanh(xx * 3.2) / Math.tanh(3.2);
+      }
 
       var s0 = A.createBufferSource();      // iOS unlock
       s0.buffer = A.createBuffer(1, 1, A.sampleRate);
@@ -1223,62 +1772,124 @@
 
       /* ⚠ THE THING THAT MAKES AN EXPLOSION AN EXPLOSION IS THAT IT GETS
        * DARKER. The first version swept its lowpass UPWARD (260 -> 3200), which
-       * is the shape of a whoosh or a build, not a blast — owner: "the
-       * explosions don't sound like explosions". Every blast here now opens
-       * bright and closes dark, over: a shock transient, a low body, a sub, and
-       * a crackling tail of falling debris. `size` scales all four. */
+       * is the shape of a whoosh, not a blast. The second opened bright and
+       * closed dark and still "didn't sound very real" (owner, 09-23), for
+       * four reasons, each fixed here:
+       *   1. It was one SMOOTH envelope. A real fireball is turbulent — dozens of
+       *      pockets going off over a few hundred ms — so the roar is built from
+       *      a cluster of puffs baked into the noise itself.
+       *   2. It was CLEAN. Every recording of a real blast is overloaded; the
+       *      crack and the thump run through a soft clipper, and that is also
+       *      what puts the low end back on a phone speaker that cannot play it.
+       *   3. The low end was a SINE GLIDE, which reads as a synth tom. The thump
+       *      is now filtered noise, with only a whisper of sine under it.
+       *   4. It was MONO and DRY. The roar is two decorrelated channels, and the
+       *      bang slaps back off the trench walls (the shared flutter loop).
+       * Then the pieces: metal debris ringing as it breaks away, modal, since
+       * a clink is a contact. `size` scales everything. */
       blast: function (size, amp, pan) {
         if (!ready || !on) return;
-        var t = A.currentTime;
-        var out = chain(pan, 0.55);
+        var t = A.currentTime, rate = A.sampleRate;
+        var out = chain(pan, 0.4 + size * 0.2);
         out.gain.value = amp;
-        var dur = 0.45 + size * 2.6;
+        var fs = A.createGain(); fs.gain.value = 0.35 + size * 0.25;
+        out.connect(fs); fs.connect(flutter);
+        var dur = 0.55 + size * 2.4;
 
-        var shock = A.createBufferSource(); shock.buffer = noiseBuf(0.05, false);
-        var sg = A.createGain();
-        sg.gain.setValueAtTime(1, t);
-        sg.gain.exponentialRampToValueAtTime(1e-4, t + 0.05);
-        shock.connect(sg); sg.connect(out);
-        shock.start(t); shock.stop(t + 0.06);
+        var shaper = A.createWaveShaper(); shaper.curve = sat; shaper.oversample = "4x";
+        var drive = A.createGain(); drive.gain.value = 1.8;
+        drive.connect(shaper); shaper.connect(out);
 
-        var body = A.createBufferSource(); body.buffer = noiseBuf(dur + 0.2, true);
-        var lp = A.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.7;
-        lp.frequency.setValueAtTime(5200 + size * 2000, t);          // bright...
-        lp.frequency.exponentialRampToValueAtTime(140, t + dur);      // ...to dark
-        var bg = A.createGain();
-        bg.gain.setValueAtTime(0.0001, t);
-        bg.gain.exponentialRampToValueAtTime(1.1, t + 0.012);
-        bg.gain.exponentialRampToValueAtTime(1e-4, t + dur);
-        body.connect(lp); lp.connect(bg); bg.connect(out);
-        body.start(t); body.stop(t + dur + 0.1);
+        // CRACK: the pressure front itself — an N-wave, then a spit of grit
+        var nLen = Math.floor(rate * (0.003 + size * 0.006)), cLen = Math.floor(rate * 0.03);
+        var cb = A.createBuffer(1, nLen + cLen, rate), cd = cb.getChannelData(0), i;
+        for (i = 0; i < nLen; i++) cd[i] = 1 - 2 * i / nLen;
+        for (i = 0; i < cLen; i++) cd[nLen + i] = (Math.random() * 2 - 1) * Math.exp(-i / (rate * 0.006));
+        var crack = A.createBufferSource(); crack.buffer = cb;
+        var chp = A.createBiquadFilter(); chp.type = "highpass"; chp.frequency.value = 500;
+        var cg = A.createGain(); cg.gain.value = 0.9;
+        crack.connect(chp); chp.connect(cg); cg.connect(drive);
+        crack.start(t);
 
+        // THUMP: low noise, overdriven, so a phone speaker still gets its harmonics
+        var th = A.createBufferSource(); th.buffer = noiseBuf(0.5 + size * 0.5, false);
+        var tlp = A.createBiquadFilter(); tlp.type = "lowpass"; tlp.Q.value = 1.1;
+        tlp.frequency.setValueAtTime(260, t);
+        tlp.frequency.exponentialRampToValueAtTime(55, t + 0.35 + size * 0.4);
+        var tg = A.createGain();
+        tg.gain.setValueAtTime(0.0001, t);
+        tg.gain.exponentialRampToValueAtTime(3.2 + size * 1.5, t + 0.006);
+        tg.gain.exponentialRampToValueAtTime(1e-4, t + 0.4 + size * 0.5);
+        th.connect(tlp); tlp.connect(tg); tg.connect(drive);
+        th.start(t); th.stop(t + 1.1);
         var sub = A.createOscillator(); sub.type = "sine";
-        sub.frequency.setValueAtTime(110 - size * 30, t);
-        sub.frequency.exponentialRampToValueAtTime(26 - size * 5, t + dur * 0.8);
+        sub.frequency.setValueAtTime(62, t);
+        sub.frequency.exponentialRampToValueAtTime(38, t + 0.5);
         var ug = A.createGain();
         ug.gain.setValueAtTime(0.0001, t);
-        ug.gain.exponentialRampToValueAtTime(0.85 + size * 0.5, t + 0.02);
-        ug.gain.exponentialRampToValueAtTime(1e-4, t + dur * 0.9);
+        ug.gain.exponentialRampToValueAtTime(0.3 + size * 0.35, t + 0.015);
+        ug.gain.exponentialRampToValueAtTime(1e-4, t + 0.35 + size * 0.6);
         sub.connect(ug); ug.connect(out);
-        sub.start(t); sub.stop(t + dur);
+        sub.start(t); sub.stop(t + 1.1);
 
-        // rubble: the tail has to be lumpy or it is just noise fading out
-        var n = Math.round(6 + size * 26);
-        for (var k = 0; k < n; k++) {
-          var at = t + 0.09 + Math.random() * dur * 0.75;
-          var ck = A.createBufferSource(); ck.buffer = noiseBuf(0.04, false);
-          var cb = A.createBiquadFilter(); cb.type = "bandpass";
-          cb.frequency.value = 180 + Math.random() * 1400; cb.Q.value = 1.4;
-          var cg = A.createGain();
-          cg.gain.setValueAtTime(0.22 * (1 - (at - t) / dur), at);
-          cg.gain.exponentialRampToValueAtTime(1e-4, at + 0.09);
-          ck.connect(cb); cb.connect(cg); cg.connect(out);
-          ck.start(at); ck.stop(at + 0.05);
+        // ROAR: a turbulent cluster of puffs, baked into two decorrelated channels
+        var len = Math.floor(rate * dur), rb = A.createBuffer(2, len, rate);
+        var np = Math.round(5 + size * 16), pt = [], pa = [], pd = [];
+        for (i = 0; i < np; i++) {
+          var at = dur * 0.55 * Math.pow(Math.random(), 1.8);
+          pt.push(Math.floor(at * rate));
+          pa.push((0.45 + Math.random() * 0.55) * Math.exp(-at / (dur * 0.3)));
+          pd.push(rate * (0.03 + Math.random() * (0.08 + size * 0.16)));
         }
-        setTimeout(function () { try { out.disconnect(); } catch (e) {} }, (dur + 0.8) * 1000);
+        var env = new Float32Array(len), peak = 0;
+        for (i = 0; i < len; i++) {
+          var e = 0.25 * Math.exp(-i / (rate * dur * 0.28));
+          for (var k = 0; k < np; k++) {
+            var d = i - pt[k];
+            if (d >= 0) e += pa[k] * (d < 120 ? d / 120 : 1) * Math.exp(-d / pd[k]);
+          }
+          env[i] = e; if (e > peak) peak = e;
+        }
+        for (var ch = 0; ch < 2; ch++) {
+          var rd = rb.getChannelData(ch), br = 0;
+          for (i = 0; i < len; i++) {
+            br = (br + 0.06 * (Math.random() * 2 - 1)) / 1.06;
+            rd[i] = br * 5 * env[i] / peak;
+          }
+        }
+        var roar = A.createBufferSource(); roar.buffer = rb;
+        var rlp = A.createBiquadFilter(); rlp.type = "lowpass"; rlp.Q.value = 0.6;
+        rlp.frequency.setValueAtTime(4200 + size * 2400, t);           // bright...
+        rlp.frequency.exponentialRampToValueAtTime(170, t + dur);       // ...to dark
+        var rg = A.createGain(); rg.gain.value = 1.25;
+        roar.connect(rlp); rlp.connect(rg); rg.connect(drive);
+        roar.start(t);
+
+        // DEBRIS: plates and brackets tearing loose and ringing as they go
+        var nd = Math.round(3 + size * 9);
+        for (k = 0; k < nd; k++) {
+          var dt0 = t + 0.03 + Math.pow(Math.random(), 1.5) * (0.35 + size * 0.9);
+          var f0 = 700 + Math.random() * 2300;
+          var ex = A.createBufferSource(); ex.buffer = noiseBuf(0.004, false);
+          var eg = A.createGain(); eg.gain.value = (0.5 + Math.random() * 0.5) * (1 - (dt0 - t) / (dur + 0.5));
+          ex.connect(eg);
+          var dp = A.createStereoPanner ? A.createStereoPanner() : null;
+          var dg = A.createGain(); dg.gain.value = 1;
+          if (dp) { dp.pan.value = Math.max(-1, Math.min(1, pan + (Math.random() - 0.5) * 1.2)); dg.connect(dp); dp.connect(out); }
+          else dg.connect(out);
+          [1, 2.76, 5.4].forEach(function (ratio, m) {
+            var q = 38 - m * 8;
+            var bp = A.createBiquadFilter(); bp.type = "bandpass";
+            bp.frequency.value = Math.min(16000, f0 * ratio); bp.Q.value = q;
+            var mg = A.createGain(); mg.gain.value = Math.sqrt(q) * [0.55, 0.35, 0.2][m];
+            eg.connect(bp); bp.connect(mg); mg.connect(dg);
+          });
+          ex.start(dt0);
+        }
+        setTimeout(function () { try { out.disconnect(); } catch (e) {} }, (dur + 1.2) * 1000);
       },
 
-      kill: function (pan) { this.blast(0.12, 0.24, pan); },
+      kill: function (pan) { this.blast(0.12, 0.12, pan); },
 
       // the targeting computer climbing as the lock fills
       lockTick: function (n) {
@@ -1292,20 +1903,19 @@
       detonate: function () {
         if (!ready || !on) return;
         var self = this;
-        this.blast(1, 0.3, 0);
-        [[180, 0.75, 0.2, -0.5], [420, 0.9, 0.22, 0.55], [820, 0.6, 0.16, -0.3],
-         [1350, 0.85, 0.15, 0.35], [2000, 0.5, 0.11, 0]].forEach(function (b2) {
+        this.blast(1, 0.16, 0);
+        [[180, 0.75, 0.1, -0.5], [420, 0.9, 0.11, 0.55], [820, 0.6, 0.08, -0.3],
+         [1350, 0.85, 0.075, 0.35], [2000, 0.5, 0.055, 0]].forEach(function (b2) {
           setTimeout(function () { self.blast(b2[1], b2[2], b2[3]); }, b2[0]);
         });
         // and the long structural groan underneath the whole thing
         var t = A.currentTime, out = chain(0, 0.6);
         out.gain.value = 0.13;
-        var o = A.createOscillator(); o.type = "sawtooth";
-        o.frequency.setValueAtTime(58, t);
-        o.frequency.exponentialRampToValueAtTime(19, t + 3.2);
-        var lp = A.createBiquadFilter(); lp.type = "lowpass";
-        lp.frequency.setValueAtTime(900, t);
-        lp.frequency.exponentialRampToValueAtTime(90, t + 3.2);
+        // a rumble of noise, not a sawtooth: a filtered saw is a synth patch
+        var o = A.createBufferSource(); o.buffer = noiseBuf(3.5, true);
+        var lp = A.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.9;
+        lp.frequency.setValueAtTime(700, t);
+        lp.frequency.exponentialRampToValueAtTime(60, t + 3.2);
         var g = A.createGain();
         g.gain.setValueAtTime(0.0001, t);
         g.gain.exponentialRampToValueAtTime(1, t + 0.25);
@@ -1435,6 +2045,7 @@
   }
 
   function update(dt) {
+    updateWreckage(dt);
     if (G.phase === "idle") {
       /* Alive, but calm: a slow drift straight down the middle. The earlier
        * version added its own sway on top of the canal's curve, which read as
@@ -1554,6 +2165,7 @@
         var hx = sh.x + sh.dx * run, hy = sh.y + sh.dy * run;
         if (Math.hypot(hx - tt.x, hy - tt.y) < 2.5) {
           tt.dead = true; tt.boom = 1;
+          shatterTurret(tt);
           for (var bk = G.bolts.length - 1; bk >= 0; bk--) {
             if (G.bolts[bk].src === tt) G.bolts.splice(bk, 1);
           }
@@ -1574,6 +2186,7 @@
         var runp = pr2.z - sh.z0;
         if (inProp(pr2, sh.x + sh.dx * runp, sh.y + sh.dy * runp, 0.7)) {
           pr2.dead = true; pr2.boom = 1;
+          shatterProp(pr2);
           G.hitMark = 1;
           G.hitsLanded++;
           G.score += 45;
@@ -1855,6 +2468,7 @@
     G.boomT = -1; G.whiteout = 0; G.washed = false; G.debris.length = 0;
     CAM_BACK = 20;
     G.sparks.length = 0;
+    G.frags.length = 0; G.blasts.length = 0;
     G.ax = 0; G.ay = MIDY;
     G.shots.length = 0; G.bolts.length = 0; G.props.length = 0;
     G.fireCd = 0; G.kills = 0; G.shotsFired = 0; G.hitsLanded = 0;
