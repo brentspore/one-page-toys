@@ -1,19 +1,19 @@
 # Handoff
 
-**Last updated: 2026-09-23 (No. 122 Barkeep shipped and live — `99edb21`).**
+**Last updated: 2026-09-23 (Barkeep live; shopping list made findable — `09e1414`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**122 toys, live at onepagetoys.com.** Latest on `main`: `99edb21`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**122 toys, live at onepagetoys.com.** Latest on `main`: `09e1414`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work — No. 122 Barkeep, shipped 2026-09-23 (`99edb21`), live
 
 **`tools/barkeep/`** — a tool (Moon Phase chrome), not a full-bleed toy: tick the bottles on your shelf,
 see every cocktail you can make, what's one away, and the **best next bottle** (drinks it alone would
 finish). 166 recipes in `drinks.js` (24 zero-proof), every glass drawn by `glassSVG()`, deep links
-`#<slug>`, oz/ml (quarter ounces only), shopping list that shares as plain text. Keys: `barkeep_bar`,
+`#<slug>`, oz/ml (quarter ounces only), shopping list that shares as plain text. ⚠ The list button is a SOLID gold pill first in the shelf header, plus a floating bottom-centre copy (`#listFab`) shown only when the list has items AND the shelf button is off screen (IntersectionObserver) — owner couldn't find the original outline button (`09e1414`). Keys: `barkeep_bar`,
 `barkeep_list`, `barkeep_units`, `barkeep_sound`. No score, so **no ticket rule**; a tool, so **not in the
 cross-promo** (the tool family stays out of it). Live-verified; IndexNow accepted. ⚠ **Audio (glass clink,
 knock, ice rattle) is measured (0.215 / 0.132 / 0.144) but UNHEARD.**
