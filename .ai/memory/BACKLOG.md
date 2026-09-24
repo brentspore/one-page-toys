@@ -416,6 +416,21 @@ Real card + OG; full add-a-toy pipeline including cross-promo across all four su
 - ⚠ **LEGAL/IP:** D&D / Dungeons & Dragons and the official sheet layout are Wizards of the Coast trademarks/trade dress. Keep it legally safe — use the **SRD 5.x / Creative Commons (CC-BY-4.0) content** only (races/classes/spells released under the SRD), our **own original sheet layout** (don't reproduce the official WotC sheet), and avoid the D&D logo/branding. Consider a generic-but-clear public name (e.g. "Character Sheet Builder" / "Adventurer Builder" / "TTRPG Character Forge") with D&D/5e as search keywords in the NL tags rather than the visible brand. Confirm SRD scope before shipping.
 - **Design quality bar:** the polished light/dark Geist tool system (topbar + brand + theme toggle), a clean multi-step form, a live preview of the sheet, an on-brand printable sheet design (parchment or clean-modern — offer via AskUserQuestion). CSS-motif or rendered card + OG; full add-a-toy pipeline (registry/sitemap/NL/card+`:not()`/og-gen, hub cache-bust). Category `utility`.
 ---
+### New tool: Barkeep (searchable bar drink recipe book) — owner request 2026-09-23
+
+**Why it matters:** Cocktail recipes are huge evergreen search demand ("how to make a negroni", "drinks with gin and lime"), and a fast, good-looking recipe search is a genuinely useful thing people bookmark and come back to. It also partly answers the thin-content ceiling from the 08-04 audit: a recipe book carries real indexable text, unlike a canvas toy.
+
+**When to revisit:** Next tool round, or whenever the owner wants a utility with more search pull than the arcade toys.
+
+**Notes:** Owner idea: "a barkeep tool that has a search through a whole bunch of bar drink recipes." Lives in the `tools/<slug>/` Geist family, category `utility`. Things to settle before building:
+- ⚠ **It needs the family's emotional payoff, not just a search box.** Every tool is "a calculator with an emotional payoff" (project.md). The strongest candidate: **"what can I make with what's in my cabinet"**. Tick the bottles you own and it ranks drinks by how few ingredients you're missing ("2 drinks you can make right now, 9 if you buy a lime"). Other options to offer: a "surprise me" pour, a batch/party scaler (1 drink → 12 servings, in oz or ml), a proper glass illustration per drink.
+- **Search:** by name, by ingredient (any/all), by spirit base, by glass, by style (sour, highball, stirred, tiki, shot, mocktail). Instant client-side filter; no backend.
+- **Data:** a hand-built `recipes.js`, a few hundred drinks to start (the IBA official list of ~90 is the backbone, then the well-known modern classics). Recipes as ingredient lists + method are facts, but write every description and method line in our own words. ⚠ **Do not scrape or bundle TheCocktailDB** or a recipe site's text; their API/data has its own licence terms.
+- **SEO angle:** consider a real URL per drink (hash or `?d=negroni` at minimum; static per-drink pages would be the big search win but break the one-page shape, so flag it as a choice, not a default).
+- Include mocktails so it isn't alcohol-only. No affiliate links to bottles or bar gear (DECISIONS 2026-06-11).
+- **Not a daily**: no single answer and nothing to share, so it builds here as a normal tool.
+- Research pass before building (DECISIONS 2026-07-04): look at how the best bar apps handle the "my bar" inventory and ingredient substitutions, and offer 2-3 visual directions (clean Geist cards, a dark back-bar look, a menu-card look).
+---
 ### New toy: Tower Defense (Kingdom Rush-style)  ⚠ likely TOO LARGE for one-page-toys
 
 **Why it matters:** Tower defense is a hugely popular, deep, replayable genre with massive evergreen search demand. BUT ⚠ per the project scoping rule (`.ai/memory/DECISIONS.md`, 2026-07-03: keep one-page-toys builds small/self-contained — no save/progression here), a full Kingdom Rush-style TD is probably **too large for this site and better built as its own dedicated project**. Keep on the backlog as either (a) a **stripped MVP** that fits one sitting (1 short path, 2–3 tower types, ~5 waves, 2 enemy types, best-score only) OR (b) a pointer to spin up a **standalone TD project**. Discuss which with the owner before building.
