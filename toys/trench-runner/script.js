@@ -518,25 +518,45 @@
   /* A gantry bridging the canal from coping to coping. It sits ABOVE the top
    * of the walls, where the ship can never go, so it is scenery and never a
    * hazard — and it is drawn in the furniture colour so it never reads as
-   * one of the girders you have to shoot. */
+   * one of the girders you have to shoot.
+   * ⚠ It must LAND on something. The first version stopped a metre past each
+   * wall, in mid-air (owner: "they just kind of end… that looks weird"), so
+   * each end now runs into a pier block standing on the coping, and the beam
+   * has depth: a back chord and a lit underside you see from the canal. */
   function drawTruss(zs, f) {
-    var y1 = TOP - 0.5, y0 = TOP - 2.3, xl = -HALF - 1.2, xr = HALF + 1.2;
-    poly([px(xl, y0, zs), px(xr, y0, zs), px(xr, y1, zs), px(xl, y1, zs)], tone(12, 16, 32, f), null);
+    var y1 = TOP - 0.5, y0 = TOP - 2.3, xl = -HALF - 0.3, xr = HALF + 0.3;
+    var zf = zs - 0.7, zb = zs + 0.7;
+    // underside, then the back chords, then the front lattice
+    poly([px(xl, y1, zf), px(xr, y1, zf), px(xr, y1, zb), px(xl, y1, zb)], tone(10, 14, 28, f), DETAIL, f * 0.35, 4);
+    var b1 = px(xl, y0, zb), b2 = px(xr, y0, zb);
+    if (b1 && b2) glowLine([b1, b2], DETAIL, f * 0.4, 5, 1.1);
+    poly([px(xl, y0, zf), px(xr, y0, zf), px(xr, y1, zf), px(xl, y1, zf)], tone(12, 16, 32, f), null);
     var pts = [], k, n = 8;
     for (k = 0; k <= n; k++) {
       var x = xl + (xr - xl) * k / n;
-      pts.push(px(x, k % 2 ? y0 : y1, zs));
+      pts.push(px(x, k % 2 ? y0 : y1, zf));
     }
-    var ok = true;
-    for (k = 0; k < pts.length; k++) if (!pts[k]) ok = false;
-    if (!ok) return;
+    for (k = 0; k < pts.length; k++) if (!pts[k]) return;
     glowLine(pts, DETAIL, f * 0.6, 6, 1.4);
-    var e1 = px(xl, y0, zs), e2 = px(xr, y0, zs), e3 = px(xr, y1, zs), e4 = px(xl, y1, zs);
+    var e1 = px(xl, y0, zf), e2 = px(xr, y0, zf), e3 = px(xr, y1, zf), e4 = px(xl, y1, zf);
     glowLine([e1, e2], DETAIL, f * 0.75, 6, 1.6);
     glowLine([e4, e3], DETAIL, f * 0.75, 6, 1.6);
     // a strip of light along its underside
-    var u1 = px(xl + 1.5, y1, zs), u2 = px(xr - 1.5, y1, zs);
+    var u1 = px(xl + 1.5, y1, zf), u2 = px(xr - 1.5, y1, zf);
     if (u1 && u2) glowLine([u1, u2], LAMP, f * 0.5, 8, 1.2);
+
+    // the pier blocks it lands on, one per wall, taller than the beam
+    for (var sd = -1; sd <= 1; sd += 2) {
+      var xi = sd * (HALF + 0.3), xo = sd * (HALF + 2.8), yt = y0 - 1.1;
+      var za = zs - 1.4, zc = zs + 1.4;
+      poly([px(xi, TOP, za), px(xi, TOP, zc), px(xi, yt, zc), px(xi, yt, za)], tone(14, 19, 38, f), DETAIL, f * 0.55, 4);
+      poly([px(xi, TOP, za), px(xo, TOP, za), px(xo, yt, za), px(xi, yt, za)], tone(18, 24, 46, f), DETAIL, f * 0.65, 4);
+      var lt = px(xi, yt + 0.5, zs);
+      if (lt) {
+        ctx.fillStyle = "rgba(" + LAMP + "," + (f * 0.8).toFixed(3) + ")";
+        ctx.fillRect(lt.x - 1.5, lt.y - 1.5, 3, 3);
+      }
+    }
   }
 
   /* ------------------------------------------------------------------ sky */
