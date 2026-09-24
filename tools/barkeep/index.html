@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Barkeep: What Cocktails Can I Make? 150+ Recipes by Ingredient — One Page Toys</title>
+    <meta name="description" content="Tick the bottles on your shelf and Barkeep shows every cocktail you can make tonight, the ones you're one bottle away from, and which bottle to buy next. 150+ classic and modern recipes, plus mocktails, in oz or ml. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/barkeep/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#120d0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Barkeep: What Cocktails Can I Make?" />
+    <meta property="og:description" content="Tick the bottles you have. See every cocktail you can make tonight, and which bottle unlocks the most next. 150+ recipes, plus mocktails." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/barkeep/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/barkeep.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Barkeep: What Cocktails Can I Make?" />
+    <meta name="twitter:description" content="Tick the bottles you have and see every cocktail you can make tonight. 150+ recipes, plus mocktails." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/barkeep.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Barkeep",
+        "url": "https://onepagetoys.com/tools/barkeep/",
+        "description": "A cocktail recipe finder built around your own bar. Tick the spirits, liqueurs, mixers and fresh ingredients you have, and it lists every drink you can make right now, the drinks you are one ingredient away from, and the single bottle that would unlock the most new drinks. Over 150 classic, modern and zero-proof recipes, searchable by name, ingredient, base spirit, style and glass, in ounces or millilitres.",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=5" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 122 · Barkeep</span>
+        <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" aria-label="Sound on" title="Sound on">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="snd-on" d="M4 9v6h4l5 4V5L8 9H4zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/><path class="snd-off" d="M4 9v6h4l5 4V5L8 9H4zM17 9l5 6M22 9l-5 6"/></svg>
+        </button>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="hero" aria-labelledby="headline">
+        <p class="eyebrow">Barkeep · cocktails from what you already have</p>
+        <h1 class="headline" id="headline">What's on your shelf?</h1>
+        <p class="lede" id="lede">Tick the bottles you own. Barkeep shows every drink you can pour tonight, and the one bottle that would open up the most new ones.</p>
+        <div class="sharehost" data-opt-share></div>
+      </section>
+
+      <!-- The back-bar: your shelf. Stays night-dark in both themes. -->
+      <section class="backbar" aria-label="My bar">
+        <div class="backbar__head">
+          <div class="tabs" role="tablist" aria-label="Shelves" id="tabs"></div>
+          <div class="backbar__tools">
+            <span class="backbar__count" id="barCount">0 on the shelf</span>
+            <button type="button" class="listbtn" id="listBtn" aria-haspopup="dialog">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
+              Shopping list <b id="listN">0</b>
+            </button>
+            <button type="button" class="linkbtn" id="starterBtn">Stock a starter bar</button>
+            <button type="button" class="linkbtn" id="clearBtn">Clear</button>
+          </div>
+        </div>
+        <div class="shelf" id="shelf" role="tabpanel"></div>
+        <div class="nextbuy" id="nextBuy" hidden>
+          <span class="nextbuy__k">Best next bottle</span>
+          <div class="nextbuy__list" id="nextBuyList"></div>
+        </div>
+      </section>
+
+      <section class="book" aria-label="Recipes">
+        <div class="book__bar">
+          <label class="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+            <input type="search" id="q" placeholder="Search drinks or ingredients: negroni, lime, mezcal…" autocomplete="off" aria-label="Search drinks or ingredients" />
+          </label>
+          <button type="button" class="btn btn--ghost" id="surpriseBtn">Surprise me</button>
+        </div>
+        <div class="filters">
+          <div class="seg" role="group" aria-label="Show" id="seg">
+            <button type="button" data-f="make" aria-pressed="false">Can make <b id="nMake">0</b></button>
+            <button type="button" data-f="one" aria-pressed="false">One away <b id="nOne">0</b></button>
+            <button type="button" data-f="all" aria-pressed="true">Everything <b id="nAll">0</b></button>
+          </div>
+          <div class="units" role="group" aria-label="Units">
+            <button type="button" data-u="oz" aria-pressed="true">oz</button>
+            <button type="button" data-u="ml" aria-pressed="false">ml</button>
+          </div>
+        </div>
+        <div class="chips" id="baseChips" role="group" aria-label="Base spirit"></div>
+        <p class="book__count" id="resultCount" aria-live="polite"></p>
+        <div class="grid" id="grid"></div>
+        <p class="empty" id="empty" hidden>Nothing matches that. Try fewer words, or switch to <button type="button" class="linkbtn" id="emptyAll">Everything</button>.</p>
+      </section>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <dialog class="recipe" id="recipe" aria-labelledby="rName">
+      <div class="recipe__inner">
+        <button type="button" class="recipe__close" id="rClose" aria-label="Close recipe">×</button>
+        <div class="recipe__art" id="rArt"></div>
+        <div class="recipe__body">
+          <p class="recipe__meta" id="rMeta"></p>
+          <h2 class="recipe__name" id="rName"></h2>
+          <p class="recipe__aka" id="rAka"></p>
+          <p class="recipe__status" id="rStatus"></p>
+          <ul class="recipe__ing" id="rIng"></ul>
+          <p class="recipe__method" id="rMethod"></p>
+          <p class="recipe__gar" id="rGar"></p>
+          <p class="recipe__gar recipe__zero" id="rZero" hidden></p>
+          <div class="recipe__actions">
+            <button type="button" class="btn btn--primary" id="rList" hidden>Add missing to list</button>
+            <button type="button" class="btn btn--ghost" id="rBought" hidden>I've got these now</button>
+            <button type="button" class="btn btn--ghost" id="rCopy">Copy link</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="slist" id="slist" aria-labelledby="slTitle">
+      <div class="slist__inner">
+        <button type="button" class="recipe__close" id="slClose" aria-label="Close shopping list">×</button>
+        <p class="recipe__meta">Barkeep</p>
+        <h2 class="slist__title" id="slTitle">Shopping list</h2>
+        <p class="slist__sum" id="slSum"></p>
+        <ul class="slist__items" id="slItems"></ul>
+        <p class="slist__empty" id="slEmpty">Nothing on it yet. Add a bottle from <b>Best next bottle</b> on your shelf, or open a recipe and add what it's missing.</p>
+        <div class="recipe__actions" id="slActions">
+          <button type="button" class="btn btn--primary" id="slShare">Share list</button>
+          <button type="button" class="btn btn--ghost" id="slGot">Got them all</button>
+          <button type="button" class="linkbtn" id="slClear">Clear list</button>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="../../assets/tickets.js?v=28" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="drinks.js?v=2" defer></script>
+    <script src="script.js?v=5" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

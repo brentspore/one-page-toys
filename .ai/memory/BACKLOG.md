@@ -16,44 +16,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
-### New toy: Trench Run (fly INTO the screen down a corridor) — owner request 2026-09-22
-
-**Why it matters:** Owner asked for it directly: *"a fly through space kinda like the video game star wars trench fly through but without copyright infringement… It's been like 40 years since the original so we can enhance gameplay a bit."* It fills a real hole — **nothing in the 120 flies INTO the screen.** Shuriken Night is first-person but you stand still; Deep Descent and Paper Plane scroll past you; Sky Fortress looks down a diagonal. That first-person rush down a narrowing corridor is a distinct sensation the site does not own yet, and it is the single most imitated arcade set-piece ever made because it works. Category `game`.
-
-**When to revisit:** Next arcade round. ⚠ **Medium-LARGE, not a one-sitting build** — corridor renderer, enemies, a run structure and a full audio set. Budget accordingly, or ship the MVP cut below first.
-
-**Notes:**
-
-**⚠ THE IP GUARDRAIL — read before naming or drawing anything.** Practical, not legal advice:
-- **Game mechanics and rules are NOT copyrightable.** A corridor you fly down, walls to thread, turrets to shoot, a timed shot at the end — all of that is free to build. *Tetris Holding v. Xio* protected the LOOK, not the rules, which is exactly why Accretion exists here.
-- **What is protected and must stay out entirely:** the marks (*Star Wars, Death Star, X-wing, TIE fighter, Rebel Alliance, the Force, Jedi, Sith, Skywalker*), the specific ship and station designs, the Williams score, and any dialogue line ("stay on target").
-- **House precedent is already set:** Accretion keeps "tetris" out of its name, slug, copy, tags AND NL search string; Twisty Cube keeps "Rubik" out. **Same discipline here — accept the keyword cost.** Do not buy search traffic with the trademark.
-- **So invent the fiction.** Do NOT build a moon-sized grey sphere with an equatorial trench, and do NOT fly a four-winged fighter. Strongest original framing: **you are flying into the guts of a derelict megastructure** — the "trench" is a maintenance canal through a dead machine, lit by its own failing systems. That is ours, it is more visually interesting than grey panelling, and it explains the hazards (venting plasma, swinging gantries, half-dead turrets still tracking).
-- Name candidates, owner picks: **Leviathan Run**, **The Long Canal**, **Hullbreaker**, **Spinecrawl**. "Trench" alone is a generic English word and is fine; it is the *combination* with SW-specific markers that is the risk.
-- ⚠ Unrelated observation while checking this, logged not actioned: **`toys/aurebesh-translator/` uses the Star Wars in-universe alphabet by name.** Closer to the marks than anything proposed here. Owner's call whether that matters; not this item's job.
-
-**⚠ OVERLAP TO RESOLVE FIRST — `toys/sky-fortress/` is nearer than it looks.** It is already "fly a starfighter over a floating 3D fortress, climb and dive over walls, duck force fields, blast turrets and drones," in raw WebGL. **What makes this a different toy is the CAMERA and the ENCLOSURE**: Sky Fortress is a diagonal/isometric Zaxxon view over open sky where ALTITUDE is the mechanic; this is first-person (or low chase) down an enclosed canal where walls press in on both sides and the claustrophobia IS the appeal. If the build drifts toward an open-air shooter it has become Sky Fortress and should stop. **Upside: Sky Fortress's renderer is directly reusable scaffolding** — streamed ring-buffer geometry, additive glow sprites, and ship-relative z to dodge float32 drift on long runs.
-
-**Rendering:** raw single-file WebGL, no Three.js, per the standing 3D decision — this genuinely needs volumetric depth and the repo has nine WebGL toys already. ⚠ But **consider Canvas-2D projected geometry for a neon-vector skin first**: a corridor is a series of ribs at increasing z through one perspective divide, banking is a rotation about screen centre, and stroked glowing lines are both cheap and gorgeous. The vector-arcade era was much bigger than one game (Battlezone, Tempest, Star Castle), so that look is an homage to a whole format rather than to one film.
-
-**The forty-years-on enhancements owner invited:**
-- The 1983 original was a **rail with a crosshair** — you aimed, you did not really fly. Give it **real flight**: momentum, bank into turns, a roll that actually slips the ship through a gap.
-- **Boost with heat**, so speed is a resource and the fastest line is the riskiest.
-- **Forks in the canal** — take the tight branch for a shortcut and a multiplier, or the wide one and live.
-- **Near-miss scoring**: reward shaving the wall. This is what makes a corridor game feel good and it is the cheapest juice available.
-- ⚠ **Finite runs with a CLIMAX, not an endless tunnel.** The original's power was that the corridor ENDED and you took the shot. An endless trench has no payoff and nothing to share. Structure it as run 1, run 2, run 3, each longer and tighter, ending in a lock-on and a hit. Store best run reached + best clear time; ticket rule on the run count (dir `up`).
-
-**Design bar:** speed has to be *felt* — wall ribs streaking past, FOV punch and chromatic smear on boost, camera shake near the walls, sparks when you clip. Light the canal from inside the structure so depth reads without fog doing all the work. Signature moment: the lock-on, where the HUD narrows and the world goes quiet for a beat before the shot.
-
-**Audio** (house bar — modal contacts, additive tails, convolver space, stereo, bus compressor + brickwall, measure levels): an engine bed with real movement rather than a drone, doppler on structures passing the cockpit, a laser that is deliberately NOT the iconic one (shorter, drier, more electrical), hull scrape on a clip, a near-miss whoosh panned by which side you shaved, a lock-on tone, and one big hit.
-
-**MVP cut if scope needs trimming:** procedural canal + walls to thread + near-miss scoring + boost + one run that ends in a lock-on shot. Turrets, forks and multiple runs are the second pass.
-
-**Daily-viral test (2026-08-16 rule, assessed):** **FAILS — build it here, do not route it to its own domain.** No single puzzle shared by everyone, no knowable maximum, and the share would be a bare score, which nobody posts. It is an arcade score-chase, which the 2026-07-03 keep-builds-small rule explicitly allows (best in `localStorage`, no accounts).
-
-Real card + OG; full add-a-toy pipeline including cross-promo across all four surfaces.
----
-
 ### New toy: tube shooter (Tempest-like) — owner request 2026-09-22
 
 **Why it matters:** Owner asked for it directly. It is the other great vector-arcade shape and the catalogue has nothing like it: you sit on the RIM of a well looking down it, slide around the edge, and shoot things climbing up the lanes at you. Reads instantly, plays in one thumb-arc on a phone, and is endlessly replayable. Category `game`.
@@ -146,21 +108,6 @@ Real card + OG; full add-a-toy pipeline including cross-promo across all four su
 
 ---
 
-### New toy: Skyscrapers (Latin-square logic, as a literal skyline)
-
-**Why it matters:** ⚠ **The catalogue has NO logic puzzle at all — Minesweeper is the only deduction game in 116 toys.** Skyscrapers is the same deduction family as Sudoku but fixes the thing that makes a number grid visually dead: **the numbers ARE building heights**, and the edge clues say how many towers you can see looking down that row, because a taller one hides a shorter one behind it. You are not typing digits into boxes, you are building a skyline. Category `game`/puzzle.
-
-**When to revisit:** Any time a logic puzzle is wanted. Nothing blocks it — generable and uniquely-solvable algorithmically, so no content authoring.
-
-**Notes:** Proposed 2026-08-23 when the owner asked about a Sudoku-type game.
-- ⚠ **DECIDED: this is a TOY here, NOT a daily.** It passes same-puzzle-for-everyone, a 2-5 minute solve at 5×5/6×6, and a reason to return — but **fails the spoiler-free share** (the solved grid IS the answer, leaving only a time), and more decisively **it needs teaching before the clues mean anything**. A daily gets one shot with someone who clicked a shared link; Wordle and Waffle explain themselves in a sentence and this needs a diagram. Same reasoning that parks Sudoku here (project `DECISIONS.md`, 2026-08-16).
-- **The mechanic teaches itself IN PLAY, which is the whole argument for it over Sudoku:** drag a tower up and down and watch it grow; light the visible towers and dim the hidden ones live as you work, so the clue "3" is something you can SEE rather than a rule you memorised. Verification becomes physical — crouch at the edge and count.
-- **Design:** glass towers at night on a dark grid, warm windows, a low sun casting the sightline. 4×4 to 6×6. Timer + best per size in `localStorage`; ticket rule if it stores a best.
-- **Generator:** build a random Latin square, derive the four edge clue sets, then remove clues while a solver confirms the solution stays UNIQUE. ⚠ **Never ship a grid without verifying uniqueness** — the same rule as Numbers Target, and the one bug that destroys trust in a logic puzzle.
-- **A Latin square underneath means the generator and solver would largely carry over to a plain Sudoku later**, if the search play is ever wanted — the standing assessment says Sudoku is commoditised but has enormous volume and the site has nothing in the category.
-
----
-
 ### Puzzle #1 — New toy: Colour Pour (water-sort)
 
 **Why it matters:** ⚠ **The single most viral casual-puzzle format of the last several years, and the best fit for this site of anything on this list.** It needs ZERO rules text — one screenshot teaches the whole game — the input is two taps, it is infinitely generatable with guaranteed solvability, and the payoff is liquid pouring, which lands squarely on the "must look and sound intentional" bar. Category `game`.
@@ -171,18 +118,6 @@ Real card + OG; full add-a-toy pipeline including cross-promo across all four su
 - **Design bar:** real glass (refraction-ish distortion of the bands behind, specular streak, meniscus at each boundary — the Glass Harp already solved that rendering language and this can share it). The pour is an ARC of liquid between tubes with the receiving surface rising and settling, not an instant swap. Colour-blind safety matters here more than usual: distinct hues AND a subtle pattern or symbol per colour, since the entire game is colour identity.
 - **Audio:** this is the whole appeal — a glug that pitches DOWN as the receiving tube fills (the resonant air column shortens, exactly like filling a real bottle), a soft glass clink on tube select, and a bright settle when a tube completes. Model it, per the 2026-08-14 modal/additive split.
 - Best count + moves in `localStorage`; ticket rule. Real card + OG; full pipeline.
----
-### Puzzle #2 — Word Kraven (wordkraven.com) — its own daily site, + a practice feeder here
-
-**Why it matters:** ⚠ **Ranked #2 of the puzzle set: the biggest genre gap on the site, and the only puzzle here that also fixes a search problem.** Word games are text, so they index in a way a canvas toy structurally cannot — which matters given the 2026-08-04 audit's finding that thin content, not crawlability, is OPT's real search ceiling. The site has zero word games — a gap for a huge audience. Drag-to-trace word finding is tactile, satisfying, and endlessly replayable with a fresh grid each round. Category `game`/word.
-
-**When to revisit:** Next puzzle round. Needs a bundled dictionary decision (see notes) — scope that first.
-
-**Notes:** AI suggestion (2026-07-05). 4×4 or 5×5 letter grid (dice-distribution letter frequencies); drag through adjacent letters (incl. diagonals) to trace words; 90-second round or zen mode; scoring by length; found-words list + best score in `localStorage`. Constraint: needs a word list — a compact common-word list (~30-60k words, ~200-400KB raw, less gzipped) bundled locally keeps it self-contained; prefix-trie for live validation. Keep name/trade dress distinct from Boggle. Design: warm wooden letter tiles or glowing runes, a glowing trace line, tile pop + pentatonic pluck per letter (rises with word length), fanfare on rare long words. Real card + OG; full pipeline.
-- ⚠ **ROUTING DECIDED (2026-08-16): this is NOT a toy in this repo.** It is the only item in the puzzle cluster that passes the daily-viral test (see project `DECISIONS.md`, 2026-08-16): one grid a day identical for everyone, a 2-5 minute solve, a genuinely spoiler-free share ("24 of 61 words, longest BRACKET"), and a reason to return. Per the 2026-07-03 keep-builds-small rule, a daily with streaks cannot live here — so it goes to **its own domain via the `new-feeder-game` skill**, and one-page-toys gets the **unlimited practice edition** as a feeder (the spelling-blocks / trail-game / 5SG / Brick Smasher pattern).
-- **Domains acquired 2026-08-16: `wordkraven.com` (primary) and `wordcraven.com` (typo-catcher, should 301 to the primary).** Name chosen over a descriptive one for memorability; "word" up front keeps it categorised and carries the search term, which matters more here than for a canvas toy because a word game is actually text. ⚠ Expect the name to be misspelled by ear, which is what the second domain is for.
-- **What is still undecided:** the exact daily mechanic (trace-on-a-grid vs. an anagram/letter-set shape), the word list (~40k common words, gzipped, prefix trie for live validation — no API, no content authoring), the rollover convention (**LOCAL midnight matches blocks/trail/bricksmasher; 5SG is the deliberate UTC outlier**), and whether capture runs through the shared `synergy-capture` Worker from day one.
-- **The feeder built here must follow the reconciled checklist** in the `new-toy` skill under "Feeder toys": practice only, NO email capture on OPT, two tagged CTAs, share text = result + one tagged link to the daily, `outbound_click` + `share` GA events, self-canonical. The countdown here must target the daily site's ACTUAL rollover — check its date-key code before writing it.
 ---
 ### Puzzle #3 — New toy: Circuit (rotate-the-tiles network puzzle)
 
@@ -254,34 +189,6 @@ Real card + OG; full add-a-toy pipeline including cross-promo across all four su
 - **Audio:** a woody click on snap, a soft slide while dragging, a warm chord on completion.
 - Figures completed in `localStorage`. Real card + OG; full pipeline.
 ---
-### Puzzle #9 — New toy: Untangle (planar graph)
-
-**Why it matters:** The cheapest build on this list by a distance, infinitely generatable, and the moment a hairball of crossed lines resolves into a clean shape is genuinely lovely. Ranks last of the set only because the genre has low name recognition — nobody searches for it. Category `game`/`visual`.
-
-**When to revisit:** Any time a small, fast, pretty build is wanted — this is a one-sitting build.
-
-**Notes:** Nodes joined by edges, dropped on screen in a tangle; drag nodes until no two edges cross. **Generate by placing nodes in a guaranteed-planar layout first** (random points, then a Delaunay triangulation or a random planar graph) and only then scattering them — that way a crossing-free arrangement provably exists.
-- Live crossing counter is the whole feedback loop: crossed edges glow red and straighten to calm white as they resolve.
-- **Design bar:** taut glowing filaments with a slight elastic follow when a node is dragged; the final untangled graph should look like a constellation worth screenshotting. Level = node count.
-- **Audio:** a soft tension tone whose pitch tracks the crossing count downward, and a clean resolve chime at zero.
-- Best time per node count; ticket rule (dir `down`). Real card + OG; full pipeline.
----
-### ✅ SHIPPED 2026-08-21 — New toy: Pinball (mini table)
-
-**Why it matters:** A flagship arcade classic with enormous nostalgia and replay pull — real flipper physics, bumpers, and a score chase. The kind of showpiece that gets shared. Category `game`.
-
-**When to revisit:** Next big-game round. The largest game idea on this list — scope the flipper/ball physics and a single curated table first; keep it one table, no progression (per the keep-it-small rule).
-
-**Notes:** AI suggestion (2026-07-05, per-category brainstorm). One lovingly-crafted mini table: two flippers (tap left/right halves or arrow keys), plunger launch (pull-drag), bumpers/slingshots that kick, rollover lanes, maybe one ramp. Ball = circle vs. line-segment/arc table geometry (continuous collision so it never tunnels); flippers as rotating segments with angular impulse. Score + best in `localStorage`, multiball optional stretch. Design bar: a curated neon-noir or retro-space table with lit inserts that react, bumper flash, screen-shake on slam; synth arcade audio (flipper thock, bumper ding chorus, drain thud, launch spring) per the audio bar. Real card + OG; full add-a-toy pipeline.
----
-### New toy: Bowling (real-3D, WebGL)
-
-**Why it matters:** The natural next real-3D physics toy after the dice rebuild — a throw, a hush, then a hugely satisfying pin crash. Broad appeal, instantly understood. Category `game`. Reuses the zero-dep WebGL foundation (Newton's Cradle) + the rigid-body work from the 3D dice.
-
-**When to revisit:** After the 3D Dice Roller ships — it will have proven the quaternion rigid-body + floor collision patterns this needs.
-
-**Notes:** AI suggestion (2026-07-05). Drag-back-and-release (or swipe) to throw with power + curve/spin; ball physics down a glossy reflective lane (cubemap reflection like the cradle floor), 10 pins as rigid bodies (cylinder-ish collision or capsule approximations) with pin-pin knockdown chatter; frame scoring (strikes/spares) kept casual — 10 frames, best series in `localStorage`. Design: dark lane, single raking key light, lane-oil sheen, pin glow rims; synth audio: rolling rumble that follows ball speed, pin crash burst (layered inharmonic clatter), gutter thunk. Real card + OG; full pipeline.
----
 ### New toy: Snow Globe
 
 **Why it matters:** Shake it and watch the world settle — a one-gesture cozy ritual everyone already knows. Seasonal spotlight potential (December feature). Category `wellness`.
@@ -313,14 +220,6 @@ Real card + OG; full add-a-toy pipeline including cross-promo across all four su
 **When to revisit:** After the 3D dice ship (shares the rigid-body + WebGL foundation).
 
 **Notes:** AI suggestion (2026-07-05). Zero-dep WebGL: a machined metal top (lathe profile = surface of revolution mesh) on a reflective dark surface (cradle's floor language); drag-flick or twist-gesture to spin (spin rate from gesture); simulate gyroscopic precession + nutation (Euler's equations for an axisymmetric top — well-known closed forms), friction slowly bleeding spin until the wobble grows and it clatters down (satisfying rattle audio). Multiple tops to duel? (collisions optional/stretch). Spin-time record in `localStorage`. Audio: spin hum whose pitch follows RPM, scrape as the tip wanders, the end-rattle. Real card + OG; full pipeline.
----
-### New toy: Dominoes (topple chains)
-
-**Why it matters:** Set up, then topple — the payoff loop of every domino video, now yours to build. The setup-anticipation-cascade arc is deeply satisfying and infinitely replayable. Category `simulation`.
-
-**When to revisit:** Next physics round; medium scope.
-
-**Notes:** AI suggestion (2026-07-05). Top-down or slight-perspective table; drag to lay smooth curves of dominoes (auto-spaced along your stroke), stamp presets (spiral, fork, loop), then tap the first one — falling-domino physics chain (each tile a thin rigid body: tip → strike next; simplified 2.5D physics is fine if convincing). Colored tiles paint patterns visible mid-cascade. Undo/eraser; slow-mo replay of the topple; counter of toppled tiles. Audio: THE sound — accelerating clack-clack-clack cascade (velocity-scheduled clicks with slight pitch variance), a hush before the first tip. Real card + OG; full pipeline.
 ---
 ### New toy: Soft-body Jelly Cube
 
@@ -403,21 +302,6 @@ Real card + OG; full add-a-toy pipeline including cross-promo across all four su
 - **Shareable:** encode the pattern/seed in the URL hash so a friend opens your loop (cf. Countdown/Aurebesh hash-sharing).
 - Hold to the **audio quality bar** (layered voices w/ correct partials, reverb/delay space, stereo width, bus compressor, consonant scales). Owner must audition by ear — headless can't. Real rendered card + OG; full add-a-toy pipeline.
 ---
-### New tool: Barkeep (searchable bar drink recipe book) — owner request 2026-09-23
-
-**Why it matters:** Cocktail recipes are huge evergreen search demand ("how to make a negroni", "drinks with gin and lime"), and a fast, good-looking recipe search is a genuinely useful thing people bookmark and come back to. It also partly answers the thin-content ceiling from the 08-04 audit: a recipe book carries real indexable text, unlike a canvas toy.
-
-**When to revisit:** Next tool round, or whenever the owner wants a utility with more search pull than the arcade toys.
-
-**Notes:** Owner idea: "a barkeep tool that has a search through a whole bunch of bar drink recipes." Lives in the `tools/<slug>/` Geist family, category `utility`. Things to settle before building:
-- ⚠ **It needs the family's emotional payoff, not just a search box.** Every tool is "a calculator with an emotional payoff" (project.md). The strongest candidate: **"what can I make with what's in my cabinet"**. Tick the bottles you own and it ranks drinks by how few ingredients you're missing ("2 drinks you can make right now, 9 if you buy a lime"). Other options to offer: a "surprise me" pour, a batch/party scaler (1 drink → 12 servings, in oz or ml), a proper glass illustration per drink.
-- **Search:** by name, by ingredient (any/all), by spirit base, by glass, by style (sour, highball, stirred, tiki, shot, mocktail). Instant client-side filter; no backend.
-- **Data:** a hand-built `recipes.js`, a few hundred drinks to start (the IBA official list of ~90 is the backbone, then the well-known modern classics). Recipes as ingredient lists + method are facts, but write every description and method line in our own words. ⚠ **Do not scrape or bundle TheCocktailDB** or a recipe site's text; their API/data has its own licence terms.
-- **SEO angle:** consider a real URL per drink (hash or `?d=negroni` at minimum; static per-drink pages would be the big search win but break the one-page shape, so flag it as a choice, not a default).
-- Include mocktails so it isn't alcohol-only. No affiliate links to bottles or bar gear (DECISIONS 2026-06-11).
-- **Not a daily**: no single answer and nothing to share, so it builds here as a normal tool.
-- Research pass before building (DECISIONS 2026-07-04): look at how the best bar apps handle the "my bar" inventory and ingredient substitutions, and offer 2-3 visual directions (clean Geist cards, a dark back-bar look, a menu-card look).
----
 ### New toy: Tower Defense (Kingdom Rush-style)  ⚠ likely TOO LARGE for one-page-toys
 
 **Why it matters:** Tower defense is a hugely popular, deep, replayable genre with massive evergreen search demand. BUT ⚠ per the project scoping rule (`.ai/memory/DECISIONS.md`, 2026-07-03: keep one-page-toys builds small/self-contained — no save/progression here), a full Kingdom Rush-style TD is probably **too large for this site and better built as its own dedicated project**. Keep on the backlog as either (a) a **stripped MVP** that fits one sitting (1 short path, 2–3 tower types, ~5 waves, 2 enemy types, best-score only) OR (b) a pointer to spin up a **standalone TD project**. Discuss which with the owner before building.
@@ -444,12 +328,3 @@ Real card + OG; full add-a-toy pipeline including cross-promo across all four su
 - Drawing surface itself is well-trodden (canvas pointer strokes, pressure/size, palette, undo) and reuses the repo's canvas/audio discipline; the hard part is entirely the shared-state + moderation layer.
 ---
 
-### ✅ SHIPPED 2026-08-22 — New toy: Steady Hand (buzz-wire)
-
-**Why it matters:** The last of the Perfect Circle precision family. Same proven DNA — one dead-simple input, an instantly brutal score, a share-worthy number — but sustained motor control rather than a single gesture, so it plays differently from its siblings. (Perfect Timing shipped as No. 092 and Color Match as No. 099, both 2026-07-25.)
-
-**When to revisit:** Any time we want a small, fast, high-shareability build.
-
-**Notes:** Trace a glowing wire A to B without touching the edges; scored on time plus how close you skirted the walls, with a buzz and a shake on contact. Great audio payoff — a rising hum as you near an edge, a satisfying buzz on a hit. Single input identical on mouse and touch, best in `localStorage`, share pill, ticket-economy earn key, real card + OG, full pipeline.
-
----

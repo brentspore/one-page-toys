@@ -1,5 +1,35 @@
 [
   {
+    "slug": "barkeep",
+    "name": "Barkeep",
+    "shortDescription": "Tick the bottles on your shelf and see every cocktail you can make tonight. Barkeep counts what you can pour right now, what you're one ingredient away from, and which single bottle would open up the most new drinks. Over 150 classic, modern and zero-proof recipes, each drawn in its own glass, in ounces or millilitres.",
+    "category": "utility",
+    "tags": [
+      "barkeep",
+      "cocktails",
+      "cocktail-recipes",
+      "drinks",
+      "bartending",
+      "mixology",
+      "home-bar",
+      "recipes",
+      "mocktails",
+      "what-can-i-make",
+      "search",
+      "party",
+      "cozy",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/barkeep/",
+    "related": [
+      "tip-splitter",
+      "latte-factor",
+      "time-is-money",
+      "decision-wheel"
+    ]
+  },
+  {
     "slug": "trench-runner",
     "name": "Trench Runner",
     "shortDescription": "A neon canal rushing at you at speed. The ship flies itself — you aim the crosshair and shoot: knock out the wall emplacements before they glow red and fire back, blast the girders out of your lane, then hold the lock on the reactor core and breach it. The trench itself never costs you hull; only the gates and enemy fire do.",
