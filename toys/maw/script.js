@@ -156,7 +156,7 @@
   };
 
   var inp = {
-    moveId: null, lx: 0, ly: 0, lt: 0, acc: 0, recent: 0, map: null, lastMx: 0, lastMove: 0,
+    moveId: null, recent: 0, touchK: null, fingerX: null, touchUI: false,
     fireHeld: false, holdT: 0, holdType: "",
     mouseTarget: null, stepT: 0,
     keyDir: 0, keyLaneDir: 0, keyT: 0, keyFire: false
@@ -206,8 +206,9 @@
   function fitWell() {
     if (!G.sh) return;
     var portrait = H > W;
-    var top = portrait ? 74 : 62, bottom = coarse ? (portrait ? 150 : 70) : 54, side = portrait ? 10 : 24;
-    if (H < 520) { top = 14; bottom = 14; side = 120; }
+    // on touch the strip lives under the well, above the flare button
+    var top = portrait ? 74 : 62, bottom = coarse ? (portrait ? 206 : 70) : 54, side = portrait ? 10 : 24;
+    if (H < 520) { top = 14; bottom = coarse ? 40 : 14; side = 120; }
     WELL.fit(G.sh, W, H, { x: side, y: top, w: W - side * 2, h: H - top - bottom });
   }
 
@@ -218,7 +219,8 @@
     if (GL) GL.setShape(G.sh);
     for (var i = 0; i < 16; i++) { G.silk[i] = 1; G.heat[i] = 0; G.laneFlash[i] = 0; }
     G.lane = G.sh.start; G.vis = G.lane;
-    inp.mouseTarget = null; inp.acc = 0;
+    inp.mouseTarget = null; inp.touchK = null;
+    buildOrder();
     fitWell();
     var root = document.documentElement.style;
     root.setProperty("--glow", G.pal.glowCss);
@@ -1078,13 +1080,11 @@
     if (inp.fireHeld || inp.keyFire) {
       inp.holdT += dt;
       if (inp.holdType === "touch") {
-        if (inp.holdT >= 0.12 && laneHasTarget() && fire()) inp.holdT = 0.12 - HOLD_RATE;
+        if (inp.holdT >= 0 && laneHasTarget() && fire()) inp.holdT = -HOLD_RATE;
       } else if (inp.holdT >= HOLD_DELAY) {
         if (fire()) inp.holdT = HOLD_DELAY - HOLD_RATE;
       }
     }
-    // a resting thumb should not leave half a lane banked for the next twitch
-    if (inp.moveId !== null && performance.now() - inp.lastMove > 140) inp.acc *= Math.pow(0.02, dt);
     visTrack(dt);
   }
 
@@ -1123,37 +1123,62 @@
     return best;
   }
 
-  /* Touch: drag ANYWHERE and the creature follows your thumb along the rim.
+  /* Touch: THE STRIP. The rim is unrolled into a bar of cells under the well,
+   * one per lane in left-to-right order (a ring's bottom lane in the middle, its
+   * top split across both ends), and your creature goes to the lane under your
+   * finger — anywhere on the screen, only x counts.
    *
-   * ⚠ The mapping is LOCKED for the whole stroke, from the rim's direction where
-   * the stroke began. The first version re-read the tangent every move, so at
-   * three and nine o'clock (where the rim runs vertically) a sideways thumb did
-   * nothing at all and you stalled at the sides — owner, on a phone: "pretty
-   * hard". Locked, a long leftward drag keeps pushing you round like a wheel,
-   * over the top if you keep going, and each new stroke re-anchors to where you
-   * are, so short corrections always move the way your thumb does. A stroke that
-   * starts at a side keeps the last sideways habit and also answers up/down.
-   * Measured in lane widths, with some acceleration for flicks. */
-  function strokeMap() {
-    var t = rimTangent(G.lane);
-    var mx = Math.abs(t.x) >= 0.4 ? (t.x > 0 ? 1 : -1) : (inp.lastMx || (t.x >= 0 ? 1 : -1));
-    if (Math.abs(t.x) >= 0.4) inp.lastMx = mx;
-    var my = Math.abs(t.y) >= 0.4 ? (t.y > 0 ? 1 : -1) : 0;
-    inp.map = { x: mx, y: my };
-  }
-  function dragBy(dx, dy, dtMs) {
-    if (!inp.map) strokeMap();
-    var w = rimTangent(G.lane).w;
-    var along = dx * inp.map.x + dy * inp.map.y;
-    var speed = Math.hypot(dx, dy) / Math.max(1, dtMs) * 1000;
-    var gain = 1.5 + Math.min(0.9, speed / 1400);
-    inp.acc += along / Math.max(24, w) * gain;
-    var guard = 0;
-    while (Math.abs(inp.acc) >= 1 && guard++ < 16) {
-      var dir = inp.acc > 0 ? 1 : -1;
-      if (!stepLane(dir)) { inp.acc = 0; break; }
-      inp.acc -= dir;
+   * ⚠ This replaced a RELATIVE drag, twice. The first projected the drag on the
+   * rim tangent re-read every move, so you stalled at three and nine o'clock.
+   * The second locked the mapping per stroke and fixed that, but the owner still
+   * "overshoots and undershoots a lot" and "loses track of where I am": with
+   * relative control the same gesture lands in different places depending on
+   * where you started and how fast you moved. Absolute control has nothing to
+   * overshoot — where your finger is IS where you are — and the strip doubles as
+   * a map of the rim with its danger on it. */
+  function buildOrder() {
+    var sh = G.sh, N = sh.N, l, list = [];
+    if (sh.closed) {
+      var cx = 0, cy = 0;
+      for (l = 0; l < N; l++) { var m0 = mid(l); cx += m0.x; cy += m0.y; }
+      cx /= N; cy /= N;
+      for (l = 0; l < N; l++) {
+        var m = mid(l);
+        // 0 straight down, growing round the LEFT side, +-PI at the top (the seam)
+        var th = Math.atan2(-(m.x - cx), m.y - cy);
+        list.push({ l: l, u: 0.5 - th / TAU });
+      }
+      list.sort(function (a, b) { return a.u - b.u; });
+      G.order = list.map(function (o) { return o.l; });
+    } else {
+      G.order = [];
+      var fwd = mid(0).x <= mid(N - 1).x;
+      for (l = 0; l < N; l++) G.order.push(fwd ? l : N - 1 - l);
     }
+    G.orderAt = [];
+    G.order.forEach(function (lane, k) { G.orderAt[lane] = k; });
+    function mid(i) {
+      var a = sh.edges[i], b2 = sh.edges[sh.closed ? (i + 1) % N : i + 1];
+      return { x: (a.x + b2.x) / 2, y: (a.y + b2.y) / 2 };
+    }
+  }
+
+  // where the strip sits: in the thumb's natural resting place under the well
+  function stripRect() {
+    var land = H < 520;
+    var x0 = land ? 130 : 16, x1 = land ? W - 96 : W - 16;
+    return { x0: x0, x1: x1, y: land ? H - 22 : H - 176, h: land ? 16 : 26, cell: (x1 - x0) / G.sh.N };
+  }
+
+  function touchAim(x) {
+    var r = stripRect(), N = G.sh.N;
+    var p = (x - r.x0) / r.cell;
+    var k = clamp(Math.floor(p), 0, N - 1);
+    // a little hysteresis, so a thumb resting on a cell boundary does not flicker
+    if (inp.touchK !== null && Math.abs(p - (inp.touchK + 0.5)) < 0.62) k = inp.touchK;
+    inp.touchK = k;
+    inp.fingerX = clamp(x, r.x0, r.x1);
+    inp.mouseTarget = G.order[k];
   }
 
   function playing() { return (G.phase === "play" || G.phase === "intro" || G.phase === "dive" || G.phase === "dying") && !G.paused; }
@@ -1170,13 +1195,13 @@
       fire();
       return;
     }
+    inp.touchUI = true;
     if (inp.moveId === null) {
+      // the finger that steers also fires, at whatever is in your lane
       inp.moveId = ev.pointerId;
-      inp.lx = ev.clientX; inp.ly = ev.clientY; inp.lt = ev.timeStamp; inp.acc = 0; inp.recent = 0;
-      inp.fireHeld = true; inp.holdT = 0; inp.holdType = "touch";
-      inp.map = null; inp.lastMove = performance.now();
-    }
-    fire();
+      inp.fireHeld = true; inp.holdT = 0; inp.holdType = "touch"; inp.touchK = null;
+      if (G.phase !== "dying") touchAim(ev.clientX);
+    } else fire();        // a second finger is a manual shot
     hideHint();
   });
   canvas.addEventListener("pointermove", function (ev) {
@@ -1186,15 +1211,11 @@
       return;
     }
     if (ev.pointerId !== inp.moveId) return;
-    var dx = ev.clientX - inp.lx, dy = ev.clientY - inp.ly;
-    inp.recent += Math.hypot(dx, dy);
-    if (G.phase !== "dying") dragBy(dx, dy, ev.timeStamp - inp.lt);
-    if (dx || dy) inp.lastMove = performance.now();
-    inp.lx = ev.clientX; inp.ly = ev.clientY; inp.lt = ev.timeStamp;
+    if (G.phase !== "dying") touchAim(ev.clientX);
   });
   function endPointer(ev) {
     if (ev.pointerType === "mouse") { inp.fireHeld = false; return; }
-    if (ev.pointerId === inp.moveId) { inp.moveId = null; inp.fireHeld = false; }
+    if (ev.pointerId === inp.moveId) { inp.moveId = null; inp.fireHeld = false; inp.mouseTarget = null; inp.fingerX = null; }
   }
   canvas.addEventListener("pointerup", endPointer);
   canvas.addEventListener("pointercancel", endPointer);
@@ -1323,12 +1344,14 @@
     drawSilk();
     drawRibs();
     drawRim();
+    drawBeam();
     drawEnemies();
     drawGlobs();
     drawPearls();
     drawShots();
     drawParts();
     if (G.phase !== "over") drawClaw();
+    drawStrip();
     drawPops();
     drawSnow();
     drawFlashes();
@@ -1826,6 +1849,77 @@
     ctx.globalCompositeOperation = "source-over";
   }
 
+  /* A soft beam of your own light down the middle of your lane, rim to throat.
+   * It answers "where am I?" at a glance on a small screen, and it is also
+   * exactly where your next shot will go. */
+  function drawBeam() {
+    if (G.phase !== "play" && G.phase !== "intro" && G.phase !== "dive") return;
+    var d0 = Math.max(G.clawD, dMin());
+    if (!laneMid(G.vis, d0, P0) || !laneMid(G.vis, 1, P1)) return;
+    var w = rimW(d0), col = G.pierceT > 0 ? [1, 0.88, 0.6] : G.pal.glow;
+    var g = ctx.createLinearGradient(P0.x, P0.y, P1.x, P1.y);
+    g.addColorStop(0, css(col, 0.34)); g.addColorStop(0.5, css(col, 0.12)); g.addColorStop(1, css(col, 0));
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = g; ctx.lineCap = "round";
+    ctx.lineWidth = Math.max(2, w * 0.2);
+    ctx.beginPath(); ctx.moveTo(P0.x, P0.y); ctx.lineTo(P1.x, P1.y); ctx.stroke();
+    ctx.lineWidth = Math.max(1, w * 0.05);
+    ctx.strokeStyle = css(mixc(col, [1, 1, 1], 0.5), 0.45);
+    ctx.beginPath(); ctx.moveTo(P0.x, P0.y); ctx.lineTo(P0.x + (P1.x - P0.x) * 0.6, P0.y + (P1.y - P0.y) * 0.6); ctx.stroke();
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  /* The strip: the rim unrolled under your thumb. Each cell is a lane, in the
+   * order your finger reaches them; it glows red as danger climbs that lane,
+   * crawlers on the rim show as red marks, and your cell is lit in your colour. */
+  function drawStrip() {
+    if (!inp.touchUI || !G.order || (G.phase !== "play" && G.phase !== "intro" && G.phase !== "dive" && G.phase !== "dying")) return;
+    var r = stripRect(), N = G.sh.N, pal = G.pal, k, mine = G.orderAt[G.lane];
+    var a = G.phase === "intro" ? clamp(G.phaseT * 2, 0, 1) : 1;
+    ctx.globalAlpha = a;
+    for (k = 0; k < N; k++) {
+      var l = G.order[k], x = r.x0 + k * r.cell + 1, w = r.cell - 2, y = r.y - r.h / 2;
+      ctx.fillStyle = "rgba(0,0,0,0.45)";
+      roundRect(x, y, w, r.h, 4); ctx.fill();
+      var h = G.heat[l] || 0;
+      ctx.fillStyle = h > 0.03 ? css(pal.hot, Math.min(0.9, 0.12 + h * 0.8)) : css(pal.glow, 0.07);
+      roundRect(x, y, w, r.h, 4); ctx.fill();
+      // the seam at the top of a ring: the two end cells are neighbours
+      if (G.sh.closed && (k === 0 || k === N - 1)) {
+        ctx.fillStyle = css(pal.glow, 0.25);
+        ctx.fillRect(k === 0 ? x : x + w - 2, y + 3, 2, r.h - 6);
+      }
+    }
+    // crawlers on the rim: the thing to turn and face
+    G.enemies.forEach(function (e) {
+      if (e.dead || !e.rim) return;
+      var kk = G.orderAt[collideLane(e)], cx2 = r.x0 + (kk + 0.5) * r.cell;
+      ctx.fillStyle = css(COL.skitter, 1);
+      ctx.beginPath(); ctx.moveTo(cx2, r.y - r.h / 2 - 7); ctx.lineTo(cx2 - 5, r.y - r.h / 2 - 1); ctx.lineTo(cx2 + 5, r.y - r.h / 2 - 1); ctx.closePath(); ctx.fill();
+    });
+    if (mine !== undefined && G.phase !== "dying") {
+      var mx = r.x0 + mine * r.cell + 1, my = r.y - r.h / 2;
+      ctx.globalCompositeOperation = "lighter";
+      glowAt(pal.glow, mx + (r.cell - 2) / 2, r.y, r.h * 1.3, 0.55 * a);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = css(mixc(pal.glow, [1, 1, 1], 0.55), 0.95);
+      roundRect(mx, my, r.cell - 2, r.h, 4); ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+    }
+    // where your finger is, if it is down
+    if (inp.fingerX !== null && inp.fingerX !== undefined) {
+      ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(inp.fingerX, r.y, r.h * 0.75, 0, TAU); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function roundRect(x, y, w, h, rr) {
+    rr = Math.min(rr, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y); ctx.arcTo(x + w, y, x + w, y + h, rr); ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr); ctx.arcTo(x, y, x + w, y, rr); ctx.closePath();
+  }
+
   /* You: a small luminous comb-jelly clinging to the lip, two soft mandibles
    * straddling the lane, rows of rainbow cilia shimmering along its body. */
   function drawClaw() {
@@ -2062,6 +2156,7 @@
 
 
 
+
   function init() {
     var sv = store(KEY_SOUND);
     var on = sv !== "0";
@@ -2078,8 +2173,9 @@
       gtagSafe("challenge_open", { toy: "maw", value: G.challenge.score });
     }
     if (coarse) {
-      el.ovKeys.textContent = "drag anywhere to slide around the rim · tap to fire · keep your finger down and you fire at whatever is in your lane";
-      el.hint.textContent = "drag to slide around the rim · tap to fire";
+      inp.touchUI = true;
+      el.ovKeys.textContent = "slide your finger along the bar under the well: you go to the lane under it, and fire at whatever is in that lane";
+      el.hint.textContent = "slide along the bar under the well";
     }
 
     G.phase = "attract";

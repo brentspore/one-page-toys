@@ -307,7 +307,7 @@
     "    }",
     "  }",
     "  col += uHot * vHeat * smoothstep(0.8, 0.0, d) * (0.18 + 0.3 * pil);",
-    "  col += uMine * vPlayer * 0.07 * pil * (1.0 - d * 0.8);",
+    "  col += uMine * vPlayer * (0.1 + 0.08 * pil) * (1.0 - d * 0.75);",
     "  col += uGlow * vFlash * 0.5 * (0.3 + lamp);",
     // the light at the very bottom of the well
     "  col += uGlow * smoothstep(0.7, 1.0, d) * (0.1 + 0.1 * uBeat);",

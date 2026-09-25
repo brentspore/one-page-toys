@@ -17,6 +17,15 @@ Items in this file follow the structure below so that any AI tool or human editi
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
 
+### Trench Runner: a high-graphics version — owner idea 2026-09-24
+
+**Why it matters:** Owner suggested it while Maw was in play-test. Trench Runner is Canvas 2D strokes; Maw showed what one WebGL layer adds (shader-lit surfaces, headlamp depth falloff, wet highlights). Lifting a toy people already play is a cheaper win than a new one.
+
+**When to revisit:** After Maw is finished (owner: "maybe something to add after we finish this game").
+
+**Notes:** Ask first: replace the neon-vector look, or ship it as a second mode or toggle? Keep the zero-build soul (raw WebGL, no Three.js). Maw's split is the template: one WebGL mesh for the big surfaces (trench walls and floor, shaded, with lamp falloff) and Canvas 2D on top for ships, shots and HUD, both driven by ONE projection function so the layers never disagree. Do not touch the measured placement and fairness code (reachable box, gun placement against hazards: see HANDOFF). This is new work the owner asked for, so the 2026-08-21 "retro-tuning is closed" rule does not block it.
+---
+
 ### Daily #1 — Numbers Target (own domain + practice feeder here)
 
 **Why it matters:** ⚠ **Passes the daily-viral test on all four criteria AND fills the single clearest genre gap in the catalogue: `arithmetic` returns NOTHING across all 116 toys.** Four numbers and a target; combine them with + − × to hit it exactly, or get as close as you can. Mental arithmetic pulls a completely different audience from the word and reflex games, so it widens the network rather than competing inside it. Category `game`/number.
