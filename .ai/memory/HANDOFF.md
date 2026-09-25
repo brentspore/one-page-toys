@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-09-24 (No. 123 Maw shipped and live — `90036d7`).**
+**Last updated: 2026-09-24 (Maw made playable on a phone — `b494673`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**123 toys, live at onepagetoys.com.** Latest on `main`: `90036d7`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**123 toys, live at onepagetoys.com.** Latest on `main`: `b494673`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## Newest work — No. 123 Maw, shipped 2026-09-24 (`90036d7`), live
+## Newest work — No. 123 Maw, shipped 2026-09-24 (`90036d7`, phone fixes `b494673`), live
 
 **`toys/maw/`** — the Tempest-style tube shooter from BACKLOG, built ORGANIC (a living well: flesh, veins,
 photophores, a ring of fangs on the rim) so it reads as nothing like the original or Trench Runner. You slide
@@ -27,10 +27,14 @@ IndexNow accepted.
 - ⚠ **Shapes must run clockwise with no reversal**: the Eye's lower arc used `-cos b`, retracing the upper arc
   left to right, so the ring self-intersected and a creature rendered huge. The Mantle came out upside down
   (your start lane off screen). Render all ten wells after touching any shape.
-- ⚠ **Touch drag is projected on the rim's own tangent and measured in lane widths.** At 1:1 it took a
-  full-width swipe to get halfway round a ring; gain is now 1.6 slow to 2.8 on a flick.
-- ⚠ **On touch, hold-to-fire repeats only while the finger is still.** Misses knock the streak down a tier, so
-  firing while dragging would burn it in empty lanes.
+- ⚠⚠ **Owner, on a phone: "pretty hard."** Two touch bugs caused it, both fixed in `b494673`:
+  (1) the drag was projected on the rim tangent RE-READ every move, so at three and nine o'clock (rim runs
+  vertically) a sideways thumb did nothing and you STALLED at the sides. The mapping is now LOCKED per stroke
+  (`strokeMap()`); a long drag carries you round the ring and each new stroke re-anchors. (2) touch auto-fire
+  only ran while the finger was still, so you could not slide and shoot. A held finger now fires only when
+  something is in your lane (`laneHasTarget()`), never into an empty one (misses cost streak). Also: bite window
+  0.34 → 0.46s, depths 1–2 open slower. Drag gain 1.5 slow to 2.4 on a flick, in lane widths. **Awaiting the
+  owner's re-test on a phone.**
 - **Viral:** image share (`shareCanvas` renders GL + 2D synchronously, no preserveDrawingBuffer) and a
   "Challenge a friend" link `#beat=<score>-<depth>` that shows the target in the HUD and calls out a win.
 - **Audio, measured** (analyser before `destination`): shots and kills ~0.2, spit 0.30, rim steps 0.19, heartbeat
@@ -40,7 +44,8 @@ IndexNow accepted.
   the card's middle band. gen-card waits ~370ms after the eval resolves and a shot crosses the well in 0.4s, so
   the photographed shots are fired un-awaited LATER. ⚠ **Render candidates one at a time**: six in parallel
   starved the CPU, the game clock crawled and nothing had climbed.
-- ⚠ **Difficulty is bot-tested only** (a sloppy bot still reached depth 5). Audio has never been heard.
+- ⚠ **Difficulty is bot-tested only** (a sloppy bot reached depth 5, yet the owner found the phone hard: bots
+  do not feel touch controls, so never read bot survival as a difficulty signal for touch). Audio never heard.
 
 ## No. 122 Barkeep, shipped 2026-09-23 (`99edb21`), live
 
@@ -390,7 +395,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Maw needs a human play-test** (difficulty ramp, touch feel on a real phone) **and ears** (never heard).
+- **Maw: owner to re-test on a phone** after the touch fixes (`b494673`); if still hard, ask what kills the player: rim crawlers, spit, or losing track. Audio never heard.
 - **Owner to decide: remove "tempest" from Trench Runner's NL search string?** (trademark rule above).
 - **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
 
