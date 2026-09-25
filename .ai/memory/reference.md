@@ -7,7 +7,8 @@ type: reference
 - **Local repo:** /Users/bspore/Personal Projects/one-page-toys
 - **Remote repo:** https://github.com/brentspore/one-page-toys
 - **Commands:**
-  - Dev server: `python3 -m http.server 3000` (no build pipeline; serve static files)
+  - Dev server: say **`start`** (runs the global `~/.ai/bin/dev-start`). This repo has no `dev` script on purpose: dev-start serves any project with a root `index.html` via `python3 -m http.server` on **http://127.0.0.1:8000** (or the next free port), detached; saying it again restarts it. No build pipeline.
+  - Docker (added 2026-09-24): `docker compose up -d` serves the LIVE working tree through nginx at http://localhost:8080 (edits show on reload, no rebuild; `docker compose down` to stop). `docker build -t one-page-toys . && docker run --rm -p 8080:8080 one-page-toys` bakes a standalone copy. nginx config in `docker/nginx.conf` mirrors Vercel (directory index, no clean URLs); `.dockerignore` mirrors `.vercelignore` plus dev tooling/memory. ⚠ Port 3000 is held by another app on this machine — that is why it is 8080.
   - ⚠ DO NOT RUN `node scripts/sync-registry-paths.cjs` — it is a **one-off migration**, not a routine command: it alphabetically SORTS the registry (breaks newest-first), rewrites every `path` to `/index.html` form (convention is dir-form `tools/<slug>/`), and injects stale hardcoded entries. It corrupted the registry once (2026-07-14); to add a toy just prepend the entry by hand. Only `build-sitemap.cjs` is safe/routine.
   - Rebuild sitemap: `node scripts/build-sitemap.cjs` (regenerates sitemap.xml from registry)
   - Scaffold new tool: `node scripts/implement-new-25.js` (references new25-impls-{a,b}.cjs templates)

@@ -1,0 +1,24 @@
+# Only the site goes in the image. Mirrors .vercelignore, plus everything
+# that is dev tooling, history or AI memory rather than a served page.
+.git
+.gitignore
+.DS_Store
+**/.DS_Store
+.ai
+.claude
+AGENTS.md
+AI.md
+CLAUDE.md
+README.md
+node_modules
+package.json
+package-lock.json
+scripts
+suggest-worker
+Dockerfile
+docker-compose.yml
+.dockerignore
+.vercelignore
+
+# Full-res key-art originals (also kept out of the Vercel deploy)
+assets/featured/_sources
