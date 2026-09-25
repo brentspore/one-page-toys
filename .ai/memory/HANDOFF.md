@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-09-24 (Maw steers by a strip on phones; "tempest" out of Trench Runner — `995909f`).**
+**Last updated: 2026-09-24 (Maw steers by a rotary knob on phones; Maw key art featured — `8465092`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**123 toys, live at onepagetoys.com.** Latest on `main`: `995909f`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**123 toys, live at onepagetoys.com.** Latest on `main`: `8465092`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## Newest work — No. 123 Maw, shipped 2026-09-24 (`90036d7`, touch rework `995909f`), live
+## Newest work — No. 123 Maw, shipped 2026-09-24 (`90036d7`, rotary knob + key art `8465092`), live
 
 **`toys/maw/`** — the Tempest-style tube shooter from BACKLOG, built ORGANIC (a living well: flesh, veins,
 photophores, a ring of fangs on the rim) so it reads as nothing like the original or Trench Runner. You slide
@@ -398,7 +398,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Maw: the owner likes the touch bar.** Still open: difficulty past the first depths and the audio (never heard).
+- **Maw: owner to try the rotary knob on a phone** (`8465092`). Still open: difficulty past the first depths and the audio (never heard).
 - **Next build candidate (owner, 09-24): a high-graphics Trench Runner** after Maw is done, as a player-selectable mode beside the neon one, pushed as far as it will go (owner: "really take it up") — plan in BACKLOG.
 - **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
 
