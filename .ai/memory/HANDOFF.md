@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-09-24 (Maw made playable on a phone — `b494673`).**
+**Last updated: 2026-09-24 (Maw steers by a strip on phones; "tempest" out of Trench Runner — `995909f`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**123 toys, live at onepagetoys.com.** Latest on `main`: `b494673`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**123 toys, live at onepagetoys.com.** Latest on `main`: `995909f`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## Newest work — No. 123 Maw, shipped 2026-09-24 (`90036d7`, phone fixes `b494673`), live
+## Newest work — No. 123 Maw, shipped 2026-09-24 (`90036d7`, touch rework `995909f`), live
 
 **`toys/maw/`** — the Tempest-style tube shooter from BACKLOG, built ORGANIC (a living well: flesh, veins,
 photophores, a ring of fangs on the rim) so it reads as nothing like the original or Trench Runner. You slide
@@ -19,22 +19,23 @@ with their own palettes. Three files: `well.js` (shapes, camera, WebGL membrane 
 `script.js`. Keys: `maw_best` (ticket rule **dir `up`**, rule only), `maw_depth`, `maw_sound`. Registered
 everywhere, live-verified (toy plays, hub + newest panel + search, all four DEPLOYED cross-promo bundles),
 IndexNow accepted.
-- ⚠⚠ **"Tempest" is a live Atari trademark** (the genre where a clone, TxK, drew legal action). Never use the
-  word in Maw's name, copy, tags or NL string. ⚠ **Trench Runner's NL string still contains "tempest"** (and
-  "battlezone"), so searching "tempest" returns Trench Runner — put to the owner 09-24, unanswered.
+- ⚠⚠ **"Tempest" is a live Atari trademark** (the genre where a clone, TxK, drew legal action). It is on no
+  searchable surface anywhere on the site now: removed from Trench Runner's NL string too (owner, 09-24).
+  Trench Runner's string still says "battlezone" (also Atari's); not raised with the owner.
 - ⚠ **The GL membrane and the 2D overlay share ONE projection** (`WELL.project`; the vertex shader does the same
   maths). Any camera change goes through `WELL.cam`/`WELL.view` or the layers disagree about where a lane is.
 - ⚠ **Shapes must run clockwise with no reversal**: the Eye's lower arc used `-cos b`, retracing the upper arc
   left to right, so the ring self-intersected and a creature rendered huge. The Mantle came out upside down
   (your start lane off screen). Render all ten wells after touching any shape.
-- ⚠⚠ **Owner, on a phone: "pretty hard."** Two touch bugs caused it, both fixed in `b494673`:
-  (1) the drag was projected on the rim tangent RE-READ every move, so at three and nine o'clock (rim runs
-  vertically) a sideways thumb did nothing and you STALLED at the sides. The mapping is now LOCKED per stroke
-  (`strokeMap()`); a long drag carries you round the ring and each new stroke re-anchors. (2) touch auto-fire
-  only ran while the finger was still, so you could not slide and shoot. A held finger now fires only when
-  something is in your lane (`laneHasTarget()`), never into an empty one (misses cost streak). Also: bite window
-  0.34 → 0.46s, depths 1–2 open slower. Drag gain 1.5 slow to 2.4 on a flick, in lane widths. **Awaiting the
-  owner's re-test on a phone.**
+- ⚠⚠ **Touch steering is ABSOLUTE: the strip** (`995909f`). A bar under the well is the rim unrolled, one cell
+  per lane in left-to-right order (`buildOrder()`: a ring's bottom lane in the middle, its top split across both
+  ends); the creature travels to the lane under the finger's x (`touchAim()`, hysteresis at cell edges). A held
+  finger fires only at something in your lane (`laneHasTarget()`), a second finger is a manual shot. The bar
+  shows your cell, per-lane danger in red and rim crawlers; a beam down your lane (`drawBeam()`, all devices)
+  answers "where am I". ⚠ **Do not go back to a relative drag**: two versions failed on the owner's phone, first
+  stalling at the ring's sides (tangent re-read per move), then, even stroke-locked, "I overshoot and undershoot a
+  lot" and "losing track of where I am" — relative control lands the same gesture in different places. Bite
+  window 0.46s, depths 1–2 open slower. **Awaiting the owner's re-test on a phone.**
 - **Viral:** image share (`shareCanvas` renders GL + 2D synchronously, no preserveDrawingBuffer) and a
   "Challenge a friend" link `#beat=<score>-<depth>` that shows the target in the HUD and calls out a win.
 - **Audio, measured** (analyser before `destination`): shots and kills ~0.2, spit 0.30, rim steps 0.19, heartbeat
@@ -367,7 +368,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=120` (8 pages) / `styles.css?v=121` (9 hub/store pages); **`tickets.js?v=29` across all 132 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=25` (45 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=121` (8 pages) / `styles.css?v=121` (9 hub/store pages); **`tickets.js?v=29` across all 132 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=25` (45 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **34** toys per load (Trench Runner added 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
@@ -395,8 +396,8 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Maw: owner to re-test on a phone** after the touch fixes (`b494673`); if still hard, ask what kills the player: rim crawlers, spit, or losing track. Audio never heard.
-- **Owner to decide: remove "tempest" from Trench Runner's NL search string?** (trademark rule above).
+- **Maw: owner to re-test on a phone** with the strip (`995909f`); if still hard, ask what kills the player: rim crawlers, spit, or losing track. Audio never heard.
+- **Next build candidate (owner, 09-24): a high-graphics Trench Runner** after Maw is done — BACKLOG has the plan and the open question (replace the look, or a second mode?).
 - **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
