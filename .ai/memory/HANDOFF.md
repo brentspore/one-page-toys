@@ -353,6 +353,14 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Live conventions (bake into every new toy)
 
+- **Just the game on the screen (owner, 09-24):** every full-bleed toy loads `assets/game-screen.js` (after
+  fullscreen.js) and carries the four `apple-mobile-web-app-*` / `mobile-web-app-capable` metas after theme-color.
+  The script kills pinch/double-tap zoom (touch-action `pan-x pan-y`, so a tall start panel still scrolls; iPhone
+  needs its `gesture*` events cancelled), pull-to-refresh, text selection and long-press menus (text fields
+  excepted); goes full screen on Android on the first press of `button#ovBtn`, `button.play-btn` or
+  `[data-opt-start]`; and on iPhone, which cannot hide Safari's bars, puts a one-line "Add to Home Screen" tip under
+  the start button once a session. ⚠ Opt out with `<body data-opt-native="keep">`; **aurebesh-translator is left
+  out on purpose** (reading and copying its text is the point) and the shuriken sandbox is untouched.
 - **Directory URLs everywhere:** canonical / og:url / JSON-LD / registry path / sitemap use `onepagetoys.com/toys/<slug>/`; back-links `../../`. `all-toys/` is a directory (root `all-toys.html` is an unlinked leftover); category pages `all-toys/<cat>/` carry static meta + a `data-cat` body attr main.js reads.
 - **Safe-area insets** on fixed UI (`max(16px, env(safe-area-inset-*))`); transparent **iOS tap highlight** on full-bleed canvas; **quote canvas font families containing digits**; **key world scale to the long edge** (rotation-invariant difficulty); check computed styles for **media-query order**; **cache-bust `?v=N` on every edit** the owner will test; real WebKit (`npx playwright install webkit`) for Safari-only bugs.
 - **Badges:** tip-jar/fullscreen default right-center; when that blocks play, dock bottom-right with the doubled-class CSS override + center→corner entrance slide (nova-coil pattern). Tickets pill is bottom-LEFT, self-docking above the back-link via measured `dock()`.
@@ -370,7 +378,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=122` (8 pages) / `styles.css?v=121` (9 hub/store pages); **`tickets.js?v=29` across all 132 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=25` (45 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=122` (8 pages) / `styles.css?v=121` (9 hub/store pages); **`tickets.js?v=29` across all 132 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=25` (45 pages); `game-screen.js?v=1` (108 toy pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **35** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.

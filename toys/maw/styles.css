@@ -23,6 +23,13 @@ html, body{
   font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  /* just the game on the screen (owner): no pinch or double-tap zoom, no
+     pull-to-refresh, no text selection or its magnifier, no long-press menus */
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
 }
 body{
   background: radial-gradient(120% 90% at 50% 42%, var(--bg1) 0%, var(--bg2) 72%);
@@ -155,6 +162,8 @@ canvas{
   transition: opacity 260ms ease;
   overflow-y: auto;
 }
+/* the panel is the one thing that may need to scroll, on a short screen */
+.overlay{ touch-action: pan-y; }
 .overlay[hidden]{ display: none; }
 .overlay.is-out{ opacity: 0; pointer-events: none; }
 .panel{
