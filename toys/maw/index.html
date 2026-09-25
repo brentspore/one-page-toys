@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Maw — One Page Toys</title>
+    <meta name="description" content="Hold the rim of a living well. Things climb up out of the dark toward you: slide around the edge and spit light down the lanes before they reach the top. Clear the well, dive down its throat into the next one, and see how deep you get. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/maw/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#020608" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Maw — One Page Toys" />
+    <meta property="og:description" content="Hold the rim of a living well. Slide around the edge, shoot what climbs out of the dark, then dive down the throat. How deep can you get?" />
+    <meta property="og:url" content="https://onepagetoys.com/toys/maw/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/maw.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Maw — One Page Toys" />
+    <meta name="twitter:description" content="Hold the rim. Shoot what climbs out of the dark. Dive deeper." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/maw.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Maw",
+        "url": "https://onepagetoys.com/toys/maw/",
+        "description": "An arcade tube shooter set inside a living well. You cling to the rim and slide around it lane by lane while creatures climb up the walls out of the dark: larvae that crawl straight up, skittering crawlers that hop between lanes, egg sacs that burst into two, spitters that stop halfway and spit at you, and weavers that leave silk up a lane. Anything that reaches the rim crawls around it toward you. Spit light down your lane to kill them. Hits build a multiplier and a miss knocks it down a level. Each depth gives you one flare that clears the whole well, and a second, weaker one. Clear a depth and you dive down the throat into the next well, steering around the silk on the way. Ten well shapes, each in its own colours, then the cycle repeats faster. Works with a mouse, a keyboard or one thumb, and a finished run can be shared as an image or sent to a friend as a challenge link.",
+        "applicationCategory": "GameApplication",
+        "genre": "Arcade",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. WebGL recommended.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <canvas id="fx" role="img" aria-label="Maw: a living well seen from its rim. Move around the rim with the arrow keys or mouse, fire with space or click, flare with F."></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Score</span><span id="score">0</span></div>
+      <div class="hud__cell"><span class="hud__k">Depth</span><span id="depth">1</span></div>
+      <div class="hud__cell hud__cell--mult">
+        <span class="hud__k">Streak</span><span id="mult">&times;1</span>
+        <i class="pips" id="pips" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b></i>
+      </div>
+      <div class="hud__cell"><span class="hud__k">Lives</span><span id="lives" class="lives"></span></div>
+      <div class="hud__cell"><span class="hud__k" id="bestK">Best</span><span id="best">&mdash;</span></div>
+    </div>
+
+    <button type="button" class="flare" id="flareBtn" hidden aria-label="Flare: clear the well">
+      <span class="flare__ring" aria-hidden="true"></span>
+      <span class="flare__label" id="flareLabel">Flare</span>
+    </button>
+
+    <div class="callout" id="callout" hidden><span class="callout__big" id="calloutBig"></span><span class="callout__sub" id="calloutSub"></span></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Hold the rim</p>
+        <h1 class="panel__title" id="ovTitle">Maw</h1>
+        <p class="panel__text" id="ovText">
+          Things are <b>climbing out of the well</b> toward you.
+          <b>Slide around the rim</b> and spit light down your lane.<br />
+          Whatever reaches the top <b>crawls around the rim after you</b>,
+          so turn to face it and fire.<br />
+          Hits build your streak. One <b>flare</b> per depth clears the well.
+        </p>
+<svg class="demo" id="ovDemo" viewBox="0 0 320 136" role="img" aria-label="Looking down a round well lined with fangs. You cling to the lip at the bottom and spit a spark of light down your lane at a crawler climbing toward you.">
+          <defs>
+            <radialGradient id="mawFlesh" cx="50%" cy="34%" r="70%">
+              <stop offset="0" stop-color="#1a0209" />
+              <stop offset="0.45" stop-color="#4a0b1f" />
+              <stop offset="1" stop-color="#8a1a3a" />
+            </radialGradient>
+            <radialGradient id="mawThroat" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#c8fff4" />
+              <stop offset="0.35" stop-color="#3fe0c8" stop-opacity="0.8" />
+              <stop offset="1" stop-color="#08161a" />
+            </radialGradient>
+          </defs>
+          <path d="M127.9 120.1 L72.3 105.6 L143.0 53.8 L153.8 56.6Z M72.3 105.6 L40.2 80.5 L136.8 48.8 L143.0 53.8Z M40.2 80.5 L40.2 51.5 L136.8 43.2 L136.8 48.8Z M40.2 51.5 L72.3 26.4 L143.0 38.2 L136.8 43.2Z M72.3 26.4 L127.9 11.9 L153.8 35.4 L143.0 38.2Z M127.9 11.9 L192.1 11.9 L166.2 35.4 L153.8 35.4Z M192.1 11.9 L247.7 26.4 L177.0 38.2 L166.2 35.4Z M247.7 26.4 L279.8 51.5 L183.2 43.2 L177.0 38.2Z M279.8 51.5 L279.8 80.5 L183.2 48.8 L183.2 43.2Z M279.8 80.5 L247.7 105.6 L177.0 53.8 L183.2 48.8Z M247.7 105.6 L192.1 120.1 L166.2 56.6 L177.0 53.8Z M192.1 120.1 L127.9 120.1 L153.8 56.6 L166.2 56.6Z" fill="url(#mawFlesh)" />
+          <path d="M127.9 120.1 L153.8 56.6 M72.3 105.6 L143.0 53.8 M40.2 80.5 L136.8 48.8 M40.2 51.5 L136.8 43.2 M72.3 26.4 L143.0 38.2 M127.9 11.9 L153.8 35.4 M192.1 11.9 L166.2 35.4 M247.7 26.4 L177.0 38.2 M279.8 51.5 L183.2 43.2 M279.8 80.5 L183.2 48.8 M247.7 105.6 L177.0 53.8 M192.1 120.1 L166.2 56.6" stroke="#2a0510" stroke-width="1.6" />
+          <path d="M153.8 56.6 L143.0 53.8 L136.8 48.8 L136.8 43.2 L143.0 38.2 L153.8 35.4 L166.2 35.4 L177.0 38.2 L183.2 43.2 L183.2 48.8 L177.0 53.8 L166.2 56.6Z" fill="url(#mawThroat)" />
+          <path d="M127.9 120.1 L72.3 105.6 L40.2 80.5 L40.2 51.5 L72.3 26.4 L127.9 11.9 L192.1 11.9 L247.7 26.4 L279.8 51.5 L279.8 80.5 L247.7 105.6 L192.1 120.1Z" fill="none" stroke="#000" stroke-opacity="0.5" stroke-width="7" stroke-linejoin="round" />
+          <path d="M127.9 120.1 L72.3 105.6 L40.2 80.5 L40.2 51.5 L72.3 26.4 L127.9 11.9 L192.1 11.9 L247.7 26.4 L279.8 51.5 L279.8 80.5 L247.7 105.6 L192.1 120.1Z" fill="none" stroke="#8c2a48" stroke-width="4" stroke-linejoin="round" />
+          <path d="M130.1 121.0 L130.2 109.2 L125.7 119.2Z M73.7 107.5 L82.4 100.7 L70.9 103.7Z M41.0 82.8 L50.1 75.2 L39.5 78.2Z M40.4 53.9 L51.4 52.6 L40.0 49.1Z M71.9 28.8 L83.5 26.2 L72.7 24.0Z M126.3 13.7 L134.7 20.8 L129.5 10.1Z M190.5 10.1 L185.3 20.8 L193.7 13.7Z M247.3 24.0 L236.5 26.2 L248.1 28.8Z M280.0 49.1 L268.6 52.6 L279.6 53.9Z M280.5 78.2 L269.9 75.2 L279.0 82.8Z M249.1 103.7 L237.6 100.7 L246.3 107.5Z M194.3 119.2 L189.8 109.2 L189.9 121.0Z" fill="#f4e8de" />
+          <g transform="translate(160 97)">
+            <ellipse rx="7.5" ry="6" fill="#ff5c6b" />
+            <path d="M-6 -2 L-12 -6 M-6 1 L-13 2 M-5 4 L-11 8 M6 -2 L12 -6 M6 1 L13 2 M5 4 L11 8" stroke="#ff8a95" stroke-width="1.3" stroke-linecap="round" />
+            <circle cx="-2.4" cy="3" r="1.3" fill="#fff" /><circle cx="2.4" cy="3" r="1.3" fill="#fff" />
+          </g>
+          <circle cx="160" cy="111" r="6" fill="#66ffe6" opacity="0.3" />
+          <circle cx="160" cy="111" r="2.2" fill="#ffffff" />
+          <g transform="translate(160 124)">
+            <ellipse cx="0" cy="4" rx="22" ry="9" fill="#5cffdb" opacity="0.18" />
+            <path d="M-14 -2 C-16 4 -12 9 -8 8 C-6 7 -6 3 -7 -3 Z M14 -2 C16 4 12 9 8 8 C6 7 6 3 7 -3 Z" fill="#9ffff0" fill-opacity="0.55" stroke="#dffffa" stroke-width="0.8" />
+            <ellipse cx="0" cy="4" rx="8" ry="3.4" fill="#e9fffb" />
+            <circle cx="0" cy="4" r="1.6" fill="#fff" />
+          </g>
+          <path d="M104 100 L148 97" stroke="rgba(255,92,107,0.55)" stroke-width="0.8" stroke-dasharray="2 2" />
+          <text x="100" y="103" text-anchor="end" font-family="Geist Mono, monospace" font-size="9" fill="rgba(255,120,130,0.95)">climbing at you</text>
+          <path d="M216 127 L186 126" stroke="rgba(160,255,236,0.5)" stroke-width="0.8" stroke-dasharray="2 2" />
+          <text x="220" y="130" text-anchor="start" font-family="Geist Mono, monospace" font-size="9" fill="rgba(234,252,255,0.75)">you, on the rim</text>
+        </svg>
+        <button type="button" class="play-btn" id="ovBtn">Take the rim</button>
+        <button type="button" class="ghost-btn" id="chBtn" hidden>Challenge a friend</button>
+        <p class="panel__keys" id="ovKeys">mouse or arrows to move &middot; click or space to fire &middot; F to flare</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 123</span>
+      <span class="frame__corner frame__corner--tr">Maw</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">move around the rim &middot; click to spit light &middot; F flares</p>
+
+    <script src="../../assets/tickets.js?v=29" defer></script>
+    <script src="well.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/more-games.js?v=25" defer></script>
+  </body>
+</html>

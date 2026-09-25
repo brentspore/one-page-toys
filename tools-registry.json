@@ -1,5 +1,34 @@
 [
   {
+    "slug": "maw",
+    "name": "Maw",
+    "shortDescription": "Hold the rim of a living well while things climb up out of the dark toward you. Slide around the edge lane by lane and spit light down at them. Whatever reaches the top crawls around the rim after you, so turn and face it. One flare per depth clears the well, and once it is empty you dive down the throat into the next one.",
+    "category": "game",
+    "tags": [
+      "maw",
+      "arcade",
+      "shooter",
+      "tube-shooter",
+      "organic",
+      "creepy",
+      "bioluminescent",
+      "deep-sea",
+      "monsters",
+      "reflex",
+      "score-attack",
+      "retro",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/maw/",
+    "related": [
+      "trench-runner",
+      "nova-coil",
+      "deep-descent",
+      "sky-fortress"
+    ]
+  },
+  {
     "slug": "barkeep",
     "name": "Barkeep",
     "shortDescription": "Tick the bottles on your shelf and see every cocktail you can make tonight. Barkeep counts what you can pour right now, what you're one ingredient away from, and which single bottle would open up the most new drinks. Over 150 classic, modern and zero-proof recipes, each drawn in its own glass, in ounces or millilitres.",

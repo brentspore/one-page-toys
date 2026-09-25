@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Maw",
+      "tagline": "Hold the rim, dive deeper",
+      "url": "https://onepagetoys.com/toys/maw/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0206'/><circle cx='16' cy='16' r='13' fill='%236a1230'/><circle cx='16' cy='14.6' r='7.6' fill='%2335061a'/><circle cx='16' cy='16' r='13' fill='none' stroke='%23c24a70' stroke-width='2.2'/><path d='M26.6 21.0L23.0 17.4L27.5 18.2ZM21.6 26.3L20.3 20.9L24.0 24.5ZM14.5 27.6L16.0 22.2L17.5 27.6ZM8.0 24.5L11.7 20.9L10.4 26.3ZM4.5 18.2L9.0 17.4L5.4 21.0ZM5.4 11.0L9.0 13.0L4.5 13.8ZM10.4 5.7L11.7 9.5L8.0 7.5ZM17.5 4.4L16.0 8.2L14.5 4.4ZM24.0 7.5L20.3 9.5L21.6 5.7ZM27.5 13.8L23.0 13.0L26.6 11.0Z' fill='%23f6ece2'/><circle cx='16' cy='14.6' r='3.6' fill='%2366ffe6' opacity='0.35'/><circle cx='16' cy='14.6' r='2' fill='%23c8fff6'/></svg>",
+      "initial": "M",
+      "slug": "maw"
+    },
+    {
       "name": "Trench Runner",
       "tagline": "Aim, shoot, breach the core",
       "url": "https://onepagetoys.com/toys/trench-runner/",

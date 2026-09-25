@@ -80,6 +80,7 @@
     { test: /^sky_best_[456]$/, dir: "down", label: "Skyscrapers solve" },
     { test: "tinyacross_best", dir: "down", label: "Tiny Across solve" },
     { test: "untangle_best", dir: "up", label: "Untangle level" },
+    { test: "maw_best", dir: "up", label: "Maw score" },
     { test: "trench_best", dir: "up", label: "Trench Runner score" },
     { test: "steady_best", dir: "up", label: "Steady Hand wires" },
     { test: "typing_best", dir: "up", label: "Typing Speed wpm" },
