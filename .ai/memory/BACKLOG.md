@@ -16,41 +16,6 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** Context, constraints, related files, or prior decisions.
 ---
-### New toy: tube shooter (Tempest-like) — owner request 2026-09-22
-
-**Why it matters:** Owner asked for it directly. It is the other great vector-arcade shape and the catalogue has nothing like it: you sit on the RIM of a well looking down it, slide around the edge, and shoot things climbing up the lanes at you. Reads instantly, plays in one thumb-arc on a phone, and is endlessly replayable. Category `game`.
-
-**When to revisit:** After Trench Runner ships. ⚠ **Do not build it straight after** — see the adjacency warning below.
-
-**Notes:**
-
-**⚠ THE IP LINE IS DIFFERENT HERE FROM TRENCH RUNNER — do not reuse that reasoning.** "Trench run" is a descriptive fan phrase nobody owns. **"Tempest" is an Atari product name and a live trademark**, which puts it in the same bucket as *Tetris* and *Rubik* — the two words this repo already keeps out of every searchable surface by house rule. So:
-- **Never call it Tempest**, and keep the word out of the name, slug, copy, tags and the NL search string, exactly as Accretion does with "tetris".
-- ⚠ **This is the one arcade genre where a clone actually drew legal fire:** Jeff Minter's *TxK* (2014) was pulled after Atari action, settled in 2018. Caveat that matters — **Minter had previously built *Tempest 2000* for Atari under contract**, so his case turned on that relationship and is not straightforwardly transferable to a clean-room build. But it is a real signal that this genre's rights-holder is active, which argues for being deliberate rather than casual about the look.
-- Mechanics and rules remain uncopyrightable. What to invent instead of borrow: the **name**, the **enemy roster** (do not reproduce flippers/tankers/spikers/fuseballs as a set), the **sequence of level geometries**, and the **colour language**.
-- Name candidates: **Maw**, **Gullet**, **The Well**, **Throat**, **Spindle**.
-
-**⚠ ADJACENCY: Trench Runner is already a neon-vector arcade piece.** Shipping a second one right behind it makes them read as a pair rather than as two toys, which is an editorial problem before it is a design one. **The fix solves the IP concern at the same time: make this one ORGANIC rather than vector.** A living well — a gullet of wet chitin and bioluminescence, lanes as ribs, enemies as things crawling up out of the dark. That is nothing like Tempest's look, nothing like Trench Runner's, and more distinctive than a second glowing tube.
-
-**The mechanic, in the order it should be built:**
-- A well drawn as two concentric rings (near rim, far throat) with N lanes joining them. Pure Canvas 2D, a handful of strokes — the whole shape is cheap.
-- Your ship rides the **near rim**, one lane at a time; it wraps on closed shapes and stops at the ends on open ones. **This is the only control**, so it has to feel perfect.
-- Fire travels **away down your lane**. Enemies spawn at the throat and climb toward you.
-- The core threat should **move laterally between lanes as it climbs**, so tracking it is the skill. Anything that reaches the rim is lethal.
-- A second enemy that **builds an obstruction up its lane**, so ignoring a lane has a cost.
-- One **panic button** per level that clears the screen (a second press should be much weaker), because the genre needs a release valve.
-- Level transition: **dive down the well** into the next one. Geometry changes per level — closed ring, open arc, square, cross, figure-eight.
-
-**Forty years on, what to add:** proper telegraphing of which lane a threat is about to jump to (the original made you learn it); a streak multiplier for clearing a lane cleanly; and a readable threat ring on the rim showing where pressure is building, so a phone player is not scanning the whole well at once.
-
-**Controls:** **drag anywhere to slide around the rim** — a thumb arc is the natural gesture and does not cover the action. ⚠ Per the Trench Runner feedback (2026-09-22), owner prefers **fire on tap over a constant stream**; evaluate tap-to-fire with hold-to-repeat rather than defaulting to auto-fire.
-
-**Design bar:** the well must have real depth — parallax between rim and throat, lanes that taper, something alive down in the dark. **Audio** per the house bar: a climbing threat should be *heard* rising in pitch as it nears the rim, which is free tension and helps a small screen.
-
-**Daily-viral test (2026-08-16 rule, assessed):** **FAILS — build it here.** Endless score chase, no shared daily puzzle, no spoiler-free share. Best score in `localStorage`, ticket rule dir `up`.
-
-**Scope:** medium. Real card + OG; full add-a-toy pipeline including cross-promo across all four surfaces.
----
 
 ### Daily #1 — Numbers Target (own domain + practice feeder here)
 
