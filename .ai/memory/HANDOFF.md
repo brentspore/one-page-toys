@@ -27,15 +27,17 @@ IndexNow accepted.
 - ⚠ **Shapes must run clockwise with no reversal**: the Eye's lower arc used `-cos b`, retracing the upper arc
   left to right, so the ring self-intersected and a creature rendered huge. The Mantle came out upside down
   (your start lane off screen). Render all ten wells after touching any shape.
-- ⚠⚠ **Touch steering is ABSOLUTE: the strip** (`995909f`). A bar under the well is the rim unrolled, one cell
-  per lane in left-to-right order (`buildOrder()`: a ring's bottom lane in the middle, its top split across both
-  ends); the creature travels to the lane under the finger's x (`touchAim()`, hysteresis at cell edges). A held
-  finger fires only at something in your lane (`laneHasTarget()`), a second finger is a manual shot. The bar
-  shows your cell, per-lane danger in red and rim crawlers; a beam down your lane (`drawBeam()`, all devices)
-  answers "where am I". ⚠ **Do not go back to a relative drag**: two versions failed on the owner's phone, first
-  stalling at the ring's sides (tangent re-read per move), then, even stroke-locked, "I overshoot and undershoot a
-  lot" and "losing track of where I am" — relative control lands the same gesture in different places. Bite
-  window 0.46s, depths 1–2 open slower. **Awaiting the owner's re-test on a phone.**
+- ⚠⚠ **Touch steering is a ROTARY KNOB** (owner: "the bar makes it harder on phone. The original game had a
+  rotary joystick"). A dial under the well (right-hand margin in landscape): circle your thumb round it and you go
+  round the rim by the SAME angle — a quarter turn is a quarter of the well, pure angle, never speed. It doubles as
+  a map: a tick per lane at its true angle (`buildAngles()`, world space so the camera lean cannot wobble it), red
+  where danger climbs, red dots for rim crawlers, a needle where you are. A touch that starts ON the well points
+  like the desktop mouse (`pickLane`), so either works. A held finger fires only at something in your lane
+  (`laneHasTarget()`); a beam down your lane (`drawBeam()`, all devices) answers "where am I".
+  ⚠ **Four touch schemes were tried; do not walk back into the first three**: a tangent-projected drag (stalled
+  at the ring's sides); a stroke-locked drag ("I overshoot and undershoot a lot", "losing track of where I am");
+  an unrolled bar of lane cells (owner first liked it, then "makes it harder on phone": its ends are the ring's
+  TOP, which fights the picture of the well). Bite window 0.46s, depths 1–2 open slower.
 - **Viral:** image share (`shareCanvas` renders GL + 2D synchronously, no preserveDrawingBuffer) and a
   "Challenge a friend" link `#beat=<score>-<depth>` that shows the target in the HUD and calls out a win.
 - **Audio, measured** (analyser before `destination`): shots and kills ~0.2, spit 0.30, rim steps 0.19, heartbeat
@@ -368,9 +370,9 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=121` (8 pages) / `styles.css?v=121` (9 hub/store pages); **`tickets.js?v=29` across all 132 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=25` (45 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=122` (8 pages) / `styles.css?v=121` (9 hub/store pages); **`tickets.js?v=29` across all 132 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=25` (45 pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
-**Featured art** — the home panel ROTATES bespoke key art, one of **34** toys per load (Trench Runner added 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
+**Featured art** — the home panel ROTATES bespoke key art, one of **35** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
 - ⚠ **All featured URLs share ONE version string (`.webp?v=N` in `renderHomeHero`), so REPLACING any single piece means bumping N for all of them** — currently `?v=5` (bumped 2026-09-12 when the Tiny Across piece was replaced). ⚠ **ADDING a new piece must NOT bump it**: a new file has no cached copies to invalidate and the bump needlessly re-fetches all 32. **The bump is for REPLACEMENTS only.**
 - ⚠ **The featured media element also carries `data-slug`, so a card motif can bleed through the art** — the art branch must `removeAttribute("data-slug")` and set every background longhand inline, because the `[data-slug]` card rules sit ~700 lines further down `styles.css` and **beat `.home-featured__*` on source order at equal specificity.**
@@ -396,8 +398,8 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Maw: owner to re-test on a phone** with the strip (`995909f`); if still hard, ask what kills the player: rim crawlers, spit, or losing track. Audio never heard.
-- **Next build candidate (owner, 09-24): a high-graphics Trench Runner** after Maw is done — BACKLOG has the plan and the open question (replace the look, or a second mode?).
+- **Maw: the owner likes the touch bar.** Still open: difficulty past the first depths and the audio (never heard).
+- **Next build candidate (owner, 09-24): a high-graphics Trench Runner** after Maw is done, as a player-selectable mode beside the neon one, pushed as far as it will go (owner: "really take it up") — plan in BACKLOG.
 - **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.

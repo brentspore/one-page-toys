@@ -156,7 +156,8 @@
   };
 
   var inp = {
-    moveId: null, recent: 0, touchK: null, fingerX: null, touchUI: false,
+    moveId: null, recent: 0, fingerX: null, fingerY: null, touchUI: false, touchMode: "knob",
+    spinAng: 0, phi: 0, knobRot: 0,
     fireHeld: false, holdT: 0, holdType: "",
     mouseTarget: null, stepT: 0,
     keyDir: 0, keyLaneDir: 0, keyT: 0, keyFire: false
@@ -208,8 +209,9 @@
     var portrait = H > W;
     // on touch the strip lives under the well, above the flare button
     var top = portrait ? 74 : 62, bottom = coarse ? (portrait ? 206 : 70) : 54, side = portrait ? 10 : 24;
-    if (H < 520) { top = 14; bottom = coarse ? 40 : 14; side = 120; }
+    if (H < 520) { top = 14; bottom = 14; side = 120; }
     WELL.fit(G.sh, W, H, { x: side, y: top, w: W - side * 2, h: H - top - bottom });
+    placeKnob();
   }
 
   function setWell(depth) {
@@ -219,8 +221,8 @@
     if (GL) GL.setShape(G.sh);
     for (var i = 0; i < 16; i++) { G.silk[i] = 1; G.heat[i] = 0; G.laneFlash[i] = 0; }
     G.lane = G.sh.start; G.vis = G.lane;
-    inp.mouseTarget = null; inp.touchK = null;
-    buildOrder();
+    inp.mouseTarget = null;
+    buildAngles();
     fitWell();
     var root = document.documentElement.style;
     root.setProperty("--glow", G.pal.glowCss);
@@ -1123,62 +1125,101 @@
     return best;
   }
 
-  /* Touch: THE STRIP. The rim is unrolled into a bar of cells under the well,
-   * one per lane in left-to-right order (a ring's bottom lane in the middle, its
-   * top split across both ends), and your creature goes to the lane under your
-   * finger — anywhere on the screen, only x counts.
+  /* Touch: THE KNOB — a rotary control, because the original was played on a
+   * spinner (owner: "the bar makes it harder on phone. The original game had a
+   * rotary joystick"). Circle your thumb round the knob and you go round the rim
+   * by the SAME angle: a quarter turn of the thumb is a quarter of the well. It
+   * is pure angle, never speed, so the same turn always lands in the same place
+   * — the thing every relative drag before it got wrong ("I overshoot and
+   * undershoot a lot"). The knob is also a map: a tick for every lane at its
+   * true angle, red where something is climbing, a needle where you are.
    *
-   * ⚠ This replaced a RELATIVE drag, twice. The first projected the drag on the
-   * rim tangent re-read every move, so you stalled at three and nine o'clock.
-   * The second locked the mapping per stroke and fixed that, but the owner still
-   * "overshoots and undershoots a lot" and "loses track of where I am": with
-   * relative control the same gesture lands in different places depending on
-   * where you started and how fast you moved. Absolute control has nothing to
-   * overshoot — where your finger is IS where you are — and the strip doubles as
-   * a map of the rim with its danger on it. */
-  function buildOrder() {
-    var sh = G.sh, N = sh.N, l, list = [];
-    if (sh.closed) {
-      var cx = 0, cy = 0;
-      for (l = 0; l < N; l++) { var m0 = mid(l); cx += m0.x; cy += m0.y; }
-      cx /= N; cy /= N;
-      for (l = 0; l < N; l++) {
-        var m = mid(l);
-        // 0 straight down, growing round the LEFT side, +-PI at the top (the seam)
-        var th = Math.atan2(-(m.x - cx), m.y - cy);
-        list.push({ l: l, u: 0.5 - th / TAU });
-      }
-      list.sort(function (a, b) { return a.u - b.u; });
-      G.order = list.map(function (o) { return o.l; });
+   * History, so nobody walks back into it: a tangent-projected drag stalled at
+   * the ring's sides; a stroke-locked drag overshot; an unrolled bar (the rim as
+   * a strip of cells) was precise but "makes it harder on phone" — its ends are
+   * the TOP of the ring, which fights the picture of the well. A touch that
+   * starts ON the well still points like the desktop mouse, so either way works.
+   *
+   * Lane angles are taken around the rim's centroid in WORLD space: the rim is
+   * all at one depth, so projection only scales it and the angles are the ones
+   * on screen, without the camera's lean making the needle wobble. */
+  function buildAngles() {
+    var sh = G.sh, N = sh.N, cx = 0, cy = 0, l, m = [];
+    for (l = 0; l < N; l++) {
+      var a0 = sh.edges[l], b0 = sh.edges[sh.closed ? (l + 1) % N : l + 1];
+      m.push({ x: (a0.x + b0.x) / 2, y: (a0.y + b0.y) / 2 });
+      cx += m[l].x; cy += m[l].y;
+    }
+    cx /= N; cy /= N;
+    G.laneAng = [];
+    var prev = null;
+    for (l = 0; l < N; l++) {
+      var t = Math.atan2(m[l].y - cy, m[l].x - cx);
+      // unwrapped along the lanes, so an open well is one continuous arc
+      if (prev !== null) { while (t - prev > Math.PI) t -= TAU; while (t - prev < -Math.PI) t += TAU; }
+      G.laneAng.push(t); prev = t;
+    }
+  }
+  function angDiff(a, b) { var d = a - b; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU; return d; }
+  // the lane whose angle is nearest phi (open wells: phi is kept inside their arc)
+  function laneAtAngle(phi) {
+    var N = G.sh.N, best = G.lane, bd = 1e9, l;
+    for (l = 0; l < N; l++) {
+      var d = G.sh.closed ? Math.abs(angDiff(phi, G.laneAng[l])) : Math.abs(phi - G.laneAng[l]);
+      if (l === inp.mouseTarget) d -= (TAU / N) * 0.15;       // hysteresis between ticks
+      if (d < bd) { bd = d; best = l; }
+    }
+    return best;
+  }
+  // the needle: your visual lane's angle, interpolated between lanes
+  function visAngle() {
+    var N = G.sh.N, v = G.vis, l0 = Math.floor(v), f = v - l0;
+    if (!G.sh.closed) { l0 = clamp(l0, 0, N - 1); var l1o = Math.min(N - 1, l0 + 1); return G.laneAng[l0] + (G.laneAng[l1o] - G.laneAng[l0]) * f; }
+    var a0 = G.laneAng[((l0 % N) + N) % N], a1 = G.laneAng[(((l0 + 1) % N) + N) % N];
+    return a0 + angDiff(a1, a0) * f;
+  }
+
+  /* Where the knob sits: under the well in portrait, in the right-hand margin
+   * in landscape. Worked out from the well at rest (no camera lean), so it
+   * never drifts. */
+  function placeKnob() {
+    var sh = G.sh, v = WELL.view, n = sh.closed ? sh.N : sh.N + 1, bottom = 0, right = 0;
+    for (var e = 0; e < n; e++) {
+      var p = sh.edges[e];
+      var y = v.baseOy + (p.y - sh.camY) * v.baseF / WELL.CAMD, x = v.baseOx + p.x * v.baseF / WELL.CAMD;
+      if (y > bottom) bottom = y; if (x > right) right = x;
+    }
+    G.wellBottom = bottom; G.wellRight = right;
+    if (H < 520) {
+      var rl = clamp(Math.min(H * 0.2, (W - right) / 2 - 24), 36, 66);
+      G.knob = { x: Math.min(W - rl - 22, (right + W) / 2), y: H * 0.5, r: rl };
     } else {
-      G.order = [];
-      var fwd = mid(0).x <= mid(N - 1).x;
-      for (l = 0; l < N; l++) G.order.push(fwd ? l : N - 1 - l);
-    }
-    G.orderAt = [];
-    G.order.forEach(function (lane, k) { G.orderAt[lane] = k; });
-    function mid(i) {
-      var a = sh.edges[i], b2 = sh.edges[sh.closed ? (i + 1) % N : i + 1];
-      return { x: (a.x + b2.x) / 2, y: (a.y + b2.y) / 2 };
+      var top = bottom + 22, bot = H - 70;
+      var r = clamp((bot - top) / 2 - 6, 40, 84);
+      r = Math.min(r, W * 0.22);
+      G.knob = { x: W / 2, y: (top + bot) / 2, r: r };
     }
   }
-
-  // where the strip sits: in the thumb's natural resting place under the well
-  function stripRect() {
-    var land = H < 520;
-    var x0 = land ? 130 : 16, x1 = land ? W - 96 : W - 16;
-    return { x0: x0, x1: x1, y: land ? H - 22 : H - 176, h: land ? 16 : 26, cell: (x1 - x0) / G.sh.N };
+  function startsOnWell(x, y) {
+    if (H < 520) return x < G.wellRight + 12;
+    return y < G.wellBottom + 16;
   }
-
-  function touchAim(x) {
-    var r = stripRect(), N = G.sh.N;
-    var p = (x - r.x0) / r.cell;
-    var k = clamp(Math.floor(p), 0, N - 1);
-    // a little hysteresis, so a thumb resting on a cell boundary does not flicker
-    if (inp.touchK !== null && Math.abs(p - (inp.touchK + 0.5)) < 0.62) k = inp.touchK;
-    inp.touchK = k;
-    inp.fingerX = clamp(x, r.x0, r.x1);
-    inp.mouseTarget = G.order[k];
+  function aimTouch(x, y) {
+    if (inp.touchMode === "well") { inp.mouseTarget = pickLane(x, y); return; }
+    var k = G.knob, a = Math.atan2(y - k.y, x - k.x);
+    // near the hub the angle swings wildly; turning only counts from the grip
+    if (Math.hypot(x - k.x, y - k.y) > k.r * 0.22) {
+      var da = angDiff(a, inp.spinAng);
+      inp.phi += da;
+      inp.knobRot += da;
+      if (!G.sh.closed) {
+        var lo = G.laneAng[0], hi = G.laneAng[G.sh.N - 1];
+        if (lo > hi) { var tmp = lo; lo = hi; hi = tmp; }
+        inp.phi = clamp(inp.phi, lo - 0.15, hi + 0.15);
+      }
+    }
+    inp.spinAng = a;
+    inp.mouseTarget = laneAtAngle(inp.phi);
   }
 
   function playing() { return (G.phase === "play" || G.phase === "intro" || G.phase === "dive" || G.phase === "dying") && !G.paused; }
@@ -1199,8 +1240,15 @@
     if (inp.moveId === null) {
       // the finger that steers also fires, at whatever is in your lane
       inp.moveId = ev.pointerId;
-      inp.fireHeld = true; inp.holdT = 0; inp.holdType = "touch"; inp.touchK = null;
-      if (G.phase !== "dying") touchAim(ev.clientX);
+      inp.fireHeld = true; inp.holdT = 0; inp.holdType = "touch";
+      inp.touchMode = startsOnWell(ev.clientX, ev.clientY) ? "well" : "knob";
+      if (inp.touchMode === "knob") {
+        // a turn starts from where you ARE, not from where the thumb landed
+        inp.spinAng = Math.atan2(ev.clientY - G.knob.y, ev.clientX - G.knob.x);
+        inp.phi = G.laneAng[G.lane];
+        inp.fingerX = ev.clientX; inp.fingerY = ev.clientY;
+      }
+      if (G.phase !== "dying") aimTouch(ev.clientX, ev.clientY);
     } else fire();        // a second finger is a manual shot
     hideHint();
   });
@@ -1211,7 +1259,8 @@
       return;
     }
     if (ev.pointerId !== inp.moveId) return;
-    if (G.phase !== "dying") touchAim(ev.clientX);
+    if (inp.touchMode === "knob") { inp.fingerX = ev.clientX; inp.fingerY = ev.clientY; }
+    if (G.phase !== "dying") aimTouch(ev.clientX, ev.clientY);
   });
   function endPointer(ev) {
     if (ev.pointerType === "mouse") { inp.fireHeld = false; return; }
@@ -1351,7 +1400,7 @@
     drawShots();
     drawParts();
     if (G.phase !== "over") drawClaw();
-    drawStrip();
+    drawKnob();
     drawPops();
     drawSnow();
     drawFlashes();
@@ -1869,55 +1918,67 @@
     ctx.globalCompositeOperation = "source-over";
   }
 
-  /* The strip: the rim unrolled under your thumb. Each cell is a lane, in the
-   * order your finger reaches them; it glows red as danger climbs that lane,
-   * crawlers on the rim show as red marks, and your cell is lit in your colour. */
-  function drawStrip() {
-    if (!inp.touchUI || !G.order || (G.phase !== "play" && G.phase !== "intro" && G.phase !== "dive" && G.phase !== "dying")) return;
-    var r = stripRect(), N = G.sh.N, pal = G.pal, k, mine = G.orderAt[G.lane];
-    var a = G.phase === "intro" ? clamp(G.phaseT * 2, 0, 1) : 1;
+  /* The knob: a dark glass dial. Its grip notches turn with your thumb so it
+   * feels like a real control; inside, a tick for every lane at its true angle
+   * round the well (red as something climbs it), a red mark for anything
+   * crawling on the rim, and a needle of your own light pointing where you are. */
+  function drawKnob() {
+    if (!inp.touchUI || !G.knob || !G.laneAng || (G.phase !== "play" && G.phase !== "intro" && G.phase !== "dive" && G.phase !== "dying")) return;
+    var k = G.knob, pal = G.pal, N = G.sh.N, i, a = G.phase === "intro" ? clamp(G.phaseT * 2, 0, 1) : 1;
+    var held = inp.moveId !== null && inp.touchMode === "knob";
     ctx.globalAlpha = a;
-    for (k = 0; k < N; k++) {
-      var l = G.order[k], x = r.x0 + k * r.cell + 1, w = r.cell - 2, y = r.y - r.h / 2;
-      ctx.fillStyle = "rgba(0,0,0,0.45)";
-      roundRect(x, y, w, r.h, 4); ctx.fill();
-      var h = G.heat[l] || 0;
-      ctx.fillStyle = h > 0.03 ? css(pal.hot, Math.min(0.9, 0.12 + h * 0.8)) : css(pal.glow, 0.07);
-      roundRect(x, y, w, r.h, 4); ctx.fill();
-      // the seam at the top of a ring: the two end cells are neighbours
-      if (G.sh.closed && (k === 0 || k === N - 1)) {
-        ctx.fillStyle = css(pal.glow, 0.25);
-        ctx.fillRect(k === 0 ? x : x + w - 2, y + 3, 2, r.h - 6);
-      }
+    // body
+    var g = ctx.createRadialGradient(k.x, k.y - k.r * 0.3, k.r * 0.1, k.x, k.y, k.r);
+    g.addColorStop(0, "rgba(40,48,56,0.55)"); g.addColorStop(0.7, "rgba(8,12,16,0.72)"); g.addColorStop(1, "rgba(2,4,6,0.82)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(k.x, k.y, k.r, 0, TAU); ctx.fill();
+    ctx.strokeStyle = css(pal.glow, held ? 0.55 : 0.28); ctx.lineWidth = 1.2; ctx.stroke();
+    // grip notches, turning with the thumb
+    ctx.strokeStyle = "rgba(255,255,255,0.16)"; ctx.lineWidth = 2; ctx.lineCap = "round";
+    for (i = 0; i < 28; i++) {
+      var ga = inp.knobRot + i / 28 * TAU;
+      ctx.beginPath();
+      ctx.moveTo(k.x + Math.cos(ga) * k.r * 0.88, k.y + Math.sin(ga) * k.r * 0.88);
+      ctx.lineTo(k.x + Math.cos(ga) * k.r * 0.96, k.y + Math.sin(ga) * k.r * 0.96);
+      ctx.stroke();
     }
-    // crawlers on the rim: the thing to turn and face
+    // the lanes, at their real angles round the well
+    var ri = k.r * 0.66;
+    for (i = 0; i < N; i++) {
+      var la = G.laneAng[i], h = G.heat[i] || 0;
+      ctx.fillStyle = h > 0.04 ? css(pal.hot, Math.min(1, 0.35 + h * 0.8)) : css(pal.glow, 0.3);
+      var s = h > 0.04 ? 2.2 + h * 2.2 : 1.7;
+      ctx.beginPath(); ctx.arc(k.x + Math.cos(la) * ri, k.y + Math.sin(la) * ri, s, 0, TAU); ctx.fill();
+    }
+    // anything on the rim, crawling at you
     G.enemies.forEach(function (e) {
       if (e.dead || !e.rim) return;
-      var kk = G.orderAt[collideLane(e)], cx2 = r.x0 + (kk + 0.5) * r.cell;
+      var ea = G.laneAng[collideLane(e)], ex = k.x + Math.cos(ea) * k.r * 0.8, ey = k.y + Math.sin(ea) * k.r * 0.8;
       ctx.fillStyle = css(COL.skitter, 1);
-      ctx.beginPath(); ctx.moveTo(cx2, r.y - r.h / 2 - 7); ctx.lineTo(cx2 - 5, r.y - r.h / 2 - 1); ctx.lineTo(cx2 + 5, r.y - r.h / 2 - 1); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.arc(ex, ey, 3.4, 0, TAU); ctx.fill();
     });
-    if (mine !== undefined && G.phase !== "dying") {
-      var mx = r.x0 + mine * r.cell + 1, my = r.y - r.h / 2;
+    // your needle
+    if (G.phase !== "dying") {
+      var va = visAngle(), nx = Math.cos(va), ny = Math.sin(va);
       ctx.globalCompositeOperation = "lighter";
-      glowAt(pal.glow, mx + (r.cell - 2) / 2, r.y, r.h * 1.3, 0.55 * a);
+      glowAt(pal.glow, k.x + nx * ri, k.y + ny * ri, k.r * 0.34, 0.8 * a);
       ctx.globalAlpha = a;
-      ctx.fillStyle = css(mixc(pal.glow, [1, 1, 1], 0.55), 0.95);
-      roundRect(mx, my, r.cell - 2, r.h, 4); ctx.fill();
+      ctx.strokeStyle = css(mixc(pal.glow, [1, 1, 1], 0.4), 0.9); ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(k.x + nx * k.r * 0.2, k.y + ny * k.r * 0.2); ctx.lineTo(k.x + nx * ri, k.y + ny * ri); ctx.stroke();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(k.x + nx * ri, k.y + ny * ri, 3.6, 0, TAU); ctx.fill();
       ctx.globalCompositeOperation = "source-over";
     }
-    // where your finger is, if it is down
-    if (inp.fingerX !== null && inp.fingerX !== undefined) {
-      ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(inp.fingerX, r.y, r.h * 0.75, 0, TAU); ctx.stroke();
+    // hub
+    ctx.fillStyle = "rgba(0,0,0,0.5)";
+    ctx.beginPath(); ctx.arc(k.x, k.y, k.r * 0.2, 0, TAU); ctx.fill();
+    ctx.strokeStyle = css(pal.glow, 0.25); ctx.lineWidth = 1; ctx.stroke();
+    // your thumb on the grip
+    if (held && inp.fingerX !== null) {
+      ctx.strokeStyle = "rgba(255,255,255,0.55)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(inp.fingerX, inp.fingerY, 22, 0, TAU); ctx.stroke();
     }
     ctx.globalAlpha = 1;
-  }
-  function roundRect(x, y, w, h, rr) {
-    rr = Math.min(rr, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + rr, y); ctx.arcTo(x + w, y, x + w, y + h, rr); ctx.arcTo(x + w, y + h, x, y + h, rr);
-    ctx.arcTo(x, y + h, x, y, rr); ctx.arcTo(x, y, x + w, y, rr); ctx.closePath();
   }
 
   /* You: a small luminous comb-jelly clinging to the lip, two soft mandibles
@@ -2157,6 +2218,9 @@
 
 
 
+
+
+
   function init() {
     var sv = store(KEY_SOUND);
     var on = sv !== "0";
@@ -2174,8 +2238,8 @@
     }
     if (coarse) {
       inp.touchUI = true;
-      el.ovKeys.textContent = "slide your finger along the bar under the well: you go to the lane under it, and fire at whatever is in that lane";
-      el.hint.textContent = "slide along the bar under the well";
+      el.ovKeys.textContent = "turn the knob under the well to go round the rim, or touch the well where you want to be · keep your finger down to fire at whatever is in your lane";
+      el.hint.textContent = "turn the knob, or touch the well";
     }
 
     G.phase = "attract";

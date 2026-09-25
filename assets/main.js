@@ -521,7 +521,7 @@ let featuredTool = null;
 // spotlight rotates through these — one per page load — instead of always
 // showing the newest toy. Add a slug here only once its art exists.
 const FEATURED_ART = [
-  "trench-runner",
+  "maw", "trench-runner",
   "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher",
   "chess", "darts", "deep-descent", "deep-hollow", "dot-loop", "five-second-game",
   "mini-golf", "nova-coil", "paper-plane", "perfect-circle",
