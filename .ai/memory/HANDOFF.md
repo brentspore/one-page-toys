@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-09-23 (Barkeep live; shopping list made findable — `09e1414`).**
+**Last updated: 2026-09-24 (Docker for local dev; internal files no longer published — `71f182f`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**122 toys, live at onepagetoys.com.** Latest on `main`: `09e1414`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**122 toys, live at onepagetoys.com.** Latest on `main`: `71f182f`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Newest work — No. 122 Barkeep, shipped 2026-09-23 (`99edb21`), live
 
@@ -337,6 +337,9 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 - ⚠ The art is a CSS background painted after the registry fetch, so it **cannot be `rel=preload`ed** — likely the home LCP, a round-trip late; the fix, if it ever matters, is `<img fetchpriority="high">`.
 
 ## Standing exclusions and commit discipline
+
+- ⚠ **Vercel publishes EVERY repo file `.vercelignore` doesn't exclude.** Until 2026-09-24 `CLAUDE.md`, `AGENTS.md`, all of `.ai/memory/` and `scripts/` were public URLs. They are excluded now (`71f182f`, verified 404 live). **Any new repo-only file or folder at the root goes in `.vercelignore` in the same commit.**
+- **Local dev:** say `start` (global dev-start serves this static site on :8000, no `dev` script needed). Optional Docker: `docker compose up -d` → :8080 (see the global `docker` skill).
 
 - **Never stage** `.claude/settings.json` / `.claude/settings.local.json`, `toys/shuriken-night-visual-pass/`, or `.DS_Store`. `git pull` before any commit; check `git status` for another session's working-tree state before staging (working-tree-only work would be destroyed by checkout/stash/clean).
 - ⚠ **A repo-wide HTML sweep dirties `toys/shuriken-night-visual-pass/`** — another session's tracked, clean sandbox; exclude that path or `git checkout --` it afterwards. Two machines have also edited Shuriken Night itself concurrently: `git pull` before touching that toy.
