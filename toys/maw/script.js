@@ -109,7 +109,7 @@
   var HOLD_DELAY = 0.26, HOLD_RATE = 0.15;
   var LANE_STEP = 0.028;      // how fast the rim can be crossed with a mouse
   var HIT_R = 0.045;
-  var BITE = 0.34;            // grace between a crawler landing in your lane and it biting
+  var BITE = 0.46;            // grace between a crawler landing in your lane and it biting
   var PTS = { mite: 50, skitter: 150, brood: 100, spitter: 200, weaver: 250, glob: 25, silk: 10 };
   var INTRO_T = 1.5, DIVE_T = 2.35, DIE_T = 1.7;
 
@@ -117,8 +117,8 @@
     var tier = Math.floor((n - 1) / 10);
     return {
       count: Math.min(46, 11 + n * 3),
-      interval: Math.max(0.4, 1.5 * Math.pow(0.9, n - 1)),
-      speed: Math.min(2.1, (1 + (n - 1) * 0.07) * (1 + tier * 0.12))
+      interval: Math.max(0.4, (n === 1 ? 1.75 : n === 2 ? 1.6 : 1.5) * Math.pow(0.9, n - 1)),
+      speed: Math.min(2.1, (n === 1 ? 0.86 : n === 2 ? 0.93 : 1 + (n - 1) * 0.07) * (1 + tier * 0.12))
     };
   }
   function weights(n) {
@@ -156,7 +156,7 @@
   };
 
   var inp = {
-    moveId: null, lx: 0, ly: 0, lt: 0, acc: 0, recent: 0,
+    moveId: null, lx: 0, ly: 0, lt: 0, acc: 0, recent: 0, map: null, lastMx: 0, lastMove: 0,
     fireHeld: false, holdT: 0, holdType: "",
     mouseTarget: null, stepT: 0,
     keyDir: 0, keyLaneDir: 0, keyT: 0, keyFire: false
@@ -1070,17 +1070,32 @@
       inp.keyT -= dt;
       if (inp.keyT <= 0) { stepLane(inp.keyLaneDir); inp.keyT += 0.075; }
     }
-    // hold to repeat — on touch only while the finger is still, so dragging
-    // to move does not spray shots into empty lanes and burn your streak
+    /* Hold to repeat. On touch the finger is also what steers, so a held finger
+     * fires only when something is actually in your lane: you can slide and
+     * shoot in one gesture, and it never sprays misses into empty lanes (misses
+     * cost streak). Mouse and keys repeat unconditionally. */
     inp.recent *= Math.pow(0.001, dt);
     if (inp.fireHeld || inp.keyFire) {
       inp.holdT += dt;
-      var still = inp.holdType !== "touch" || inp.recent < 14;
-      if (inp.holdT >= HOLD_DELAY && still) {
+      if (inp.holdType === "touch") {
+        if (inp.holdT >= 0.12 && laneHasTarget() && fire()) inp.holdT = 0.12 - HOLD_RATE;
+      } else if (inp.holdT >= HOLD_DELAY) {
         if (fire()) inp.holdT = HOLD_DELAY - HOLD_RATE;
       }
     }
+    // a resting thumb should not leave half a lane banked for the next twitch
+    if (inp.moveId !== null && performance.now() - inp.lastMove > 140) inp.acc *= Math.pow(0.02, dt);
     visTrack(dt);
+  }
+
+  function laneHasTarget() {
+    var l = G.lane, from = G.clawD - 0.02, i;
+    for (i = 0; i < G.enemies.length; i++) {
+      var e = G.enemies[i];
+      if (!e.dead && e.doom < 0 && !e.flee && collideLane(e) === l && e.d >= from) return true;
+    }
+    for (i = 0; i < G.globs.length; i++) if (!G.globs[i].dead && G.globs[i].lane === l) return true;
+    return G.silk[l] < 1 && G.silk[l] >= from;
   }
 
   function pickLane(x, y) {
@@ -1109,15 +1124,30 @@
   }
 
   /* Touch: drag ANYWHERE and the creature follows your thumb along the rim.
-   * The drag is projected onto the rim's own direction at the current lane and
-   * measured in lane widths, so a thumb moved one lane's width moves you one
-   * lane — then a little acceleration for fast flicks. */
+   *
+   * ⚠ The mapping is LOCKED for the whole stroke, from the rim's direction where
+   * the stroke began. The first version re-read the tangent every move, so at
+   * three and nine o'clock (where the rim runs vertically) a sideways thumb did
+   * nothing at all and you stalled at the sides — owner, on a phone: "pretty
+   * hard". Locked, a long leftward drag keeps pushing you round like a wheel,
+   * over the top if you keep going, and each new stroke re-anchors to where you
+   * are, so short corrections always move the way your thumb does. A stroke that
+   * starts at a side keeps the last sideways habit and also answers up/down.
+   * Measured in lane widths, with some acceleration for flicks. */
+  function strokeMap() {
+    var t = rimTangent(G.lane);
+    var mx = Math.abs(t.x) >= 0.4 ? (t.x > 0 ? 1 : -1) : (inp.lastMx || (t.x >= 0 ? 1 : -1));
+    if (Math.abs(t.x) >= 0.4) inp.lastMx = mx;
+    var my = Math.abs(t.y) >= 0.4 ? (t.y > 0 ? 1 : -1) : 0;
+    inp.map = { x: mx, y: my };
+  }
   function dragBy(dx, dy, dtMs) {
-    var tan = rimTangent(G.lane);
-    var along = dx * tan.x + dy * tan.y;
+    if (!inp.map) strokeMap();
+    var w = rimTangent(G.lane).w;
+    var along = dx * inp.map.x + dy * inp.map.y;
     var speed = Math.hypot(dx, dy) / Math.max(1, dtMs) * 1000;
-    var gain = 1.6 + Math.min(1.2, speed / 1200);
-    inp.acc += along / Math.max(24, tan.w) * gain;
+    var gain = 1.5 + Math.min(0.9, speed / 1400);
+    inp.acc += along / Math.max(24, w) * gain;
     var guard = 0;
     while (Math.abs(inp.acc) >= 1 && guard++ < 16) {
       var dir = inp.acc > 0 ? 1 : -1;
@@ -1144,6 +1174,7 @@
       inp.moveId = ev.pointerId;
       inp.lx = ev.clientX; inp.ly = ev.clientY; inp.lt = ev.timeStamp; inp.acc = 0; inp.recent = 0;
       inp.fireHeld = true; inp.holdT = 0; inp.holdType = "touch";
+      inp.map = null; inp.lastMove = performance.now();
     }
     fire();
     hideHint();
@@ -1158,6 +1189,7 @@
     var dx = ev.clientX - inp.lx, dy = ev.clientY - inp.ly;
     inp.recent += Math.hypot(dx, dy);
     if (G.phase !== "dying") dragBy(dx, dy, ev.timeStamp - inp.lt);
+    if (dx || dy) inp.lastMove = performance.now();
     inp.lx = ev.clientX; inp.ly = ev.clientY; inp.lt = ev.timeStamp;
   });
   function endPointer(ev) {
@@ -2029,6 +2061,7 @@
   }
 
 
+
   function init() {
     var sv = store(KEY_SOUND);
     var on = sv !== "0";
@@ -2045,7 +2078,7 @@
       gtagSafe("challenge_open", { toy: "maw", value: G.challenge.score });
     }
     if (coarse) {
-      el.ovKeys.textContent = "drag anywhere to slide around the rim · tap to fire · hold still to keep firing";
+      el.ovKeys.textContent = "drag anywhere to slide around the rim · tap to fire · keep your finger down and you fire at whatever is in your lane";
       el.hint.textContent = "drag to slide around the rim · tap to fire";
     }
 
