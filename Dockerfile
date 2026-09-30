@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # One Page Toys — the static site, served by nginx.
 #
 # There is no build step: the repo IS the site. This image just copies it
@@ -11,7 +12,10 @@
 FROM nginx:1.27-alpine
 
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY . /usr/share/nginx/html
+# COPY keeps host modes and git does not track them, so a checkout with
+# owner-only dirs (drwx------) would 403/404 under nginx's worker user.
+# Open them up in the COPY itself; a later chmod -R would duplicate every file.
+COPY --chmod=a+rX . /usr/share/nginx/html
 # the nginx config rode in with the site; it is not a page
 RUN rm -rf /usr/share/nginx/html/docker
 
