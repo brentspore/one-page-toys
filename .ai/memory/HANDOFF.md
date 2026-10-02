@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-10-01 (No. 124 Meld built and fully registered, LOCAL until the owner says push; Trench Runner cinematic also still local).**
+**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped and live-verified; Meld's audio then REBUILT from the physics of glass, LOCAL until the owner says push).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**123 toys live at onepagetoys.com, 124 in the working tree (Meld, unpushed).** Latest on `main`: `d0ab2cf`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**124 toys, live at onepagetoys.com.** Latest on `main`: `6d9458c`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## No. 124 Meld — built 2026-10-01, LOCAL until pushed
+## No. 124 Meld — shipped 2026-10-01 (`6d9458c`), live; its audio REBUILD is local until pushed
 
 **`toys/meld/`** — a drop-and-merge physics puzzle (the Suika genre) in hand-blown GLASS: drop orbs into a jar, two
 of a kind melt into the next of eleven (Seed, Amber, Cobalt, Jade, Cat's Eye, Rose, Millefiori, Dichroic, Galaxy,
@@ -17,9 +17,12 @@ Opal, Sun; only the first five drop), two Suns burn out together. Owner picked t
 `glass.js` (orb sprites), `audio.js`, `script.js`. Keys: `meld_best` (ticket rule **dir `up`**, rule only),
 `meld_found` (bitmask of orbs ever made; 0-4 always count), `meld_chain`, `meld_runs`, `meld_sound`.
 Registered everywhere (registry, sitemap, NL phrases, card CSS + `:not()`, og-gen, card + OG, ticket rule,
-cross-promo in all FOUR lists — the three sibling `MoreGames.tsx` edits are uncommitted in their repos and must
-be pushed with this). Verified headless: no console errors on Chromium and WebKit, no overflow at 375px, portrait,
-landscape phone, reduced motion, challenge link, full run to overflow. **Never played by a human; audio unheard.**
+cross-promo in all FOUR lists, verified in all four DEPLOYED bundles) plus the owner's featured key art (36 in the
+pool; source in `_sources/meld.png`). IndexNow accepted. Live-verified: toy plays by touch, hub card + newest panel +
+search. ⚠ **The Trail Game could not deploy the cross-promo until its TanStack Start was bumped 1.168.26 to 1.168.60**
+(`e693e8a` in that repo): Vercel now BLOCKS deploys on advisory GHSA-qx66-fv34-fjm8. Any TanStack Start site in the
+portfolio on an older 1.168.x will hit the same wall on its next push. Verified headless: Chromium and WebKit, 375px,
+portrait, landscape phone, reduced motion, challenge link, full run to overflow. **Feel never played by the owner.**
 - **Viral:** a run's drops come from a seed, so the challenge link `#c=<seed36>-<score>-<tier>` hands a friend the
   SAME orbs in the same order (physics is not deterministic and does not need to be). Challenged players replay the
   same drops ("Same drops again"), with a text button out to fresh drops. Image share via `OPT_SHARE_IMAGE`.
@@ -35,10 +38,28 @@ landscape phone, reduced motion, challenge link, full run to overflow. **Never p
   on every merge). (4) **Cap the mass ratio at 2 for overlap correction only**: a big orb on small ones otherwise
   sinks into them because the correction moves the small ones almost entirely. Remaining overlap happens only in the
   0.35s after a meld (the swell shoving neighbours, by design).
-- ⚠ **Audio: pool the short noise bursts (8 per length).** One cached burst made every hit identical, and since a
-  narrow resonator hears part of a burst's spectrum, a whole session's contact level depended on which burst it drew
-  (0.26 one session, 0.33 the next). Levels: hits 0.26-0.28, merges 0.24-0.35, sun 0.42, two suns 0.55, danger
-  pulse 0.36, worst pile-up 0.56 (under the brickwall).
+- ⚠⚠ **Audio was REBUILT after the owner heard pass one** ("could be a whole lot better", "all of it feels cheap").
+  Pass one was the house modal/additive recipe; pass two works from the physics of glass and renders most of its
+  sound into buffers once, after the first tap, in small jobs (each <=17ms): (1) a SMALL SOLID glass ball barely
+  rings audibly, so a clack is a Hertz contact pulse radiated as its derivative, with 1-2 chatter re-bounces, a
+  highpass at c/(2*pi*a) for the ball's size and a whisper of ring; contact time grows with size, so the clack
+  darkens from 9.3kHz (Seed) to 2.8kHz (Sun) centroid. (2) What sounds like GLASS is the JAR: wine-glass mode
+  ratios on B5, every mode a split doublet that BEATS; struck hard by wall/floor hits, faintly through the pile.
+  (3) A looping rustle of micro-contacts follows pile motion (`AU.roll`, driven from script.js; ROLL_FULL 160,
+  calibrated on the node sim, p97 of real play ~110). (4) A meld = contact click + turbulent torch puff (a cluster
+  of gusts, never one envelope) + crystal ring with beating doublets on the chain's pentatonic step + glints + a
+  thump for heavy orbs + annealing ticks. (5) Near overflow the jar SINGS (rubbed-rim doublet on B4, stick-slip
+  wobble, creeps sharp) with quickening stress ticks. (6) Sun = glass-harmonica chord; overflow = a real fracture
+  run with the jar's ring choked. Room IR: early reflections + 3-band tail, treble dies first.
+- ⚠⚠ **ONE NaN SAMPLE SILENCED THE WHOLE TOY** until reload: `Math.pow(Math.sin(PI*i/n), 1.5)` at i = n can land a
+  hair past PI, sin goes a hair negative, the 1.5 power is NaN, and NaN in a shared compressor is permanent. Clamp
+  the base, and every rendered buffer is now scrubbed of non-finite samples in `buf()`. A level meter that suddenly
+  reads 0.000 for everything after one voice is this, not a quiet voice.
+- Levels (analyser before destination, measured with NO run going, or the game loop overwrites roll/danger every
+  frame): clacks 0.27-0.29, wall 0.17, soft 0.06, drop 0.05, melds 0.23-0.40, sun 0.47, two suns 0.54, overflow 0.46,
+  rustle full 0.23, singing jar 0.21, worst pile-up 0.52. Real touch play: per-second peak median 0.29.
+  ⚠ Short noise bursts come from a POOL of eight per length: one cached burst made every hit identical and swung a
+  session's level 0.26 vs 0.33 depending on which burst it drew.
 - ⚠ **Trademark:** "Suika" (Aladdin X) is on NO surface, hidden search keywords included (the Tetris/Tempest
   precedent). "Watermelon game" is also out; whether to add it as a hidden keyword is the owner's call, unasked.
 - **Card pose** `scripts/poses/meld.js`: real taps sweep 58 drops across the jar; candidate generator, regenerate
@@ -116,7 +137,7 @@ knock, ice rattle) is measured (0.215 / 0.132 / 0.144) but UNHEARD.**
 - ⚠ **The Write tool turns `\u0300` escapes into literal combining characters** — it happened in
   `fold()`/`slug()`. It still works, but restore the escapes if you see mojibake in a regex.
 
-## Trench Runner CINEMATIC mode (2026-09-24, local until pushed)
+## Trench Runner CINEMATIC mode (shipped 2026-10-01, `a512069`, live)
 
 A second, player-picked look for No. 121 (owner: "keep the neon look, offer it as a second mode but really take it
 up"). Neon is untouched and stays the default. **Look: Neon | Cinematic** on the start panel, an **HD** button under
@@ -469,10 +490,10 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Meld (No. 124): owner plays it on a phone, then "push"** (with the three sibling `MoreGames.tsx` edits; after deploy verify all four DEPLOYED bundles and run `node scripts/indexnow-submit.mjs`). Feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove) and audio are untested by a human.
+- **Meld's rebuilt audio is LOCAL (`toys/meld/audio.js` v2 + the `AU.roll` wiring in `script.js` v2): owner says "push", then plays on a phone** for the new sound and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
-- **Trench Runner cinematic mode**: built; owner to try it on a phone (performance is the open question).
+- **Trench Runner cinematic mode**: shipped (`a512069`); owner to try it on a phone (performance is the open question).
 - **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
