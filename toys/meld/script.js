@@ -1063,30 +1063,57 @@
 
   /* -------------------------------------------------------------- input */
 
-  var pointer = { id: null, down: false };
+  /* A mouse aims by hovering and drops on click: the pointer is tiny, so it
+   * never hides the pile. A finger is not tiny, and on a phone the jar fills
+   * the screen, so a thumb sat on the target hides it. So a finger works like
+   * a trackpad: a DRAG slides the orb by however far the finger moves, from
+   * wherever it touched (the orb never jumps to it, and the thumb can stay low,
+   * clear of the pile), and lifting drops it. A quick TAP with no drag still
+   * drops right where it lands, the way the original plays on a phone.
+   * (Owner, 10-01: the phone was "harder to use than the desktop".) */
+  var TAP_SLOP = 8;                     // px a finger may wander and still count as a tap
+  var pointer = { id: null, down: false, mouse: false, x0: 0, lastX: 0, moved: false };
 
-  function aimFrom(e) {
+  function aimAt(clientX) {
     var r = el.canvas.getBoundingClientRect();
-    G.aim = (e.clientX - r.left - ox) / s;
+    G.aim = (clientX - r.left - ox) / s;
   }
+  function aimFrom(e) { aimAt(e.clientX); }
 
   el.canvas.addEventListener("pointerdown", function (e) {
     if (G.phase !== "play") return;
     AU.unlock();
     pointer.id = e.pointerId; pointer.down = true;
+    pointer.mouse = e.pointerType === "mouse";
+    pointer.x0 = pointer.lastX = e.clientX; pointer.moved = false;
     try { el.canvas.setPointerCapture(e.pointerId); } catch (err) {}
-    aimFrom(e);
+    if (pointer.mouse) aimFrom(e);
     e.preventDefault();
   });
   el.canvas.addEventListener("pointermove", function (e) {
     if (G.phase !== "play") return;
-    // a mouse aims just by moving; a finger aims while it is down
-    if (e.pointerType === "mouse" || (pointer.down && e.pointerId === pointer.id)) aimFrom(e);
+    if (e.pointerType === "mouse") { aimFrom(e); return; }
+    if (!pointer.down || e.pointerId !== pointer.id) return;
+    if (!pointer.moved && Math.abs(e.clientX - pointer.x0) > TAP_SLOP) {
+      pointer.moved = true;
+      pointer.lastX = e.clientX;           // start sliding from here: no jump across the slop
+    }
+    if (pointer.moved) {
+      // incremental and clamped every step, so reversing at a wall moves at once
+      var R = RADII[held()];
+      G.aim = clamp(G.aim + (e.clientX - pointer.lastX) / s, R, JW - R);
+      pointer.lastX = e.clientX;
+    }
   });
   function release(e) {
     if (!pointer.down || e.pointerId !== pointer.id) return;
     pointer.down = false;
-    if (e.type === "pointerup" && G.phase === "play") { aimFrom(e); drop(); }
+    if (e.type !== "pointerup" || G.phase !== "play") return;
+    // a tap places where the finger came DOWN; a drag has already aimed. Either
+    // way the lift itself never moves it: fingertips roll a few px as they leave
+    if (pointer.mouse) aimFrom(e);
+    else if (!pointer.moved) aimAt(pointer.x0);
+    drop();
   }
   el.canvas.addEventListener("pointerup", release);
   el.canvas.addEventListener("pointercancel", release);
@@ -1190,8 +1217,8 @@
       gtagSafe("challenge_open", { toy: "meld", value: G.challenge.score });
     }
     if (coarse) {
-      el.ovKeys.textContent = "drag to aim · let go to drop";
-      el.hint.textContent = "drag to aim · let go to drop";
+      el.ovKeys.textContent = "drag anywhere to slide the orb · let go to drop · or tap right where you want it";
+      el.hint.textContent = "drag to slide · let go to drop · or tap to place";
     }
     layout();
     seedEmbers();
