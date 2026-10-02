@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped and live-verified; Meld's audio then REBUILT from the physics of glass, LOCAL until the owner says push).**
+**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld's sound rebuilt from the physics of glass, with a pitch per orb size, shipped `3eb1457`; all live-verified).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**124 toys, live at onepagetoys.com.** Latest on `main`: `6d9458c`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**124 toys, live at onepagetoys.com.** Latest on `main`: `3eb1457`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## No. 124 Meld — shipped 2026-10-01 (`6d9458c`), live; its audio REBUILD is local until pushed
+## No. 124 Meld — shipped 2026-10-01 (`6d9458c`, sound rebuild `3eb1457`), live
 
 **`toys/meld/`** — a drop-and-merge physics puzzle (the Suika genre) in hand-blown GLASS: drop orbs into a jar, two
 of a kind melt into the next of eleven (Seed, Amber, Cobalt, Jade, Cat's Eye, Rose, Millefiori, Dichroic, Galaxy,
@@ -38,6 +38,13 @@ portrait, landscape phone, reduced motion, challenge link, full run to overflow.
   on every merge). (4) **Cap the mass ratio at 2 for overlap correction only**: a big orb on small ones otherwise
   sinks into them because the correction moves the small ones almost entirely. Remaining overlap happens only in the
   0.35s after a meld (the swell shoving neighbours, by design).
+- ⚠⚠ **Owner, on the rebuilt sound (10-01): "the sound of the hitting glass is good but it's really repetitive. The
+  different sizes should have different pitches."** So the orbs are HOLLOW and RING: `TIER_F` gives each size its own
+  note, two octaves of E major pentatonic (Seed E6 1318Hz down to Sun E4 330Hz, measured 1315/987/656/416/328).
+  Both orbs in a collision ring (a changing dyad); every knock randomises overtone balance, length, doublet beat
+  rate and brightness (soft = darker); at most 12 rings at once. The JAR now rings ONLY on wall/floor hits; its
+  fixed B on nearly every pile hit was the main repetition. This overrides the house "keep size pitch near a
+  fourth" rule FOR THIS TOY, by owner request; the chain bell still climbs separately.
 - ⚠⚠ **Audio was REBUILT after the owner heard pass one** ("could be a whole lot better", "all of it feels cheap").
   Pass one was the house modal/additive recipe; pass two works from the physics of glass and renders most of its
   sound into buffers once, after the first tap, in small jobs (each <=17ms): (1) a SMALL SOLID glass ball barely
@@ -490,7 +497,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Meld's rebuilt audio is LOCAL (`toys/meld/audio.js` v2 + the `AU.roll` wiring in `script.js` v2): owner says "push", then plays on a phone** for the new sound and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
+- **Meld: owner plays the live build on a phone** for the pitched sound (`3eb1457`, audio.js v3) and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
 - **Trench Runner cinematic mode**: shipped (`a512069`); owner to try it on a phone (performance is the open question).
