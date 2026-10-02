@@ -1,12 +1,48 @@
 # Handoff
 
-**Last updated: 2026-09-30 (Docker image fixed for checkouts with owner-only dir modes — `1e73505`).**
+**Last updated: 2026-10-01 (No. 124 Meld built and fully registered, LOCAL until the owner says push; Trench Runner cinematic also still local).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**123 toys, live at onepagetoys.com.** Latest on `main`: `d0ab2cf`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**123 toys live at onepagetoys.com, 124 in the working tree (Meld, unpushed).** Latest on `main`: `d0ab2cf`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+
+## No. 124 Meld — built 2026-10-01, LOCAL until pushed
+
+**`toys/meld/`** — a drop-and-merge physics puzzle (the Suika genre) in hand-blown GLASS: drop orbs into a jar, two
+of a kind melt into the next of eleven (Seed, Amber, Cobalt, Jade, Cat's Eye, Rose, Millefiori, Dichroic, Galaxy,
+Opal, Sun; only the first five drop), two Suns burn out together. Owner picked the molten-glass concept and the
+**combo multiplier** twist (2026-10-01). Four files: `physics.js` (own circle solver, also runs in node),
+`glass.js` (orb sprites), `audio.js`, `script.js`. Keys: `meld_best` (ticket rule **dir `up`**, rule only),
+`meld_found` (bitmask of orbs ever made; 0-4 always count), `meld_chain`, `meld_runs`, `meld_sound`.
+Registered everywhere (registry, sitemap, NL phrases, card CSS + `:not()`, og-gen, card + OG, ticket rule,
+cross-promo in all FOUR lists — the three sibling `MoreGames.tsx` edits are uncommitted in their repos and must
+be pushed with this). Verified headless: no console errors on Chromium and WebKit, no overflow at 375px, portrait,
+landscape phone, reduced motion, challenge link, full run to overflow. **Never played by a human; audio unheard.**
+- **Viral:** a run's drops come from a seed, so the challenge link `#c=<seed36>-<score>-<tier>` hands a friend the
+  SAME orbs in the same order (physics is not deterministic and does not need to be). Challenged players replay the
+  same drops ("Same drops again"), with a text button out to fresh drops. Image share via `OPT_SHARE_IMAGE`.
+- **Collection hook:** the ladder under the jar (beside it in landscape) shows all eleven; 5-10 stay "?" until first
+  made, ever. First make of each = callout + chime + GA `new_orb`.
+- ⚠ **Chains reset on every drop.** A time window alone let spam-dropping string unrelated melds together (a random
+  tapper reached x9). Now a chain is the melds that follow one drop within 0.62s of each other.
+- ⚠⚠ **Physics lessons, all measured with a node bot (thousands of drops), reusable for any stacking toy:**
+  (1) **Bounce only on a FRESH impact.** Restitution on resting contacts turned solver residue into a bounce that
+  never died, and whole piles never fell asleep. (2) **Sleep is what makes a pile truly still** (8 velocity
+  iterations + sleep = zero drift); a meld wakes everything (a vanished orb can leave anything unsupported).
+  (3) **Sleeping pairs must CARRY their warm-start impulses**, or every wake-all makes the pile sag a frame (a twitch
+  on every merge). (4) **Cap the mass ratio at 2 for overlap correction only**: a big orb on small ones otherwise
+  sinks into them because the correction moves the small ones almost entirely. Remaining overlap happens only in the
+  0.35s after a meld (the swell shoving neighbours, by design).
+- ⚠ **Audio: pool the short noise bursts (8 per length).** One cached burst made every hit identical, and since a
+  narrow resonator hears part of a burst's spectrum, a whole session's contact level depended on which burst it drew
+  (0.26 one session, 0.33 the next). Levels: hits 0.26-0.28, merges 0.24-0.35, sun 0.42, two suns 0.55, danger
+  pulse 0.36, worst pile-up 0.56 (under the brickwall).
+- ⚠ **Trademark:** "Suika" (Aladdin X) is on NO surface, hidden search keywords included (the Tetris/Tempest
+  precedent). "Watermelon game" is also out; whether to add it as a hidden keyword is the owner's call, unasked.
+- **Card pose** `scripts/poses/meld.js`: real taps sweep 58 drops across the jar; candidate generator, regenerate
+  with the command at its foot (`--size 760 --vw 760 --vh 1400 --cropy 470`). Card = candidate 4 of 6.
 
 ## Newest work — No. 123 Maw, shipped 2026-09-24 (`90036d7`, rotary knob + key art `8465092`), live
 
@@ -79,6 +115,33 @@ knock, ice rattle) is measured (0.215 / 0.132 / 0.144) but UNHEARD.**
   back-bar was blurry and cut labels.
 - ⚠ **The Write tool turns `\u0300` escapes into literal combining characters** — it happened in
   `fold()`/`slug()`. It still works, but restore the escapes if you see mojibake in a regex.
+
+## Trench Runner CINEMATIC mode (2026-09-24, local until pushed)
+
+A second, player-picked look for No. 121 (owner: "keep the neon look, offer it as a second mode but really take it
+up"). Neon is untouched and stays the default. **Look: Neon | Cinematic** on the start panel, an **HD** button under
+the sound button to flip mid-run, choice in `trench_look`, GA `look_change`. `toys/trench-runner/hifi.js` renders
+everything SOLID in WebGL (walls, floor, a deck past the rim, piers, hatches, grates, towers with lit windows,
+trusses, blast-door barriers, girders, gun housings, a 3D ship); `script.js` keeps drawing everything that is LIGHT
+on the top canvas (shots, bolts, blasts, wreckage, brackets, crosshair, ghost marker, throat rings, flashes). Three
+stacked canvases: `#sky` (the sky, moved off the main canvas), `#gl`, `#canvas` (the only one taking input).
+- ⚠⚠ **ONE PROJECTION**: hifi.js's vertex shader is `project()`/`px()` in GLSL (canal wander, camera, focal, roll,
+  shake, near 1.2). Change one and a gun's 2D bracket stops sitting on its 3D housing.
+- ⚠ **Furniture comes from the SAME `hash(n, k)`** as neon `drawTrench()`, built once as static geometry (slab
+  ranges drawn per frame), so a stretch looks the same in both looks and flipping mid-run moves nothing.
+- ⚠ **Gameplay colours stay 2D or match neon**: a barrier's opening edge is lime/red by the same `through()` test;
+  a girder in your path stays steel in 3D and gets the neon HOT outline as light on top (a solid pink box read as a
+  billboard); gun brackets and charge rings stay 2D.
+- ⚠ **Light budget**: 8 dynamic lights (blasts, shots, bolts, charging guns, core, blast front, engine) ranked by
+  brightness over distance, plus the wall lamps analytic in the shader. The first pass blew every wall to white: a
+  kill's light at 7 x size lit 30 units of trench. Blasts now 2.4, shots 1.1, exposure 0.95, metal Fresnel x0.45.
+- ⚠ **The starlight is LOW on purpose** (`normalize(0.85,-1,0.35)`): steep light lit the whole floor; low light
+  puts half the trench in the rim's shadow, which is the look. The shadow is analytic (ray to the far rim).
+- Bloom (1/4 + 1/8 res), ACES, vignette, light grain and lens fringing; WebGL2 MSAA when available. Adaptive
+  resolution (`GLS` 1.25 down to 0.6) on slow frames; `webglcontextlost` drops to neon; no WebGL hides the choice.
+- Share image in cinematic flattens all three canvases (`snapshot()`), drawn in the same task so no
+  preserveDrawingBuffer.
+- ⚠ **Never run on a real phone yet**: fragment cost is the risk (14 lights + plating height field + bloom).
 
 ## No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
 
@@ -378,7 +441,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=122` (8 pages) / `styles.css?v=121` (9 hub/store pages); **`tickets.js?v=29` across all 132 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=25` (45 pages); `game-screen.js?v=1` (108 toy pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=123` (8 pages) / `styles.css?v=122` (9 hub/store pages); **`tickets.js?v=30` across all 133 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=26` (46 pages); `game-screen.js?v=1` (108 toy pages); `share.js?v=6` (47 pages — the handoff long said 43; 47 is what the repo actually carries); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **35** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
@@ -406,8 +469,10 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Maw: owner to try the rotary knob on a phone** (`8465092`). Still open: difficulty past the first depths and the audio (never heard).
-- **Next build candidate (owner, 09-24): a high-graphics Trench Runner** after Maw is done, as a player-selectable mode beside the neon one, pushed as far as it will go (owner: "really take it up") — plan in BACKLOG.
+- **Meld (No. 124): owner plays it on a phone, then "push"** (with the three sibling `MoreGames.tsx` edits; after deploy verify all four DEPLOYED bundles and run `node scripts/indexnow-submit.mjs`). Feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove) and audio are untested by a human.
+
+- ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
+- **Trench Runner cinematic mode**: built; owner to try it on a phone (performance is the open question).
 - **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.

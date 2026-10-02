@@ -1,5 +1,34 @@
 [
   {
+    "slug": "meld",
+    "name": "Meld",
+    "shortDescription": "Drop hand-blown glass orbs into a jar. Two of a kind melt together into a bigger one, all the way up from a tiny seed bead to a sun. A melt that sets off another melt builds a chain that multiplies your points. Don't let the jar overflow, and send a friend your exact drops to beat.",
+    "category": "game",
+    "tags": [
+      "meld",
+      "merge",
+      "drop-and-merge",
+      "physics",
+      "puzzle",
+      "glass",
+      "marbles",
+      "chain-reaction",
+      "satisfying",
+      "addictive",
+      "score-attack",
+      "one-thumb",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/meld/",
+    "related": [
+      "marble-drop",
+      "accretion",
+      "stack-tower",
+      "coin-pusher"
+    ]
+  },
+  {
     "slug": "maw",
     "name": "Maw",
     "shortDescription": "Hold the rim of a living well while things climb up out of the dark toward you. Slide around the edge lane by lane and spit light down at them. Whatever reaches the top crawls around the rim after you, so turn and face it. One flare per depth clears the well, and once it is empty you dive down the throat into the next one.",

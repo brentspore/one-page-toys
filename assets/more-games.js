@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Meld",
+      "tagline": "Two of a kind melt into one",
+      "url": "https://onepagetoys.com/toys/meld/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><radialGradient id='a' cx='.36' cy='.32' r='.75'><stop offset='0' stop-color='%23fff2c2'/><stop offset='.45' stop-color='%23ff9a2e'/><stop offset='1' stop-color='%238f2406'/></radialGradient><radialGradient id='b' cx='.36' cy='.32' r='.75'><stop offset='0' stop-color='%23b8d2ff'/><stop offset='.55' stop-color='%232e5ee6'/><stop offset='1' stop-color='%23081664'/></radialGradient></defs><rect width='32' height='32' fill='%230e0806'/><circle cx='19' cy='19' r='10.5' fill='url(%23a)'/><circle cx='8' cy='8.5' r='5' fill='url(%23b)'/><ellipse cx='15' cy='14' rx='3.2' ry='1.7' fill='%23ffffff' opacity='.7' transform='rotate(-38 15 14)'/><circle cx='6.4' cy='6.8' r='1.2' fill='%23ffffff' opacity='.8'/></svg>",
+      "initial": "M",
+      "slug": "meld"
+    },
+    {
       "name": "Maw",
       "tagline": "Hold the rim, dive deeper",
       "url": "https://onepagetoys.com/toys/maw/",

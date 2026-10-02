@@ -66,6 +66,7 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "meld": "meld merge game drop and merge merge drop merging puzzle combine two of the same into a bigger one match two merge two same size balls grow bigger 2048 with physics physics merge stacking puzzle drop balls into a jar jar of marbles glass marbles glass orbs glass balls hand blown glass glassblowing molten glass furnace kiln melt fuse seed bead amber cobalt jade cats eye marble millefiori dichroic glass galaxy marble aventurine opal make a sun supernova chain reaction combo multiplier cascade satisfying clack relaxing addictive one more go dont let it overflow fill line one thumb phone game mobile tap to drop high score challenge a friend same drops beat my score free browser puzzle no signup",
   "maw": "maw tube shooter well shooter rim shooter tunnel shooter lane shooter ring shooter circular shooter shoot down the tube shoot down the well slide around the rim spinner game classic arcade vector arcade retro arcade remake shoot the crawlers things climbing up the walls monsters bugs spiders grubs larvae egg sac silk web weaver creepy crawly gross organic flesh throat gullet mouth teeth fangs lamprey mouth sandworm alien stomach body horror bioluminescent deep sea abyss glowing creatures comb jelly jellyfish smart bomb screen clear flare dive down the throat warp to the next level depths how deep can you get endless arcade high score chase beat my score challenge a friend one more go free browser arcade game no signup",
   "trench-runner": "trench runner trench run fly down a trench canyon run corridor flyer tunnel shooter rail shooter space shooter starfighter fighter pilot cockpit first person flying into the screen neon vector wireframe retro arcade vector graphics battlezone star castle laser blaster shoot the turrets gun emplacements dodge the barriers thread the gap boost afterburner reactor core lock on target breach blow it up explosion space canal maintenance channel arcade score attack one more run free browser shooter no signup",
   "untangle": "untangle planarity planar graph puzzle untangle the lines cross the lines no crossings remove crossings knot puzzle string puzzle web puzzle rope knot unknot detangle de-tangle spider web constellation stars star map connect the dots nodes and edges network graph theory drag the dots move the points logic puzzle brain teaser brain training relaxing satisfying oddly satisfying calm meditative zen puzzle no guessing always solvable one sitting quick puzzle levels get harder free browser puzzle no signup planarity game tantalo untangle game",
@@ -521,7 +522,7 @@ let featuredTool = null;
 // spotlight rotates through these — one per page load — instead of always
 // showing the newest toy. Add a slug here only once its art exists.
 const FEATURED_ART = [
-  "maw", "trench-runner",
+  "meld", "maw", "trench-runner",
   "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher",
   "chess", "darts", "deep-descent", "deep-hollow", "dot-loop", "five-second-game",
   "mini-golf", "nova-coil", "paper-plane", "perfect-circle",

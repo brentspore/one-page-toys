@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Meld — One Page Toys</title>
+    <meta name="description" content="Drop hand-blown glass orbs into a jar. Two of a kind melt together into a bigger one, all the way up to a sun. Set off chains for multiplied points, don't let the jar overflow, and send a friend your exact drops to beat. A free merge game, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/meld/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0706" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Meld" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Meld — One Page Toys" />
+    <meta property="og:description" content="Drop glass orbs into a jar. Two of a kind melt into a bigger one, all the way up to a sun. Chain the melts, don't overflow, and challenge a friend on your exact drops." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/meld/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/meld.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Meld — One Page Toys" />
+    <meta name="twitter:description" content="Two of a kind melt into a bigger one. Make a sun. Don't let the jar overflow." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/meld.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Meld",
+        "url": "https://onepagetoys.com/toys/meld/",
+        "description": "A drop-and-merge physics puzzle with hand-blown glass. You drop orbs into a glass jar from above, and any two of the same kind that touch melt together into the next one up. There are eleven: Seed, Amber, Cobalt, Jade, Cat's Eye, Rose, Millefiori, Dichroic, Galaxy, Opal and Sun, and only the five smallest can be dropped, so everything bigger has to be built. Two suns that touch burn out together and free up the jar. A melt that sets off another melt builds a chain, and every link multiplies its points. The orbs roll, wedge and settle under real physics, and if anything sits above the fill line too long the jar overflows. Each run's drops come from a seed, so a challenge link gives a friend the exact same orbs in the same order. Works with a mouse, a keyboard or one thumb, with synthesised glass sounds.",
+        "applicationCategory": "GameApplication",
+        "genre": "Puzzle",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="c" role="img" aria-label="Meld: a glass jar on a bench over a furnace glow. Aim with the mouse, the arrow keys or a finger, and drop glass orbs into the jar."></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Score</span><span id="score">0</span></div>
+      <div class="hud__cell hud__cell--next"><span class="hud__k">Next</span><canvas id="nextC" width="30" height="30" aria-hidden="true"></canvas></div>
+      <div class="hud__cell"><span class="hud__k" id="bestK">Best</span><span id="best">&mdash;</span></div>
+    </div>
+
+    <div class="callout" id="callout" hidden><span class="callout__big" id="calloutBig"></span><span class="callout__sub" id="calloutSub"></span></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Molten glass</p>
+        <h1 class="panel__title" id="ovTitle">Meld</h1>
+        <p class="panel__text" id="ovText">
+          Drop glass orbs into the jar.
+          <b>Two of a kind melt into a bigger one</b>, all the way up to a sun.<br />
+          A melt that sets off another melt is a <b>chain</b>, and every link multiplies its points.<br />
+          Don't let anything sit above the line, or the jar <b>overflows</b>.
+        </p>
+        <svg class="demo" id="ovDemo" viewBox="0 0 320 112" role="img" aria-label="Two amber glass orbs touching, with a hot glow where they meet, and an arrow to the single bigger blue orb they melt into.">
+          <defs>
+            <radialGradient id="mAmber" cx="38%" cy="34%" r="70%">
+              <stop offset="0" stop-color="#ffe7ac" />
+              <stop offset="0.55" stop-color="#f2a531" />
+              <stop offset="1" stop-color="#6e2c05" />
+            </radialGradient>
+            <radialGradient id="mCobalt" cx="38%" cy="34%" r="70%">
+              <stop offset="0" stop-color="#a9c8ff" />
+              <stop offset="0.55" stop-color="#2e5ee6" />
+              <stop offset="1" stop-color="#081664" />
+            </radialGradient>
+            <radialGradient id="mHot" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#fffbe0" stop-opacity="0.95" />
+              <stop offset="0.45" stop-color="#ffb347" stop-opacity="0.55" />
+              <stop offset="1" stop-color="#ff5a14" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="mSpec" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="56" cy="62" r="22" fill="url(#mAmber)" />
+          <circle cx="100" cy="62" r="22" fill="url(#mAmber)" />
+          <circle cx="78" cy="62" r="20" fill="url(#mHot)" />
+          <circle cx="48" cy="53" r="6" fill="url(#mSpec)" />
+          <circle cx="92" cy="53" r="6" fill="url(#mSpec)" />
+          <path d="M140 62 H176 M168 55 L177 62 L168 69" fill="none" stroke="rgba(255,226,196,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="236" cy="58" r="44" fill="url(#mHot)" opacity="0.55" />
+          <circle cx="236" cy="58" r="30" fill="url(#mCobalt)" />
+          <path d="M214 50 C 226 40, 246 72, 258 60" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.4" />
+          <path d="M214 56 C 226 46, 246 78, 258 66" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" />
+          <circle cx="225" cy="46" r="8" fill="url(#mSpec)" />
+          <text x="78" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(255,226,196,0.75)">two of a kind</text>
+          <text x="236" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(255,226,196,0.75)">melt into the next</text>
+        </svg>
+        <button type="button" class="play-btn" id="ovBtn">Start melting</button>
+        <button type="button" class="ghost-btn" id="chBtn" hidden>Challenge a friend</button>
+        <button type="button" class="text-btn" id="freshBtn" hidden>or play with new drops</button>
+        <p class="panel__keys" id="ovKeys">move the mouse or use the arrows to aim &middot; click or space to drop</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 124</span>
+      <span class="frame__corner frame__corner--tr">Meld</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hint">aim, then drop &middot; two of a kind melt together</p>
+
+    <script src="../../assets/tickets.js?v=30" defer></script>
+    <script src="physics.js?v=1" defer></script>
+    <script src="glass.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=26" defer></script>
+  </body>
+</html>
