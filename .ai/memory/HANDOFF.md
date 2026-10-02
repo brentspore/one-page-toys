@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld's sound rebuilt from the physics of glass, with a pitch per orb size, shipped `3eb1457`; phone controls reworked `5552cca`; all live-verified).**
+**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld's sound rebuilt from the physics of glass, with a pitch per orb size, shipped `3eb1457`; phone controls reworked `5552cca`; generative music `2976c82`; all live-verified).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**124 toys, live at onepagetoys.com.** Latest on `main`: `5552cca`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**124 toys, live at onepagetoys.com.** Latest on `main`: `2976c82`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## No. 124 Meld — shipped 2026-10-01 (`6d9458c`, sound rebuild `3eb1457`, phone controls `5552cca`), live
+## No. 124 Meld — shipped 2026-10-01 (`6d9458c`, sound rebuild `3eb1457`, phone controls `5552cca`, music `2976c82`), live
 
 **`toys/meld/`** — a drop-and-merge physics puzzle (the Suika genre) in hand-blown GLASS: drop orbs into a jar, two
 of a kind melt into the next of eleven (Seed, Amber, Cobalt, Jade, Cat's Eye, Rose, Millefiori, Dichroic, Galaxy,
@@ -23,6 +23,17 @@ search. ⚠ **The Trail Game could not deploy the cross-promo until its TanStack
 (`e693e8a` in that repo): Vercel now BLOCKS deploys on advisory GHSA-qx66-fv34-fjm8. Any TanStack Start site in the
 portfolio on an older 1.168.x will hit the same wall on its next push. Verified headless: Chromium and WebKit, 375px,
 portrait, landscape phone, reduced motion, challenge link, full run to overflow. **Feel never played by the owner.**
+- **Music (owner 10-01: "calming background music. Different every time"):** generative, in `audio.js` (`Piece`).
+  Glass-harmonica pad (doublet + stick-slip harmonics, each voice breathing), a soft root, 3-4 Eno-style melody loops
+  on their own odd periods (13-35s) so they phase and never repeat, glints far off; chords wander by weighted chance
+  between FOUR PENTATONIC-ONLY chords (E add9, C#m7, B6sus4, F#11), voice-led, so nothing can clash with the
+  E-pentatonic clacks and melts. Each piece rolls its lead (kalimba / celesta / glass marimba), chord pace,
+  registers. ⚠ **Seeded from the run seed (`G.seed ^ 0x5bd1e995`), so a challenge replays the same music.** Own
+  4.8s hall; `MU.level` 0.16 puts it at ~0.02-0.03 RMS alone (first pass at 0.62 was LOUDER than the game). Ducks
+  and darkens with the danger level, recovers after overflow. Lookahead scheduler on a 120ms interval that skips
+  (never catches up) after a stall or a hidden tab. Separate toggle `#musicBtn` (headphones), `meld_music`; it is
+  top-left on phones, beside the sound button on desktop (the top-right frame label moved to 104px). gen-card now
+  hides `.music-btn`. Never heard by the owner yet.
 - ⚠⚠ **Phone controls are a TRACKPAD drag, not the original's jump-to-finger** (owner 10-01: the phone was "harder
   to use than the desktop"; picked this over the exact original). A drag slides the orb by the finger's travel from
   wherever it touched (8px slop, incremental and clamped each step so reversing at a wall moves at once), so a thumb
@@ -503,7 +514,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Meld: owner plays the live build on a phone** for the trackpad drag (`5552cca`), the pitched sound (`3eb1457`, audio.js v3) and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
+- **Meld: owner plays the live build on a phone** for the music (`2976c82`, audio.js v4), the trackpad drag (`5552cca`), the pitched sound (`3eb1457`) and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
 - **Trench Runner cinematic mode**: shipped (`a512069`); owner to try it on a phone (performance is the open question).
