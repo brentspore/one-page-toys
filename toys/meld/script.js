@@ -27,6 +27,7 @@
   var EXEMPT = 1.0;            // a fresh orb gets this long before it counts
   var CHAIN_T = 0.62;          // a meld inside this window extends the chain
   var WEIGHTS = [0.24, 0.24, 0.22, 0.16, 0.14];   // the five that can be dropped
+  var ROLL_FULL = 160;         // pile motion that plays the rustle at full (p97 of real play is ~110)
 
   var KEY_BEST = "meld_best", KEY_FOUND = "meld_found", KEY_SOUND = "meld_sound",
       KEY_CHAIN = "meld_chain", KEY_RUNS = "meld_runs";
@@ -528,11 +529,26 @@
       }
       G.over = above ? G.over + dt : Math.max(0, G.over - dt * 3);
       AU.danger(G.over / OVER_T);
+
+      // the pile on the move: weight of what is sliding and rolling while in
+      // contact, which drives one looping rustle in audio.js
+      var en = 0, px = 0;
+      for (i = 0; i < B.length; i++) {
+        b = B[i];
+        if (b.zz || !b.touch) continue;
+        var sp = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+        if (sp < 3) continue;
+        var wgt = Math.min(sp, 70) * b.R / 10;
+        en += wgt; px += b.x * wgt;
+      }
+      G.rollE = en;
+      AU.roll(Math.min(1, en / ROLL_FULL), en ? (px / en / JW) * 2 - 1 : 0);
       if (G.over >= OVER_T) gameOver();
 
       // the score rolls up rather than jumping
       if (G.shown < G.score) G.shown = Math.min(G.score, G.shown + Math.max(1, (G.score - G.shown) * dt * 9));
     } else if (G.phase === "over") {
+      AU.roll(0, 0);
       G.crackT += dt;
       G.dim = Math.min(1, G.dim + dt * 1.4);
       AU.danger(0);
