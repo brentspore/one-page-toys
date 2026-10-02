@@ -15,6 +15,18 @@
   var TAU = Math.PI * 2;
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
+
+  /* THE SECOND LOOK (owner, 2026-09-24: "keep the neon look, offer it as a
+   * second mode but really take it up"). In CINEMATIC, hifi.js renders the
+   * solid canal in WebGL on #gl, the sky moves to #sky behind it, and this
+   * canvas keeps only what is LIGHT — shots, bolts, blasts, brackets, the
+   * crosshair — on top. Neon is untouched and stays the default; the player
+   * picks, and the choice is remembered. */
+  var skyCanvas = document.getElementById("sky");
+  var skyCtx = skyCanvas ? skyCanvas.getContext("2d") : null;
+  var glCanvas = document.getElementById("gl");
+  var HIFI = window.TR_HIFI, HIFI_OK = false, HD = false, GLS = 1.25;
+  var KEY_LOOK = "trench_look";
   var W = 0, H = 0, DPR = 1, cx = 0, cy = 0;
 
   var el = {
@@ -38,6 +50,7 @@
     ovBtn: document.getElementById("ovBtn"),
     ovDemo: document.getElementById("ovDemo"),
     soundBtn: document.getElementById("soundBtn"),
+    lookBtn: document.getElementById("lookBtn"),
     hint: document.getElementById("hint")
   };
 
@@ -721,29 +734,46 @@
 
   function draw(now) {
     syncCam();
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "#03040c";
-    ctx.fillRect(0, 0, W, H);
-
     var shakeX = 0, shakeY = 0;
     if (G.shake > 0.001 && !reduceMotion) {
       shakeX = (Math.random() - 0.5) * G.shake * 26;
       shakeY = (Math.random() - 0.5) * G.shake * 26;
-      ctx.translate(shakeX, shakeY);
     }
-
-    ctx.globalCompositeOperation = "lighter";
-
     var i, p;
-    drawSky(now);
+
+    if (HD) {
+      // the sky on its own canvas, BEHIND the WebGL canal
+      var main = ctx;
+      ctx = skyCtx;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "#03040c";
+      ctx.fillRect(0, 0, W, H);
+      ctx.translate(shakeX, shakeY);
+      ctx.globalCompositeOperation = "lighter";
+      drawSky(now);
+      ctx = main;
+      renderHD(now, shakeX, shakeY);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      ctx.translate(shakeX, shakeY);
+      ctx.globalCompositeOperation = "lighter";
+    } else {
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "#03040c";
+      ctx.fillRect(0, 0, W, H);
+      if (shakeX || shakeY) ctx.translate(shakeX, shakeY);
+      ctx.globalCompositeOperation = "lighter";
+      drawSky(now);
+    }
 
     var z0 = Math.floor((G.z - CAM_BACK) / RIB_GAP) * RIB_GAP;
 
     /* The rib cross-sections, far to near, computed once: the solid surfaces
      * are filled between consecutive ones, then the neon is stroked on top. */
     var ribs = [];
-    for (var zr = z0 + FAR; zr > CAM.z + 2; zr -= RIB_GAP) {
+    for (var zr = z0 + FAR; !HD && zr > CAM.z + 2; zr -= RIB_GAP) {
       var bt = boomTint(zr);
       var g2 = bt ? 1 + bt.tear : 1;
       var hw = HALF * g2, ty2 = MIDY + (TOP - MIDY) * g2, fy2 = MIDY + (FLOOR - MIDY) * g2;
@@ -754,9 +784,9 @@
     // the slice right at the lens, so the near walls run off the screen edge
     var zl = CAM.z + 1.4;
     var l1 = px(-HALF, TOP, zl), l2 = px(HALF, TOP, zl), l3 = px(HALF, FLOOR, zl), l4 = px(-HALF, FLOOR, zl);
-    if (l1 && l2 && l3 && l4) ribs.push({ z: zl, bt: null, c: [l1, l2, l3, l4], lens: true });
+    if (!HD && l1 && l2 && l3 && l4) ribs.push({ z: zl, bt: null, c: [l1, l2, l3, l4], lens: true });
 
-    drawTrench(ribs, now);
+    if (!HD) drawTrench(ribs, now);
 
     /* Rails: the long lines running away down the canal. They are what sells
      * speed, because they are the only thing whose motion you can actually
@@ -769,7 +799,7 @@
       [-HALF, TOP + 1.3], [HALF, TOP + 1.3],               // the seam under the coping
       [-HALF, FLOOR - 1.5], [HALF, FLOOR - 1.5]            // the conduit run along the base
     ];
-    for (var r = 0; r < rails.length; r++) {
+    for (var r = 0; !HD && r < rails.length; r++) {
       var pts = [];
       /* ⚠ Starting at +2 puts the first vertex almost on the lens, where it
        * projects thousands of pixels off-screen — and the segment joining it to
@@ -804,7 +834,7 @@
     }
 
     // Hazards
-    for (i = 0; i < G.bars.length; i++) {
+    for (i = 0; !HD && i < G.bars.length; i++) {
       var b = G.bars[i], dz = b.z - G.z;
       if (dz < -6 || dz > FAR) continue;
       var af = fade(dz);
@@ -830,6 +860,15 @@
         continue;
       }
       var willHit = inProp(pw, G.x, G.y, HIT_R);
+      if (HD) {
+        // the girder itself is solid, in WebGL; the warning that it is in your
+        // path is LIGHT, so it is drawn here, as the neon mode colours it
+        if (willHit) {
+          var h1 = px(pw.x0, pw.y0, pw.z - 0.45), h2 = px(pw.x1, pw.y0, pw.z - 0.45), h3 = px(pw.x1, pw.y1, pw.z - 0.45), h4 = px(pw.x0, pw.y1, pw.z - 0.45);
+          if (h1 && h2 && h3 && h4) glowLine([h1, h2, h3, h4, h1], HOT, pa, 9, 2);
+        }
+        continue;
+      }
       quad(pw.x0, pw.x1, pw.y0, pw.y1, pw.z, willHit ? HOT : STEEL, pa * (willHit ? 1 : 0.85));
       // a bracket back to the wall it is bolted to, so it reads as attached
       var anchor = pw.x0 <= -HALF + 0.01 ? -HALF : (pw.x1 >= HALF - 0.01 ? HALF : null);
@@ -874,7 +913,7 @@
         var ang2 = q / 6 * TAU + 0.5;
         pts2.push({ x: core.x + Math.cos(ang2) * rad2, y: core.y + Math.sin(ang2) * rad2 });
       }
-      glowLine(pts2, col2, ta * (charging ? 0.75 + t3.charge * 0.25 : 0.95), 11, 2.4);
+      if (!HD) glowLine(pts2, col2, ta * (charging ? 0.75 + t3.charge * 0.25 : 0.95), 11, 2.4);
 
       /* Target brackets. A gun has to read as a THING TO SHOOT at a glance,
        * against a wall made of the same kind of glowing lines. */
@@ -901,7 +940,7 @@
         ctx.stroke();
       }
       // a barrel pointing into the canal, so you can see which way it is facing
-      if (t3.face) {
+      if (t3.face && !HD) {
         ctx.strokeStyle = "rgba(" + col2 + "," + (ta * 0.6).toFixed(3) + ")";
         ctx.lineWidth = Math.max(1, rad2 * 0.16);
         ctx.beginPath();
@@ -909,8 +948,10 @@
         ctx.lineTo(core.x + t3.face * rad2 * 1.8, core.y);
         ctx.stroke();
       }
-      ctx.fillStyle = "rgba(" + col2 + "," + (ta * (0.35 + t3.charge * 0.65)).toFixed(3) + ")";
-      ctx.beginPath(); ctx.arc(core.x, core.y, Math.max(1.4, rad2 * 0.34), 0, TAU); ctx.fill();
+      if (!HD) {
+        ctx.fillStyle = "rgba(" + col2 + "," + (ta * (0.35 + t3.charge * 0.65)).toFixed(3) + ")";
+        ctx.beginPath(); ctx.arc(core.x, core.y, Math.max(1.4, rad2 * 0.34), 0, TAU); ctx.fill();
+      }
     }
 
     drawWreckage();
@@ -975,7 +1016,7 @@
       ctx.fillRect(sp.sx, sp.sy, 2.4, 2.4);
     }
 
-    if (G.phase !== "dead") drawShip();
+    if (G.phase !== "dead") { if (HD) drawThrust(); else drawShip(); }
     if (G.phase === "fly" || G.phase === "lock") drawReticle();
 
     if (G.flash > 0.001) {
@@ -1007,6 +1048,106 @@
 
     if (shakeX || shakeY) ctx.translate(-shakeX, -shakeY);
     ctx.globalCompositeOperation = "source-over";
+  }
+
+  /* ---------------------------------------------------------- cinematic */
+
+  /* Every glowing thing that should also LIGHT the canal, most important first:
+   * kill flashes, your shots, incoming bolts, the core, the blast front, your
+   * engines. The shader takes eight; the rest still draw, they just do not cast. */
+  function pickLights() {
+    var L = [], i;
+    for (i = 0; i < G.blasts.length; i++) {
+      var bl = G.blasts[i], k = bl.t / 0.55;
+      L.push({ x: bl.x, y: bl.y, z: bl.z, r: 6 + bl.size * 3, c: [1.0, 0.6, 0.28], i: 2.4 * (1 - k) * (1 - k) * Math.min(1.6, bl.size) });
+    }
+    for (i = 0; i < G.shots.length; i++) {
+      var s2 = G.shots[i];
+      L.push({ x: s2.x + s2.dx * (s2.z - s2.z0), y: s2.y + s2.dy * (s2.z - s2.z0), z: s2.z, r: 5, c: [0.5, 1.0, 0.62], i: 1.1 });
+    }
+    for (i = 0; i < G.bolts.length; i++) {
+      var b2 = G.bolts[i];
+      L.push({ x: boltX(b2, b2.z), y: boltY(b2, b2.z), z: b2.z, r: 5, c: [1.0, 0.22, 0.48], i: 1.2 });
+    }
+    for (i = 0; i < G.turrets.length; i++) {
+      var t3 = G.turrets[i];
+      if (!t3.dead && t3.charge > 0.2 && t3.z > G.z && t3.z - G.z < FAR) L.push({ x: t3.x, y: t3.y, z: t3.z, r: 5, c: [1.0, 0.22, 0.45], i: 1.6 * t3.charge });
+    }
+    if (RUN_LEN - G.z < FAR + 260 && G.phase !== "boom") {
+      L.push({ x: 0, y: MIDY, z: RUN_LEN, r: 60, c: G.fired ? [0.55, 1.0, 0.7] : [1.0, 0.78, 0.36], i: 2.6 });
+    }
+    if (G.phase === "boom" && G.shockZ > CAM.z) L.push({ x: 0, y: MIDY, z: G.shockZ, r: 80, c: [1.0, 0.86, 0.6], i: 5 });
+    if (G.phase !== "dead") {
+      L.push({ x: G.x, y: G.y + 0.2, z: G.z - 0.5, r: 4, c: G.over ? [1.0, 0.3, 0.5] : [0.45, 0.9, 1.0], i: (G.boosting ? 2.4 : 1.4), keep: true });
+    }
+    // bright and near beats dim and far
+    L.forEach(function (l) { var dz = (l.z - G.z) / 70; l.score = l.keep ? 1e9 : l.i / (1 + dz * dz); });
+    L.sort(function (a, b) { return b.score - a.score; });
+    return L.slice(0, 8);
+  }
+
+  function renderHD(now, shakeX, shakeY) {
+    // flag what the 2D mode colours per frame, so the solid version agrees
+    for (var i = 0; i < G.bars.length; i++) {
+      var b = G.bars[i];
+      if (b.z - G.z > -10 && b.z - G.z < FAR + 10) b.clear = b.hit ? true : through(b, G.x, G.y, HIT_R);
+    }
+    for (i = 0; i < G.props.length; i++) {
+      var pw = G.props[i];
+      if (pw.z - G.z > -10 && pw.z - G.z < FAR + 10) pw.hot = inProp(pw, G.x, G.y, HIT_R);
+    }
+    var blink = G.inv > 0 && !reduceMotion && Math.floor(G.inv * 14) % 2 === 0;
+    HIFI.render({
+      cam: CAM, focal: FOCAL, cx: cx, cy: cy, roll: G.roll || 0, shakeX: shakeX, shakeY: shakeY,
+      t: now / 1000, motion: reduceMotion ? 0.25 : 1,
+      bars: G.bars, props: G.props, turrets: G.turrets,
+      ship: { show: G.phase !== "dead" && !blink, x: G.x, y: G.y, z: G.z, bank: -0.45 * (G.roll || 0), hot: !!G.over },
+      lights: pickLights(),
+      tear: G.phase === "boom", shockZ: G.phase === "boom" ? G.shockZ : 0,
+      shockGlow: G.phase === "boom" ? Math.max(0, 1 - G.boomT / 3) : 0
+    });
+  }
+
+  // the ship is solid in cinematic; its exhaust is light, so it stays up here
+  function drawThrust() {
+    if (G.inv > 0 && !reduceMotion && Math.floor(G.inv * 14) % 2 === 0) return;
+    var sp = px(G.x, G.y + 0.05, G.z - 0.42);
+    if (!sp) return;
+    var flame = (G.boosting && !G.over ? 1.9 : 1) * (0.7 + Math.random() * 0.4);
+    var col = G.over ? HOT : CYAN, sc = SCALE * 0.36;
+    for (var s = -1; s <= 1; s += 2) {
+      var ex = sp.x + s * 0.27 * sc * Math.cos(G.roll * 0.55), ey = sp.y + s * 0.27 * sc * Math.sin(G.roll * 0.55);
+      glowLine([{ x: ex, y: ey }, { x: ex, y: ey + flame * sc * 0.55 }], col, 0.85, 9, 2.2);
+    }
+  }
+
+  function setLook(look, silent) {
+    HD = look === "cinematic" && HIFI_OK;
+    if (skyCanvas) skyCanvas.style.display = HD ? "block" : "none";
+    if (glCanvas) glCanvas.style.display = HD ? "block" : "none";
+    canvas.classList.toggle("is-overlay", HD);
+    document.querySelectorAll("[data-look]").forEach(function (b) {
+      b.setAttribute("aria-checked", b.getAttribute("data-look") === (HD ? "cinematic" : "neon") ? "true" : "false");
+    });
+    if (el.lookBtn) el.lookBtn.setAttribute("aria-pressed", HD ? "true" : "false");
+    if (HD) { layout(); }
+    if (!silent) {
+      store(KEY_LOOK, HD ? "cinematic" : "neon");
+      gtagSafe("look_change", { toy: "trench-runner", look: HD ? "cinematic" : "neon" });
+    }
+  }
+
+  // what the share button sends: all three layers in cinematic, flattened
+  function snapshot() {
+    draw(performance.now());
+    if (!HD) return canvas;
+    var c = document.createElement("canvas");
+    c.width = canvas.width; c.height = canvas.height;
+    var x = c.getContext("2d");
+    x.drawImage(skyCanvas, 0, 0, c.width, c.height);
+    x.drawImage(glCanvas, 0, 0, c.width, c.height);
+    x.drawImage(canvas, 0, 0);
+    return c;
   }
 
   function quad(x0, x1, y0, y1, z, col, a) {
@@ -1457,6 +1598,8 @@
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (skyCanvas) { skyCanvas.width = canvas.width; skyCanvas.height = canvas.height; }
+    if (HIFI_OK) HIFI.resize(W, H, Math.min(DPR, GLS));
     cx = W / 2;
     /* On a portrait phone the canal is width-bound, so it lands as a thin band
      * with dead black above and below. Dropping the horizon pushes that band up
@@ -2557,7 +2700,7 @@
     if (!prevT || secs < prevT) store(KEY_TIME, secs.toFixed(2));
     G.bestTime = parseFloat(store(KEY_TIME) || "0");
 
-    window.OPT_SHARE_IMAGE = function () { draw(performance.now()); return canvas; };
+    window.OPT_SHARE_IMAGE = snapshot;
     window.OPT_SHARE_LINE = G.score.toLocaleString() + " pts · " + G.kills + " guns · " + secs.toFixed(1) + "s";
     window.OPT_SHARE_TEXT = "I breached the core on Trench Runner — " + G.kills +
       " guns down, " + G.score.toLocaleString() + " points in " + secs.toFixed(1) + "s" +
@@ -2613,8 +2756,10 @@
 
   var last = 0;
   var loopWarned = false;
+  var slowSum = 0, slowN = 0;
   function frame(now) {
-    var dt = Math.min(0.05, (now - last) / 1000 || 0);
+    var raw = (now - last) / 1000 || 0;
+    var dt = Math.min(0.05, raw);
     last = now;
     // decayed OUT here, so it keeps settling through every phase including the
     // stopped ones — a run that ends mid-shake must come to rest
@@ -2633,8 +2778,17 @@
     try { draw(now); } catch (e) {
       if (!loopWarned) { loopWarned = true; try { console.error("draw failed:", e); } catch (e2) {} }
     }
+    // if the cinematic look is too heavy for this device, render it smaller
+    if (HD && raw > 0 && raw < 0.2) {
+      slowSum += raw; slowN++;
+      if (slowN >= 90) {
+        if (slowSum / slowN > 0.026 && GLS > 0.6) { GLS = Math.max(0.6, GLS - 0.2); HIFI.resize(W, H, Math.min(DPR, GLS)); }
+        slowSum = 0; slowN = 0;
+      }
+    }
     requestAnimationFrame(frame);
   }
+
 
   function init() {
     var sv = store(KEY_SOUND);
@@ -2646,7 +2800,24 @@
     G.bestTime = parseFloat(store(KEY_TIME) || "0") || 0;
     el.best.textContent = G.best ? G.best.toLocaleString() : "—";
 
+    HIFI_OK = !!(HIFI && glCanvas && HIFI.init(glCanvas, {
+      HALF: HALF, FLOOR: FLOOR, TOP: TOP, MIDY: MIDY, RIB_GAP: RIB_GAP, RUN_LEN: RUN_LEN, FAR: FAR, hash: hash
+    }));
+    if (!HIFI_OK) document.querySelectorAll(".look, #lookBtn").forEach(function (n) { n.hidden = true; });
+    // a phone can drop the WebGL context (backgrounded tab, memory pressure):
+    // fall back to neon rather than fly on over a blank canvas
+    if (glCanvas) glCanvas.addEventListener("webglcontextlost", function (e) {
+      e.preventDefault();
+      HIFI_OK = false;
+      setLook("neon", true);
+      document.querySelectorAll(".look, #lookBtn").forEach(function (n) { n.hidden = true; });
+    });
+    document.querySelectorAll("[data-look]").forEach(function (b) {
+      b.addEventListener("click", function () { audio.unlock(); setLook(b.getAttribute("data-look")); });
+    });
+    if (el.lookBtn) el.lookBtn.addEventListener("click", function () { setLook(HD ? "neon" : "cinematic"); });
     layout();
+    setLook(store(KEY_LOOK) === "cinematic" ? "cinematic" : "neon", true);
     // a canal drifting past behind the intro panel, so the toy is alive on arrival
     G.bars = buildBars();
     G.props = buildProps(G.bars);

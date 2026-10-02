@@ -29,6 +29,50 @@ canvas{
   display: block; width: 100%; height: 100%; touch-action: none;
   -webkit-touch-callout: none; user-select: none; -webkit-user-select: none;
 }
+/* Cinematic stacks three layers: the sky, the WebGL canal, then the light on
+   top. Only #canvas takes input. */
+#sky, #gl{ position: fixed; inset: 0; pointer-events: none; display: none; }
+#sky{ z-index: 0; }
+#gl{ z-index: 1; }
+#canvas{ position: fixed; inset: 0; z-index: 2; }
+
+/* ---------- Look: neon or cinematic ---------- */
+.look{
+  display: flex; width: max-content; align-items: center; gap: 4px;
+  margin: 0 auto 18px; padding: 4px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(4, 8, 22, 0.6);
+}
+.look[hidden]{ display: none; }
+.look__k{
+  padding: 0 8px 0 10px;
+  font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint);
+}
+.look button{
+  appearance: none; border: 0; cursor: pointer;
+  padding: 7px 14px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  background: transparent; color: var(--dim);
+  transition: background 160ms ease, color 160ms ease;
+}
+.look button:hover{ color: var(--ink); }
+.look button[aria-checked="true"]{ background: linear-gradient(180deg, var(--cyan-lite), var(--cyan)); color: #03202c; font-weight: 600; }
+.look button:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(143, 228, 255, 0.45); }
+.look-btn{
+  position: fixed; z-index: 6;
+  top: max(58px, calc(env(safe-area-inset-top) + 46px));
+  right: max(12px, env(safe-area-inset-right));
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--line); background: rgba(6, 10, 24, 0.6); color: var(--ink);
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em;
+  cursor: pointer; backdrop-filter: blur(8px);
+  transition: transform 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+.look-btn[hidden]{ display: none; }
+.look-btn:hover{ transform: translateY(-1px); border-color: var(--cyan); }
+.look-btn[aria-pressed="false"]{ opacity: 0.45; }
+.look-btn[aria-pressed="true"]{ border-color: var(--cyan); color: var(--cyan-lite); }
+.look-btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(143, 228, 255, 0.4); }
 
 /* ---------- Progress: a hairline across the very top ---------- */
 .prog{

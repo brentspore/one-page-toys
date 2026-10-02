@@ -61,9 +61,11 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
+    <canvas id="sky" aria-hidden="true"></canvas>
+    <canvas id="gl" aria-hidden="true"></canvas>
     <canvas id="canvas"></canvas>
 
     <div class="prog" id="prog"><div class="prog__fill" id="progFill"></div></div>
@@ -84,6 +86,7 @@
     <div class="callout" id="callout" hidden></div>
 
     <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+    <button type="button" class="look-btn" id="lookBtn" aria-pressed="false" title="Cinematic look">HD</button>
 
     <div class="overlay" id="overlay">
       <div class="panel">
@@ -125,6 +128,11 @@
           <circle cx="231" cy="45" r="12" fill="none" stroke="#ff3d81" stroke-width="0.8" opacity="0.55" />
           <text x="250" y="90" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(255,61,129,0.85)">about to fire</text>
         </svg>
+        <div class="look" role="radiogroup" aria-label="Look">
+          <span class="look__k">Look</span>
+          <button type="button" data-look="neon" role="radio" aria-checked="true">Neon</button>
+          <button type="button" data-look="cinematic" role="radio" aria-checked="false">Cinematic</button>
+        </div>
         <button type="button" class="play-btn" id="ovBtn">Start the run</button>
         <p class="panel__keys">move to aim &middot; click or space to fire &middot; shift or a second finger boosts</p>
       </div>
@@ -138,13 +146,14 @@
 
     <p class="hint" id="hint">aim with the pointer &middot; click to fire &middot; shift boosts</p>
 
-    <script src="../../assets/tickets.js?v=29" defer></script>
-    <script src="script.js?v=3" defer></script>
+    <script src="../../assets/tickets.js?v=30" defer></script>
+    <script src="hifi.js?v=1" defer></script>
+    <script src="script.js?v=4" defer></script>
     <script src="../../assets/prizes.js?v=1" defer></script>
     <script src="../../assets/tip-jar.js?v=10" defer></script>
     <script src="../../assets/share.js?v=6" defer></script>
     <script src="../../assets/fullscreen.js?v=3" defer></script>
     <script src="../../assets/game-screen.js?v=1" defer></script>
-    <script src="../../assets/more-games.js?v=25" defer></script>
+    <script src="../../assets/more-games.js?v=26" defer></script>
   </body>
 </html>
