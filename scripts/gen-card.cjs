@@ -65,7 +65,7 @@ const SHOW = (flag("show", "") || "").split(",").map((s) => s.trim()).filter(Boo
 // every shared badge injected by tip-jar.js / fullscreen.js / tickets.js /
 // more-games.js / share.js.
 const HIDE_SEL = [
-  ".hud", ".frame", ".abilities", ".hint", ".sound-btn", ".overlay", ".sheet", ".callout",
+  ".hud", ".frame", ".abilities", ".hint", ".sound-btn", ".music-btn", ".overlay", ".sheet", ".callout",
   // transient HUD text that fires on a win/selection and otherwise sits at zero
   // opacity — invisible in normal play, but a caption baked into a thumbnail
   ".prize", ".readout", ".status", ".grip", ".intro", ".controls", ".drop-btn", ".bars",

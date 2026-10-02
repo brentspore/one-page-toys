@@ -91,6 +91,23 @@ body{ background: #0a0706; }
 }
 .sound-btn:hover{ transform: translateY(-1px); border-color: var(--glow); }
 .sound-btn[aria-pressed="false"]{ opacity: 0.45; }
+
+/* ---------- Music: beside the sound button on a wide screen, top-left on a
+   phone, where the frame number is hidden and nothing else sits ---------- */
+.music-btn{
+  position: fixed; z-index: 6;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(58px, calc(env(safe-area-inset-right) + 58px));
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center; padding: 0;
+  border: 1px solid var(--line); background: rgba(14, 8, 6, 0.6); color: var(--ink);
+  cursor: pointer; backdrop-filter: blur(8px);
+  transition: transform 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+.music-btn:hover{ transform: translateY(-1px); border-color: var(--glow); }
+.music-btn[aria-pressed="false"]{ opacity: 0.45; }
+.music-btn[aria-pressed="false"] svg{ opacity: 0.6; }
+.music-btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(255, 190, 120, 0.5); }
 .sound-btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(255, 190, 120, 0.5); }
 
 /* ---------- Overlay ---------- */
@@ -170,7 +187,7 @@ body{ background: #0a0706; }
   letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint);
 }
 .frame__corner--tl{ top: max(14px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left)); }
-.frame__corner--tr{ top: max(14px, env(safe-area-inset-top)); right: max(58px, calc(env(safe-area-inset-right) + 58px)); }
+.frame__corner--tr{ top: max(14px, env(safe-area-inset-top)); right: max(104px, calc(env(safe-area-inset-right) + 104px)); }
 .frame__corner--bl{ bottom: max(14px, env(safe-area-inset-bottom)); left: max(14px, env(safe-area-inset-left)); pointer-events: auto; }
 .frame__corner--bl a{ color: var(--faint); text-decoration: none; }
 .frame__corner--bl a:hover{ color: var(--glow); }
@@ -185,6 +202,7 @@ body{ background: #0a0706; }
 .hint.is-gone{ opacity: 0; }
 
 @media (max-width: 620px){
+  .music-btn{ right: auto; left: max(12px, env(safe-area-inset-left)); }
   .frame__corner--tr{ display: none; }
   .frame__corner--tl{ display: none; }
   .hint{ display: none; }

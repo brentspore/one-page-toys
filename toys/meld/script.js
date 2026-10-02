@@ -29,7 +29,7 @@
   var WEIGHTS = [0.24, 0.24, 0.22, 0.16, 0.14];   // the five that can be dropped
   var ROLL_FULL = 160;         // pile motion that plays the rustle at full (p97 of real play is ~110)
 
-  var KEY_BEST = "meld_best", KEY_FOUND = "meld_found", KEY_SOUND = "meld_sound",
+  var KEY_BEST = "meld_best", KEY_FOUND = "meld_found", KEY_SOUND = "meld_sound", KEY_MUSIC = "meld_music",
       KEY_CHAIN = "meld_chain", KEY_RUNS = "meld_runs";
 
   var el = {
@@ -52,6 +52,7 @@
     freshBtn: document.getElementById("freshBtn"),
     ovKeys: document.getElementById("ovKeys"),
     soundBtn: document.getElementById("soundBtn"),
+    musicBtn: document.getElementById("musicBtn"),
     hint: document.getElementById("hint")
   };
   var ctx = el.canvas.getContext("2d");
@@ -355,6 +356,9 @@
     hudCache = {};
     drawNext();
     AU.start();
+    // a new piece of music for every run, from the run's own seed, so a
+    // challenge replays the same drops to the same music
+    AU.musicNew((G.seed ^ 0x5bd1e995) >>> 0);
     var runs = (parseInt(store(KEY_RUNS) || "0", 10) || 0) + 1;
     store(KEY_RUNS, String(runs));
     gtagSafe("run_start", { toy: "meld", challenge: !!G.challenge });
@@ -1167,6 +1171,14 @@
     } else window.prompt("Copy this link:", url);
   });
 
+  el.musicBtn.addEventListener("click", function () {
+    AU.unlock();
+    var v = AU.musicToggle();
+    el.musicBtn.setAttribute("aria-pressed", v ? "true" : "false");
+    store(KEY_MUSIC, v ? "1" : "0");
+    gtagSafe("music_toggle", { toy: "meld", on: v });
+  });
+
   el.soundBtn.addEventListener("click", function () {
     AU.unlock();
     var v = AU.toggle();
@@ -1202,6 +1214,9 @@
     var on = sv !== "0";
     AU.init(on);
     el.soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    var mOn = store(KEY_MUSIC) !== "0";
+    AU.musicInit(mOn);
+    el.musicBtn.setAttribute("aria-pressed", mOn ? "true" : "false");
     G.best = parseInt(store(KEY_BEST) || "0", 10) || 0;
     G.found = (parseInt(store(KEY_FOUND) || "0", 10) || 0) | 31;
 

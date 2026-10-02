@@ -278,7 +278,9 @@
     jobs.push(function () { startRoll(buf([tmp.rl, renderRoll(1)])); });
     jobs.push(function () { startFurnace(renderFurnace()); });
     jobs.push(function () { tmp.ml = renderRoom(0); });
-    jobs.push(function () { roomConv.buffer = buf([tmp.ml, renderRoom(1)]); rendered = true; });
+    jobs.push(function () { roomConv.buffer = buf([tmp.ml, renderRoom(1)]); });
+    jobs.push(function () { tmp.hl = renderHall(0); });
+    jobs.push(function () { MU.hall.buffer = buf([tmp.hl, renderHall(1)]); rendered = true; });
     (function next() {
       var j = jobs.shift();
       if (!j) return;
@@ -313,6 +315,7 @@
     mix.connect(silk); silk.connect(master); master.connect(comp); comp.connect(limit); limit.connect(A.destination);
 
     buildSing();
+    buildMusic();
 
     var s0 = A.createBufferSource();        // iOS unlock: one silent sample on the first gesture
     s0.buffer = A.createBuffer(1, 1, SR);
@@ -612,6 +615,11 @@
       singLFOg.gain.setTargetAtTime(0.12 + level * 0.3, t, 0.2);
       // creeping sharp, by up to a third of a semitone
       for (var i = 0; i < singOsc.length; i++) singOsc[i].detune.setTargetAtTime(level * 30, t, 0.3);
+      // the music steps back and darkens, so the singing glass comes through
+      if (MU.gain && MU.piece) {
+        MU.gain.gain.setTargetAtTime(MU.level * (1 - 0.6 * level), t, 0.4);
+        MU.lp.frequency.setTargetAtTime(7500 - 5600 * level, t, 0.4);
+      }
     }
     // stress ticks, quickening
     if (level > 0.15 && live() && B.click[0]) {
@@ -630,6 +638,287 @@
     rollLP.frequency.setTargetAtTime(1800 + e * 5500, t, 0.08);
     rollSrc.playbackRate.setTargetAtTime(0.85 + e * 0.35, t, 0.1);
     if (rollPan) rollPan.pan.setTargetAtTime(Math.max(-0.8, Math.min(0.8, pan || 0)), t, 0.1);
+  }
+
+  /* ------------------------------------------------------------- music */
+
+  /* Calm generative music, a new piece every run (owner, 10-01: "calming
+   * background music. Different every time").
+   *
+   * Everything is drawn from the same E major pentatonic as the clacks and the
+   * melts, so nothing the orbs do can clash with it. Four chords built ONLY
+   * from those five notes (E add9, C#m7, B6sus, F#11) wander by weighted
+   * chance, voice-led so each change moves as little as it can, under:
+   *   - a rubbed-glass pad: a glass harmonica, i.e. a doublet that beats plus
+   *     the faint harmonics stick-slip adds, each voice breathing on its own;
+   *   - a soft root a couple of octaves down;
+   *   - three or four short melodic loops, Eno style: each repeats on its own
+   *     odd period, so they drift in and out of phase and the combination never
+   *     comes round the same way twice. Each pass may skip, and now and then a
+   *     note mutates, so a piece also evolves;
+   *   - now and then, glints far away.
+   * Each piece rolls its own lead instrument (kalimba tine, celesta, or a soft
+   * glass marimba), tempo of change, registers and loop lengths from a seed.
+   * The seed comes from the run's drops, so a challenge plays the same piece.
+   * It lives in its own long hall, further away than the clatter, and ducks and
+   * darkens as the jar nears overflow so the singing glass comes through. */
+
+  var MU = { on: true, level: 0.16, gain: null, lp: null, dry: null, wet: null, hall: null, piece: null, timer: null };
+  var PENTA_PC = [0, 2, 4, 7, 9];                 // E F# G# B C#, as semitones above E
+  var CHORDS = [
+    { root: 0, pcs: [0, 7, 4, 2] },               // E add9
+    { root: 9, pcs: [9, 4, 7, 0] },               // C#m7
+    { root: 7, pcs: [7, 0, 2, 4] },               // B6sus4 (B E F# G#)
+    { root: 2, pcs: [2, 9, 0, 7] }                // F#11 (F# C# E B)
+  ];
+  var NEXT = [[[1, 3], [2, 2], [3, 2]], [[0, 2], [2, 2], [3, 3]], [[0, 4], [1, 2], [3, 1]], [[0, 2], [2, 3], [1, 2]]];
+  function hzE2(semi) { return 82.407 * Math.pow(2, semi / 12); }   // semitones above E2
+
+  function renderHall(c) {
+    var len = Math.ceil(SR * 4.8), r = rng(510 + c * 13), d = new Float32Array(len), i;
+    var bands = [[900, "lp", 4.6], [900, "hp", 2.6]];
+    for (var b = 0; b < 2; b++) {
+      var n = new Float32Array(len), lp = 0;
+      for (i = 0; i < len; i++) { lp += ((r() * 2 - 1) - lp) * 0.3; n[i] = lp; }
+      filt(n, bands[b][1], bands[b][0], 0.7);
+      if (b) filt(n, "lp", 6500, 0.7);
+      var T = bands[b][2], pre = Math.floor(SR * 0.035);
+      for (i = pre; i < len; i++) {
+        var tt = (i - pre) / SR;
+        d[i] += n[i] * Math.exp(-6.9 * tt / T) * Math.min(1, (i - pre) / (SR * 0.08));
+      }
+    }
+    return norm(d, 0.9);
+  }
+
+  function buildMusic() {
+    MU.gain = A.createGain(); MU.gain.gain.value = 0;
+    MU.lp = A.createBiquadFilter(); MU.lp.type = "lowpass"; MU.lp.frequency.value = 7500; MU.lp.Q.value = 0.5;
+    MU.dry = A.createGain();
+    MU.wet = A.createGain();
+    MU.hall = A.createConvolver();
+    MU.dry.connect(MU.gain);
+    MU.wet.connect(MU.hall); MU.hall.connect(MU.gain);
+    MU.gain.connect(MU.lp); MU.lp.connect(mix);
+  }
+
+  function musicOut(pan, send) {
+    var g = A.createGain();
+    if (A.createStereoPanner) {
+      var p = A.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, pan));
+      g.connect(p); p.connect(MU.dry);
+      var s = A.createGain(); s.gain.value = send; p.connect(s); s.connect(MU.wet);
+    } else { g.connect(MU.dry); var s2 = A.createGain(); s2.gain.value = send; g.connect(s2); s2.connect(MU.wet); }
+    return g;
+  }
+
+  // one breathing glass-harmonica voice; returns a release(t) handle
+  function padVoice(f, t, att, lvl, pan, bright) {
+    var env = A.createGain(), rel = A.createGain(), out = musicOut(pan, 0.85);
+    env.gain.setValueAtTime(0, t);
+    env.gain.linearRampToValueAtTime(lvl, t + att);
+    rel.gain.value = 1;
+    env.connect(rel); rel.connect(out);
+    var oscs = [];
+    [[1, 0.56, 0], [1, 0.38, 0.5 + Math.random() * 1.1], [2, 0.07 * bright, 0], [3, 0.025 * bright, 0]].forEach(function (p) {
+      var o = A.createOscillator(); o.type = "sine";
+      o.frequency.value = f * p[0] + p[2];
+      var g = A.createGain(); g.gain.value = p[1];
+      o.connect(g); g.connect(env); o.start(t);
+      oscs.push(o);
+    });
+    // each voice breathes at its own slow rate
+    var lfo = A.createOscillator(); lfo.frequency.value = 0.05 + Math.random() * 0.12;
+    var lg = A.createGain(); lg.gain.value = lvl * 0.22;
+    lfo.connect(lg); lg.connect(env.gain); lfo.start(t);
+    oscs.push(lfo);
+    return function (tr, tc) {
+      rel.gain.setTargetAtTime(0, tr, tc);
+      oscs.forEach(function (o) { try { o.stop(tr + tc * 7); } catch (e) {} });
+      setTimeout(function () { try { out.disconnect(); } catch (e) {} }, (tr - A.currentTime + tc * 7 + 0.5) * 1000);
+    };
+  }
+
+  var LEADS = {
+    // a kalimba tine: a clamped bar, so its overtones are far from harmonic
+    kalimba: { P: [[1, 1, 1], [6.27, 0.12, 0.14], [17.55, 0.035, 0.05]], att: 0.004, dur: 3.0, strike: 0.1 },
+    // a celesta: struck plates over resonators, sweet and nearly harmonic
+    celesta: { P: [[1, 1, 1], [2, 0.16, 0.5], [3, 0.05, 0.3], [4.2, 0.025, 0.15]], att: 0.003, dur: 2.2, strike: 0.08 },
+    // a soft glass marimba: felt mallet, tuned bar, darker and rounder
+    marimba: { P: [[1, 1, 1], [3.93, 0.2, 0.18], [10.2, 0.04, 0.06]], att: 0.009, dur: 1.8, strike: 0.06 }
+  };
+
+  function leadNote(kind, semi, t, vel, pan, send) {
+    var L = LEADS[kind], f = hzE2(semi);
+    var out = musicOut(pan, send);
+    out.gain.value = vel * 0.16;
+    var dur = L.dur * (1.25 - Math.min(1, (semi - 24) / 30) * 0.5);   // low notes ring longer
+    L.P.forEach(function (p) {
+      if (f * p[0] > 14000) return;
+      var o = A.createOscillator(); o.type = "sine";
+      o.frequency.value = f * p[0] * (1 + (Math.random() - 0.5) * 0.002);
+      var g = A.createGain(), d = dur * p[2];
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(p[1], t + L.att);
+      g.gain.exponentialRampToValueAtTime(1e-4, t + Math.max(0.05, d));
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + d + 0.05);
+    });
+    // the felt or the pluck: a soft tick in front
+    if (B.click[3]) {
+      var n = A.createBufferSource(); n.buffer = pick(B.click[3]);
+      n.playbackRate.value = 0.6;
+      var lp = A.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(6000, f * 4); lp.Q.value = 0.5;
+      var ng = A.createGain(); ng.gain.value = L.strike;
+      n.connect(lp); lp.connect(ng); ng.connect(out); n.start(t);
+    }
+    setTimeout(function () { try { out.disconnect(); } catch (e) {} }, (t - A.currentTime + dur + 0.6) * 1000);
+  }
+
+  function Piece(seed) {
+    var r = this.r = rng(seed >>> 0);
+    var kinds = ["kalimba", "celesta", "marimba"];
+    this.lead = kinds[Math.floor(r() * 3)];
+    this.lead2 = r() < 0.4 ? kinds[Math.floor(r() * 3)] : this.lead;
+    this.chordBase = 9 + r() * 6;            // seconds a chord holds, on average
+    this.bright = 0.6 + r() * 0.8;
+    this.padLvl = 0.075 + r() * 0.025;
+    this.sub = r() < 0.75;
+    this.chord = Math.floor(r() * 4);
+    if (r() < 0.5) this.chord = 0;           // half the pieces start home, on E
+    this.voices = [];                         // current pad voicing, semitones above E2
+    this.releases = [];
+    var nLoops = 3 + (r() < 0.5 ? 1 : 0), periods = [];
+    this.loops = [];
+    for (var i = 0; i < nLoops; i++) {
+      var P;
+      do { P = 13 + r() * 22; } while (periods.some(function (q) { return Math.abs(q - P) < 2.5; }));
+      periods.push(P);
+      var notes = [], k = 1 + Math.floor(r() * 3), off = 0;
+      var oct = 24 + 12 * Math.floor(r() * 2) + (r() < 0.2 ? 12 : 0);   // E4 or E5, sometimes E6
+      for (var j = 0; j < k; j++) {
+        notes.push({ deg: Math.floor(r() * 5), oct: oct + (r() < 0.25 ? 12 : 0), off: off, vel: 0.55 + r() * 0.45 });
+        off += 0.35 + r() * 1.4;
+      }
+      this.loops.push({ P: P, phase: r() * P, notes: notes, pan: (r() - 0.5) * 1.3, p: 0.7 + r() * 0.3, kind: i % 2 ? this.lead2 : this.lead });
+    }
+  }
+
+  Piece.prototype.start = function (t0) {
+    this.nextChord = t0 + 0.1;
+    for (var i = 0; i < this.loops.length; i++) this.loops[i].next = t0 + 3 + this.loops[i].phase;
+    this.nextSpark = t0 + 8 + this.r() * 10;
+  };
+
+  Piece.prototype.voiceLead = function (pcs) {
+    var out = [], used = {};
+    if (!this.voices.length) {
+      // first chord: root low, the rest stacked open above it
+      var base = 12 + pcs[0];
+      if (base > 20) base -= 12;
+      out.push(base);
+      for (var k = 1; k < pcs.length; k++) {
+        var s = base + ((pcs[k] - pcs[0] + 12) % 12) + (k > 1 ? 12 : 0);
+        out.push(s);
+      }
+      return out.sort(function (a, b) { return a - b; });
+    }
+    // later chords: each voice moves to the nearest tone of the new chord
+    for (var v = 0; v < this.voices.length; v++) {
+      var best = null, bd = 99;
+      for (var c = 0; c < pcs.length; c++) {
+        for (var o = 0; o < 4; o++) {
+          var cand = pcs[c] + 12 * o;
+          if (cand < 8 || cand > 34) continue;
+          var dd = Math.abs(cand - this.voices[v]) + (used[pcs[c]] ? 4 : 0);
+          if (dd < bd) { bd = dd; best = cand; }
+        }
+      }
+      used[((best % 12) + 12) % 12] = true;
+      out.push(best);
+    }
+    return out;
+  };
+
+  Piece.prototype.playChord = function (t) {
+    var r = this.r, ch = CHORDS[this.chord];
+    var rel = this.releases; this.releases = [];
+    rel.forEach(function (f) { f(t, 1.4); });
+    this.voices = this.voiceLead(ch.pcs);
+    for (var i = 0; i < this.voices.length; i++) {
+      var pan = (i / (this.voices.length - 1) - 0.5) * 1.1;
+      this.releases.push(padVoice(hzE2(this.voices[i]), t - 1.2, 3.2 + r() * 1.5, this.padLvl, pan, this.bright));
+    }
+    if (this.sub) {
+      var root = ch.root > 4 ? ch.root - 12 : ch.root;
+      this.releases.push(padVoice(hzE2(root), t - 0.8, 4, this.padLvl * 1.3, 0, 0.3));
+    }
+    // the next chord, by weighted chance
+    var opts = NEXT[this.chord], tot = 0, u, j;
+    for (j = 0; j < opts.length; j++) tot += opts[j][1];
+    u = r() * tot;
+    for (j = 0; j < opts.length; j++) { u -= opts[j][1]; if (u <= 0) { this.chord = opts[j][0]; break; } }
+  };
+
+  Piece.prototype.tick = function (now) {
+    var ahead = now + 0.5, r = this.r, i, j;
+    // never play catch-up after a stall (a background tab): skip to now
+    if (this.nextChord < now - 1) this.nextChord = now + 0.1;
+    while (this.nextChord < ahead) {
+      this.playChord(this.nextChord);
+      this.nextChord += this.chordBase * (0.7 + r() * 0.6);
+    }
+    for (i = 0; i < this.loops.length; i++) {
+      var L = this.loops[i];
+      while (L.next < now - 1) L.next += L.P;
+      while (L.next < ahead) {
+        if (r() < L.p) {
+          for (j = 0; j < L.notes.length; j++) {
+            var n = L.notes[j];
+            var semi = n.oct + PENTA_PC[n.deg];
+            leadNote(L.kind, semi, L.next + n.off, n.vel * (0.8 + r() * 0.4), L.pan, 0.55);
+          }
+        }
+        // a piece evolves: now and then one note of a loop moves
+        if (r() < 0.12) L.notes[Math.floor(r() * L.notes.length)].deg = Math.floor(r() * 5);
+        L.next += L.P;
+      }
+    }
+    if (this.nextSpark < now - 1) this.nextSpark = now + 5;
+    if (this.nextSpark < ahead && B.glint) {
+      var n2 = 2 + Math.floor(r() * 3);
+      for (j = 0; j < n2; j++) {
+        var f = hzE2(48 + PENTA_PC[Math.floor(r() * 5)] + (r() < 0.4 ? 12 : 0));
+        var o = musicOut((r() - 0.5) * 1.6, 0.95);
+        o.gain.value = 0.035 + r() * 0.03;
+        var src = A.createBufferSource(); src.buffer = B.glint; src.playbackRate.value = f / 4000;
+        src.connect(o); src.start(this.nextSpark + j * (0.2 + r() * 0.5));
+      }
+      this.nextSpark += 7 + r() * 14;
+    }
+  };
+
+  Piece.prototype.stop = function (t) {
+    this.releases.forEach(function (f) { f(t, 1.6); });
+    this.releases = [];
+  };
+
+  function musicTick() {
+    if (!MU.piece || !A) return;
+    if (!on || !MU.on || document.hidden) return;
+    try { MU.piece.tick(A.currentTime); } catch (e) {}
+  }
+
+  function musicNew(seed) {
+    if (!ready || !MU.gain) return;
+    var t = A.currentTime;
+    if (MU.piece) MU.piece.stop(t);
+    MU.piece = null;
+    if (!MU.on || !on) return;
+    MU.piece = new Piece(seed === undefined ? (Math.random() * 4294967296) >>> 0 : seed);
+    MU.piece.start(t + 0.3);
+    MU.gain.gain.setTargetAtTime(MU.level, t, 1.2);
+    if (!MU.timer) MU.timer = setInterval(musicTick, 120);
+    musicTick();
   }
 
   /* --------------------------------------------------------------- api */
@@ -656,6 +945,25 @@
       if (singG) singG.gain.setTargetAtTime(0, A.currentTime, 0.3);
       if (rollG) rollG.gain.setTargetAtTime(0, A.currentTime, 0.2);
       lastDanger = -1;
+      // the music carries on through the result, settling back after the crack
+      if (MU.gain && MU.piece) {
+        MU.gain.gain.setTargetAtTime(MU.level, A.currentTime + 0.8, 1.6);
+        MU.lp.frequency.setTargetAtTime(7500, A.currentTime + 0.8, 1.6);
+      }
+    },
+    musicInit: function (v) { MU.on = v; },
+    // a new piece: every run gets one, seeded from the run's drops
+    musicNew: function (seed) { musicNew(seed); },
+    musicToggle: function () {
+      MU.on = !MU.on;
+      if (!ready) return MU.on;
+      if (MU.on) musicNew();
+      else {
+        if (MU.piece) MU.piece.stop(A.currentTime);
+        MU.piece = null;
+        MU.gain.gain.setTargetAtTime(0, A.currentTime, 0.5);
+      }
+      return MU.on;
     },
     hit: hit, drop: dropVoice, merge: merge, sun: sun, nova: nova,
     discover: discover, overflow: overflow, roll: roll,
