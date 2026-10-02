@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld's sound rebuilt from the physics of glass, with a pitch per orb size, shipped `3eb1457`; all live-verified).**
+**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld's sound rebuilt from the physics of glass, with a pitch per orb size, shipped `3eb1457`; phone controls reworked `5552cca`; all live-verified).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**124 toys, live at onepagetoys.com.** Latest on `main`: `3eb1457`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**124 toys, live at onepagetoys.com.** Latest on `main`: `5552cca`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## No. 124 Meld — shipped 2026-10-01 (`6d9458c`, sound rebuild `3eb1457`), live
+## No. 124 Meld — shipped 2026-10-01 (`6d9458c`, sound rebuild `3eb1457`, phone controls `5552cca`), live
 
 **`toys/meld/`** — a drop-and-merge physics puzzle (the Suika genre) in hand-blown GLASS: drop orbs into a jar, two
 of a kind melt into the next of eleven (Seed, Amber, Cobalt, Jade, Cat's Eye, Rose, Millefiori, Dichroic, Galaxy,
@@ -23,6 +23,12 @@ search. ⚠ **The Trail Game could not deploy the cross-promo until its TanStack
 (`e693e8a` in that repo): Vercel now BLOCKS deploys on advisory GHSA-qx66-fv34-fjm8. Any TanStack Start site in the
 portfolio on an older 1.168.x will hit the same wall on its next push. Verified headless: Chromium and WebKit, 375px,
 portrait, landscape phone, reduced motion, challenge link, full run to overflow. **Feel never played by the owner.**
+- ⚠⚠ **Phone controls are a TRACKPAD drag, not the original's jump-to-finger** (owner 10-01: the phone was "harder
+  to use than the desktop"; picked this over the exact original). A drag slides the orb by the finger's travel from
+  wherever it touched (8px slop, incremental and clamped each step so reversing at a wall moves at once), so a thumb
+  can stay low and clear of the pile; lifting drops it. A quick TAP still drops at the touch-DOWN point (the original
+  does this on phones too). Neither reads the lift position: fingertips roll a few px as they leave, which was
+  nudging the aim. Mouse unchanged (hover aims, click drops). Verified with CDP touch events.
 - **Viral:** a run's drops come from a seed, so the challenge link `#c=<seed36>-<score>-<tier>` hands a friend the
   SAME orbs in the same order (physics is not deterministic and does not need to be). Challenged players replay the
   same drops ("Same drops again"), with a text button out to fresh drops. Image share via `OPT_SHARE_IMAGE`.
@@ -497,7 +503,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Meld: owner plays the live build on a phone** for the pitched sound (`3eb1457`, audio.js v3) and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
+- **Meld: owner plays the live build on a phone** for the trackpad drag (`5552cca`), the pitched sound (`3eb1457`, audio.js v3) and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
 - **Trench Runner cinematic mode**: shipped (`a512069`); owner to try it on a phone (performance is the open question).
