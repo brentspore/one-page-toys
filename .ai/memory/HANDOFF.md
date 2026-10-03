@@ -27,6 +27,12 @@ IndexNow accepted. **Never played by the owner: drag feel, difficulty curve and 
 - ⚠⚠ **The first build was the WRONG GAME and was thrown away** (owner: *"that wasn't it at all. look at the
   reference"*). The BACKLOG research had read the reference from fan sites as glide-until-stopped on a sparse tray.
   It is drag-anywhere on a packed board. DECISIONS 2026-10-03: check the reference itself first.
+- **Owner's key art** (2026-10-03, `assets/featured/jettison.webp`, source `_sources/jettison.png`) is in the
+  featured pool and the All Toys newest panel. ⚠ **Doors redesigned the same day** (owner: "kinda hard to see the
+  doors"): the first doors were dark slots with a thin colored outline. Now, after the key art: two leaves in the
+  lock's own color, lit from within, with the glyph and white block arrows out, in a glowing neon frame, filling the
+  full hull depth (`BT` 0.5 to 0.6, so cells are ~3% smaller). Card re-rendered (`cards/jettison.png?v=2` in
+  `styles.css`) and OG regenerated. ⚠ Any test harness that rebuilds the layout uses `L.W + 2*BT + 0.3`.
 - ⚠ **The drag model can never get stuck, which made the whole thing simpler.** A parked move can always be
   dragged back, and jettisoning only frees space, so no state is ever unwinnable (no stuck detector, no rewind)
   and taking any jettison on offer is always right. Par = modules + fewest parking moves, found by a
@@ -536,9 +542,9 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=124` (8 pages) / `styles.css?v=123` (9 hub/store pages); **`tickets.js?v=31` across all 134 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=27` (47 pages); `game-screen.js?v=1` (110 toy pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=125` (8 pages) / `styles.css?v=124` (9 hub/store pages); **`tickets.js?v=31` across all 134 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=27` (47 pages); `game-screen.js?v=1` (110 toy pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
-**Featured art** — the home panel ROTATES bespoke key art, one of **35** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
+**Featured art** — the home panel ROTATES bespoke key art, one of **37** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - ⚠ **Adding art is TWO steps** — drop the `.webp` in **and** add the slug to `FEATURED_ART` in `main.js`; the file alone does nothing.
 - ⚠ **All featured URLs share ONE version string (`.webp?v=N` in `renderHomeHero`), so REPLACING any single piece means bumping N for all of them** — currently `?v=5` (bumped 2026-09-12 when the Tiny Across piece was replaced). ⚠ **ADDING a new piece must NOT bump it**: a new file has no cached copies to invalidate and the bump needlessly re-fetches all 32. **The bump is for REPLACEMENTS only.**
 - ⚠ **The featured media element also carries `data-slug`, so a card motif can bleed through the art** — the art branch must `removeAttribute("data-slug")` and set every background longhand inline, because the `[data-slug]` card rules sit ~700 lines further down `styles.css` and **beat `.home-featured__*` on source order at equal specificity.**

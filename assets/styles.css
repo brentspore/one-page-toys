@@ -1112,7 +1112,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="glass-harp"]{ background: #05070f url("cards/glass-harp.png") center / cover no-repeat; }
 .card__preview[data-slug="chord-harp"]{ background: #0a0913 url("cards/chord-harp.png") center / cover no-repeat; }
 .card__preview[data-slug="barkeep"]{ background: #0b0706 url("cards/barkeep.png") center / cover no-repeat; }
-.card__preview[data-slug="jettison"]{ background: #04060c url("cards/jettison.png") center / cover no-repeat; }
+.card__preview[data-slug="jettison"]{ background: #04060c url("cards/jettison.png?v=2") center / cover no-repeat; }
 .card__preview[data-slug="meld"]{ background: #0a0706 url("cards/meld.png") center / cover no-repeat; }
 .card__preview[data-slug="maw"]{ background: #070105 url("cards/maw.png") center / cover no-repeat; }
 .card__preview[data-slug="trench-runner"]{ background: #03040c url("cards/trench-runner.png") center / cover no-repeat; }

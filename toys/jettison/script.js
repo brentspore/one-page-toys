@@ -71,7 +71,7 @@
 
   /* ------------------------------------------------------------ layout */
 
-  var W = 0, H = 0, DPR = 1, c = 40, ox = 0, oy = 0, BT = 0.5;   // BT: bulkhead thickness, cells
+  var W = 0, H = 0, DPR = 1, c = 40, ox = 0, oy = 0, BT = 0.6;   // BT: bulkhead thickness, cells
   var bg = null, deck = null;
 
   function layout() {
@@ -327,7 +327,7 @@
     L.gates.forEach(function (g) {
       var col = COLORS[g.color % COLORS.length], ang = [Math.PI, 0, -Math.PI / 2, Math.PI / 2][g.d];
       x.save();
-      x.globalAlpha = 0.22;
+      x.globalAlpha = 0.3;
       x.fillStyle = col.base;
       for (var a2 = g.from; a2 <= g.to; a2++) {
         var cx = g.d < 2 ? sx(g.line + 0.5) : sx(a2 + 0.5), cy = g.d < 2 ? sy(a2 + 0.5) : sy(g.line + 0.5);
@@ -365,13 +365,13 @@
     x.restore();
   }
 
-  // an airlock's opening in screen space (inside the hull band)
+  // an airlock's opening in screen space: the full depth of the hull band
   function gateRect(g) {
-    var bt = BT * c, inset = c * 0.08, span = (g.to - g.from + 1) * c - inset * 2;
-    if (g.side === "L") return { x: sx(g.line) - bt * 0.85 - 0.5, y: sy(g.from) + inset, w: bt * 0.85, h: span };
-    if (g.side === "R") return { x: sx(g.line + 1) + 0.5, y: sy(g.from) + inset, w: bt * 0.85, h: span };
-    if (g.side === "T") return { x: sx(g.from) + inset, y: sy(g.line) - bt * 0.85 - 0.5, w: span, h: bt * 0.85 };
-    return { x: sx(g.from) + inset, y: sy(g.line + 1) + 0.5, w: span, h: bt * 0.85 };
+    var bt = BT * c, inset = c * 0.06, span = (g.to - g.from + 1) * c - inset * 2;
+    if (g.side === "L") return { x: sx(g.line) - bt, y: sy(g.from) + inset, w: bt, h: span };
+    if (g.side === "R") return { x: sx(g.line + 1), y: sy(g.from) + inset, w: bt, h: span };
+    if (g.side === "T") return { x: sx(g.from) + inset, y: sy(g.line) - bt, w: span, h: bt };
+    return { x: sx(g.from) + inset, y: sy(g.line + 1), w: span, h: bt };
   }
 
   /* ------------------------------------------------------- the modules */
@@ -512,44 +512,81 @@
 
   /* ------------------------------------------------------ the airlocks */
 
+  // An airlock: two door leaves in the lock's own color, lit from within,
+  // printed with its glyph and an arrow out, in a glowing frame. Owner,
+  // 2026-10-03: the first doors (dark slots with a colored outline) were
+  // hard to see; the key art's glowing panels are the target.
+  var OUT_ANG = [Math.PI, 0, -Math.PI / 2, Math.PI / 2];
   function drawDoors(x) {
     G.level.gates.forEach(function (g, k) {
       var d = G.doors[k], o = gateRect(g), col = COLORS[g.color % COLORS.length];
-      var open = d.open, horiz = g.side === "T" || g.side === "B";
-      var glow = 0.45 + d.glow * 0.55 + 0.08 * Math.sin(G.clock * 2 + k);
+      var open = d.open, horiz = g.d >= 2;
+      var glow = 0.72 + d.glow * 0.28 + 0.07 * Math.sin(G.clock * 2.2 + k * 1.3);
+      var gx = o.x + o.w / 2, gy = o.y + o.h / 2;
+      // the halo it throws over the hull and into space
       x.save();
       x.globalCompositeOperation = "lighter";
-      var gx = o.x + o.w / 2, gy = o.y + o.h / 2, gr = Math.max(o.w, o.h) * 0.9;
+      var gr = Math.max(o.w, o.h) * 0.7 + c * 0.55;
       var lg = x.createRadialGradient(gx, gy, 0, gx, gy, gr);
-      lg.addColorStop(0, hexA(col.base, 0.3 * glow)); lg.addColorStop(1, "rgba(0,0,0,0)");
+      lg.addColorStop(0, hexA(col.base, 0.4 * glow)); lg.addColorStop(0.45, hexA(col.base, 0.12 * glow)); lg.addColorStop(1, "rgba(0,0,0,0)");
       x.fillStyle = lg; x.fillRect(gx - gr, gy - gr, gr * 2, gr * 2);
       x.restore();
-      // door leaves sliding apart along the bulkhead
+      // the leaves, parting along the bulkhead
       x.save();
       x.beginPath(); x.rect(o.x, o.y, o.w, o.h); x.clip();
-      var leafCol = "#2b3344";
       if (horiz) {
         var lw = o.w / 2 * (1 - open);
-        doorLeaf(x, o.x, o.y, lw, o.h, leafCol, true);
-        doorLeaf(x, o.x + o.w - lw, o.y, lw, o.h, leafCol, true);
+        doorLeaf(x, o.x, o.y, lw, o.h, col, g.d, glow);
+        doorLeaf(x, o.x + o.w - lw, o.y, lw, o.h, col, g.d, glow);
       } else {
         var lh = o.h / 2 * (1 - open);
-        doorLeaf(x, o.x, o.y, o.w, lh, leafCol, false);
-        doorLeaf(x, o.x, o.y + o.h - lh, o.w, lh, leafCol, false);
+        doorLeaf(x, o.x, o.y, o.w, lh, col, g.d, glow);
+        doorLeaf(x, o.x, o.y + o.h - lh, o.w, lh, col, g.d, glow);
+      }
+      // the glyph (so color is never the only cue) and the way out
+      var fade = Math.max(0, 1 - open * 1.8);
+      if (fade > 0) {
+        var n = g.to - g.from + 1, ux = horiz ? 1 : 0, uy = horiz ? 0 : 1;
+        var span = horiz ? o.w : o.h, depth = horiz ? o.h : o.w;
+        var r = Math.min(depth * 0.3, c * 0.17), ang = OUT_ANG[g.d];
+        x.globalAlpha = fade;
+        if (n === 1) {
+          glyph(x, col.glyph, gx - ux * c * 0.2, gy - uy * c * 0.2, r * 0.9, "#ffffff", "rgba(0,0,0,0.4)");
+          outArrow(x, gx + ux * c * 0.2, gy + uy * c * 0.2, ang, r);
+        } else {
+          var off = Math.min(span / 2 - c * 0.32, n >= 3 ? c * 0.9 : c * 0.62);
+          glyph(x, col.glyph, gx, gy, r, "#ffffff", "rgba(0,0,0,0.4)");
+          outArrow(x, gx - ux * off, gy - uy * off, ang, r);
+          outArrow(x, gx + ux * off, gy + uy * off, ang, r);
+        }
+        x.globalAlpha = 1;
       }
       x.restore();
-      x.strokeStyle = hexA(col.base, 0.65 + 0.35 * glow); x.lineWidth = Math.max(1.5, c * 0.05);
-      x.strokeRect(o.x, o.y, o.w, o.h);
+      // a neon frame round the opening
+      x.save();
+      x.globalCompositeOperation = "lighter";
+      x.shadowColor = col.base; x.shadowBlur = c * 0.3 * glow;
+      x.strokeStyle = hexA(col.hi, 0.7 + 0.3 * d.glow); x.lineWidth = Math.max(1.5, c * 0.055);
+      x.strokeRect(o.x + 0.5, o.y + 0.5, o.w - 1, o.h - 1);
+      x.restore();
       // too wide for this lock: a red flash on the frame
       if (d.deny > 0) {
         x.strokeStyle = "rgba(255,70,60," + (d.deny * (0.6 + 0.4 * Math.sin(G.clock * 40))).toFixed(3) + ")";
         x.lineWidth = Math.max(2, c * 0.08);
         x.strokeRect(o.x - 2, o.y - 2, o.w + 4, o.h + 4);
       }
-      // an arrow on the door: this way out
-      x.fillStyle = hexA(col.hi, 0.55 + 0.4 * glow);
-      tri(x, gx, gy, [Math.PI, 0, -Math.PI / 2, Math.PI / 2][g.d], Math.min(o.w, o.h) * 0.32);
     });
+  }
+
+  // a block arrow, white with a dark edge, pointing out through the lock
+  function outArrow(x, cx, cy, ang, s) {
+    x.save(); x.translate(cx, cy); x.rotate(ang);
+    x.beginPath();
+    x.moveTo(s, 0); x.lineTo(0, -s * 0.85); x.lineTo(0, -s * 0.34); x.lineTo(-s * 0.9, -s * 0.34);
+    x.lineTo(-s * 0.9, s * 0.34); x.lineTo(0, s * 0.34); x.lineTo(0, s * 0.85); x.closePath();
+    x.strokeStyle = "rgba(0,0,0,0.4)"; x.lineWidth = Math.max(1, s * 0.3); x.lineJoin = "round"; x.stroke();
+    x.fillStyle = "#ffffff"; x.fill();
+    x.restore();
   }
 
   // each airlock throws its color across the deck in front of it
@@ -558,7 +595,7 @@
     x.globalCompositeOperation = "lighter";
     G.level.gates.forEach(function (g, k) {
       var col = COLORS[g.color % COLORS.length], d = G.doors[k];
-      var a = 0.07 + d.glow * 0.18 + d.open * 0.1, depth = 1.6 * c, span = (g.to - g.from + 1) * c, rx, ry, rw, rh, x0, y0, x1, y1;
+      var a = 0.12 + d.glow * 0.2 + d.open * 0.1, depth = 1.8 * c, span = (g.to - g.from + 1) * c, rx, ry, rw, rh, x0, y0, x1, y1;
       if (g.side === "L") { rx = sx(g.line); ry = sy(g.from); rw = depth; rh = span; x0 = rx; y0 = 0; x1 = rx + depth; y1 = 0; }
       else if (g.side === "R") { rx = sx(g.line + 1) - depth; ry = sy(g.from); rw = depth; rh = span; x0 = sx(g.line + 1); y0 = 0; x1 = rx; y1 = 0; }
       else if (g.side === "T") { rx = sx(g.from); ry = sy(g.line); rw = span; rh = depth; x0 = 0; y0 = ry; x1 = 0; y1 = ry + depth; }
@@ -594,16 +631,24 @@
     });
   }
 
-  function doorLeaf(x, l, t, w, h, colr, horiz) {
+  // one door leaf: the lock's color, brightest on the side facing the hold,
+  // with a lit sheen and two panel seams along it
+  function doorLeaf(x, l, t, w, h, col, dir, glow) {
     if (w <= 0.5 || h <= 0.5) return;
-    x.fillStyle = colr; x.fillRect(l, t, w, h);
-    x.fillStyle = "rgba(255,200,40,0.55)";
-    var n = 4;
-    for (var k = 0; k < n; k++) {
-      if (horiz) x.fillRect(l + w * (k + 0.3) / n, t + h * 0.25, w / n * 0.3, h * 0.5);
-      else x.fillRect(l + w * 0.25, t + h * (k + 0.3) / n, w * 0.5, h / n * 0.3);
+    var horiz = dir >= 2, o = (dir === 0 || dir === 2) ? 1 : 0;   // which end faces the hold
+    var g = horiz ? x.createLinearGradient(0, t, 0, t + h) : x.createLinearGradient(l, 0, l + w, 0);
+    g.addColorStop(o ? 0 : 1, col.lo); g.addColorStop(0.5, col.base); g.addColorStop(o ? 1 : 0, col.hi);
+    x.fillStyle = g; x.fillRect(l, t, w, h);
+    x.save();
+    x.globalCompositeOperation = "lighter";
+    x.fillStyle = hexA(col.hi, 0.16 * glow); x.fillRect(l, t, w, h);
+    x.restore();
+    x.fillStyle = "rgba(0,0,0,0.22)";
+    for (var k = 1; k < 3; k++) {
+      if (horiz) x.fillRect(l, t + h * k / 3 - 0.5, w, 1);
+      else x.fillRect(l + w * k / 3 - 0.5, t, 1, h);
     }
-    x.strokeStyle = "rgba(0,0,0,0.5)"; x.lineWidth = 1; x.strokeRect(l + 0.5, t + 0.5, w - 1, h - 1);
+    x.strokeStyle = "rgba(0,0,0,0.45)"; x.lineWidth = 1; x.strokeRect(l + 0.5, t + 0.5, w - 1, h - 1);
   }
   function hexA(h, a) {
     var n = parseInt(h.slice(1), 16);
