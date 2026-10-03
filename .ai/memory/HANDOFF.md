@@ -514,6 +514,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
+- **Next build (owner, 2026-10-03): a slide-out color sort game like Block Out!** Researched, not started. The blueprint is `BACKLOG.md` "Puzzle #0" and the measured solver/generator prototype is `scripts/research/color-exit/`. Start with its four owner calls (control, clock, look, name).
 - **Meld: owner plays the live build on a phone** for the music (`2976c82`, audio.js v4), the trackpad drag (`5552cca`), the pitched sound (`3eb1457`) and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
