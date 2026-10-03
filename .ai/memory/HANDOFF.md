@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-10-01 (No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld's sound rebuilt from the physics of glass, with a pitch per orb size, shipped `3eb1457`; phone controls reworked `5552cca`; generative music `2976c82`; all live-verified).**
+**Last updated: 2026-10-03 (next build researched, not started: a slide-out color sort like Block Out!, blueprint in `BACKLOG.md` "Puzzle #0" and the measured prototype in `scripts/research/color-exit/`, `db6edbc`, repo-only so the site is unchanged. Before that, 2026-10-01: No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld's sound rebuilt from the physics of glass, with a pitch per orb size, shipped `3eb1457`; phone controls reworked `5552cca`; generative music `2976c82`; all live-verified).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**124 toys, live at onepagetoys.com.** Latest on `main`: `2976c82`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**124 toys, live at onepagetoys.com.** Latest on `main`: `db6edbc`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## No. 124 Meld — shipped 2026-10-01 (`6d9458c`, sound rebuild `3eb1457`, phone controls `5552cca`, music `2976c82`), live
 
