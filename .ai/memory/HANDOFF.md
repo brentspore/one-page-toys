@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-10-03 (admin: Claude-written "What to do next" banner `da9525f`, live, first real read pending the owner's sign-in; Google setup done, path fix + GA `source` → `placement` rename shipped; trailing-slash redirect shipped site-wide. Before that: No. 126 Decant + the /admin page + shared play tracking shipped `da30edf`, owner's updated Decant art `e74d95f`, all live-verified. /admin waits on the owner's Google setup. Jenga drag fix on its branch `0d01d86`).**
+**Last updated: 2026-10-03 (admin: Claude-written "What to do next" banner `da9525f` + quiet-site crash fix `3197500`, live, first real read pending the owner's sign-in; Google setup done, path fix + GA `source` → `placement` rename shipped; trailing-slash redirect shipped site-wide. Before that: No. 126 Decant + the /admin page + shared play tracking shipped `da30edf`, owner's updated Decant art `e74d95f`, all live-verified. /admin waits on the owner's Google setup. Jenga drag fix on its branch `0d01d86`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**126 toys, live at onepagetoys.com.** Latest on `main`: `da9525f`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**126 toys, live at onepagetoys.com.** Latest on `main`: `3197500`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## No. 126 Decant — shipped 2026-10-03 (`da30edf`, art `e74d95f`), live
 
