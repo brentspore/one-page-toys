@@ -1054,13 +1054,13 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="dot-loop"]{ background: #05070d url("cards/dot-loop.webp?v=88854c93") center 4% / cover no-repeat; }
 .card__preview[data-slug="paper-plane"]{ background: #05070d url("cards/paper-plane.webp?v=f2892681") center 20% / cover no-repeat; }
 .card__preview[data-slug="nova-coil"]{ background: #05070d url("cards/nova-coil.webp?v=8ab53b1a") center 35% / cover no-repeat; }
-.card__preview[data-slug="random-maze"]{ background: #05070d url("cards/random-maze.webp?v=7384ea2c") center 30% / cover no-repeat; }
+.card__preview[data-slug="random-maze"]{ background: #05070d url("cards/random-maze.webp?v=d63cf3f9") center 30% / cover no-repeat; }
 .card__preview[data-slug="trio"]{ background: #05070d url("cards/trio.webp?v=9dc98463") center 35% / cover no-repeat; }
 .card__preview[data-slug="coin-pusher"]{ background: #0b141c url("cards/coin-pusher.png") center / cover no-repeat; }
 .card__preview[data-slug="stack-tower"]{ background: #05070d url("cards/stack-tower.webp?v=c10e53b9") center 45% / cover no-repeat; }
 .card__preview[data-slug="music-box"]{ background: #1a2440 url("cards/music-box.png") center / cover no-repeat; }
 .card__preview[data-slug="theremin"]{ background: #0a0a1e url("cards/theremin.png") center / cover no-repeat; }
-.card__preview[data-slug="mini-golf"]{ background: #05070d url("cards/mini-golf.webp?v=fe6038a0") center 15% / cover no-repeat; }
+.card__preview[data-slug="mini-golf"]{ background: #05070d url("cards/mini-golf.webp?v=4b34e259") center 15% / cover no-repeat; }
 .card__preview[data-slug="murmuration"]{ background: #0e1130 url("cards/murmuration.png") center / cover no-repeat; }
 .card__preview[data-slug="blackjack"]{ background: #0b5238 url("cards/blackjack.png") center / cover no-repeat; }
 .card__preview[data-slug="tongue-drum"]{ background: #0a1216 url("cards/tongue-drum.png") center / cover no-repeat; }
@@ -1085,7 +1085,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="reaction-diffusion"]{ background: #04110c url("cards/reaction-diffusion.png") center / cover no-repeat; }
 .card__preview[data-slug="ink-marbling"]{ background: #06080e url("cards/ink-marbling.png") center / cover no-repeat; }
 .card__preview[data-slug="stained-glass"]{ background: #07060e url("cards/stained-glass.png") center / cover no-repeat; }
-.card__preview[data-slug="trail-game"]{ background: #05070d url("cards/trail-game.webp?v=325f51e5") center 45% / cover no-repeat; }
+.card__preview[data-slug="trail-game"]{ background: #05070d url("cards/trail-game.webp?v=80372112") center 40% / cover no-repeat; }
 .card__preview[data-slug="spelling-blocks"]{ background: #05070d url("cards/spelling-blocks.webp?v=2cf331b4") center 40% / cover no-repeat; }
 .card__preview[data-slug="shuriken-night"]{ background: #05070d url("cards/shuriken-night.webp?v=cd50b3ba") center 20% / cover no-repeat; }
 .card__preview[data-slug="deep-hollow"]{ background: #05070d url("cards/deep-hollow.webp?v=1d4323af") center 45% / cover no-repeat; }
@@ -1093,7 +1093,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="perfect-timing"]{ background: #05070d url("cards/perfect-timing.webp?v=fde55a34") center 45% / cover no-repeat; }
 .card__preview[data-slug="clowns-balloons"]{ background: #3a1526 url("cards/clowns-balloons.png") center / cover no-repeat; }
 .card__preview[data-slug="darts"]{ background: #05070d url("cards/darts.webp?v=aaf3b483") center 20% / cover no-repeat; }
-.card__preview[data-slug="air-hockey"]{ background: #05070d url("cards/air-hockey.webp?v=e820ea45") center 0% / cover no-repeat; }
+.card__preview[data-slug="air-hockey"]{ background: #05070d url("cards/air-hockey.webp?v=cb2230a6") center 0% / cover no-repeat; }
 .card__preview[data-slug="video-poker"]{ background: #0a1c15 url("cards/video-poker.png") center / cover no-repeat; }
 .card__preview[data-slug="glow-pegs"]{ background: #08080d url("cards/glow-pegs.png") center / cover no-repeat; }
 .card__preview[data-slug="decision-wheel"]{ background: #1a1728 url("cards/decision-wheel.png") center / cover no-repeat; }
@@ -1106,7 +1106,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="moon-phase"]{ background: #0a0d1a url("cards/moon-phase.png") center / cover no-repeat; }
 .card__preview[data-slug="golden-hour"]{ background: #eef2f8 url("cards/golden-hour.png") center / cover no-repeat; }
 .card__preview[data-slug="typing-speed"]{ background: #eef2f8 url("cards/typing-speed.png") center / cover no-repeat; }
-.card__preview[data-slug="bowling"]{ background: #05070d url("cards/bowling.webp?v=5a36dea5") center 30% / cover no-repeat; }
+.card__preview[data-slug="bowling"]{ background: #05070d url("cards/bowling.webp?v=fdc6a4db") center 30% / cover no-repeat; }
 .card__preview[data-slug="claw-machine"]{ background: #050410 url("cards/claw-machine.png") center / cover no-repeat; }
 .card__preview[data-slug="twisty-cube"]{ background: #05070d url("cards/twisty-cube.webp?v=736ba655") center 35% / cover no-repeat; }
 .card__preview[data-slug="glass-harp"]{ background: #05070f url("cards/glass-harp.png") center / cover no-repeat; }

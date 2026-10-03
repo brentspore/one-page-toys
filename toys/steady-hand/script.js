@@ -715,8 +715,10 @@
   updateHud();
   requestAnimationFrame(frame);
 
-  // headless verification handle
-  window.__steady = {
+  // headless verification handle for the card pose (scripts/poses/steady-hand.js).
+  // Only an automated browser gets it: navigator.webdriver is true under
+  // Playwright and false for a real visitor, who never sees the internals.
+  if (navigator.webdriver) window.__steady = {
     G: G, get wire() { return wire; },
     startRun: startRun, newCourse: newCourse,
     courseFor: courseFor, nearest: nearest,

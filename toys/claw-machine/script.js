@@ -1495,7 +1495,7 @@
     ovTitle.textContent = score + " points";
     ovText.textContent = won.length
       ? "Ten drops, " + won.length + (won.length === 1 ? " prize" : " prizes") + " in the bin."
-      : "Ten drops, nothing in the bin. Centre the claw right over one prize — the grip holds when the grab is clean.";
+      : "Ten drops, nothing in the bin. Center the claw right over one prize — the grip holds when the grab is clean.";
     ovHaul.innerHTML = "";
     for (var k = 0; k < names.length; k++) {
       var li = document.createElement("li");

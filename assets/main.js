@@ -74,7 +74,7 @@ const TYPE_NL_PHRASES = {
   "tiny-across": "tiny across crossword mini crossword daily crossword small crossword 5x5 crossword five by five crossword quick crossword easy crossword crossword puzzle online free crossword no signup crossword clues across and down word puzzle word game fill in the grid clue solving one minute crossword timed crossword crossword practice unlimited crossword brain game vocabulary morning puzzle coffee break puzzle daily word game streak tinyacross.com",
   "chess": "chess play chess against computer chess ai chess engine chess bot board game strategy game checkmate check stalemate castling en passant promotion queen king rook bishop knight pawn opening gambit sicilian ruy lopez italian queens gambit london caro kann endgame tactics fork pin skewer blunder elo rating beginner chess easy chess hard chess levels of difficulty different opponents personalities play white play black undo takeback hint move list algebraic notation single player offline free chess no signup lichess chess.com alternative marble chess set staunton pieces 3d chess board",
   "skyscrapers": "skyscrapers skyscraper puzzle building heights logic puzzle latin square deduction reasoning brain teaser sudoku like sudoku alternative kenken futoshiki nonogram sightline how many can you see towers city skyline night grid puzzle no guessing pure logic daily brain training think smart clever puzzle game 4x4 5x5 6x6 timed best time",
-  "pendulum-wave": "pendulum wave pendulums swinging balls harmonic motion resonance physics demo science museum harvard pendulum snake wave travelling wave out of phase in phase hypnotic mesmerizing satisfying relaxing meditative kinetic sculpture newton cradle chimes ambient generative rhythm",
+  "pendulum-wave": "pendulum wave pendulums swinging balls harmonic motion resonance physics demo science museum harvard pendulum snake wave traveling wave out of phase in phase hypnotic mesmerizing satisfying relaxing meditative kinetic sculpture newton cradle chimes ambient generative rhythm",
   "steady-hand": "steady hand buzz wire buzzwire wire loop game don't touch the sides operation game shaky hand nerves precision steady nerve fairground carnival game thread the loop electric buzzer hot wire maze trace the wire without touching one touch and you lose reflex accuracy control tremor",
   "dominoes": "dominoes domino topple toppling chain reaction cascade knock over falling tiles domino run domino rally line of dominoes set them up knock them down branching fork spiral wave build and topple satisfying oddly satisfying chain physics simulation 3d tiles clatter draw a path sandbox",
   "pinball": "pinball pin ball flippers flipper table arcade machine cabinet bumpers pop bumper slingshot plunger launch drop targets orbit lane scoop kickback tilt nudge silver ball steel ball score chase high score retro arcade neon space table classic coin op amusement pinball wizard flip the ball keep it alive drain skill shot multiplier",
@@ -105,7 +105,7 @@ const TYPE_NL_PHRASES = {
   "tossing-cards":
     "tossing cards tossingcards card toss flick cards into a bowl card flicking throw cards playing cards deck bowl toss game paper toss trash can basketball office game flick game aim and throw skill precision physics wind curve hook spin lamplit room parlor cozy dark academia daily room daily game streak practice unlimited ten cards ace is eleven card values bounce rim in the bowl tossingcards.com",
   "brick-smasher":
-    "brick smasher bricksmasher brick breaker breakout arkanoid block breaker bust a move blocks smash the wall paddle and ball bat and ball ball bouncer wall breaker demolish bricks neon glass bricks retro arcade classic atari 2600 super breakout alleyway ricochet infinity ball juggle power ups multiball laser paddle widen slow ball capsules armoured bricks steel bricks levels waves lives high score combo chain angle the ball off the paddle edge one more go daily wall daily game daily challenge streak practice mode unlimited practice wordle for arcade same wall for everyone bricksmasher.com",
+    "brick smasher bricksmasher brick breaker breakout arkanoid block breaker bust a move blocks smash the wall paddle and ball bat and ball ball bouncer wall breaker demolish bricks neon glass bricks retro arcade classic atari 2600 super breakout alleyway ricochet infinity ball juggle power ups multiball laser paddle widen slow ball capsules armored bricks steel bricks levels waves lives high score combo chain angle the ball off the paddle edge one more go daily wall daily game daily challenge streak practice mode unlimited practice wordle for arcade same wall for everyone bricksmasher.com",
   "color-match":
     "color match colour match match the color guess the color color test eye test how good is your eye perceptual delta e cielab hue saturation lightness hsl sliders swatch designer color theory calibration pantone shade tone tint mixing paint mixer color accuracy color blindness test munsell x-rite hue test precision",
   "singing-bowl":
@@ -1358,7 +1358,7 @@ function renderNewestPanel() {
       // same rule as the home spotlight: key art paints every longhand inline so
       // no [data-slug] card motif can bleed through it
       const prev = sec.querySelector(".card__preview");
-      if (prev) prev.style.background = '#07070b url("/assets/featured/' + t.slug + '.webp?v=5") center / cover no-repeat';
+      if (prev) prev.style.background = '#07070b url("/assets/featured/' + t.slug + '.webp?v=6") center / cover no-repeat';
     }
   }
 
@@ -1409,7 +1409,7 @@ function renderHomeHero() {
       prev.removeAttribute("data-slug");
       prev.classList.add("card__preview--art");
       prev.style.background =
-        '#07070b url("/assets/featured/' + t.slug + '.webp?v=5") center / cover no-repeat';
+        '#07070b url("/assets/featured/' + t.slug + '.webp?v=6") center / cover no-repeat';
       // the art carries the toy's own logo, so the heading would just repeat it:
       // keep it for screen readers only and let the panel re-space itself
       sec.classList.add("home-featured--art");

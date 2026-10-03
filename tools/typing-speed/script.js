@@ -209,6 +209,10 @@
 
     resultEl.hidden = false;
     drawTrail();
+    // the share link carries the run (never a 0 WPM run: that is no result)
+    window.OPT_SHARE_TEXT = wpm > 0
+      ? "I typed " + wpm + " words a minute at " + acc + "% accuracy on Typing Speed. How fast are you?"
+      : null;
 
     try {
       if (typeof window.gtag === "function") {
@@ -409,6 +413,7 @@
     limitMs = secs * 1000;
     sink.value = "";
     resultEl.hidden = true;
+    window.OPT_SHARE_TEXT = null;
     caretHint.hidden = false;
     clockK.textContent = "Time";
     clockEl.textContent = String(secs);

@@ -209,6 +209,9 @@ body{
 }
 .datepick:focus-within{ border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 
+/* share.js mounts its pill here; the theme token keeps it readable in light and dark */
+.share-row{ display: flex; justify-content: center; margin: -4px 0 -6px; }
+.share-row .opt-share{ --ops-fg: var(--ink); }
 .backlink{ font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); text-decoration: none; border-bottom: 1px solid transparent; transition: color 140ms ease, border-color 140ms ease; }
 .backlink:hover{ color: var(--ink); border-bottom-color: var(--accent); }
 

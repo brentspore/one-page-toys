@@ -23,7 +23,7 @@ rule, all four cross-promo lists), card (`scripts/poses/jettison.js`, level 38 a
 exit sits mid-height where the gallery band shows it) and OG. **Live-verified:** levels 1, 13, 33 and 40 cleared at par
 by mouse on onepagetoys.com, All Toys newest panel shows it, search finds it ("color block puzzle", "airlock",
 "traffic jam"), Jettison is in all four DEPLOYED cross-promo bundles (siblings `2e170c8` / `7217d4a` / `98f019c`),
-IndexNow accepted. **Never played by the owner: drag feel, difficulty curve and sound are all unjudged.**
+IndexNow accepted. ✅ **Owner play-tested on a phone and approved 2026-10-03** (*"all 3 are great"*, with Meld and Trench Runner Cinematic): drag feel, difficulty curve, sound.
 - ⚠⚠ **The first build was the WRONG GAME and was thrown away** (owner: *"that wasn't it at all. look at the
   reference"*). The BACKLOG research had read the reference from fan sites as glide-until-stopped on a sparse tray.
   It is drag-anywhere on a packed board. DECISIONS 2026-10-03: check the reference itself first.
@@ -78,7 +78,7 @@ pool; source in `_sources/meld.png`). IndexNow accepted. Live-verified: toy play
 search. ⚠ **The Trail Game could not deploy the cross-promo until its TanStack Start was bumped 1.168.26 to 1.168.60**
 (`e693e8a` in that repo): Vercel now BLOCKS deploys on advisory GHSA-qx66-fv34-fjm8. Any TanStack Start site in the
 portfolio on an older 1.168.x will hit the same wall on its next push. Verified headless: Chromium and WebKit, 375px,
-portrait, landscape phone, reduced motion, challenge link, full run to overflow. **Feel never played by the owner.**
+portrait, landscape phone, reduced motion, challenge link, full run to overflow. ✅ **Owner play-tested on a phone and approved 2026-10-03** (*"all 3 are great"*, with Meld and Trench Runner Cinematic): feel, drag, sound and music.
 - **Music (owner 10-01: "calming background music. Different every time"):** generative, in `audio.js` (`Piece`).
   Glass-harmonica pad (doublet + stick-slip harmonics, each voice breathing), a soft root, 3-4 Eno-style melody loops
   on their own odd periods (13-35s) so they phase and never repeat, glints far off; chords wander by weighted chance
@@ -89,7 +89,7 @@ portrait, landscape phone, reduced motion, challenge link, full run to overflow.
   and darkens with the danger level, recovers after overflow. Lookahead scheduler on a 120ms interval that skips
   (never catches up) after a stall or a hidden tab. Separate toggle `#musicBtn` (headphones), `meld_music`; it is
   top-left on phones, beside the sound button on desktop (the top-right frame label moved to 104px). gen-card now
-  hides `.music-btn`. Never heard by the owner yet.
+  hides `.music-btn`. Owner-approved 2026-10-03.
 - ⚠⚠ **Phone controls are a TRACKPAD drag, not the original's jump-to-finger** (owner 10-01: the phone was "harder
   to use than the desktop"; picked this over the exact original). A drag slides the orb by the finger's travel from
   wherever it touched (8px slop, incremental and clamped each step so reversing at a wall moves at once), so a thumb
@@ -194,8 +194,7 @@ see every cocktail you can make, what's one away, and the **best next bottle** (
 finish). 166 recipes in `drinks.js` (24 zero-proof), every glass drawn by `glassSVG()`, deep links
 `#<slug>`, oz/ml (quarter ounces only), shopping list that shares as plain text. ⚠ The list button is a SOLID gold pill first in the shelf header, plus a floating bottom-centre copy (`#listFab`) shown only when the list has items AND the shelf button is off screen (IntersectionObserver) — owner couldn't find the original outline button (`09e1414`). Keys: `barkeep_bar`,
 `barkeep_list`, `barkeep_units`, `barkeep_sound`. No score, so **no ticket rule**; a tool, so **not in the
-cross-promo** (the tool family stays out of it). Live-verified; IndexNow accepted. ⚠ **Audio (glass clink,
-knock, ice rattle) is measured (0.215 / 0.132 / 0.144) but UNHEARD.**
+cross-promo** (the tool family stays out of it). Live-verified; IndexNow accepted. ✅ **Audio (glass clink, knock, ice rattle; 0.215 / 0.132 / 0.144) owner-approved 2026-10-03.**
 - ⚠⚠ **NO AFFILIATE LINKS — owner asked 09-23 ("I'm an affiliate", Amazon) and chose the plain list after
   the conflict with DECISIONS 2026-06-11 was flagged.** Also: Amazon US doesn't generally sell spirits, and
   Associates can only add to a CART (multi-ASIN add-to-cart link), not to a customer's list. If the owner
@@ -242,7 +241,7 @@ stacked canvases: `#sky` (the sky, moved off the main canvas), `#gl`, `#canvas` 
   resolution (`GLS` 1.25 down to 0.6) on slow frames; `webglcontextlost` drops to neon; no WebGL hides the choice.
 - Share image in cinematic flattens all three canvases (`snapshot()`), drawn in the same task so no
   preserveDrawingBuffer.
-- ⚠ **Never run on a real phone yet**: fragment cost is the risk (14 lights + plating height field + bloom).
+- ✅ **Owner play-tested on a phone and approved 2026-10-03** (*"all 3 are great"*, with Meld and Trench Runner Cinematic). Fragment cost (14 lights + plating height field + bloom) was the risk; it held up on his phone.
 
 ## No. 121 Trench Runner, shipped 2026-09-23 (`b6dcc13`), live
 
@@ -352,7 +351,7 @@ bundles carry the cross-promo, IndexNow accepted). ✅ **Audio owner-approved 20
 - ⚠ **A puzzle with two independent win conditions must show BOTH as live counters** — otherwise players satisfy the legible one and call the toy broken (*"I completed sudoku in the buildings but not the numbers outside"*).
 - ⚠ **Card pose is KEYBOARD-driven** (`scripts/poses/skyscrapers.js`) and leaves **one gap per row AND column** — a completed line gets judged, and a judged line missing its clue turns the chip red, which reads as broken.
 
-⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work; **one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
+⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work. ✅ **The drag bug is FIXED (2026-10-03, on the branch):** while a block slides it touches nothing in its own level or the levels directly above and below (collision filter groups); 12 pulls across three random towers moved the tower 1.4cm at most (most about 2mm) against 1.0–1.6m before, and full turns (pull, place on top) land flat. ⚠ **cannon caps friction at friction x gravity x the PAIR'S mass, not the real load**, which is why the slick-puller material never helped. Old notes on the bug follow. **Was: one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
 
 ## ⚠ Feeders must never preview their daily (owner, 2026-09-12, `049a772`)
 
@@ -482,6 +481,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 - ⚠ **The label tracks the globals through PROPERTY SETTERS, not a DOM observer** (an observer broke instantly on Dominoes, whose toolbar never toggles).
 - ⚠ **Guard every wired toy against a nothing result** (*"I cleared 0 wires"* is an anti-advertisement): fall back to the plain share, and clear the previous run.
 - Dominoes has no end overlay so it carries `data-opt-share` on its toolbar; Dot Loop and Coin Pusher are endless, so their share is only reachable from the intro panel.
+- **The last five pages without a mount got one (2026-10-03):** Glass Harp under its intro text (hidden, and not tappable, once the intro fades); Chord Harp docked bottom-right (`.share-dock`; under the intro it sat on the harp's top rail on a phone); Moon Phase, Golden Hour and Typing Speed in a `.share-row` above the back link, colored by the page's own `--ink` so it reads in light and dark. Typing Speed now shares the run ("I typed 72 words a minute at 98% accuracy…"), never a 0 WPM run.
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
@@ -534,6 +534,8 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 - ⚠ **Skee Ball (090) is the owner's own build.** If that folder is overwritten again, RE-APPLY both fixes: the per-game payout in `endGame()` (it saves under `skeeball_target_pass_best`, so the old `skeeball_best` rule never fired) and the mobile peak-flick input — exact code in the 08-14 archive.
 - ⚠ **A card must photograph the toy BEING PLAYED, not idle** (toys with featured art use the art instead, see above). For a procedurally-generated toy, **SOLVE the scene** — Word Kraven's pose reads the DOM letters, fetches the toy's own `words.txt`, traces a real word with real PointerEvents and **holds the gesture down**. ⚠ Each run deals a different grid, so it is a **candidate generator**: render several, pick by eye. ⚠ Watch for state that reveals chrome (`showCta()` at three words pushes the shell out of the crop, so the pose stops at two).
 - **Captures:** `gen-card.cjs` has flags for tools, element capture, posing (`--eval`) and `--motion`; poses in `scripts/poses/` drive the page through **real input only, never a debug hook**. ⚠ `.card__preview` shows only the vertical middle ~30% — check the rendered card, not the source image. ⚠ **`--at` counts from AFTER the `--eval` promise resolves, not page load** — for a mid-action shot leave the last gesture **un-awaited** (`scripts/poses/chord-harp.js`). Transient HUD captions are hidden by default; `--show` restores the ones that ARE the toy's identity.
+- ⚠ **American spelling everywhere** (owner, 2026-10-03: "please don't ever use british spellings"): color, center, gray, armor, traveling, neighbor. Swept that day: 0 British spellings left in pages, gallery blurbs or share templates (28 fixed; Claw Machine and Glow Pegs share images regenerated, `og/<slug>.png?v=2`). **The one deliberate exception:** "colour" stays in four hidden search-keyword strings in `main.js`, as a synonym beside "color", so someone typing the UK spelling still finds the toy. Code identifiers like `travelled` or `analyse()` were left alone.
+- **Test hooks are for automation only:** a toy's verification handle (`window.__pin`, `__dom`, `__steady`, `__jenga`…) is assigned only `if (navigator.webdriver)`, which Playwright (Chromium and WebKit) sets and a real visitor's browser does not (2026-10-03). Poses keep working; visitors never get the internals.
 - **Verification gotchas:** capture canvas at `deviceScaleFactor: 1` (Playwright tears at 2); headless forces reduced-motion and throttles rAF (drive frames via `evaluate(rAF)`); sim vs wall time diverge — probe internal state, not timed screenshots; force-clicking hidden chrome hits the canvas underneath; `getByteFrequencyData` saturates — use `getFloatFrequencyData` on a tone's own partial bins; grep-clean temp debug hooks before commit.
 - ⚠ **`[hidden]` HUDs:** an author `display:flex` on a fixed HUD outranks the UA's `[hidden]{display:none}` and paints over the intro panel — every hidden HUD needs `.hud[hidden]{display:none}`. Detect by flagging bare-`hidden` elements whose CSS sets a non-`none` `display`, then confirm in a browser (static matching over-reports). **Verify the reveal too.**
 - ⚠ **INCIDENT — a missing comma in `assets/main.js` took out the ENTIRE gallery, site-wide.** main.js threw on load and **nothing after a throw runs, so every hub page rendered ZERO cards** while still returning 200 and looking normal. **Whenever `main.js` is edited, parse-check it:** `node -e "new Function(require('fs').readFileSync('assets/main.js','utf8'))"`. Caught only by driving the LIVE hub after deploy.
@@ -542,14 +544,14 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=125` (8 pages) / `styles.css?v=125` (9 hub/store pages); **`tickets.js?v=31` across all 134 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=27` (47 pages); `game-screen.js?v=1` (110 toy pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=126` (8 pages) / `styles.css?v=126` (9 hub/store pages); **`tickets.js?v=31` across all 134 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=27` (47 pages); `game-screen.js?v=1` (110 toy pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **37** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - **Live since `f5767d8` (2026-10-03).** ⚠ **Adding art is THREE steps** — save the source to `_sources/<slug>.png` and the `.webp` (see that folder's README), add the slug to `FEATURED_ART` in `main.js`, then add a `TITLE` position and run `node scripts/build-art-assets.cjs <slug> --sheet /tmp/s.png` (DECISIONS 2026-10-03): it builds the toy's card (`cards/<slug>.webp`) and share image (`og/<slug>.jpg`), rewrites its `.card__preview` rule and its page's `og:image`/`twitter:image`. Look at the sheet: the title must show in the narrowest card, the widest card and the share image. Bump `styles.css?v=` on the 9 hub pages.
   - ⚠ **`sips --cropOffset` is IGNORED** (sips always crops from the centre); the script crops with `cwebp -crop`, which is exact. A "top-anchored" crop that came out centred is this.
   - ⚠ **Kept on purpose:** `cards/pool.png` and `cards/nova-coil.png` (the Games category share image in `scripts/og-cat.html` is built from them), `og/shuriken-night.png` (the excluded `shuriken-night-visual-pass` sandbox points at it) and `og/tiny-across.jpg` (owner's hand crop; the script skips it). Every other superseded card/OG PNG of an art toy was deleted. Do not run `gen-card`/`gen-og` for an art toy: their PNGs would be unused.
   - **Word Kraven** has no full-size source; its 1200x675 webp crops to exactly 1200x630, so nothing is upscaled.
-- ⚠ **All featured URLs share ONE version string (`.webp?v=N` in `renderHomeHero`), so REPLACING any single piece means bumping N for all of them** — currently `?v=5` (bumped 2026-09-12 when the Tiny Across piece was replaced). ⚠ **ADDING a new piece must NOT bump it**: a new file has no cached copies to invalidate and the bump needlessly re-fetches all 32. **The bump is for REPLACEMENTS only.**
+- ⚠ **All featured URLs share ONE version string (`.webp?v=N` in `renderHomeHero`), so REPLACING any single piece means bumping N for all of them** — currently `?v=6` (bumped 2026-10-03 when the owner replaced Air Hockey, Bowling, Mini Golf, Random Maze and The Trail Game with re-framed versions, titles pulled in from the edge; The Trail Game was then replaced again with a new layout and its `TITLE` moved to 40). ⚠ **ADDING a new piece must NOT bump it**: a new file has no cached copies to invalidate and the bump needlessly re-fetches all 32. **The bump is for REPLACEMENTS only.**
 - ⚠ **The featured media element also carries `data-slug`, so a card motif can bleed through the art** — the art branch must `removeAttribute("data-slug")` and set every background longhand inline, because the `[data-slug]` card rules sit ~700 lines further down `styles.css` and **beat `.home-featured__*` on source order at equal specificity.**
 - ⚠ The art is a CSS background painted after the registry fetch, so it **cannot be `rel=preload`ed** — likely the home LCP, a round-trip late; the fix, if it ever matters, is `<img fetchpriority="high">`.
 
@@ -573,17 +575,13 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Jettison: owner plays it on a phone** (drag feel, how fast the 56 levels ramp, the sound: step, knock, clamp, airlock). Open owner call: whether "block jam" goes in the hidden search keywords (currently out).
-- **Meld: owner plays the live build on a phone** for the music (`2976c82`, audio.js v4), the trackpad drag (`5552cca`), the pitched sound (`3eb1457`) and the feel (gravity 900, bounce 0.16, friction 0.28, drop cooldown 0.42s, the swell's shove), which he has not judged yet.
+- ✅ **Jettison, Meld and Trench Runner Cinematic all owner-approved on a phone 2026-10-03** ("all 3 are great"). Still open from Jettison: whether "block jam" goes in the hidden search keywords (currently out).
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
-- **Trench Runner cinematic mode**: shipped (`a512069`); owner to try it on a phone (performance is the open question).
-- **Barkeep's sound has never been heard** (clink on a bottle, knock off, ice rattle on Surprise me).
+- ✅ **Barkeep's sound owner-approved 2026-10-03** ("Barkeep is also good").
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
-- **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless.
-- **5 pages ship `share.js` with nothing to mount into** (chord-harp, glass-harp, moon-phase, golden-hour, typing-speed) — pre-existing dead includes; each needs a `[data-opt-share]` host placed by hand.
-- **3 toys carry leftover debug hooks on main:** `window.__dom`, `window.__pin`, `window.__steady`.
+- **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless. Owner will test (2026-10-03).
 - **Jenga's one remaining bug** (see above).
 - ✅ **Chess audio owner-approved 2026-09-23.** Still open: the ladder was verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 

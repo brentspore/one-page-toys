@@ -1097,8 +1097,10 @@
   updateHud();
   requestAnimationFrame(frame);
 
-  // headless verification handle
-  window.__dom = {
+  // headless verification handle for the card pose (scripts/poses/dominoes.js).
+  // Only an automated browser gets it: navigator.webdriver is true under
+  // Playwright and false for a real visitor, who never sees the internals.
+  if (navigator.webdriver) window.__dom = {
     tiles: tiles, begin: begin, preset: preset, startRun: startRun,
     resetStanding: resetStanding, layPath: layPath, pathPoints: pathPoints,
     isRunning: function () { return running; },

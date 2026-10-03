@@ -275,7 +275,7 @@
   {
     "slug": "pendulum-wave",
     "name": "Pendulum Wave",
-    "shortDescription": "Fifteen pendulums hung in a row, each tuned to swing exactly one more time per cycle than the one before it. Draw them back, let go, and watch them sweep into a travelling wave, split into two helices, scatter into apparent chaos, and then fall back into perfect line. Each bob chimes as it passes the bottom, so the rhythm comes from the tuning.",
+    "shortDescription": "Fifteen pendulums hung in a row, each tuned to swing exactly one more time per cycle than the one before it. Draw them back, let go, and watch them sweep into a traveling wave, split into two helices, scatter into apparent chaos, and then fall back into perfect line. Each bob chimes as it passes the bottom, so the rhythm comes from the tuning.",
     "category": "simulation",
     "tags": [
       "pendulum-wave",
@@ -515,7 +515,7 @@
   {
     "slug": "claw-machine",
     "name": "Claw Machine",
-    "shortDescription": "A prize crane in real 3D, stocked with miniatures of this site's other toys: an 8-ball, a d20, a bowling pin, a shooter marble, a gacha capsule, a star plush. Steer the claw over the pit, drop, and lift. Real cabinets rig the grip so nothing you do matters; here it is a function of how well you centred the grab and how heavy the prize is, so a clean catch holds and an edge grab slips. Mind the swing on the way to the chute. Ten drops a run.",
+    "shortDescription": "A prize crane in real 3D, stocked with miniatures of this site's other toys: an 8-ball, a d20, a bowling pin, a shooter marble, a gacha capsule, a star plush. Steer the claw over the pit, drop, and lift. Real cabinets rig the grip so nothing you do matters; here it is a function of how well you centered the grab and how heavy the prize is, so a clean catch holds and an edge grab slips. Mind the swing on the way to the chute. Ten drops a run.",
     "category": "game",
     "tags": [
       "claw-machine",
@@ -718,7 +718,7 @@
   {
     "slug": "brick-smasher",
     "name": "Brick Smasher",
-    "shortDescription": "Break out of a wall of neon glass — the unlimited practice edition. Where the ball lands on the paddle decides where it goes, so you steer with the edges, and smashing without letting it come back down climbs a combo that raises the pitch as it goes. Armour, power-ups, multiball and lasers. The daily wall, streaks and stats are at bricksmasher.com.",
+    "shortDescription": "Break out of a wall of neon glass — the unlimited practice edition. Where the ball lands on the paddle decides where it goes, so you steer with the edges, and smashing without letting it come back down climbs a combo that raises the pitch as it goes. Armor, power-ups, multiball and lasers. The daily wall, streaks and stats are at bricksmasher.com.",
     "category": "game",
     "tags": [
       "brick-smasher",
@@ -771,7 +771,7 @@
   {
     "slug": "color-match",
     "name": "Color Match",
-    "shortDescription": "How good is your eye? A colour fills the screen and your swatch sits right on top of it — drag hue, saturation and lightness until the edge disappears. Scored on real perceptual distance in CIELAB, so close is not the same as correct. Three rounds, each subtler than the last.",
+    "shortDescription": "How good is your eye? A color fills the screen and your swatch sits right on top of it — drag hue, saturation and lightness until the edge disappears. Scored on real perceptual distance in CIELAB, so close is not the same as correct. Three rounds, each subtler than the last.",
     "category": "game",
     "tags": [
       "color-match",
@@ -840,7 +840,7 @@
   {
     "slug": "glow-pegs",
     "name": "Glow Pegs",
-    "shortDescription": "Punch glowing pegs into a black board and paint with light. Eight colours plus an eraser, drag to fill whole runs at once, faint templates to follow or ignore, and a one-tap save of whatever you make.",
+    "shortDescription": "Punch glowing pegs into a black board and paint with light. Eight colors plus an eraser, drag to fill whole runs at once, faint templates to follow or ignore, and a one-tap save of whatever you make.",
     "category": "visual",
     "tags": [
       "glow-pegs",

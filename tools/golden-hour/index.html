@@ -38,7 +38,7 @@
         "@type": "WebApplication",
         "name": "Golden Hour",
         "url": "https://onepagetoys.com/tools/golden-hour/",
-        "description": "A golden hour and blue hour calculator that draws the whole day as a single colour ribbon, with sunrise, sunset, civil twilight, solar noon, day length and a live countdown to the next golden hour, computed in the browser from your location.",
+        "description": "A golden hour and blue hour calculator that draws the whole day as a single color ribbon, with sunrise, sunset, civil twilight, solar noon, day length and a live countdown to the next golden hour, computed in the browser from your location.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -58,7 +58,7 @@
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
     <header class="topbar" aria-label="One Page Toys">
@@ -83,7 +83,7 @@
         <p class="sub" id="subline">Finding your light…</p>
 
         <div class="ribbon" id="ribbon">
-          <canvas id="band" class="ribbon__canvas" aria-label="The day drawn as a colour ribbon from night through golden hour to daylight" role="img"></canvas>
+          <canvas id="band" class="ribbon__canvas" aria-label="The day drawn as a color ribbon from night through golden hour to daylight" role="img"></canvas>
           <div class="ribbon__now" id="nowMark" hidden><span class="ribbon__grip"></span><span class="ribbon__lab" id="nowLab"></span></div>
           <div class="ribbon__ticks" id="ticks" aria-hidden="true"></div>
         </div>
@@ -102,6 +102,7 @@
         <p class="note" id="note"></p>
       </section>
 
+      <div class="share-row" data-opt-share></div>
       <a class="backlink" href="../../">← onepagetoys.com</a>
     </main>
 

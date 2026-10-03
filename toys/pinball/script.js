@@ -1929,8 +1929,10 @@
   updateHud();
   requestAnimationFrame(frame);
 
-  // expose a little state for headless verification
-  window.__pin = {
+  // headless verification handle for the card pose (scripts/poses/pinball.js).
+  // Only an automated browser gets it: navigator.webdriver is true under
+  // Playwright and false for a real visitor, who never sees the internals.
+  if (navigator.webdriver) window.__pin = {
     G: G, ball: ball, WALLS: WALLS, BUMPERS: BUMPERS, TARGETS: TARGETS,
     LANES: LANES, SCOOP: SCOOP, flipL: flipL, flipR: flipR,
     start: startGame, launch: launch, serve: serve,

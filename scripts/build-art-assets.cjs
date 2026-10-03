@@ -39,7 +39,7 @@ const TITLE = {
   "perfect-circle": 50, "perfect-timing": 45, pinball: 15, pool: 30, puffling: 20,
   "random-maze": 30, "shuriken-night": 20, "skee-ball": 10, "sky-fortress": 15, skyscrapers: 0,
   "slice-it": 30, "spelling-blocks": 40, "stack-tower": 45, "tiny-across": 25, "tossing-cards": 15,
-  "trail-game": 45, "trench-runner": 0, trio: 35, "twisty-cube": 35, "word-kraven": 30
+  "trail-game": 40, "trench-runner": 0, trio: 35, "twisty-cube": 35, "word-kraven": 30
 };
 // Tiny Across keeps the share image the owner signed off (`og/tiny-across.jpg`,
 // cropped by hand); only its card comes from here.
