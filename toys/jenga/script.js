@@ -673,8 +673,39 @@ function parkHeld(b) {
   b.body.angularVelocity.setZero();
 }
 
+/* ⚠⚠ THE DRAG BUG (fixed 2026-10-03): while a block is being slid out it must
+ * not touch its own level or the levels directly above and below it (it is
+ * driven by the hand, an infinite mass, so any contact it makes is a shove).
+ * Measured with the sim
+ * stepped by hand: a steady pull dragged the level above 1.0 to 1.3m and threw
+ * the top of the tower 1.2 to 1.6m. Cutting contact with the level above only
+ * left 0.04 to 0.3m (the level below dragged too); cutting above and below
+ * still left up to 10cm, from the neighbors rubbing its sides; cutting all
+ * three leaves about 1cm. Friction was never the lever: cannon caps a contact's friction at
+ * friction x gravity x the PAIR'S mass, not the real load on it, so a
+ * "slippery puller" material changed almost nothing. The real risk survives:
+ * the level above now rests on the other two blocks only, so pulling the last
+ * support of a level still brings the tower down. */
+const PULL_GROUP = 2;
+let pullCut = [];
+function cutContacts(b) {
+  b.body.collisionFilterGroup = PULL_GROUP;
+  pullCut = [];
+  for (const o of blocks) {
+    if (o === b) continue;
+    const dy = Math.abs(o.body.position.y - b.body.position.y);
+    if (dy < BH * 1.5) { o.body.collisionFilterMask = ~PULL_GROUP; pullCut.push(o); }
+  }
+}
+function restoreContacts(b) {
+  b.body.collisionFilterGroup = 1;
+  for (const o of pullCut) o.body.collisionFilterMask = -1;
+  pullCut = [];
+}
+
 function startPull(b) {
   pulling = b;
+  cutContacts(b);
   pullRest = {
     p: b.body.position.clone(),
     q: b.body.quaternion.clone()
@@ -727,6 +758,7 @@ function wakeNear(b) {
 
 function releasePull(b) {
   // not far enough out: let it go back to being part of the tower
+  restoreContacts(b);
   b.body.velocity.setZero();
   b.body.angularVelocity.setZero();
   b.body.material = woodMat;
@@ -738,6 +770,7 @@ function releasePull(b) {
 }
 
 function extract(b) {
+  restoreContacts(b);
   held = b;
   pulling = null; pullRest = null;
   b.body.type = CANNON.Body.KINEMATIC;
