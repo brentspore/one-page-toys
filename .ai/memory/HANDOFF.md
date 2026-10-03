@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-10-03 (No. 125 Jettison shipped `bcf638e` and live-verified, after the first glide-based build was rejected and rebuilt to match the reference: drag-anywhere modules in packed holds, 56 generated levels. Before that, 2026-10-01: No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld sound `3eb1457`, phone controls `5552cca`, music `2976c82`).**
+**Last updated: 2026-10-03 (No. 125 Jettison shipped `bcf638e`; glowing airlock doors + owner key art in the featured rotation `4e648be`, both live-verified. The first glide-based build was rejected and rebuilt to match the reference. Before that, 2026-10-01: No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069` shipped; Meld sound `3eb1457`, phone controls `5552cca`, music `2976c82`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**125 toys, live at onepagetoys.com.** Latest on `main`: `bcf638e`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**125 toys, live at onepagetoys.com.** Latest on `main`: `4e648be`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## No. 125 Jettison — shipped 2026-10-03 (`bcf638e`), live
 
@@ -28,7 +28,7 @@ IndexNow accepted. **Never played by the owner: drag feel, difficulty curve and 
   reference"*). The BACKLOG research had read the reference from fan sites as glide-until-stopped on a sparse tray.
   It is drag-anywhere on a packed board. DECISIONS 2026-10-03: check the reference itself first.
 - **Owner's key art** (2026-10-03, `assets/featured/jettison.webp`, source `_sources/jettison.png`) is in the
-  featured pool and the All Toys newest panel. ⚠ **Doors redesigned the same day** (owner: "kinda hard to see the
+  featured pool and the All Toys newest panel. ⚠ **Doors redesigned the same day, `4e648be`, live** (owner: "kinda hard to see the
   doors"): the first doors were dark slots with a thin colored outline. Now, after the key art: two leaves in the
   lock's own color, lit from within, with the glyph and white block arrows out, in a glowing neon frame, filling the
   full hull depth (`BT` 0.5 to 0.6, so cells are ~3% smaller). Card re-rendered (`cards/jettison.png?v=2` in
