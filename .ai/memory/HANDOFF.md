@@ -1,6 +1,6 @@
 # Handoff
 
-**Last updated: 2026-10-03 (admin: Google setup done, path fix + GA `source` → `placement` rename shipped; trailing-slash redirect parked on its branch. Before that: No. 126 Decant + the /admin page + shared play tracking shipped `da30edf`, owner's updated Decant art `e74d95f`, all live-verified. /admin waits on the owner's Google setup. Jenga drag fix on its branch `0d01d86`).**
+**Last updated: 2026-10-03 (admin: Google setup done, path fix + GA `source` → `placement` rename shipped; trailing-slash redirect shipped site-wide. Before that: No. 126 Decant + the /admin page + shared play tracking shipped `da30edf`, owner's updated Decant art `e74d95f`, all live-verified. /admin waits on the owner's Google setup. Jenga drag fix on its branch `0d01d86`).**
 
 ## What this site is / key files
 
@@ -71,18 +71,13 @@ custom page over Looker Studio. **The site's first server code** (DECISIONS 2026
   source: the hub's `toy_launch` sent `source: "gallery"` (also `home_featured`, `all_toys_newest`, `surprise_me`),
   and the first real dashboard listed those as where visitors came from, re-filing Google and Facebook visits under
   our own buttons. Renamed to `placement` (`main.js?v=129`). Data before the rename stays polluted.
-- ⚠ **Vercel serves a folder's page WITHOUT adding the trailing slash** (`/admin` and `/toys/decant` both return 200 with
-  the page), so relative asset paths resolve one folder too high and the page loads unstyled and dead. The admin page
-  now uses absolute paths (`/admin/admin.css`, `/admin/admin.js`; owner hit it on first visit). Every toy has the same
-  exposure for hand-typed addresses; on-site links and shares always carry the slash. ⚠ **The site-wide fix,
-  `vercel.json` with `"trailingSlash": true`, is owner-approved but PARKED on branch `trailing-slash` (`4473b59`), NOT on
-  main.** Its preview built (`one-page-toys-621oejq57-mightyarmy.vercel.app`) but previews sit behind Vercel's login, so
-  nobody has tested it. The Vercel CLI now works on this machine (see `reference.md`), but `vercel curl` only REUSES an
-  existing "Protection Bypass for Automation" secret, and creating one is the owner's call (Vercel → one-page-toys →
-  Settings → Deployment Protection); the alternative is the owner opening the preview in his own browser. The open question:
-  Vercel's docs do not say whether it also redirects `/api/admin` to `/api/admin/`, and whether that still reaches the
-  function. Check on the preview: `/toys/decant` 308s to `/toys/decant/`; `/api/admin?op=session` still answers JSON;
-  `/admin/` signs in. Then merge just `vercel.json` to main.
+- ⚠ **Vercel served a folder's page WITHOUT adding the trailing slash** (`/admin` and `/toys/decant` both returned 200
+  with the page), so relative asset paths resolved one folder too high and the page loaded unstyled and dead (owner hit
+  it on /admin). Fixed site-wide 2026-10-03: **`vercel.json` `"trailingSlash": true`** 308s every extensionless path to
+  its slashed form; files with an extension (`.js`, `.xml`, `.txt`, images) are untouched. ⚠ **It redirects the API
+  too** (`/api/admin` → `/api/admin/`), which still reaches the function (GET and a POST through the 308 both tested on
+  the preview), so `admin/admin.js` calls `/api/admin/` directly to skip the hop; `admin-dev.cjs` accepts both. The
+  admin page also keeps absolute asset paths as a second guard. ⚠ nginx in `docker/` already redirects folders this way.
 - ⚠ Never commit the JSON key. ⚠ The one piece that cannot be tested offline is Google itself: the first real
   sign-in and the first real report are the live test.
 

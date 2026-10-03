@@ -16,7 +16,7 @@
 
   function api(op, opts) {
     opts = opts || {};
-    return fetch("/api/admin?op=" + op + (opts.query || ""), {
+    return fetch("/api/admin/?op=" + op + (opts.query || ""), {
       method: opts.body ? "POST" : (opts.method || "GET"),
       credentials: "same-origin",
       headers: opts.body ? { "content-type": "application/json" } : {},

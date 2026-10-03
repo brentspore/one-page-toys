@@ -17,7 +17,7 @@ const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", "
 
 http.createServer((req, res) => {
   const u = url.parse(req.url, true);
-  if (u.pathname === "/api/admin") {
+  if (u.pathname === "/api/admin" || u.pathname === "/api/admin/") {   // the site redirects to the slashed form
     let raw = "";
     req.on("data", (c) => { raw += c; });
     req.on("end", () => {
