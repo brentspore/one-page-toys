@@ -74,7 +74,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Puzzle #0 — New toy: slide-out color sort, a game like Block Out! (owner pick, researched 2026-10-03; being built as No. 125 Jettison)
+### Puzzle #0 — New toy: slide-out color sort, a game like Block Out! (owner pick, researched 2026-10-03; SHIPPED as No. 125 Jettison, `bcf638e`)
 
 ⚠⚠ **THE RESEARCH BELOW MISREAD THE REFERENCE. Read this first.** It was done from fan sites (the store was blocked), which describe a glide-until-stopped game. **The owner has played it: a block FOLLOWS YOUR FINGER through free space and stops where you let go; dragged into a door of its own color it leaves (the Color Block Jam model). And the board starts PACKED, a jam you clear, not a sparse tray.** The first Jettison build followed the research (glides, sparse holds, backstops) and was rejected outright: *"that wasn't it at all. look at the reference."* Before building anything "like X", look at X's own screenshots (the App Store page's `<picture>` sources are fetchable) or ask the owner how it plays. Everything below about glides, backstops, the last-one-out trap, stuck detection and A* belongs to the wrong game. The drag model has no dead ends at all; see HANDOFF for how Jettison actually works.
 
