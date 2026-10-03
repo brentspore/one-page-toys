@@ -82,6 +82,7 @@
     { test: "untangle_best", dir: "up", label: "Untangle level" },
     { test: "maw_best", dir: "up", label: "Maw score" },
     { test: "meld_best", dir: "up", label: "Meld score" },
+    { test: "jettison_level", dir: "up", label: "Jettison holds cleared" },
     { test: "trench_best", dir: "up", label: "Trench Runner score" },
     { test: "steady_best", dir: "up", label: "Steady Hand wires" },
     { test: "typing_best", dir: "up", label: "Typing Speed wpm" },

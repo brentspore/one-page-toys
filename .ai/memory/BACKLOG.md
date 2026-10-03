@@ -74,7 +74,10 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Puzzle #0 — New toy: slide-out color sort, a game like Block Out! (owner pick, researched 2026-10-03, owner builds it next)
+### Puzzle #0 — New toy: slide-out color sort, a game like Block Out! (owner pick, researched 2026-10-03; being built as No. 125 Jettison)
+
+⚠⚠ **THE RESEARCH BELOW MISREAD THE REFERENCE. Read this first.** It was done from fan sites (the store was blocked), which describe a glide-until-stopped game. **The owner has played it: a block FOLLOWS YOUR FINGER through free space and stops where you let go; dragged into a door of its own color it leaves (the Color Block Jam model). And the board starts PACKED, a jam you clear, not a sparse tray.** The first Jettison build followed the research (glides, sparse holds, backstops) and was rejected outright: *"that wasn't it at all. look at the reference."* Before building anything "like X", look at X's own screenshots (the App Store page's `<picture>` sources are fetchable) or ask the owner how it plays. Everything below about glides, backstops, the last-one-out trap, stuck detection and A* belongs to the wrong game. The drag model has no dead ends at all; see HANDOFF for how Jettison actually works.
+
 
 **Why it matters:** Owner asked for it on 2026-10-03 ("I want to build a game like Block Out", https://apps.apple.com/us/app/block-out-color-sort-puzzle/id6752672568) and had the research done first so the build can start cold. It is the current mass-market casual puzzle: **Block Out! (Grand Games, Istanbul, launched Oct 2025) hit #2 on the US iPhone most-downloaded games chart, ~4.6M downloads and ~$7.2M revenue by mid-2026**, and Color Block Jam (Rollic, 2024) leads the genre. Nothing like it in the catalogue (nearest: Slide Puzzle, Trio). One screenshot teaches it, the input is one swipe, levels can be generated and proven solvable, and the glide-and-clack is the juice. Category `game`.
 

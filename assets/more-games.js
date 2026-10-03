@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Jettison",
+      "tagline": "Drag it out the airlock",
+      "url": "https://onepagetoys.com/toys/jettison/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2304060c'/><circle cx='5' cy='27' r='0.7' fill='%23ffffff' opacity='.7'/><circle cx='27' cy='4' r='0.6' fill='%23ffffff' opacity='.6'/><path d='M22 6 H4.5 V25.5 H22 M22 19.5 V25.5' fill='none' stroke='%237d8aa8' stroke-width='2.4' stroke-linejoin='round'/><rect x='6.5' y='8' width='13.5' height='15.5' fill='%23151b29'/><rect x='21.4' y='12' width='1.8' height='7' fill='%23ff8a2a'/><rect x='12.5' y='11.5' width='7.2' height='7.2' rx='1.4' fill='%23ff8a2a'/><path d='M14.6 16.9 L16.1 13.4 L17.6 16.9 Z' fill='%23fff3e2'/><path d='M8.2 13.4 H10.6 M7.4 15.1 H10.6 M8.2 16.8 H10.6' stroke='%23a6d8ff' stroke-width='0.9' stroke-linecap='round' opacity='.75'/><rect x='6.9' y='19.6' width='4.6' height='3.4' rx='0.9' fill='%232fd3ff'/><g transform='translate(27 24) rotate(28)'><rect x='-2.6' y='-2.6' width='5.2' height='5.2' rx='1' fill='%23ff8a2a' opacity='.85'/></g></svg>",
+      "initial": "J",
+      "slug": "jettison"
+    },
+    {
       "name": "Meld",
       "tagline": "Two of a kind melt into one",
       "url": "https://onepagetoys.com/toys/meld/",

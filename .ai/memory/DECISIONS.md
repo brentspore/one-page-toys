@@ -362,3 +362,15 @@ Measure the level afterwards: the clipper and puff cluster made the same `amp` a
 
 **Revisit if:** the owner flags a specific explosion. That is new information, not a contradiction.
 
+
+---
+
+### 2026-10-03 — "A game like X" means X as it actually plays: check X itself, not write-ups of it
+
+**Context:** Jettison (No. 125) was built from research that described the reference (Block Out!) secondhand, from fan walkthrough sites, because the store page was blocked: glide-until-stopped blocks on a sparse tray. The owner, who has played it, rejected the whole build: *"that wasn't it at all. look at the reference."* The real game drags a block with your finger through free space, and every level starts packed solid.
+
+**Decision:** When the owner asks for a game like an existing one, establish how the reference PLAYS from the reference itself before designing anything: its store screenshots or video (the App Store page's `<picture>` image sources are fetchable even when the page text is not), or one direct question to the owner, who has usually played it. Fan sites, clone listings and reviews are supporting detail, never the source for the core mechanic. If the reference cannot be seen, say so and ask before building.
+
+**Rationale:** The core mechanic decides the rules, the solver, the level generator and the input model, so getting it wrong costs the whole build, not a tweak. A screenshot of a packed board would have caught both errors in seconds.
+
+**Revisit if:** never; this is cheap insurance.

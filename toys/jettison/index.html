@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Jettison — One Page Toys</title>
+    <meta name="description" content="A zero-gravity cargo hold, packed solid. Drag each module through the gaps and out of the airlock of its own color to jettison it into space. Clear the jam in as few moves as you can. A free block puzzle with 56 levels, no timer, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/jettison/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#04060c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Jettison" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Jettison — One Page Toys" />
+    <meta property="og:description" content="A zero-g cargo hold packed solid. Drag each module out through the airlock of its own color. Clear the jam in as few moves as you can." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/jettison/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/jettison.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jettison — One Page Toys" />
+    <meta name="twitter:description" content="A cargo hold packed solid. Drag each module out through its own airlock. Clear the jam in as few moves as you can." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/jettison.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Jettison",
+        "url": "https://onepagetoys.com/toys/jettison/",
+        "description": "A color block puzzle in a zero-gravity cargo bay. The hold starts packed solid with colored cargo modules, and the bulkheads have airlocks in the modules' colors. Drag a module and it follows your finger through whatever space there is; drag it into an airlock of its own color, one at least as wide as it is, and it is jettisoned into space. Clear every module from the hold. The trick is the order: most modules are boxed in, so you work out which can leave first, and later holds need some modules dragged aside to make room for others. 56 levels teach it one idea at a time, from a few modules in a small bay to odd-shaped holds and expert jams. No timer: you score your moves against each level's par, undo is free, and a hint shows the next good move. Works with a finger, a mouse or a keyboard, with synthesised station sounds, and any level can be sent to a friend as a challenge.",
+        "applicationCategory": "GameApplication",
+        "genre": "Puzzle",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=3" />
+  </head>
+  <body>
+    <canvas id="c" role="img" aria-label="Jettison: a cargo hold in zero gravity, seen from above, packed with colored cargo modules, with airlocks in the bulkheads. Drag a module, or use the arrow keys and Enter, to move it."></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Level</span><span id="lvl">1</span></div>
+      <div class="hud__cell"><span class="hud__k">Moves</span><span id="moves">0</span></div>
+      <div class="hud__cell"><span class="hud__k" id="parK">Par</span><span id="par">—</span></div>
+    </div>
+
+    <div class="tip" id="tip" hidden></div>
+
+    <div class="bar" id="bar" hidden>
+      <button type="button" class="bar__btn" id="undoBtn" title="Undo (Z)"><span aria-hidden="true">&#8630;</span> Undo</button>
+      <button type="button" class="bar__btn" id="restartBtn" title="Restart (R)"><span aria-hidden="true">&#8635;</span> Restart</button>
+      <button type="button" class="bar__btn" id="hintBtn" title="Hint (H)"><span aria-hidden="true">&#10022;</span> Hint</button>
+      <button type="button" class="bar__btn bar__btn--quiet" id="menuBtn" title="Levels (Esc)"><span aria-hidden="true">&#9776;</span> Levels</button>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">Cargo bay 7</p>
+        <h1 class="panel__title" id="ovTitle">Jettison</h1>
+        <p class="panel__text" id="ovText">
+          The hold is <b>packed solid</b>. Drag a module through the gaps and into an
+          <b>airlock of its own color</b> to jettison it. <b>Clear the hold</b> in as few
+          moves as you can. No clock, and undo is free.
+        </p>
+        <svg class="demo" id="ovDemo" viewBox="0 0 320 120" role="img" aria-label="A packed cargo hold. One orange module is dragged through a gap toward the orange airlock, and another orange module tumbles away into space.">
+          <defs>
+            <linearGradient id="jDeck" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1b2232" />
+              <stop offset="1" stop-color="#0f141f" />
+            </linearGradient>
+            <linearGradient id="jMod" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffc07a" />
+              <stop offset="1" stop-color="#ff7a1a" />
+            </linearGradient>
+          </defs>
+          <rect x="40" y="14" width="176" height="92" rx="6" fill="url(#jDeck)" stroke="#5b6884" stroke-width="6" />
+          <rect x="213" y="46" width="8" height="28" fill="#05070d" />
+          <rect x="213" y="46" width="8" height="28" fill="none" stroke="#ff8a2a" stroke-width="2" />
+          <g opacity="0.9">
+            <rect x="45" y="19" width="54" height="26" rx="4" fill="#2fd3ff" />
+            <rect x="101" y="19" width="26" height="26" rx="4" fill="#8fe04a" />
+            <rect x="129" y="19" width="54" height="26" rx="4" fill="#ff4f9a" />
+            <rect x="185" y="19" width="26" height="26" rx="4" fill="#ffd23f" />
+            <rect x="45" y="47" width="26" height="54" rx="4" fill="#a083ff" />
+            <rect x="73" y="75" width="54" height="26" rx="4" fill="#2fd3ff" />
+            <rect x="129" y="75" width="26" height="26" rx="4" fill="#ff4f9a" />
+            <rect x="157" y="75" width="54" height="26" rx="4" fill="#ffd23f" />
+          </g>
+          <rect x="73" y="47" width="26" height="26" rx="4" fill="none" stroke="#ffc07a" stroke-width="1.4" stroke-dasharray="3 3" opacity="0.8" />
+          <path d="M86 60 H170" stroke="#ffd6a8" stroke-width="1.6" stroke-dasharray="3 4" />
+          <rect x="157" y="47" width="26" height="26" rx="4" fill="url(#jMod)" />
+          <path d="M164 66 L170 54 L176 66 Z" fill="#fff3e2" opacity="0.9" />
+          <circle cx="174" cy="62" r="9" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" />
+          <g transform="translate(276 58) rotate(24)" opacity="0.75"><rect x="-11" y="-11" width="22" height="22" rx="3" fill="#ff8a2a" /></g>
+          <circle cx="252" cy="28" r="1" fill="#fff" /><circle cx="300" cy="96" r="1.2" fill="#fff" /><circle cx="262" cy="104" r="0.8" fill="#fff" /><circle cx="310" cy="24" r="0.9" fill="#fff" />
+          <text x="128" y="118" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(214,230,255,0.7)">drag it through the gaps</text>
+          <text x="276" y="118" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(214,230,255,0.7)">jettisoned</text>
+        </svg>
+        <button type="button" class="play-btn" id="ovBtn">Start</button>
+        <button type="button" class="ghost-btn" id="chBtn" hidden>Challenge a friend</button>
+        <button type="button" class="text-btn" id="levelsBtn">Choose a level</button>
+        <div class="levels" id="levels" hidden></div>
+        <p class="panel__keys" id="ovKeys">drag a module &middot; or arrows / Tab to pick one, Enter to hold it, arrows to move it &middot; Z undo &middot; H hint &middot; M sound</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 125</span>
+      <span class="frame__corner frame__corner--tr">Jettison</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <script src="../../assets/tickets.js?v=31" defer></script>
+    <script src="rules.js?v=2" defer></script>
+    <script src="levels.js?v=2" defer></script>
+    <script src="audio.js?v=2" defer></script>
+    <script src="script.js?v=2" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=27" defer></script>
+  </body>
+</html>
