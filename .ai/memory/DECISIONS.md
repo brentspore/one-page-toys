@@ -414,3 +414,8 @@ function keeps the surface small.
 
 **Revisit if:** the admin page needs data GA4 cannot give (then a store, e.g. Supabase, becomes the question), or
 more server features appear (then this stops being a one-off and wants its own conventions).
+
+**Update (2026-10-03, owner request):** the same function now also calls the Anthropic API (`claude-opus-5-5`, plain
+`fetch`, no SDK) to write a "What to do next" banner from the dashboard's numbers. Only aggregate analytics leave the
+site, never anything about a visitor. It runs only for the signed-in owner and is cached, so its cost follows admin
+visits, not site traffic. The key is `ANTHROPIC_API_KEY` in Vercel, like the other secrets.

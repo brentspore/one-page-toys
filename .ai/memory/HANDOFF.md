@@ -78,6 +78,15 @@ custom page over Looker Studio. **The site's first server code** (DECISIONS 2026
   too** (`/api/admin` → `/api/admin/`), which still reaches the function (GET and a POST through the 308 both tested on
   the preview), so `admin/admin.js` calls `/api/admin/` directly to skip the hop; `admin-dev.cjs` accepts both. The
   admin page also keeps absolute asset paths as a second guard. ⚠ nginx in `docker/` already redirects folders this way.
+- **"What to do next" banner (2026-10-03, owner request), written by Claude:** `?op=advice&days=N` sends the
+  dashboard's numbers (top 60 opened toys with names/descriptions, totals, daily visitors, sources, devices,
+  countries) to `claude-opus-5-5` with a brief on the site's goals, its levers, the no-monetizing rule and the known
+  data quirks (plays only since 10-03, the hub labels that posed as sources, the owner's own test visits), and gets
+  2-4 recommendations back through a forced tool call. ~6k tokens in, cents per call. Cached six hours per range per
+  warm function; "Rewrite" asks again (min one minute apart). Needs `ANTHROPIC_API_KEY` in Vercel (optional: without
+  it the banner says how to turn it on; local demo without a key shows sample text). `vercel.json` gives the function
+  60s and bundles `tools-registry.json` (`includeFiles`). Tested: 31 offline checks (Claude faked), a real call with
+  a fake key reaches Anthropic and its error shows on the page. ⚠ The prompt refers to "the owner", never he/his.
 - ⚠ Never commit the JSON key. ⚠ The one piece that cannot be tested offline is Google itself: the first real
   sign-in and the first real report are the live test.
 

@@ -8,6 +8,8 @@
  *                      must be a Viewer on the GA4 property.
  *   GOOGLE_CLIENT_ID   the OAuth web client used by "Sign in with Google"
  *   ADMIN_EMAILS       who may sign in, comma separated
+ *   ANTHROPIC_API_KEY  optional: turns on the "What to do next" banner, which
+ *                      Claude writes from the same numbers
  * The session cookie is signed with a key derived from the service account's
  * private key, so there is no separate session secret to manage; rotating
  * that key signs everyone out.
@@ -225,6 +227,143 @@ async function stats(days) {
   return data;
 }
 
+/* --------------------------------------- "What to do next" (Claude writes it) */
+
+// One call per range, cached six hours, made only when the signed-in owner
+// looks: the cost follows admin visits, never the site's traffic. A requested
+// rewrite still waits a minute between calls.
+const ADVICE_MODEL = "claude-opus-5-5";
+const ADVICE_TTL = 6 * 3600e3, ADVICE_GAP = 60e3;
+// the day the shared play tracker went live and the hub's click event stopped
+// posing as a traffic source (admin/admin.js carries the same date)
+const FIXED_ON = "2026-10-03";
+const HUB_LABELS = ["gallery", "home_featured", "all_toys_newest", "surprise_me"];
+
+function adviceReady() { return !!(process.env.ANTHROPIC_API_KEY || "").trim(); }
+
+let registry = null;
+async function loadRegistry() {
+  if (registry) return registry;
+  const fs = require("fs"), path = require("path");
+  for (const p of [path.join(__dirname, "..", "tools-registry.json"), path.join(process.cwd(), "tools-registry.json")]) {
+    try { registry = JSON.parse(fs.readFileSync(p, "utf8")); return registry; } catch (e) { /* try the next place */ }
+  }
+  const r = await fetch("https://onepagetoys.com/tools-registry.json");
+  if (!r.ok) throw new Error("could not read the toy list");
+  registry = await r.json();
+  return registry;
+}
+
+// the dashboard's numbers, trimmed to what a reader needs
+function adviceInput(d, reg) {
+  const pages = d.pages || {}, list = (reg || []).filter((t) => t && t.path), n = list.length;
+  const toys = list.map((t, i) => {
+    const p = pages["/" + String(t.path).replace(/^\//, "")] || {};
+    return {
+      no: n - i, name: t.name, kind: t.category === "utility" ? "tool" : "toy", category: t.category,
+      about: String(t.shortDescription || "").slice(0, 140),
+      opens: p.opens || 0, opensBefore: p.prevOpens || 0, visitors: p.users || 0,
+      avgSeconds: p.users ? Math.round(p.time / p.users) : 0, plays: p.plays || 0, shares: p.shares || 0
+    };
+  });
+  const end = new Date(d.generated), start = new Date(end - d.days * 864e5);
+  const opened = toys.filter((t) => t.opens).sort((a, b) => b.opens - a.opens);
+  return {
+    range: { days: d.days, from: start.toISOString().slice(0, 10), to: end.toISOString().slice(0, 10) },
+    totals: d.totals,
+    dailyVisitors: (d.daily || []).map((r) => [r.date.slice(0, 4) + "-" + r.date.slice(4, 6) + "-" + r.date.slice(6, 8), r.visitors]),
+    toysOpened: opened.slice(0, 60),
+    moreToysOpenedButNotListed: Math.max(0, opened.length - 60),
+    toysNotOpened: toys.filter((t) => !t.opens).map((t) => t.name),
+    newestToys: toys.slice(0, 8).map((t) => "No. " + t.no + " " + t.name),
+    sources: (d.sources || []).map((s) => ({ name: String(s.name).slice(0, 60), sessions: s.value })),
+    devices: d.devices || [], countries: d.countries || [],
+    hubPages: { home: (pages["/"] || {}).opens || 0, allToys: (pages["/all-toys/"] || {}).opens || 0 }
+  };
+}
+
+function advicePrompt(input) {
+  const before = input.range.from < FIXED_ON;
+  return `You advise the owner of One Page Toys (onepagetoys.com) on what to do next, from the site's Google Analytics numbers.
+
+About the site:
+- ${input.toysOpened.length + input.moreToysOpenedButNotListed + input.toysNotOpened.length} free toys and games, each a single self-contained page that opens in a new tab, numbered in launch order ("no": higher is newer). The owner is a designer who ships a new one every day or two.
+- The point is delight. A secondary goal is passive traffic to the owner's sister sites (daily games on their own domains, reached through practice editions here). It is deliberately not monetized: never suggest ads, affiliate links, sales prompts, paywalls, sign-ups or email capture.
+- People mostly find toys through shares and word of mouth, not search (each page carries little text).
+- The owner's real levers: what to build next (more of what works), which toy to feature on the home page (it rotates featured key art), polishing or fixing a toy people leave quickly, phone play, share features, posting a toy where its audience gathers, and cross-promotion between the sites.
+
+How to read the numbers:
+- opens = page views of a toy; visitors = unique visitors; avgSeconds = engaged time per visitor; plays = visitors who actually touched, clicked or typed on the toy; shares = share links tapped.
+- Plays were only recorded from ${FIXED_ON}.${before ? " This range starts earlier, so plays and play rates are near zero for reasons that have nothing to do with the toys. Ignore them." : ""}
+- opensBefore covers the same length of time just before this range. 0 usually means the toy did not exist yet, not that it grew from nothing.
+- The owner play-tests the newest toys and those visits are counted, so the newest toys' numbers are inflated by that testing. Weigh it.
+- Sources named ${HUB_LABELS.join(", ")} are clicks inside the site's own hub that were mislabeled as traffic sources before ${FIXED_ON}. They are internal navigation, not outside traffic. "(direct)" means no referrer and "(not set)" is unknown.
+- Counts under about 10 are noise. A long average time on a toy with a handful of visitors is one person, not a trend.
+
+What to write:
+- 3 recommendations (2 if the data is thin), most useful first. Each is a specific action the owner can take this week, tied to the numbers that justify it. Name the toys.
+- headline: the action, under 9 words. detail: one or two plain sentences that cite the numbers.
+- Write like a sharp friend, not a consultant: plain words, no jargon ("engagement", "funnel", "leverage", "optimize"), no hype, no em dashes, American spelling.
+- Do not suggest fixing the data problems above; the owner knows about them. Do not recommend anything the numbers cannot support.`;
+}
+
+async function askClaude(input) {
+  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 50e3);
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST", signal: ctrl.signal,
+      headers: { "x-api-key": process.env.ANTHROPIC_API_KEY.trim(), "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({
+        model: ADVICE_MODEL, max_tokens: 1200, system: advicePrompt(input),
+        messages: [{ role: "user", content: "The numbers for the last " + input.range.days + " days:\n" + JSON.stringify(input) }],
+        tools: [{
+          name: "recommendations", description: "The recommendations to show at the top of the admin page.",
+          input_schema: { type: "object", required: ["items"], properties: { items: { type: "array", minItems: 1, maxItems: 4, items: {
+            type: "object", required: ["headline", "detail"],
+            properties: { headline: { type: "string" }, detail: { type: "string" } } } } } }
+        }],
+        tool_choice: { type: "tool", name: "recommendations" }
+      })
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error("Claude: " + ((j.error && j.error.message) || "error " + r.status));
+    const use = (j.content || []).find((c) => c.type === "tool_use");
+    const items = (use && use.input && Array.isArray(use.input.items) ? use.input.items : [])
+      .map((x) => ({ headline: String(x.headline || "").trim().slice(0, 120), detail: String(x.detail || "").trim().slice(0, 600) }))
+      .filter((x) => x.headline);
+    if (!items.length) throw new Error("Claude returned no recommendations");
+    return items.slice(0, 4);
+  } catch (e) {
+    if (e.name === "AbortError") throw new Error("Claude took too long. Try again.");
+    throw e;
+  } finally { clearTimeout(timer); }
+}
+
+const adviceCache = new Map(), adviceBusy = new Map();
+async function advice(days, fresh) {
+  const hit = adviceCache.get(days);
+  if (hit && Date.now() - hit.t < (fresh ? ADVICE_GAP : ADVICE_TTL)) return hit.data;
+  if (adviceBusy.has(days)) return adviceBusy.get(days);
+  const job = (async () => {
+    const reg = await loadRegistry();
+    const d = DEMO ? demoStats(days, reg) : await stats(days);
+    const data = { configured: true, days, generated: new Date().toISOString(), items: await askClaude(adviceInput(d, reg)), demo: DEMO || undefined };
+    adviceCache.set(days, { t: Date.now(), data });
+    return data;
+  })();
+  adviceBusy.set(days, job);
+  try { return await job; } finally { adviceBusy.delete(days); }
+}
+
+// local demo without a key: shows the banner's shape, says so plainly
+function demoAdvice(days) {
+  return { configured: true, demo: true, days, generated: new Date().toISOString(), items: [
+    { headline: "Sample: build more like your top toy", detail: "Sample text for local development. With ANTHROPIC_API_KEY set, Claude reads these numbers and writes real recommendations here." },
+    { headline: "Sample: feature the toy people stay with", detail: "Each one names the toys and cites the numbers behind it." },
+    { headline: "Sample: fix the one people leave fastest", detail: "They refresh every six hours, or when you press Rewrite." }
+  ] };
+}
+
 /* ------------------------------------------------------------ demo data */
 
 function demoStats(days, registry) {
@@ -258,4 +397,5 @@ function demoStats(days, registry) {
   };
 }
 
-module.exports = { DEMO, COOKIE, env, missing, makeSession, readSession, sessionCookie, verifyGoogleToken, stats, demoStats, SESSION_DAYS };
+module.exports = { DEMO, COOKIE, env, missing, makeSession, readSession, sessionCookie, verifyGoogleToken, stats, demoStats, SESSION_DAYS,
+  adviceReady, advice, demoAdvice, loadRegistry };

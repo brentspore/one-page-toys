@@ -1,6 +1,6 @@
 // node scripts/test-admin.cjs
 // Offline tests of the admin endpoint's production paths: Google token checks, the session
-// cookie, the service-account JWT and report parsing. Google is faked with a
+// cookie, the service-account JWT, report parsing and the Claude recommendations call. Google is faked with a
 // locally generated key; fetch is mocked.
 const crypto = require("crypto"), path = require("path");
 const ROOT = path.join(__dirname, "..");
@@ -18,8 +18,13 @@ function idToken(claims, key = google.privateKey, kid = "k1") {
 }
 const now = Math.floor(Date.now() / 1000);
 const good = { iss: "https://accounts.google.com", aud: process.env.GOOGLE_CLIENT_ID, exp: now + 600, email: "owner@example.com", email_verified: true };
-let gaCalls = [], tokenAssertion = null;
+let gaCalls = [], tokenAssertion = null, claudeCalls = [], claudeFail = false;
 global.fetch = async (url, opts) => {
+  if (url.includes("api.anthropic.com")) {
+    claudeCalls.push({ headers: opts.headers, body: JSON.parse(opts.body) });
+    if (claudeFail) return { ok: false, status: 529, json: async () => ({ type: "error", error: { type: "overloaded_error", message: "Overloaded" } }) };
+    return { ok: true, json: async () => ({ content: [{ type: "tool_use", name: "recommendations", input: { items: [{ headline: "Feature Meld", detail: "It held people." }, { headline: "Second", detail: "x" }] } }] }) };
+  }
   if (url.includes("oauth2/v3/certs")) return { ok: true, json: async () => ({ keys: [jwk] }) };
   if (url.includes("oauth2.googleapis.com/token")) {
     tokenAssertion = new URLSearchParams(opts.body).get("assertion");
@@ -85,6 +90,18 @@ const t = (name, ok) => { ok ? pass++ : fail++; console.log((ok ? "PASS " : "FAI
   t("service-account JWT signed with its key", crypto.verify("RSA-SHA256", Buffer.from(h + "." + p), sa.publicKey, Buffer.from(s, "base64url")));
   const claims = JSON.parse(Buffer.from(p, "base64url"));
   t("JWT asks for read-only analytics", claims.scope === "https://www.googleapis.com/auth/analytics.readonly" && claims.iss === "reader@proj.iam.gserviceaccount.com");
+  r = await call("advice", { query: { days: "28" } }); t("advice needs a sign-in", r.status === 401);
+  r = await call("advice", { cookie, query: { days: "28" } }); t("advice is off without a key", r.status === 200 && r.body.configured === false && !claudeCalls.length);
+  process.env.ANTHROPIC_API_KEY = "sk-test";
+  r = await call("advice", { cookie, query: { days: "28" } });
+  const c = claudeCalls[0];
+  t("advice calls Claude with the key, API version and a forced tool", c && c.headers["x-api-key"] === "sk-test" && c.headers["anthropic-version"] === "2023-06-01" && c.body.tool_choice.name === "recommendations" && /^claude-/.test(c.body.model));
+  t("advice sends real toy names with their numbers", c && /"name":"Meld"[^}]*"opens":10/.test(c.body.messages[0].content));
+  t("the brief rules out monetizing", c && /never suggest ads/.test(c.body.system));
+  t("advice returns Claude's items", r.status === 200 && r.body.items.length === 2 && r.body.items[0].headline === "Feature Meld");
+  r = await call("advice", { cookie, query: { days: "28", fresh: "1" } }); t("a rewrite within a minute comes from the cache", r.status === 200 && claudeCalls.length === 1);
+  claudeFail = true;
+  r = await call("advice", { cookie, query: { days: "7" } }); t("Claude's error reaches the page", r.status === 500 && /Overloaded/.test(r.body.error));
   r = await call("logout", { method: "POST", body: {} }); t("logout clears cookie", /Max-Age=0/.test(r.cookie));
   console.log(`\n${pass} passed, ${fail} failed`);
 })();

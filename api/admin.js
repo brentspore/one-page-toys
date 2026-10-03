@@ -3,6 +3,8 @@
  *   POST ?op=login          { credential } from "Sign in with Google" -> session cookie
  *   POST ?op=logout         clears it
  *   GET  ?op=stats&days=N   the dashboard's numbers (signed in only), N = 7 | 28 | 90
+ *   GET  ?op=advice&days=N  Claude's "What to do next" for that range (signed in only;
+ *                           &fresh=1 rewrites it). { configured:false } without a key.
  */
 "use strict";
 
@@ -51,6 +53,14 @@ module.exports = async function handler(req, res) {
         return send(res, 200, A.demoStats(days, registry));
       }
       return send(res, 200, await A.stats(days));
+    }
+
+    if (op === "advice") {
+      if (!A.readSession(req)) return send(res, 401, { error: "Sign in first" });
+      if (A.missing().length) return send(res, 503, { error: "Not set up yet", missing: A.missing() });
+      const days = [7, 28, 90].includes(Number(req.query.days)) ? Number(req.query.days) : 28;
+      if (!A.adviceReady()) return send(res, 200, A.DEMO ? A.demoAdvice(days) : { configured: false });
+      return send(res, 200, await A.advice(days, req.query.fresh === "1"));
     }
 
     return send(res, 404, { error: "Unknown op" });

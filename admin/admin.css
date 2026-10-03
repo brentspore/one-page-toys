@@ -31,6 +31,8 @@ button{ font: inherit; color: inherit; }
   padding: 4px 7px; border: 1px solid var(--line); border-radius: 999px; }
 .top__right{ margin-left: auto; display: flex; align-items: center; gap: 10px; min-width: 0; }
 .top__email{ color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.brand, .btn{ white-space: nowrap; }
+@media (max-width: 480px){ .top__email{ display: none; } }
 
 .btn{ appearance: none; cursor: pointer; border-radius: var(--radius-sm); padding: 6px 12px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; font-weight: 500; }
 .btn:hover{ background: var(--hover); }
@@ -54,6 +56,25 @@ button{ font: inherit; color: inherit; }
 .seg button:hover{ color: var(--ink); }
 .seg button[aria-checked="true"]{ background: var(--ink); color: var(--bg); }
 .banner{ margin: 0; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--warn-bg); color: var(--warn-ink); border: 1px solid var(--warn-line); font-size: 13px; }
+
+/* what to do next (Claude) */
+.advice{ background: linear-gradient(180deg, var(--mark-faint), transparent 70%), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px 16px; }
+.advice__head{ display: flex; align-items: center; gap: 6px 12px; flex-wrap: wrap; }
+.advice__title{ display: inline-flex; align-items: center; gap: 7px; }
+.advice__mark{ color: var(--mark); font-size: 13px; }
+.advice__redo{ margin-left: auto; padding: 4px 10px; font-size: 12px; }
+.advice__list{ list-style: none; counter-reset: tip; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px 22px; }
+.advice__list:empty{ display: none; }
+.advice__list li{ counter-increment: tip; position: relative; padding-left: 22px; min-width: 0; }
+.advice__list li::before{ content: counter(tip); position: absolute; left: 0; top: 1px; font: 500 12px/18px var(--mono); color: var(--mark); }
+.advice__head-line{ display: block; font-weight: 600; font-size: 13.5px; line-height: 1.4; }
+.advice__detail{ display: block; margin-top: 3px; color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+.advice__list .skel::before{ content: none; }
+.advice__list .skel{ padding-left: 0; }
+.skel__bar{ display: block; height: 10px; border-radius: 5px; background: var(--line); margin: 5px 0 9px; animation: skel 1.2s ease-in-out infinite; }
+.skel__bar + .skel__bar{ width: 82%; height: 8px; margin-bottom: 6px; }
+.skel__bar + .skel__bar + .skel__bar{ width: 64%; }
+@keyframes skel{ 50%{ opacity: 0.45; } }
 
 .card{ background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; min-width: 0; }
 .card__head{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -135,4 +156,4 @@ button{ font: inherit; color: inherit; }
 .tip__key{ display: inline-block; width: 12px; height: 2px; background: var(--mark); margin-right: 6px; vertical-align: 3px; }
 .tip__key--muted{ background: var(--muted); }
 
-@media (prefers-reduced-motion: reduce){ .livedot{ animation: none; } .dash.is-loading{ transition: none; } }
+@media (prefers-reduced-motion: reduce){ .livedot, .skel__bar{ animation: none; } .dash.is-loading{ transition: none; } }

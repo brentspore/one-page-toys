@@ -18,7 +18,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
-    <link rel="stylesheet" href="/admin/admin.css?v=2" />
+    <link rel="stylesheet" href="/admin/admin.css?v=4" />
   </head>
   <body>
     <header class="top">
@@ -52,6 +52,15 @@
         <button type="button" class="btn btn--quiet" id="refresh">Refresh</button>
       </div>
       <p class="banner" id="banner" hidden></p>
+
+      <section class="advice" id="advice" aria-labelledby="adviceH" hidden>
+        <div class="advice__head">
+          <h2 class="card__title advice__title" id="adviceH"><span class="advice__mark" aria-hidden="true">&#10022;</span>What to do next</h2>
+          <span class="card__note" id="adviceNote" aria-live="polite"></span>
+          <button type="button" class="btn btn--quiet advice__redo" id="adviceRedo" hidden>Rewrite</button>
+        </div>
+        <ol class="advice__list" id="adviceList"></ol>
+      </section>
 
       <section class="kpis" id="kpis" aria-label="Headline numbers"></section>
 
@@ -92,6 +101,6 @@
     </main>
 
     <div class="tip" id="tip" role="tooltip" hidden></div>
-    <script src="/admin/admin.js?v=3" defer></script>
+    <script src="/admin/admin.js?v=4" defer></script>
   </body>
 </html>

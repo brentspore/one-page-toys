@@ -104,6 +104,7 @@
     b.addEventListener("click", function () { setRange(+b.getAttribute("data-days")); });
   });
   $("refresh").addEventListener("click", function () { load(); });
+  $("adviceRedo").addEventListener("click", function () { loadAdvice(true); });
   $("toysMore").addEventListener("click", function () { state.all = !state.all; renderToys(); });
   $("toySearch").addEventListener("input", function (e) { state.q = e.target.value.trim().toLowerCase(); renderToys(); });
 
@@ -126,10 +127,57 @@
       state.data = d;
       $("updated").textContent = "Updated " + new Date(d.generated).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
       render();
+      loadAdvice(false);
     }).catch(function (e) {
       $("dash").classList.remove("is-loading");
       $("banner").hidden = false; $("banner").textContent = "Could not load the numbers: " + e.message;
     });
+  }
+
+  /* ------------------------------------------- what to do next (Claude) */
+
+  // Written server side from the same numbers and cached there for six hours
+  // per range, so loading it again is cheap; "Rewrite" asks for a fresh one.
+  var adviceSeq = 0, adviceFor = 0;
+  function loadAdvice(fresh) {
+    var seq = ++adviceSeq, days = state.days, box = $("advice"), list = $("adviceList"), note = $("adviceNote"), redo = $("adviceRedo");
+    box.hidden = false; redo.hidden = true;
+    if (fresh || adviceFor !== days || !list.children.length) {
+      list.textContent = "";
+      for (var k = 0; k < 3; k++) {
+        var s = el("li", "skel");
+        s.appendChild(el("span", "skel__bar")); s.appendChild(el("span", "skel__bar")); s.appendChild(el("span", "skel__bar"));
+        list.appendChild(s);
+      }
+      note.textContent = "Claude is reading the last " + days + " days…";
+    }
+    api("advice", { query: "&days=" + days + (fresh ? "&fresh=1" : "") }).then(function (j) {
+      if (seq !== adviceSeq) return;                  // a newer range or rewrite took over
+      if (j._status === 401) { box.hidden = true; return; }
+      if (j._status === 200 && j.configured === false) {
+        list.textContent = "";
+        note.textContent = "Add an ANTHROPIC_API_KEY in Vercel and Claude will suggest what to do with these numbers.";
+        return;
+      }
+      if (j._status !== 200) return adviceFailed(j.error || "error " + j._status);
+      adviceFor = days;
+      list.textContent = "";
+      (j.items || []).forEach(function (it) {
+        var li = el("li");
+        li.appendChild(el("span", "advice__head-line", it.headline));
+        if (it.detail) li.appendChild(el("span", "advice__detail", it.detail));
+        list.appendChild(li);
+      });
+      note.textContent = (j.demo ? "Demo: " : "") + "Claude's read of the last " + days + " days · " +
+        new Date(j.generated).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+      redo.textContent = "Rewrite"; redo.hidden = false;
+    }).catch(function (e) { if (seq === adviceSeq) adviceFailed(e.message); });
+  }
+  function adviceFailed(msg) {
+    $("adviceList").textContent = "";
+    adviceFor = 0;
+    $("adviceNote").textContent = "Couldn't write recommendations: " + msg;
+    $("adviceRedo").textContent = "Try again"; $("adviceRedo").hidden = false;
   }
 
   /* --------------------------------------------------------- the numbers */
