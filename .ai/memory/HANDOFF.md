@@ -1,12 +1,12 @@
 # Handoff
 
-**Last updated: 2026-10-03 (key art now drives the gallery card and share image of all 37 featured toys, `f5767d8`, live-verified: every new card and share image serves. Earlier the same day: No. 125 Jettison shipped `bcf638e`, glowing doors + its key art `4e648be`. 2026-10-01: No. 124 Meld `6d9458c` and Trench Runner Cinematic `a512069`).**
+**Last updated: 2026-10-03 (`cd6a25a`, live-verified: owner's re-framed key art for five toys, share links on the last five pages, American spelling sweep, test hooks hidden from visitors. Jenga drag bug fixed on the `jenga` branch, `0d01d86`; owner continues Jenga later. Earlier that day: Jettison `bcf638e`, its doors and key art `4e648be`, key art as cards and share images `f5767d8`).**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**125 toys, live at onepagetoys.com.** Latest on `main`: `f5767d8`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**125 toys, live at onepagetoys.com.** Latest on `main`: `cd6a25a`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## No. 125 Jettison — shipped 2026-10-03 (`bcf638e`), live
 
@@ -351,7 +351,7 @@ bundles carry the cross-promo, IndexNow accepted). ✅ **Audio owner-approved 20
 - ⚠ **A puzzle with two independent win conditions must show BOTH as live counters** — otherwise players satisfy the legible one and call the toy broken (*"I completed sudoku in the buildings but not the numbers outside"*).
 - ⚠ **Card pose is KEYBOARD-driven** (`scripts/poses/skyscrapers.js`) and leaves **one gap per row AND column** — a completed line gets judged, and a judged line missing its clue turns the chip red, which reads as broken.
 
-⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work. ✅ **The drag bug is FIXED (2026-10-03, on the branch):** while a block slides it touches nothing in its own level or the levels directly above and below (collision filter groups); 12 pulls across three random towers moved the tower 1.4cm at most (most about 2mm) against 1.0–1.6m before, and full turns (pull, place on top) land flat. ⚠ **cannon caps friction at friction x gravity x the PAIR'S mass, not the real load**, which is why the slick-puller material never helped. Old notes on the bug follow. **Was: one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
+⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work. ✅ **The drag bug is FIXED (2026-10-03, `0d01d86` on the branch, pushed):** while a block slides it touches nothing in its own level or the levels directly above and below (collision filter groups); 12 pulls across three random towers moved the tower 1.4cm at most (most about 2mm) against 1.0–1.6m before, and full turns (pull, place on top) land flat. ⚠ **cannon caps friction at friction x gravity x the PAIR'S mass, not the real load**, which is why the slick-puller material never helped. Old notes on the bug follow. **Was: one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
 
 ## ⚠ Feeders must never preview their daily (owner, 2026-09-12, `049a772`)
 
@@ -582,7 +582,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
 - **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless. Owner will test (2026-10-03).
-- **Jenga's one remaining bug** (see above).
+- **Jenga: owner will continue it later** (2026-10-03). The drag bug is fixed on the branch; to ship it still needs registration, card + share image, a sound check and his play-test (see above).
 - ✅ **Chess audio owner-approved 2026-09-23.** Still open: the ladder was verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
