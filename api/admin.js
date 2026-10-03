@@ -65,6 +65,7 @@ module.exports = async function handler(req, res) {
 
     return send(res, 404, { error: "Unknown op" });
   } catch (e) {
+    console.error("admin " + op + ":", e && e.stack || e);    // the stack lands in Vercel's logs
     return send(res, 500, { error: e.message || "Something went wrong" });
   }
 };

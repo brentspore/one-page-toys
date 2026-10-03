@@ -88,6 +88,12 @@ custom page over Looker Studio. **The site's first server code** (DECISIONS 2026
   60s and bundles `tools-registry.json` (`includeFiles`). Tested: 31 offline checks (Claude faked), a real call with
   a fake key reaches Anthropic and its error shows on the page. Shipped `da9525f`, key set in Vercel (Production);
   the first REAL write-up is unverified (it needs the owner's sign-in). ⚠ The prompt refers to "the owner", never he/his.
+- ⚠⚠ **With nobody on the site, GA's realtime report returns `totals: [{}]` (a total with no values)**, and reading
+  `metricValues[0]` off it took the WHOLE dashboard down ("Cannot read properties of undefined (reading '0')"; owner
+  hit it 2026-10-03 at a quiet moment; the admin page itself sends no GA hits, so the owner looking does not count).
+  `liveNow()` now treats the live count as optional and can only come back empty. The handler now `console.error`s
+  every 500 with its stack, so `vercel logs -p one-page-toys --scope mightyarmy --environment production -x` shows the
+  line next time (before, the error was returned to the page and never logged).
 - ⚠ Never commit the JSON key. ⚠ The one piece that cannot be tested offline is Google itself: the first real
   sign-in and the first real report are the live test.
 

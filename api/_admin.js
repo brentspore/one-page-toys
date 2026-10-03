@@ -174,6 +174,18 @@ function normPath(p) {
   return p;
 }
 
+// "Right now" from the realtime report. With nobody on the site Google sends
+// a total with no values in it, which once took the whole dashboard down; the
+// live count is a nicety, so it can only ever come back empty, never throw.
+function liveNow(rt) {
+  if (!rt) return null;
+  try {
+    const top = rows(rt).map((r) => ({ name: r.unifiedScreenName, value: r.activeUsers || 0 }));
+    const t = rt.totals && rt.totals[0] && rt.totals[0].metricValues && rt.totals[0].metricValues[0];
+    return { active: t ? Number(t.value) || 0 : top.reduce((s, r) => s + r.value, 0), top };
+  } catch (e) { return null; }
+}
+
 const cache = new Map();
 
 async function stats(days) {
@@ -221,7 +233,7 @@ async function stats(days) {
     sources: rows(sources).map((r) => ({ name: r.sessionSource, value: r.sessions })),
     devices: rows(devices).map((r) => ({ name: r.deviceCategory, value: r.activeUsers })),
     countries: rows(countries).map((r) => ({ name: r.country, value: r.activeUsers })),
-    now: rt ? { active: rt.totals && rt.totals[0] ? Number(rt.totals[0].metricValues[0].value) : 0, top: rows(rt).map((r) => ({ name: r.unifiedScreenName, value: r.activeUsers })) } : null
+    now: liveNow(rt)
   };
   cache.set(days, { t: Date.now(), data });
   return data;

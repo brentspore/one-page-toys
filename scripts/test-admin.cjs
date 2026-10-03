@@ -18,7 +18,7 @@ function idToken(claims, key = google.privateKey, kid = "k1") {
 }
 const now = Math.floor(Date.now() / 1000);
 const good = { iss: "https://accounts.google.com", aud: process.env.GOOGLE_CLIENT_ID, exp: now + 600, email: "owner@example.com", email_verified: true };
-let gaCalls = [], tokenAssertion = null, claudeCalls = [], claudeFail = false;
+let gaCalls = [], tokenAssertion = null, claudeCalls = [], claudeFail = false, rtEmpty = false;
 global.fetch = async (url, opts) => {
   if (url.includes("api.anthropic.com")) {
     claudeCalls.push({ headers: opts.headers, body: JSON.parse(opts.body) });
@@ -31,6 +31,7 @@ global.fetch = async (url, opts) => {
     return { ok: true, json: async () => ({ access_token: "tok", expires_in: 3600 }) };
   }
   gaCalls.push({ url, auth: opts.headers.authorization, body: JSON.parse(opts.body) });
+  if (url.endsWith(":runRealtimeReport") && rtEmpty) return { ok: true, json: async () => ({ dimensionHeaders: [{ name: "unifiedScreenName" }], metricHeaders: [{ name: "activeUsers" }], totals: [{}], rowCount: 0 }) };
   if (url.endsWith(":runRealtimeReport")) return { ok: true, json: async () => ({ dimensionHeaders: [{ name: "unifiedScreenName" }], metricHeaders: [{ name: "activeUsers" }], rows: [{ dimensionValues: [{ value: "Meld — One Page Toys" }], metricValues: [{ value: "3" }] }], totals: [{ metricValues: [{ value: "5" }] }] }) };
   const body = JSON.parse(opts.body);
   return { ok: true, json: async () => ({ reports: body.requests.map((r) => {
@@ -90,6 +91,10 @@ const t = (name, ok) => { ok ? pass++ : fail++; console.log((ok ? "PASS " : "FAI
   t("service-account JWT signed with its key", crypto.verify("RSA-SHA256", Buffer.from(h + "." + p), sa.publicKey, Buffer.from(s, "base64url")));
   const claims = JSON.parse(Buffer.from(p, "base64url"));
   t("JWT asks for read-only analytics", claims.scope === "https://www.googleapis.com/auth/analytics.readonly" && claims.iss === "reader@proj.iam.gserviceaccount.com");
+  rtEmpty = true;
+  r = await call("stats", { cookie, query: { days: "90" } });
+  t("nobody on the site: stats still load, right now = 0", r.status === 200 && r.body.now && r.body.now.active === 0 && r.body.now.top.length === 0);
+  rtEmpty = false;
   r = await call("advice", { query: { days: "28" } }); t("advice needs a sign-in", r.status === 401);
   r = await call("advice", { cookie, query: { days: "28" } }); t("advice is off without a key", r.status === 200 && r.body.configured === false && !claudeCalls.length);
   process.env.ANTHROPIC_API_KEY = "sk-test";
