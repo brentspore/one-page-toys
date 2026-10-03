@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Decant",
+      "tagline": "Sort the glowing potions",
+      "url": "https://onepagetoys.com/toys/decant/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2306090d'/><circle cx='16' cy='18' r='13' fill='%23ffb14a' opacity='.12'/><defs><clipPath id='c'><path d='M10.4 14 Q10.4 11.4 13.6 10.6 V7.4 H18.4 V10.6 Q21.6 11.4 21.6 14 V25.4 Q21.6 27.6 19.4 27.6 H12.6 Q10.4 27.6 10.4 25.4 Z'/></clipPath></defs><g clip-path='url(%23c)'><rect x='9' y='22.6' width='14' height='6' fill='%23e8344a'/><rect x='9' y='18.2' width='14' height='4.4' fill='%23ffd43b'/><rect x='9' y='13.8' width='14' height='4.4' fill='%2322c47f'/></g><path d='M10.4 14 Q10.4 11.4 13.6 10.6 V7.4 H18.4 V10.6 Q21.6 11.4 21.6 14 V25.4 Q21.6 27.6 19.4 27.6 H12.6 Q10.4 27.6 10.4 25.4 Z' fill='none' stroke='%23d6efe6' stroke-opacity='.8' stroke-width='1.3'/><rect x='13.2' y='4' width='5.6' height='4.2' rx='1' fill='%23c79a66'/><path d='M12.4 15 V25' stroke='%23ffffff' stroke-opacity='.45' stroke-width='1' stroke-linecap='round'/></svg>",
+      "initial": "D",
+      "slug": "decant"
+    },
+    {
       "name": "Jettison",
       "tagline": "Drag it out the airlock",
       "url": "https://onepagetoys.com/toys/jettison/",

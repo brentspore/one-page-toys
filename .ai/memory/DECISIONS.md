@@ -392,3 +392,25 @@ Toys without art keep the played-still card and the template share image. Tiny A
 and link previews already show the page title and domain beneath the image.
 
 **Revisit if:** the owner wants the site brand on the share images, or a piece of art crops badly at card shape.
+
+---
+
+### 2026-10-03 — The site's first server code: a login-protected admin page (owner-approved)
+
+**Context:** Owner wanted "a simple admin tracking page so I know what toys people use", behind a login. Offered
+a Looker Studio report (no code) or a custom page; he chose the custom `/admin` page. Until now the site had no
+backend, no auth and no secrets (`reference.md`).
+
+**Decision:** One Vercel Node function, `api/admin.js` (+ library `api/_admin.js`), built-in Node only (crypto +
+fetch; `package.json` is not deployed, so no packages). Sign-in is "Sign in with Google", verified server side
+against Google's keys and an `ADMIN_EMAILS` allow-list; the session is an HttpOnly, Secure, SameSite=Strict cookie
+signed with a key derived from the service account's private key. Numbers come from the GA4 Data API through a
+read-only service account. **Secrets live only in Vercel environment variables, never in the repo.** Demo data
+exists for local development and cannot switch on in any Vercel deployment. `scripts/test-admin.cjs` covers the
+production paths offline (23 checks); run it after touching either file.
+
+**Rationale:** The data already lives in GA4, so the backend is a thin, read-only reader, not a database. One
+function keeps the surface small.
+
+**Revisit if:** the admin page needs data GA4 cannot give (then a store, e.g. Supabase, becomes the question), or
+more server features appear (then this stops being a one-off and wants its own conventions).

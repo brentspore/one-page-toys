@@ -33,7 +33,7 @@ const { execFileSync } = require("child_process");
 
 const ROOT = path.join(__dirname, "..");
 const TITLE = {
-  accretion: 50, "air-hockey": 0, alpenglow: 30, bowling: 30, "brick-smasher": 30, chess: 0,
+  accretion: 50, "air-hockey": 0, alpenglow: 30, bowling: 30, "brick-smasher": 30, chess: 0, decant: 0,
   darts: 20, "deep-descent": 40, "deep-hollow": 45, "dot-loop": 4, "five-second-game": 45,
   jettison: 0, maw: 0, meld: 25, "mini-golf": 15, "nova-coil": 35, "paper-plane": 20,
   "perfect-circle": 50, "perfect-timing": 45, pinball: 15, pool: 30, puffling: 20,

@@ -1,5 +1,32 @@
 [
   {
+    "slug": "decant",
+    "name": "Decant",
+    "shortDescription": "An apothecary's shelf of glowing potions, all mixed up. Tap a bottle, tap another, and pour, but only onto the same color or into an empty bottle. Sort every potion into a bottle of its own across 120 levels with clouded layers and taller bottles. No timer, free undo.",
+    "category": "game",
+    "tags": [
+      "decant",
+      "puzzle",
+      "color-sort",
+      "water-sort",
+      "logic",
+      "relaxing",
+      "satisfying",
+      "levels",
+      "no-timer",
+      "brain-teaser",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/decant/",
+    "related": [
+      "jettison",
+      "meld",
+      "trio",
+      "glass-harp"
+    ]
+  },
+  {
     "slug": "jettison",
     "name": "Jettison",
     "shortDescription": "A zero-g cargo hold packed solid. Drag each module through the gaps and out of the airlock of its own color to jettison it into space. Work out which can leave first, make room when nothing can, and clear the hold in as few moves as you can across 56 levels. No timer, free undo.",

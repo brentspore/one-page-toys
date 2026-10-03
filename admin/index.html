@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin — One Page Toys</title>
+    <link rel="icon" href="../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="admin.css?v=1" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="/" title="onepagetoys.com"><span class="brand__mark" aria-hidden="true"></span>One Page Toys</a>
+      <span class="top__tag">Admin</span>
+      <div class="top__right" id="who" hidden>
+        <span class="top__email" id="whoEmail"></span>
+        <button type="button" class="btn btn--quiet" id="signOut">Sign out</button>
+      </div>
+    </header>
+
+    <!-- signed out -->
+    <main class="gate" id="gate" hidden>
+      <div class="gate__card">
+        <h1 class="gate__title">Admin</h1>
+        <p class="gate__text" id="gateText">Sign in with the Google account on the admin list.</p>
+        <div id="gsiButton" class="gate__button"></div>
+        <p class="gate__error" id="gateError" role="alert" hidden></p>
+      </div>
+    </main>
+
+    <!-- signed in -->
+    <main class="dash" id="dash" hidden>
+      <div class="filters">
+        <div class="seg" role="radiogroup" aria-label="Date range">
+          <button type="button" role="radio" data-days="7">Last 7 days</button>
+          <button type="button" role="radio" data-days="28">Last 28 days</button>
+          <button type="button" role="radio" data-days="90">Last 90 days</button>
+        </div>
+        <span class="filters__meta" id="updated"></span>
+        <button type="button" class="btn btn--quiet" id="refresh">Refresh</button>
+      </div>
+      <p class="banner" id="banner" hidden></p>
+
+      <section class="kpis" id="kpis" aria-label="Headline numbers"></section>
+
+      <section class="card" aria-labelledby="trendH">
+        <div class="card__head">
+          <h2 class="card__title" id="trendH">Daily visitors</h2>
+          <span class="card__note" id="trendNote"></span>
+        </div>
+        <div class="trend" id="trend"></div>
+        <details class="tableview">
+          <summary>Show as a table</summary>
+          <div id="trendTable"></div>
+        </details>
+      </section>
+
+      <section class="card" aria-labelledby="toysH">
+        <div class="card__head">
+          <h2 class="card__title" id="toysH">Toys</h2>
+          <input class="search" id="toySearch" type="search" placeholder="Filter toys" aria-label="Filter toys" />
+        </div>
+        <p class="card__note card__note--block" id="toysNote"></p>
+        <div class="tablewrap"><table class="toys" id="toys"></table></div>
+        <button type="button" class="btn btn--quiet more" id="toysMore" hidden></button>
+      </section>
+
+      <div class="trio">
+        <section class="card" aria-labelledby="srcH"><h2 class="card__title" id="srcH">Where visitors come from</h2><div class="bars" id="sources"></div></section>
+        <section class="card" aria-labelledby="devH"><h2 class="card__title" id="devH">Devices</h2><div class="bars" id="devices"></div></section>
+        <section class="card" aria-labelledby="ctyH"><h2 class="card__title" id="ctyH">Countries</h2><div class="bars" id="countries"></div></section>
+      </div>
+
+      <section class="card" aria-labelledby="pagesH">
+        <h2 class="card__title" id="pagesH">Site pages</h2>
+        <div class="bars" id="sitePages"></div>
+      </section>
+
+      <p class="foot">Numbers come from Google Analytics. Most reports lag by up to a day (the "Right now" count is live), and visitors who block analytics are not counted.</p>
+    </main>
+
+    <div class="tip" id="tip" role="tooltip" hidden></div>
+    <script src="admin.js?v=1" defer></script>
+  </body>
+</html>

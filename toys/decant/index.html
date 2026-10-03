@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Decant — One Page Toys</title>
+    <meta name="description" content="An apothecary's shelf of glowing potions, all mixed up. Tap a bottle, tap another, and pour, until every potion sits in a bottle of its own. A free color sorting puzzle with 120 levels, hidden layers, taller bottles, free undo and no timer." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/decant/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#06090d" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Decant" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Decant — One Page Toys" />
+    <meta property="og:description" content="A candlelit shelf of glowing potions, all mixed up. Pour them back and forth until every potion has a bottle of its own." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/decant/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/decant.jpg?v=d6c6e751" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Decant — One Page Toys" />
+    <meta name="twitter:description" content="Pour glowing potions between bottles until every color has a bottle of its own." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/decant.jpg?v=d6c6e751" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Decant",
+        "url": "https://onepagetoys.com/toys/decant/",
+        "description": "A color sorting puzzle on an apothecary's shelf. Glowing potions sit layered and mixed up in glass bottles. Tap a bottle, then tap another, and its top potion pours across, but only onto the same color or into an empty bottle, and only as much as fits. Sort every potion into a bottle of its own and each one is corked. 120 levels grow from three colors to twelve, add clouded layers that hide their color until they reach the top, and later move to taller six-layer bottles. Every level is proven solvable. Undo is free, a spare bottle unlocks once per level if you get stuck, a hint shows a good next pour, and there is no timer. Works with a finger, a mouse or a keyboard, with synthesized sound modeled on real pouring, and any level can be sent to a friend as a challenge.",
+        "applicationCategory": "GameApplication",
+        "genre": "Puzzle",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=4" />
+  </head>
+  <body>
+    <canvas id="c" role="img" aria-label="Decant: a candlelit apothecary shelf of glass bottles holding layers of glowing potion. Tap a bottle, then another, to pour; or use the arrow keys and Enter."></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__cell"><span class="hud__k">Level</span><span id="lvl">1</span></div>
+      <div class="hud__cell"><span class="hud__k">Pours</span><span id="moves">0</span></div>
+      <div class="hud__cell"><span class="hud__k" id="bestK">Best</span><span id="best">–</span></div>
+    </div>
+
+    <div class="tip" id="tip" hidden></div>
+
+    <div class="bar" id="bar" hidden>
+      <button type="button" class="bar__btn" id="undoBtn" title="Undo (Z)"><span aria-hidden="true">&#8630;</span> Undo</button>
+      <button type="button" class="bar__btn" id="restartBtn" title="Restart (R)"><span aria-hidden="true">&#8635;</span> Restart</button>
+      <button type="button" class="bar__btn" id="spareBtn" title="Unlocks if you get stuck, once per level"><span aria-hidden="true">+</span> Bottle</button>
+      <button type="button" class="bar__btn" id="hintBtn" title="Hint (H)"><span aria-hidden="true">&#10022;</span> Hint</button>
+      <button type="button" class="bar__btn bar__btn--quiet" id="menuBtn" title="Levels (Esc)"><span aria-hidden="true">&#9776;</span> Levels</button>
+    </div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound (M)">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow" id="ovEyebrow">The apothecary's shelf</p>
+        <h1 class="panel__title" id="ovTitle">Decant</h1>
+        <p class="panel__text" id="ovText">
+          The potions are all mixed up. <b>Tap a bottle, then tap another</b> to pour its top potion across,
+          but only onto <b>the same color</b> or into an empty bottle. Give every potion <b>a bottle of its own</b>.
+          No clock, and undo is free.
+        </p>
+        <svg class="demo" id="ovDemo" viewBox="0 0 320 132" role="img" aria-label="A mixed-up bottle, and a second bottle tilting to pour green potion onto a bottle whose top layer is the same green.">
+          <defs>
+            <path id="dBottle" d="M-16,-14 Q-16,0 -4,0 H4 Q16,0 16,-14 V-58 Q16,-66 6,-71 V-82 H-6 V-71 Q-16,-66 -16,-58 Z" />
+            <clipPath id="dIn"><path d="M-13.5,-14 Q-13.5,-3 -4,-3 H4 Q13.5,-3 13.5,-14 V-58 Q13.5,-64 4,-69 V-82 H-4 V-69 Q-13.5,-64 -13.5,-58 Z" /></clipPath>
+            <radialGradient id="dGlow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffb14a" stop-opacity="0.55" /><stop offset="1" stop-color="#ffb14a" stop-opacity="0" /></radialGradient>
+          </defs>
+          <circle cx="292" cy="58" r="44" fill="url(#dGlow)" />
+          <rect x="6" y="110" width="308" height="5" fill="#4a3829" />
+          <rect x="6" y="115" width="308" height="7" fill="#17120e" />
+          <g transform="translate(60 110)">
+            <g clip-path="url(#dIn)">
+              <rect x="-20" y="-16" width="40" height="16" fill="#e8344a" />
+              <rect x="-20" y="-30" width="40" height="14" fill="#ffd43b" />
+              <rect x="-20" y="-44" width="40" height="14" fill="#9be24a" />
+              <rect x="-20" y="-58" width="40" height="14" fill="#4a9dff" />
+            </g>
+            <use href="#dBottle" fill="none" stroke="#cfe9df" stroke-opacity="0.6" stroke-width="2" />
+          </g>
+          <g transform="translate(216 110)">
+            <g clip-path="url(#dIn)">
+              <rect x="-20" y="-16" width="40" height="16" fill="#a65cf5" />
+              <rect x="-20" y="-30" width="40" height="14" fill="#9be24a" />
+              <rect x="-20" y="-41" width="40" height="11" fill="#9be24a" />
+            </g>
+            <use href="#dBottle" fill="none" stroke="#cfe9df" stroke-opacity="0.6" stroke-width="2" />
+          </g>
+          <g transform="translate(168 60) rotate(112)">
+            <g clip-path="url(#dIn)">
+              <rect x="-20" y="-20" width="40" height="20" fill="#ff9a1f" transform="rotate(-112)" />
+              <path d="M-20,-30 L20,-8 L20,-60 L-20,-60 Z" fill="#9be24a" transform="rotate(-20)" opacity="0.95" />
+            </g>
+            <use href="#dBottle" fill="none" stroke="#cfe9df" stroke-opacity="0.6" stroke-width="2" />
+          </g>
+          <path d="M217 26 C 220 40, 217 52, 216 68" fill="none" stroke="#9be24a" stroke-width="3.5" stroke-linecap="round" />
+          <rect x="286" y="74" width="12" height="36" rx="2" fill="#f0dfbf" />
+          <path d="M292 72 q -5 -8 0 -18 q 5 10 0 18 z" fill="#ffd27a" />
+          <text x="60" y="130" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(246,234,215,0.65)">mixed up</text>
+          <text x="216" y="130" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="rgba(246,234,215,0.65)">same color only</text>
+        </svg>
+        <button type="button" class="play-btn" id="ovBtn">Start</button>
+        <button type="button" class="ghost-btn" id="chBtn" hidden>Challenge a friend</button>
+        <button type="button" class="text-btn" id="levelsBtn">Choose a level</button>
+        <div class="levels" id="levels" hidden></div>
+        <p class="panel__keys" id="ovKeys">tap a bottle, then another &middot; or arrows + Enter &middot; Z undo &middot; B spare bottle &middot; H hint &middot; M sound</p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 126</span>
+      <span class="frame__corner frame__corner--tr">Decant</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <script src="../../assets/tickets.js?v=32" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="rules.js?v=2" defer></script>
+    <script src="levels.js?v=2" defer></script>
+    <script src="audio.js?v=2" defer></script>
+    <script src="script.js?v=4" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=28" defer></script>
+  </body>
+</html>

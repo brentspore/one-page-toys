@@ -122,7 +122,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Puzzle #1 — New toy: Color Pour (water-sort)
+### Puzzle #1 — New toy: Color Pour (water-sort) — BUILT as No. 126 Decant (2026-10-03); see HANDOFF
 
 **Why it matters:** ⚠ **The single most viral casual-puzzle format of the last several years, and the best fit for this site of anything on this list.** It needs ZERO rules text — one screenshot teaches the whole game — the input is two taps, it is infinitely generatable with guaranteed solvability, and the payoff is liquid pouring, which lands squarely on the "must look and sound intentional" bar. Category `game`.
 
