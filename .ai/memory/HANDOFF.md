@@ -1,6 +1,6 @@
 # Handoff
 
-**Last updated: 2026-10-03 (No. 126 Decant + the /admin page + shared play tracking shipped `da30edf`, owner's updated Decant art `e74d95f`, all live-verified. /admin waits on the owner's Google setup. Jenga drag fix on its branch `0d01d86`).**
+**Last updated: 2026-10-03 (admin: Google setup done, path fix + GA `source` → `placement` rename shipped; trailing-slash redirect parked on its branch. Before that: No. 126 Decant + the /admin page + shared play tracking shipped `da30edf`, owner's updated Decant art `e74d95f`, all live-verified. /admin waits on the owner's Google setup. Jenga drag fix on its branch `0d01d86`).**
 
 ## What this site is / key files
 
@@ -45,7 +45,7 @@ cross-promo lists with a corked-bottle favicon). **Owner's key art** (2026-10-03
 - Test hook `window.__decant` exists only under `navigator.webdriver` (tests and the card pose read positions; every
   move they make is real input).
 
-## Admin page `/admin/` — shipped 2026-10-03 (`da30edf`), live; needs the owner's Google setup to show real numbers
+## Admin page `/admin/` — shipped 2026-10-03 (`da30edf`), live, owner signed in and seeing real data
 
 Owner: *"I want a simple admin tracking page so I know what toys people use … protected by a login."* He chose a
 custom page over Looker Studio. **The site's first server code** (DECISIONS 2026-10-03). **Live-verified:** `/admin/` shows the not-set-up notice listing the four missing settings, `/api/admin?op=session` answers with `demo:false`, stats without a sign-in → 401, `api/_admin.js` and `scripts/` are not served (404), responses carry `no-store` + `noindex`.
@@ -64,16 +64,23 @@ custom page over Looker Studio. **The site's first server code** (DECISIONS 2026
   visitor, shares, and "right now" (GA realtime); a daily-visitors chart with a hover readout and a table view;
   every toy (top 25, "Show all"), sortable, filterable: opens + change vs the previous period, plays, play rate,
   average time, shares; where visitors come from, devices, countries, and the non-toy site pages.
-- ⚠ **OWNER SETUP STILL OWED** (it cannot work without these; the page lists whatever is missing):
-  1. Google Cloud console: a project, **enable "Google Analytics Data API"**.
-  2. Create a **service account**, then a **JSON key** for it.
-  3. GA4 Admin → Property access management: add the service account's email as **Viewer**.
-  4. GA4 Admin → Property details: copy the numeric **Property ID**.
-  5. APIs & Services → OAuth consent screen (External; add himself as a test user, or publish: the scopes are only
-     openid/email/profile), then Credentials → **OAuth client ID, Web application**, Authorized JavaScript origin
-     `https://onepagetoys.com` (add `http://localhost:8125` to test real sign-in locally).
-  6. Vercel → onepagetoys project → Environment Variables (Production): `GA_PROPERTY_ID`, `GA_SERVICE_ACCOUNT` (the
-     whole JSON file's contents), `GOOGLE_CLIENT_ID`, `ADMIN_EMAILS` (his Google address). Then redeploy.
+- **Owner setup DONE 2026-10-03** (Data API enabled, service account as GA Viewer, OAuth web client with origin
+  `https://onepagetoys.com`, the four Vercel env vars in `reference.md`); first real sign-in and report worked. To add
+  local sign-in later, add `http://localhost:8125` as an authorized origin on the OAuth client.
+- ⚠⚠ **Never name a GA event parameter `source`, `medium` or `campaign`.** GA4 reads them as the visit's traffic
+  source: the hub's `toy_launch` sent `source: "gallery"` (also `home_featured`, `all_toys_newest`, `surprise_me`),
+  and the first real dashboard listed those as where visitors came from, re-filing Google and Facebook visits under
+  our own buttons. Renamed to `placement` (`main.js?v=129`). Data before the rename stays polluted.
+- ⚠ **Vercel serves a folder's page WITHOUT adding the trailing slash** (`/admin` and `/toys/decant` both return 200 with
+  the page), so relative asset paths resolve one folder too high and the page loads unstyled and dead. The admin page
+  now uses absolute paths (`/admin/admin.css`, `/admin/admin.js`; owner hit it on first visit). Every toy has the same
+  exposure for hand-typed addresses; on-site links and shares always carry the slash. ⚠ **The site-wide fix,
+  `vercel.json` with `"trailingSlash": true`, is owner-approved but PARKED on branch `trailing-slash` (`4473b59`), NOT on
+  main.** Its preview built (`one-page-toys-621oejq57-mightyarmy.vercel.app`) but previews sit behind Vercel's login, and
+  the Vercel connector is not authorized for the `mightyarmy` team (403), so nobody has tested it. The open question:
+  Vercel's docs do not say whether it also redirects `/api/admin` to `/api/admin/`, and whether that still reaches the
+  function. Check on the preview: `/toys/decant` 308s to `/toys/decant/`; `/api/admin?op=session` still answers JSON;
+  `/admin/` signs in. Then merge just `vercel.json` to main.
 - ⚠ Never commit the JSON key. ⚠ The one piece that cannot be tested offline is Google itself: the first real
   sign-in and the first real report are the live test.
 
@@ -613,7 +620,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=128` (8 pages) / `styles.css?v=128` (9 hub/store pages); **`tickets.js?v=32` across all 135 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=28` (48 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (126 toy and tool pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=129` (8 pages) / `styles.css?v=128` (9 hub/store pages); **`tickets.js?v=32` across all 135 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=28` (48 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (126 toy and tool pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **38** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - **Live since `f5767d8` (2026-10-03).** ⚠ **Adding art is THREE steps** — save the source to `_sources/<slug>.png` and the `.webp` (see that folder's README), add the slug to `FEATURED_ART` in `main.js`, then add a `TITLE` position and run `node scripts/build-art-assets.cjs <slug> --sheet /tmp/s.png` (DECISIONS 2026-10-03): it builds the toy's card (`cards/<slug>.webp`) and share image (`og/<slug>.jpg`), rewrites its `.card__preview` rule and its page's `og:image`/`twitter:image`. Look at the sheet: the title must show in the narrowest card, the widest card and the share image. Bump `styles.css?v=` on the 9 hub pages.

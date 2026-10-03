@@ -1125,7 +1125,7 @@ function createCard(tool) {
         toy_slug: tool.slug || "",
         toy_name: tool.name || "",
         toy_category: tool.category || "",
-        source: "gallery"
+        placement: "gallery"
       });
     });
   }
@@ -1260,7 +1260,7 @@ function wireRandomButton() {
         toy_slug: pick.slug || "",
         toy_name: pick.name || "",
         toy_category: pick.category || "",
-        source: "surprise_me"
+        placement: "surprise_me"
       });
       window.open(toyHref(pick.path), "_blank", "noopener");
     });
@@ -1365,7 +1365,7 @@ function renderNewestPanel() {
 
   sec.querySelectorAll('a[href="' + href + '"]').forEach(function (a) {
     a.addEventListener("click", function () {
-      track("toy_launch", { toy_slug: t.slug || "", toy_name: t.name || "", toy_category: t.category || "", source: "all_toys_newest" });
+      track("toy_launch", { toy_slug: t.slug || "", toy_name: t.name || "", toy_category: t.category || "", placement: "all_toys_newest" });
     });
   });
   sec.querySelectorAll("[data-newest]").forEach(function (btn) {
@@ -1425,7 +1425,7 @@ function renderHomeHero() {
       toy_slug: t.slug || "",
       toy_name: t.name || "",
       toy_category: t.category || "",
-      source: "home_featured"
+      placement: "home_featured"
     });
   }
   if (linkEl) { linkEl.href = toyHref(t.path); linkEl.addEventListener("click", go); }
