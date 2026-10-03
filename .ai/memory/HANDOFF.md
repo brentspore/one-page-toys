@@ -6,7 +6,7 @@
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**126 toys, live at onepagetoys.com.** Latest on `main`: `e74d95f`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**126 toys, live at onepagetoys.com.** Latest on `main`: `39b0c89`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## No. 126 Decant — shipped 2026-10-03 (`da30edf`, art `e74d95f`), live
 
@@ -76,8 +76,10 @@ custom page over Looker Studio. **The site's first server code** (DECISIONS 2026
   now uses absolute paths (`/admin/admin.css`, `/admin/admin.js`; owner hit it on first visit). Every toy has the same
   exposure for hand-typed addresses; on-site links and shares always carry the slash. ⚠ **The site-wide fix,
   `vercel.json` with `"trailingSlash": true`, is owner-approved but PARKED on branch `trailing-slash` (`4473b59`), NOT on
-  main.** Its preview built (`one-page-toys-621oejq57-mightyarmy.vercel.app`) but previews sit behind Vercel's login, and
-  the Vercel connector is not authorized for the `mightyarmy` team (403), so nobody has tested it. The open question:
+  main.** Its preview built (`one-page-toys-621oejq57-mightyarmy.vercel.app`) but previews sit behind Vercel's login, so
+  nobody has tested it. The Vercel CLI now works on this machine (see `reference.md`), but `vercel curl` only REUSES an
+  existing "Protection Bypass for Automation" secret, and creating one is the owner's call (Vercel → one-page-toys →
+  Settings → Deployment Protection); the alternative is the owner opening the preview in his own browser. The open question:
   Vercel's docs do not say whether it also redirects `/api/admin` to `/api/admin/`, and whether that still reaches the
   function. Check on the preview: `/toys/decant` 308s to `/toys/decant/`; `/api/admin?op=session` still answers JSON;
   `/admin/` signs in. Then merge just `vercel.json` to main.
