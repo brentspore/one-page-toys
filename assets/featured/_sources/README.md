@@ -8,6 +8,10 @@ Named by registry slug, so source and output line up. Regenerate one with:
 
     cwebp -q 82 -resize 1200 675 _sources/<slug>.png -o <slug>.webp
 
+The same source also makes the toy's gallery card and share image:
+
+    node scripts/build-art-assets.cjs <slug> --sheet /tmp/sheet.png
+
 `word-kraven.webp` has no source here; its original was gone before this folder
 existed. Everything else round-trips.
 

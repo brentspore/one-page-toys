@@ -374,3 +374,21 @@ Measure the level afterwards: the clipper and puff cluster made the same `amp` a
 **Rationale:** The core mechanic decides the rules, the solver, the level generator and the input model, so getting it wrong costs the whole build, not a tweak. A screenshot of a packed board would have caught both errors in seconds.
 
 **Revisit if:** never; this is cheap insurance.
+
+---
+
+### 2026-10-03 — A toy with featured key art uses that art for its card and share image (owner directive)
+
+**Context:** Owner: *"replace it and the card images but always crop to still show the title nicely."* Until now
+every card was a real still of the toy being played and every share image was the `og-gen.html` template.
+
+**Decision:** For every toy in `FEATURED_ART`, the gallery card and the share image come from the owner's key art,
+built by `node scripts/build-art-assets.cjs [slug…]`: `assets/cards/<slug>.webp` (the whole 16:9 art, ~20–70KB) with
+a per-toy vertical position in its `.card__preview` rule, and `assets/og/<slug>.jpg` (1200x630, under 290KB for
+WhatsApp). One number per toy (`TITLE`, % down the art) keeps the title in both crops; check by eye with `--sheet`.
+Toys without art keep the played-still card and the template share image. Tiny Across keeps its hand-cropped share image.
+
+**Rationale:** The art is far more clickable than a gameplay still or a text template, it carries the game's logo,
+and link previews already show the page title and domain beneath the image.
+
+**Revisit if:** the owner wants the site brand on the share images, or a piece of art crops badly at card shape.
