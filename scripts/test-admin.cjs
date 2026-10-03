@@ -23,7 +23,7 @@ global.fetch = async (url, opts) => {
   if (url.includes("api.anthropic.com")) {
     claudeCalls.push({ headers: opts.headers, body: JSON.parse(opts.body) });
     if (claudeFail) return { ok: false, status: 529, json: async () => ({ type: "error", error: { type: "overloaded_error", message: "Overloaded" } }) };
-    return { ok: true, json: async () => ({ content: [{ type: "tool_use", name: "recommendations", input: { items: [{ headline: "Feature Meld", detail: "It held people." }, { headline: "Second", detail: "x" }] } }] }) };
+    return { ok: true, json: async () => ({ stop_reason: "end_turn", content: [{ type: "thinking", thinking: "" }, { type: "text", text: JSON.stringify({ items: [{ headline: "Feature Meld", detail: "It held people." }, { headline: "Second", detail: "x" }] }) }] }) };
   }
   if (url.includes("oauth2/v3/certs")) return { ok: true, json: async () => ({ keys: [jwk] }) };
   if (url.includes("oauth2.googleapis.com/token")) {
@@ -100,7 +100,7 @@ const t = (name, ok) => { ok ? pass++ : fail++; console.log((ok ? "PASS " : "FAI
   process.env.ANTHROPIC_API_KEY = "sk-test";
   r = await call("advice", { cookie, query: { days: "28" } });
   const c = claudeCalls[0];
-  t("advice calls Claude with the key, API version and a forced tool", c && c.headers["x-api-key"] === "sk-test" && c.headers["anthropic-version"] === "2023-06-01" && c.body.tool_choice.name === "recommendations" && /^claude-/.test(c.body.model));
+  t("advice calls Claude with the key, API version and a JSON schema (no forced tool)", c && c.headers["x-api-key"] === "sk-test" && c.headers["anthropic-version"] === "2023-06-01" && c.body.output_config.format.type === "json_schema" && !c.body.tool_choice && !c.body.tools && /^claude-/.test(c.body.model) && c.body.max_tokens >= 4000);
   t("advice sends real toy names with their numbers", c && /"name":"Meld"[^}]*"opens":10/.test(c.body.messages[0].content));
   t("the brief rules out monetizing", c && /never suggest ads/.test(c.body.system));
   t("advice returns Claude's items", r.status === 200 && r.body.items.length === 2 && r.body.items[0].headline === "Feature Meld");

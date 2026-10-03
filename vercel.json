@@ -1,6 +1,6 @@
 {
   "trailingSlash": true,
   "functions": {
-    "api/admin.js": { "maxDuration": 60, "includeFiles": "tools-registry.json" }
+    "api/admin.js": { "maxDuration": 120, "includeFiles": "tools-registry.json" }
   }
 }

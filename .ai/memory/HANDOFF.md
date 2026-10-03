@@ -82,10 +82,14 @@ custom page over Looker Studio. **The site's first server code** (DECISIONS 2026
   dashboard's numbers (top 60 opened toys with names/descriptions, totals, daily visitors, sources, devices,
   countries) to `claude-opus-5-5` with a brief on the site's goals, its levers, the no-monetizing rule and the known
   data quirks (plays only since 10-03, the hub labels that posed as sources, the owner's own test visits), and gets
-  2-4 recommendations back through a forced tool call. ~6k tokens in, cents per call. Cached six hours per range per
+  2-4 recommendations back as JSON via **structured outputs** (`output_config.format` json_schema, effort medium,
+  max_tokens 8000). ⚠⚠ **Opus 5.5 always thinks, so it REJECTS forced tool calls** (`tool_choice` type `tool`/`any`:
+  "not supported for this model"; only `auto`/`none`), and thinking counts against `max_tokens`. The answer is the
+  `text` block after the `thinking` block. ⚠ An org-wide Anthropic key needs a workspace: the owner swapped in a
+  workspace-scoped key (the error names the `anthropic-workspace-id` header otherwise). ~6k tokens in, cents per call. Cached six hours per range per
   warm function; "Rewrite" asks again (min one minute apart). Needs `ANTHROPIC_API_KEY` in Vercel (optional: without
   it the banner says how to turn it on; local demo without a key shows sample text). `vercel.json` gives the function
-  60s and bundles `tools-registry.json` (`includeFiles`). Tested: 31 offline checks (Claude faked), a real call with
+  120s and bundles `tools-registry.json` (`includeFiles`). Tested: 31 offline checks (Claude faked), a real call with
   a fake key reaches Anthropic and its error shows on the page. Shipped `da9525f`, key set in Vercel (Production);
   the first REAL write-up is unverified (it needs the owner's sign-in). ⚠ The prompt refers to "the owner", never he/his.
 - ⚠⚠ **With nobody on the site, GA's realtime report returns `totals: [{}]` (a total with no values)**, and reading

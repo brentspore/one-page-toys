@@ -319,28 +319,37 @@ What to write:
 - Do not suggest fixing the data problems above; the owner knows about them. Do not recommend anything the numbers cannot support.`;
 }
 
+// Opus 5.5 always thinks before it answers, so it cannot be forced into a
+// tool call; structured outputs (output_config.format) guarantee the JSON
+// shape instead, and the answer arrives as a text block after the thinking.
+// Thinking counts against max_tokens, hence the headroom.
+const ADVICE_SCHEMA = {
+  type: "object", additionalProperties: false, required: ["items"],
+  properties: { items: { type: "array", items: {
+    type: "object", additionalProperties: false, required: ["headline", "detail"],
+    properties: { headline: { type: "string" }, detail: { type: "string" } } } } }
+};
+
 async function askClaude(input) {
-  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 50e3);
+  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 110e3);
   try {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST", signal: ctrl.signal,
       headers: { "x-api-key": process.env.ANTHROPIC_API_KEY.trim(), "anthropic-version": "2023-06-01", "content-type": "application/json" },
       body: JSON.stringify({
-        model: ADVICE_MODEL, max_tokens: 1200, system: advicePrompt(input),
+        model: ADVICE_MODEL, max_tokens: 8000, system: advicePrompt(input),
         messages: [{ role: "user", content: "The numbers for the last " + input.range.days + " days:\n" + JSON.stringify(input) }],
-        tools: [{
-          name: "recommendations", description: "The recommendations to show at the top of the admin page.",
-          input_schema: { type: "object", required: ["items"], properties: { items: { type: "array", minItems: 1, maxItems: 4, items: {
-            type: "object", required: ["headline", "detail"],
-            properties: { headline: { type: "string" }, detail: { type: "string" } } } } } }
-        }],
-        tool_choice: { type: "tool", name: "recommendations" }
+        output_config: { effort: "medium", format: { type: "json_schema", schema: ADVICE_SCHEMA } }
       })
     });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error("Claude: " + ((j.error && j.error.message) || "error " + r.status));
-    const use = (j.content || []).find((c) => c.type === "tool_use");
-    const items = (use && use.input && Array.isArray(use.input.items) ? use.input.items : [])
+    if (j.stop_reason === "max_tokens") throw new Error("Claude ran out of room before answering. Try again.");
+    if (j.stop_reason === "refusal") throw new Error("Claude declined to answer.");
+    const text = (j.content || []).filter((c) => c.type === "text").map((c) => c.text).join("");
+    let out;
+    try { out = JSON.parse(text); } catch (e) { throw new Error("Claude's answer was not readable. Try again."); }
+    const items = (out && Array.isArray(out.items) ? out.items : [])
       .map((x) => ({ headline: String(x.headline || "").trim().slice(0, 120), detail: String(x.detail || "").trim().slice(0, 600) }))
       .filter((x) => x.headline);
     if (!items.length) throw new Error("Claude returned no recommendations");
