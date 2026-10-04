@@ -1,5 +1,31 @@
 [
   {
+    "slug": "timber",
+    "name": "Timber",
+    "shortDescription": "A tower of wooden blocks with real physics. Orbit it, slide a block out from below the top, and set it back on top. Every block you move makes the tower taller and shakier, until the whole thing comes down.",
+    "category": "game",
+    "tags": [
+      "timber",
+      "block-tower",
+      "stacking",
+      "physics",
+      "3d",
+      "steady-hand",
+      "wooden-blocks",
+      "single-player",
+      "party-game",
+      "game"
+    ],
+    "status": "live",
+    "path": "toys/timber/",
+    "related": [
+      "stack-tower",
+      "dominoes",
+      "steady-hand",
+      "checkers"
+    ]
+  },
+  {
     "slug": "checkers",
     "name": "Checkers",
     "shortDescription": "Checkers on a cracker barrel at the back of a country store, against six regulars who each play their own way, from the storekeeper's girl to Old Silas, county champion forty years running. Official forced jumps or house rules, a hint when you need one, and a replay of every game.",

@@ -1,12 +1,61 @@
 # Handoff
 
-**Last updated: 2026-10-03 (No. 127 Checkers shipped `9993076` with the owner's key art, live-verified; cross-promo in all four DEPLOYED bundles. Earlier today: admin "What to do next" banner `da9525f`, quiet-site fix `3197500`, structured outputs `4eec97d`.)**
+**Last updated: 2026-10-04 (No. 128 Timber, the old Jenga branch finished and renamed, built and registered, LOCAL ONLY, waiting on the owner's play-test and "push". Before that: No. 127 Checkers shipped `9993076`, live.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
 **127 toys, live at onepagetoys.com.** Latest on `main`: `9993076`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+
+## No. 128 Timber — built 2026-10-04, LOCAL ONLY (the old `jenga` branch, finished and renamed; waiting on "push")
+
+**`toys/timber/`** — a tower of 36 wooden blocks with real physics (vendored cannon-es, DECISIONS 2026-08-22). Orbit
+(drag the table), zoom (pinch/scroll), drag a block along its own length to slide it out (either end, below the
+highest complete level), then tap a glowing slot to set it on top (a level fills to three before the next starts).
+Score = blocks moved; three blocks down = the tower fell. Owner (2026-10-04): **name "Timber"** ("TIMBER!" is the
+fall's callout) and **"jenga" kept off every surface, hidden search keywords included** (trademark, the Tetris/Suika
+rule). Keys: `timber_best` (ticket rule dir `up`, rule only), `timber_sound`. Registered everywhere in the working
+tree (registry, sitemap 131 urls, NL phrase, card CSS + `:not()`, og-gen, ticket rule, cross-promo in all four lists,
+siblings edited locally, NOT committed). The `jenga` branch (`0d01d86`) is superseded once this ships: delete it.
+- **What "finishing" was** (the branch was built in the Steady Hand era and well under the bar): the stylesheet had
+  been copied from Steady Hand (its HUD stacked into a tall pill over the tower; rewritten); the level counter read 13
+  for 12 levels; a pull needed ~430px of finger travel (now 1:1 along the block's on-screen axis, either direction);
+  the held block parked IN FRONT of the tower and hid it (now it floats beside the top, turned like the slots); the
+  callout sat on the slots (now low); the test handle was public (now `navigator.webdriver` only, `window.__timber`).
+- **Renderer rebuilt** (raw WebGL, still hand-written): hardwood with annual rings around a pith OUTSIDE the block, so
+  each block has its own figure (arcs on sides, stripes on tops, rings on ends), grain faded by `fwidth` so it never
+  shimmers; rounded-edge bevel plus a dark seam so blocks separate; one warm lamp (`LAMP`) plus a warm fill and
+  hemisphere ambient, a gentle highlight roll-off; a walnut table in the lamp's pool that fogs into the room (no
+  horizon line); soft shadows = four planar passes from jittered lamp positions with a STENCIL so overlaps never
+  double-darken; the camera fits the tower and follows its top as it grows.
+- ⚠⚠ **A tipping tower fell ASLEEP mid-fall** and hung leaning off one block: a topple starts slower than the sleep
+  speed limit. During play any block tilted more than ~2 degrees is woken every frame (blocks on their sides are left
+  alone). Sleep still keeps a standing tower dead still.
+- ⚠⚠ **Any block that falls ends the game** (owner play-test 2026-10-04: "one fell off the top and it still thinks
+  it's on top"). It used to end only when THREE blocks reached the table, so a single block sliding off the top lay
+  there while the game still counted it on the top level (wrong free slots, wrong level count). `offTower(b)`: dropped
+  more than half a level below where it was built, or 1m off the footprint. Half a second later the game counts what
+  is MOVING (off the tower, faster than 0.25 m/s, or tipped past ~20 degrees): four or more = "TIMBER!" and "It came
+  down"; fewer = "dropped one" and "A block came off". ⚠ Counting only landed blocks misread a real topple as a
+  single drop, because the new rule fires at the FIRST block's drop.
+- ⚠ **Test the visible END of a block, not its center**: a middle block's center is inside the tower, so a pick there
+  hits the block in front (a test "pulled" side blocks of other levels and the tower rightly stood).
+- **Audio rebuilt to the house bar**: knocks come from REAL contacts (`beginContact`, impact speed scales the hit,
+  panned by screen position, each block throttled to one knock per 55ms, max ~46/s), maple bar modes 1 : 2.76 : 5.40
+  over a table or tower thump, a continuous grainy scrape that follows pull speed with stick-slip ticks, a lumpy low
+  thump under the collapse, small room IR, compressor + brickwall. Measured (real physics, voices scheduled onto an
+  OfflineAudioContext timeline): place 0.19-0.26, pull+lift 0.09-0.15, a full collapse 0.55. Scrape raised after it
+  measured near-silent. Never heard.
+- ⚠ **Headless screenshots of WebGL can LOOK flatter than the frame while being pixel-identical**: an hour went into
+  "fixing" a difference that measured as the same RGB at every probe. Read pixels (`gl.readPixels` inside a rAF after
+  the toy's frame, or decode the PNG) before believing your eyes on a downscaled screenshot.
+- **Owner's key art** (2026-10-04, the MID-COLLAPSE piece, owner's pick over a standing-tower version on the desktop;
+  source `_sources/timber.png`, `TITLE` 0) is in the featured pool (40) and is the card (`cards/timber.webp`) and share
+  image (`og/timber.jpg`, 167KB) via `build-art-assets.cjs`. ⚠ The repo copy appeared at 11:38 from an unknown process
+  (not this session, and not the desktop file); the owner confirmed it is the one to use. `scripts/poses/timber.js`
+  (real pointer events, a block caught half way out) stays as the gameplay-still pose. Verified headless: pull + place
+  by mouse, toppling by pulling two level-2 blocks (TIMBER callout, end panel, share line), phone 390x844, WebKit 375x667.
 
 ## No. 127 Checkers — shipped 2026-10-03 (`9993076`), live
 
@@ -499,7 +548,7 @@ bundles carry the cross-promo, IndexNow accepted). ✅ **Audio owner-approved 20
 - ⚠ **A puzzle with two independent win conditions must show BOTH as live counters** — otherwise players satisfy the legible one and call the toy broken (*"I completed sudoku in the buildings but not the numbers outside"*).
 - ⚠ **Card pose is KEYBOARD-driven** (`scripts/poses/skyscrapers.js`) and leaves **one gap per row AND column** — a completed line gets judged, and a judged line missing its clue turns the chip red, which reads as broken.
 
-⚠ **JENGA IS PARKED ON THE `jenga` BRANCH, not main** (`git checkout jenga`). Physics, rules and placement work. ✅ **The drag bug is FIXED (2026-10-03, `0d01d86` on the branch, pushed):** while a block slides it touches nothing in its own level or the levels directly above and below (collision filter groups); 12 pulls across three random towers moved the tower 1.4cm at most (most about 2mm) against 1.0–1.6m before, and full turns (pull, place on top) land flat. ⚠ **cannon caps friction at friction x gravity x the PAIR'S mass, not the real load**, which is why the slick-puller material never helped. Old notes on the bug follow. **Was: one bug left — sliding a block out drags the level above it ~0.63m.** Friction is RULED OUT with evidence (a global sweep 0.15→0.6 moved it <2%; a slick puller material verified active at 0.6→0.02 still dragged 0.626). Next: suppress collision between the pulled block and the one directly above while it slides. **The branch also carries the ONE vendored dependency — cannon-es 0.20.0 MIT in `toys/jenga/lib/` — and its `DECISIONS.md` entry; neither is on main**, deliberately, so main does not claim a dep exception for code it lacks.
+**Jenga became No. 128 Timber (2026-10-04)**, see its section at the top; the `jenga` branch is superseded.
 
 ## ⚠ Feeders must never preview their daily (owner, 2026-09-12, `049a772`)
 
@@ -633,7 +682,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **49 entries, `?v=29` across 49 pages** (Checkers added 2026-10-03, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **50 entries, `?v=30` across 50 pages** (Timber added locally 2026-10-04; Checkers before it, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -692,9 +741,9 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=130` (8 pages) / `styles.css?v=129` (9 hub/store pages); **`tickets.js?v=33` across all 136 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=29` (49 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (126 toy and tool pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=131` (8 pages) / `styles.css?v=130` (9 hub/store pages); **`tickets.js?v=34` across all 137 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=30` (50 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (126 toy and tool pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
-**Featured art** — the home panel ROTATES bespoke key art, one of **39** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
+**Featured art** — the home panel ROTATES bespoke key art, one of **40** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - **Live since `f5767d8` (2026-10-03).** ⚠ **Adding art is THREE steps** — save the source to `_sources/<slug>.png` and the `.webp` (see that folder's README), add the slug to `FEATURED_ART` in `main.js`, then add a `TITLE` position and run `node scripts/build-art-assets.cjs <slug> --sheet /tmp/s.png` (DECISIONS 2026-10-03): it builds the toy's card (`cards/<slug>.webp`) and share image (`og/<slug>.jpg`), rewrites its `.card__preview` rule and its page's `og:image`/`twitter:image`. Look at the sheet: the title must show in the narrowest card, the widest card and the share image. Bump `styles.css?v=` on the 9 hub pages.
   - ⚠ **`sips --cropOffset` is IGNORED** (sips always crops from the centre); the script crops with `cwebp -crop`, which is exact. A "top-anchored" crop that came out centred is this.
   - ⚠ **Kept on purpose:** `cards/pool.png` and `cards/nova-coil.png` (the Games category share image in `scripts/og-cat.html` is built from them), `og/shuriken-night.png` (the excluded `shuriken-night-visual-pass` sandbox points at it) and `og/tiny-across.jpg` (owner's hand crop; the script skips it). Every other superseded card/OG PNG of an art toy was deleted. Do not run `gen-card`/`gen-og` for an art toy: their PNGs would be unused.
@@ -732,7 +781,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
 - **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless. Owner will test (2026-10-03).
-- **Jenga: owner will continue it later** (2026-10-03). The drag bug is fixed on the branch; to ship it still needs registration, card + share image, a sound check and his play-test (see above).
+- **Timber (No. 128): owner play-test + "push"** (then commit the three sibling MoreGames.tsx edits, verify DEPLOYED bundles, IndexNow, delete the `jenga` branch). Feel and sound unjudged.
 - ✅ **Chess audio owner-approved 2026-09-23.** Still open: the ladder was verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer

@@ -66,6 +66,7 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "timber": "timber block tower wooden block tower stacking blocks stack the blocks wooden blocks pull a block block pulling game stack and pull toppling tower wobbly tower topple collapse dont let it fall do not knock it over steady hand nerves careful hands physics game real physics 3d tower orbit the tower table game party game family game classic wooden block game lumber timber shout free browser game no signup no download",
   "checkers": "checkers checker checkerboard checker board draughts english draughts american checkers damas play checkers online free checkers checkers against the computer checkers vs computer checkers ai board game classic board game strategy game king me crown king kings jump double jump triple jump forced jump forced capture compulsory capture multi jump country store general store cracker barrel old fashioned vintage folk art wooden checkers red and black six opponents difficulty levels hint replay the game two player board game free browser game no signup no download",
   "decant": "decant decanting pour pouring potion potions water sort water sorting puzzle color sort colour sort liquid sort sort the colors sort the liquids bottle sort tube sort test tubes ball sort pour puzzle apothecary alchemy alchemist potion shop magic potions witch brew elixir glowing liquids bottles cork candlelight candles relaxing puzzle satisfying calm logic puzzle brain teaser color matching hidden layers mystery colors 120 levels hint undo no timer no time limit challenge a friend free browser puzzle no signup phone puzzle tap to pour",
   "jettison": "jettison sliding block puzzle slide the blocks out slide them out of the box color sort puzzle block sorting puzzle sort blocks by color drag the blocks out drag it to the matching door color block puzzle color matching exits traffic jam puzzle packed board clear the jam escape puzzle get every block out clear the board exits gates doors airlock space station cargo bay cargo containers zero gravity zero g floating in space astronaut spaceship tumble into space fewest moves par optimal solution minimum moves brain teaser logic puzzle level pack dozens of levels hint undo no timer no time limit relaxing puzzle think ahead which block goes first make room one finger phone puzzle drag puzzle challenge a friend free browser puzzle no signup",
@@ -525,7 +526,7 @@ let featuredTool = null;
 // spotlight rotates through these — one per page load — instead of always
 // showing the newest toy. Add a slug here only once its art exists.
 const FEATURED_ART = [
-  "checkers", "decant", "jettison", "meld", "maw", "trench-runner",
+  "timber", "checkers", "decant", "jettison", "meld", "maw", "trench-runner",
   "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher",
   "chess", "darts", "deep-descent", "deep-hollow", "dot-loop", "five-second-game",
   "mini-golf", "nova-coil", "paper-plane", "perfect-circle",

@@ -1,0 +1,157 @@
+/* Timber — full-bleed WebGL tower under a workshop lamp. Physics is vendored cannon-es (lib/). */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap");
+
+:root{
+  --ink: #f6ead8;
+  --dim: rgba(246, 234, 216, 0.6);
+  --faint: rgba(246, 234, 216, 0.32);
+  --bg: #0a0806;
+  --hot: #e9a14a;
+  --hot-lite: #ffd596;
+  --line: rgba(255, 214, 160, 0.16);
+  --glass: rgba(22, 15, 9, 0.72);
+  --font-display: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+html, body{
+  height: 100%; margin: 0; overflow: hidden;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+canvas{
+  display: block; width: 100%; height: 100%; touch-action: none;
+  -webkit-touch-callout: none; user-select: none; -webkit-user-select: none;
+}
+
+/* ---------- HUD: one row of readouts at the top ---------- */
+.hud{
+  position: fixed; z-index: 5; pointer-events: none;
+  top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+  display: flex; gap: 22px; align-items: flex-end;
+  font-family: var(--font-mono);
+  padding: 7px 18px;
+  border: 1px solid var(--line); border-radius: 12px;
+  background: var(--glass);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.hud[hidden]{ display: none; }
+.hud__cell{ display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 40px; }
+.hud__k{ font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); }
+.hud__cell span:last-child{ font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---------- Callout ---------- */
+.callout{
+  position: fixed; z-index: 6; pointer-events: none;
+  /* low on the screen: up top it sat right over the slots you are aiming at */
+  left: 50%; bottom: max(118px, 17vh); transform: translateX(-50%);
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em;
+  font-size: clamp(1.1rem, 4.4vw, 1.9rem); line-height: 1.05;
+  color: var(--hot-lite); text-align: center; white-space: nowrap;
+  text-shadow: 0 0 34px rgba(233, 161, 74, 0.45), 0 6px 30px rgba(0,0,0,0.7);
+}
+.callout[hidden]{ display: none; }
+/* the fall gets the full shout */
+.callout.is-timber{
+  top: 40%; bottom: auto; transform: translate(-50%, -50%); font-weight: 900; letter-spacing: 0.04em;
+  font-size: clamp(3rem, 15vw, 7.5rem);
+  color: #ffe2b0;
+  text-shadow: 0 4px 0 #6b3510, 0 0 60px rgba(255, 150, 60, 0.6), 0 14px 50px rgba(0,0,0,0.8);
+  animation: timber 1.4s cubic-bezier(.2,.9,.25,1) both;
+}
+@keyframes timber{
+  0%{ opacity: 0; transform: translate(-50%, -50%) scale(0.7) rotate(-6deg); }
+  18%{ opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(2deg); }
+  30%{ transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  78%{ opacity: 1; }
+  100%{ opacity: 0; transform: translate(-50%, -54%) scale(1); }
+}
+
+/* ---------- Sound ---------- */
+.sound-btn{
+  position: fixed; z-index: 6;
+  top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right));
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--glass); color: var(--ink);
+  font-size: 15px; cursor: pointer; backdrop-filter: blur(8px);
+  transition: transform 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+.sound-btn:hover{ transform: translateY(-1px); border-color: var(--hot); }
+.sound-btn[aria-pressed="false"]{ opacity: 0.45; }
+.sound-btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(233, 161, 74, 0.45); }
+
+/* ---------- Overlay ---------- */
+.overlay{
+  position: fixed; inset: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px;
+  background: radial-gradient(90% 70% at 50% 42%, rgba(18, 12, 7, 0.62), rgba(6, 4, 2, 0.94));
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  transition: opacity 240ms ease; overflow-y: auto;
+}
+.overlay[hidden]{ display: none; }
+.overlay.is-out{ opacity: 0; pointer-events: none; }
+.panel{
+  max-width: 520px; width: 100%; margin: auto; text-align: center;
+  padding: clamp(22px, 5vw, 34px);
+  border: 1px solid var(--line); border-radius: 16px;
+  background: linear-gradient(180deg, rgba(36, 24, 14, 0.9), rgba(18, 12, 7, 0.92));
+  box-shadow: 0 30px 90px -20px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255, 220, 170, 0.07);
+}
+.panel__eyebrow{ margin: 0 0 6px; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--hot); }
+.panel__title{ margin: 0 0 12px; font-size: clamp(2.2rem, 9vw, 3.4rem); font-weight: 900; letter-spacing: 0.01em; text-transform: uppercase; }
+.panel__text{ margin: 0 0 22px; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; color: var(--dim); }
+.panel__text b{ color: var(--ink); font-weight: 600; }
+.play-btn{
+  appearance: none; font-family: var(--font-display); font-weight: 800; font-size: 1rem;
+  padding: 13px 30px; border-radius: 999px; cursor: pointer;
+  border: 0; background: linear-gradient(180deg, var(--hot-lite), var(--hot));
+  color: #2a1403; box-shadow: 0 10px 30px -8px rgba(233, 161, 74, 0.6);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.play-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 38px -10px rgba(233, 161, 74, 0.75); }
+.play-btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(233, 161, 74, 0.5); }
+.panel__keys{ margin: 16px 0 0; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; color: var(--faint); }
+
+/* ---------- Frame corners + hint ---------- */
+.frame{ position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+.frame__corner{
+  position: fixed; font-family: var(--font-mono); font-size: 0.6rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint);
+}
+.frame__corner--tl{ top: max(14px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left)); }
+.frame__corner--tr{ top: max(14px, env(safe-area-inset-top)); right: max(58px, calc(env(safe-area-inset-right) + 58px)); }
+.frame__corner--bl{ bottom: max(14px, env(safe-area-inset-bottom)); left: max(14px, env(safe-area-inset-left)); pointer-events: auto; }
+.frame__corner--bl a{ color: var(--faint); text-decoration: none; }
+.frame__corner--bl a:hover{ color: var(--hot); }
+
+.hint{
+  position: fixed; z-index: 4; pointer-events: none;
+  bottom: max(38px, calc(env(safe-area-inset-bottom) + 28px)); left: 50%; transform: translateX(-50%);
+  margin: 0; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em;
+  color: var(--faint); white-space: nowrap;
+  transition: opacity 500ms ease;
+}
+.hint.is-gone{ opacity: 0; }
+
+@media (max-width: 620px){
+  .hint{ font-size: 0.55rem; }
+  /* the HUD is centered at the top and the toy name is pinned top-right; below
+     this width they overlap, and the name is the one the page can spare */
+  .frame__corner--tr{ display: none; }
+  /* and the hint runs straight through the tickets pill, which docks at the
+     bottom-left and is 32px tall */
+  .hint{ bottom: max(86px, calc(env(safe-area-inset-bottom) + 76px)); }
+  .hud{ gap: 16px; padding: 6px 13px; }
+}
+@media (max-height: 620px){
+  .hud{ top: max(6px, env(safe-area-inset-top)); padding: 4px 11px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .play-btn, .sound-btn, .overlay{ transition: none; }
+  .callout.is-timber{ animation: none; }
+}

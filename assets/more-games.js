@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Timber",
+      "tagline": "Pull one out. Don't topple it",
+      "url": "https://onepagetoys.com/toys/timber/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23120b06'/><ellipse cx='16' cy='28.6' rx='9' ry='1.6' fill='%23000' opacity='.55'/><rect x='9' y='5' width='13' height='3' rx='.5' fill='%23e2ae70'/><rect x='9' y='8.4' width='3.8' height='3' rx='.4' fill='%23c48b4f'/><rect x='13.6' y='8.4' width='3.8' height='3' rx='.4' fill='%23c48b4f'/><rect x='18.2' y='8.4' width='3.8' height='3' rx='.4' fill='%23c48b4f'/><rect x='9' y='11.8' width='13' height='3' rx='.5' fill='%23dba467'/><rect x='9' y='15.2' width='3.8' height='3' rx='.4' fill='%23c48b4f'/><rect x='18.2' y='15.2' width='3.8' height='3' rx='.4' fill='%23c48b4f'/><rect x='17' y='15.4' width='13' height='2.6' rx='.5' fill='%23f4c487'/><rect x='9' y='18.6' width='13' height='3' rx='.5' fill='%23d39b5c'/><rect x='9' y='22' width='3.8' height='3' rx='.4' fill='%23b57d44'/><rect x='13.6' y='22' width='3.8' height='3' rx='.4' fill='%23b57d44'/><rect x='18.2' y='22' width='3.8' height='3' rx='.4' fill='%23b57d44'/><rect x='9' y='25.4' width='13' height='2.6' rx='.5' fill='%23c9904f'/></svg>",
+      "initial": "T",
+      "slug": "timber"
+    },
+    {
       "name": "Checkers",
       "tagline": "Beat the county champ",
       "url": "https://onepagetoys.com/toys/checkers/",
