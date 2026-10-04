@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-10-04 (No. 128 Timber, the old Jenga branch finished and renamed, built and registered, LOCAL ONLY, waiting on the owner's play-test and "push". Before that: No. 127 Checkers shipped `9993076`, live.)**
+**Last updated: 2026-10-04 (No. 128 Timber shipped `96ef508`, the old Jenga branch finished, renamed and live-verified; cross-promo in all four DEPLOYED bundles; `jenga` branch deleted. No. 127 Checkers `9993076` before it.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**127 toys, live at onepagetoys.com.** Latest on `main`: `9993076`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**128 toys, live at onepagetoys.com.** Latest on `main`: `96ef508`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## No. 128 Timber — built 2026-10-04, LOCAL ONLY (the old `jenga` branch, finished and renamed; waiting on "push")
+## No. 128 Timber — shipped 2026-10-04 (`96ef508`), live (the old `jenga` branch, finished and renamed)
 
 **`toys/timber/`** — a tower of 36 wooden blocks with real physics (vendored cannon-es, DECISIONS 2026-08-22). Orbit
 (drag the table), zoom (pinch/scroll), drag a block along its own length to slide it out (either end, below the
@@ -16,8 +16,10 @@ highest complete level), then tap a glowing slot to set it on top (a level fills
 Score = blocks moved; three blocks down = the tower fell. Owner (2026-10-04): **name "Timber"** ("TIMBER!" is the
 fall's callout) and **"jenga" kept off every surface, hidden search keywords included** (trademark, the Tetris/Suika
 rule). Keys: `timber_best` (ticket rule dir `up`, rule only), `timber_sound`. Registered everywhere in the working
-tree (registry, sitemap 131 urls, NL phrase, card CSS + `:not()`, og-gen, ticket rule, cross-promo in all four lists,
-siblings edited locally, NOT committed). The `jenga` branch (`0d01d86`) is superseded once this ships: delete it.
+tree (registry, sitemap 131 urls, NL phrase, card CSS + `:not()`, og-gen, ticket rule, cross-promo in all four lists:
+five-second-game `3a8f7c5`, the-trail-game `8f6e75d`, word-kraven `c45fb55`, all four DEPLOYED bundles carry it).
+**Live-verified**: a block pulled and placed by mouse on onepagetoys.com, newest panel, search ("block tower"),
+featured rotation; IndexNow accepted. The `jenga` branch (`0d01d86`) was deleted locally and on GitHub.
 - **What "finishing" was** (the branch was built in the Steady Hand era and well under the bar): the stylesheet had
   been copied from Steady Hand (its HUD stacked into a tall pill over the tower; rewritten); the level counter read 13
   for 12 levels; a pull needed ~430px of finger travel (now 1:1 along the block's on-screen axis, either direction);
@@ -682,7 +684,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **50 entries, `?v=30` across 50 pages** (Timber added locally 2026-10-04; Checkers before it, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **50 entries, `?v=30` across 50 pages** (Timber added 2026-10-04, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -781,7 +783,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
 - **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless. Owner will test (2026-10-03).
-- **Timber (No. 128): owner play-test + "push"** (then commit the three sibling MoreGames.tsx edits, verify DEPLOYED bundles, IndexNow, delete the `jenga` branch). Feel and sound unjudged.
+- **Timber (No. 128): owner play-test on a phone.** The falling-block rule came from his first play-test; the pull feel, the camera and the sound are otherwise unjudged.
 - ✅ **Chess audio owner-approved 2026-09-23.** Still open: the ladder was verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
