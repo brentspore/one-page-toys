@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-10-04 (the seven-tool "Useful tools round", No. 129-135, built and registered locally, unpushed; share.js v7 tool wording; Timber placement reworked locally, carry it onto the top, unpushed. No. 128 Timber shipped `96ef508`, the old Jenga branch finished, renamed and live-verified; cross-promo in all four DEPLOYED bundles; `jenga` branch deleted. No. 127 Checkers `9993076` before it.)**
+**Last updated: 2026-10-04 (the seven-tool "Useful tools round", No. 129-135, shipped `461b78a` and live-verified; Timber carry-to-place shipped `dd5bfb9`; share.js v7 tool wording. No. 128 Timber `96ef508` and No. 127 Checkers before it.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**128 toys live at onepagetoys.com, 135 in the working tree** (the seven new tools are unpushed). Latest on `main`: `96ef508`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**135 toys, live at onepagetoys.com.** Latest on `main`: `461b78a`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## Useful tools round, No. 129-135 — built 2026-10-04, local, NOT yet pushed
+## Useful tools round, No. 129-135 — shipped 2026-10-04 (`461b78a`), live
 
 Owner: *"I want more tools but they always seem to come out the same"*, then *"I like all 7 tools ideas, build them
 all"* (BACKLOG "Useful tools round"). The fix was a different INPUT and an output you USE, each with its own signature
@@ -18,7 +18,9 @@ sitemap 138 urls, NL phrases, card CSS + `:not()` chain, og-gen entries (new `im
 cards) + `og/<slug>.png`. Tools stay OUT of the cross-promo and carry no ticket rule (no scores). Every page: tool
 chrome copied from Moon Phase, `track.js`, test hook only under `navigator.webdriver`, zero console errors and no
 overflow on Chromium 390 + WebKit 375 in both themes (28-page smoke test). **None of the sound has been heard, and
-nothing touching a mic, a motion sensor, location or iPhone background audio has run on a real phone.**
+nothing touching a mic, a motion sensor, location or iPhone background audio has run on a real phone.** **Live-verified**
+(same smoke test against onepagetoys.com: all seven pages, cards and share images 200, 28 page checks clean, 14 of 14
+search phrases rank the right tool first, All Toys newest panel shows Tuner); IndexNow accepted (138 urls).
 - **No. 135 Tuner** (`tools/tuner/`): mic tuner. Backlit cream needle meter, a three-band strobe that stands still in
   tune, rosewood headstock pegs that play reference tones (exactly tuned Karplus-Strong, allpass solved at the note's
   frequency; bowed tone for violin family), presets for guitar (5 tunings), bass 4/5, uke, violin, viola, cello,
@@ -100,7 +102,7 @@ featured rotation; IndexNow accepted. The `jenga` branch (`0d01d86`) was deleted
   horizon line); soft shadows = four planar passes from jittered lamp positions with a STENCIL so overlaps never
   double-darken; the camera fits the tower and follows its top as it grows.
 - ⚠⚠ **Placement reworked (owner, 2026-10-04: "the put it on top is just one click and sometimes it's a weird
-  placement")** — local, not yet pushed. Three causes, three fixes: (1) **the slots were computed for a PERFECT tower**
+  placement")** — shipped `dd5bfb9`, live-verified (the placement test passes against onepagetoys.com). Three causes, three fixes: (1) **the slots were computed for a PERFECT tower**
   centered on the table, so once the real one had drifted or twisted a block went down centimeters off the real top;
   `freeTopSlots()` now takes a part-built level's center and angle from its own blocks (`levelFrame`), and a new level
   from the level below, turned 90. (2) **A tap took whichever slot center was within 90px**, and the slots are only
@@ -856,7 +858,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **The seven new tools (No. 129-135) are built and registered but UNPUSHED.** After "push": live-verify each page, run IndexNow, then the owner on a real phone: Tuner's mic, Level's sensors and iPhone sign, Sun Path's compass, Sleep Sounds with the screen locked, Hearing Age on headphones, and every tool's sound. Plus the two Hearing Age calls above.
+- **The seven new tools (No. 129-135) are live; owed: the owner on a real phone: Tuner's mic, Level's sensors and iPhone sign, Sun Path's compass, Sleep Sounds with the screen locked, Hearing Age on headphones, and every tool's sound. Plus the two Hearing Age calls above.
 
 - **Checkers (No. 127): owner play-test on a phone.** Feel, the ladder against a human, and the sound are all unjudged.
 - **Shared tickets pill overlaps the "← onepagetoys.com" back link in WebKit at 375x667** (Chess too, so it predates Checkers; Chromium docks it correctly). `dock()` in `assets/tickets.js` measures differently in Safari.
@@ -867,7 +869,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
 - **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless. Owner will test (2026-10-03).
-- **Timber (No. 128): owner play-test on a phone**, now including the reworked carry-to-place (local until the next push). The falling-block rule came from his first play-test; the pull feel, the camera and the sound are otherwise unjudged.
+- **Timber (No. 128): owner play-test on a phone**, now including the reworked carry-to-place (live since `dd5bfb9`). The falling-block rule came from his first play-test; the pull feel, the camera and the sound are otherwise unjudged.
 - ✅ **Chess audio owner-approved 2026-09-23.** Still open: the ladder was verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer
