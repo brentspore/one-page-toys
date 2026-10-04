@@ -418,13 +418,13 @@ function screenRay(sx, sy) {
 }
 
 // ray vs an oriented block
-function rayBlock(ray, b) {
+function rayBlock(ray, b, pad) {
   const q = b.body.quaternion;
   const inv = new CANNON.Quaternion(-q.x, -q.y, -q.z, q.w);
   const rel = new CANNON.Vec3(ray.o[0] - b.body.position.x, ray.o[1] - b.body.position.y, ray.o[2] - b.body.position.z);
   const lo = inv.vmult(rel);
   const ld = inv.vmult(new CANNON.Vec3(ray.d[0], ray.d[1], ray.d[2]));
-  const he = [BL/2, BH/2, BW/2];
+  const he = pad ? [BL/2 + pad[0], BH/2 + pad[1], BW/2 + pad[2]] : [BL/2, BH/2, BW/2];
   const o = [lo.x, lo.y, lo.z], d = [ld.x, ld.y, ld.z];
   let tmin = -Infinity, tmax = Infinity;
   for (let i = 0; i < 3; i++) {
@@ -542,10 +542,13 @@ function drawGhosts(vp, eye, now) {
   gl.depthMask(false);
   bindCube(uB.aPos, uB.aNor);
   const pulse = 0.5 + 0.5 * Math.sin(now / 260);
+  const lit = G.target || G.hoverSlot;
   for (const s of slots) {
-    let m = mMul(mTranslate(s.x, s.y, s.z), mFromQuat(new CANNON.Quaternion().setFromEuler(0, s.yaw, 0)));
+    const on = lit && lit.slot === s.slot;
+    if (lit && !on && G.carrying) continue;          /* while carrying, show only where it will land */
+    let m = mMul(mTranslate(s.x, restHeightAt(s), s.z), mFromQuat(new CANNON.Quaternion().setFromEuler(0, s.yaw, 0)));
     m = mMul(m, mScale(BL, BH, BW));
-    setBlockUniforms(vp, m, held, pulse, 1);
+    setBlockUniforms(vp, m, held, on ? 1 : pulse * 0.6, 1);
     gl.drawArrays(gl.TRIANGLES, 0, cube.count);
   }
   gl.depthMask(true);
@@ -554,22 +557,50 @@ function drawGhosts(vp, eye, now) {
 
 /* Where the held block may go. Strict rules: the top level must be filled to
  * three before a new one is started, so the free slots are always on the
- * current top level unless it is already complete. */
+ * current top level unless it is already complete.
+ *
+ * The slots follow the REAL tower, not an ideal one centered on the table. They
+ * used to be computed for a perfect tower, so once it had drifted or twisted a
+ * little a block went down a few centimeters off the real top: the "weird
+ * placement" (owner, 2026-10-04). A partly built level takes its position and
+ * angle from its own blocks; a new level takes the level below's, turned 90. */
+function frameFrom(cx, cz, yaw, lv) {
+  let lx = Math.cos(yaw), lz = -Math.sin(yaw);
+  const ex = lv % 2 ? 0 : 1, ez = lv % 2 ? -1 : 0;          /* the parity's natural direction */
+  if (lx * ex + lz * ez < 0) { lx = -lx; lz = -lz; }
+  return { cx, cz, yaw: Math.atan2(-lz, lx), ax: -lz, az: lx };   /* (ax, az) = across the level */
+}
+function levelFrame(lv) {
+  const bl = blocks.filter(b => b !== held && b.lv === lv);
+  if (!bl.length) return null;
+  let sx = 0, sz = 0;
+  const ref = bl[0].body.quaternion.vmult(new CANNON.Vec3(1, 0, 0));
+  for (const b of bl) {
+    const a = b.body.quaternion.vmult(new CANNON.Vec3(1, 0, 0));
+    const f = a.x * ref.x + a.z * ref.z < 0 ? -1 : 1;
+    sx += a.x * f; sz += a.z * f;
+  }
+  const f0 = frameFrom(0, 0, Math.atan2(-sz, sx), lv);
+  let cx = 0, cz = 0;
+  for (const b of bl) { cx += b.body.position.x - b.slot * BW * f0.ax; cz += b.body.position.z - b.slot * BW * f0.az; }
+  return frameFrom(cx / bl.length, cz / bl.length, f0.yaw, lv);
+}
 function freeTopSlots() {
   const counts = {};
   blocks.forEach(b => { if (b !== held) counts[b.lv] = (counts[b.lv] || 0) + 1; });
   let lv = G.level;
   if ((counts[lv] || 0) >= 3) lv = lv + 1;
   const taken = new Set(blocks.filter(b => b !== held && b.lv === lv).map(b => b.slot));
-  const rot = lv % 2 === 1;
-  const y = BH / 2 + lv * BH;
+  let f = levelFrame(lv);
+  if (!f) {
+    const below = levelFrame(lv - 1);
+    f = below ? frameFrom(below.cx, below.cz, below.yaw + Math.PI / 2, lv)
+              : frameFrom(0, 0, lv % 2 ? Math.PI / 2 : 0, lv);
+  }
   const out = [];
   for (let k = -1; k <= 1; k++) {
     if (taken.has(k)) continue;
-    out.push({
-      x: rot ? k * BW : 0, y, z: rot ? 0 : k * BW,
-      yaw: rot ? Math.PI / 2 : 0, lv, slot: k
-    });
+    out.push({ x: f.cx + k * BW * f.ax, y: BH / 2 + lv * BH, z: f.cz + k * BW * f.az, yaw: f.yaw, lv, slot: k });
   }
   return out;
 }
@@ -596,9 +627,14 @@ cv.addEventListener("pointerdown", e => {
   if (pointers.size === 2) { drag = { mode: "pinch", d0: pinchDist(), z0: cam.zoom }; return; }
 
   if (held) {
-    // placing: pick the nearest ghost slot to the tap
-    const s = nearestSlot(xy.x, xy.y);
-    if (s) { placeHeld(s); return; }
+    if (G.anim) return;
+    /* press the floating block or a glowing slot to carry it; anywhere else orbits */
+    const ray = screenRay(xy.x, xy.y);
+    const s = slotUnderRay(ray);
+    if (s || rayBlock(ray, held, [0.05, 0.06, 0.05]) >= 0) {
+      drag = { mode: "carry", x0: xy.x, y0: xy.y, moved: false, tapSlot: s };
+      return;
+    }
     drag = { mode: "orbit", x: xy.x, y: xy.y, az: cam.az, el: cam.el };
     return;
   }
@@ -626,6 +662,30 @@ cv.addEventListener("pointermove", e => {
 
   if (!drag) {
     hover = (G.mode === "play" && !held) ? pickBlock(xy.x, xy.y) : null;
+    if (held && !G.anim) {
+      const ray = screenRay(xy.x, xy.y);
+      G.hoverSlot = slotUnderRay(ray);
+      cv.style.cursor = G.hoverSlot || rayBlock(ray, held, [0.05, 0.06, 0.05]) >= 0 ? "grab" : "";
+    } else { G.hoverSlot = null; cv.style.cursor = ""; }
+    return;
+  }
+  if (drag.mode === "carry") {
+    if (!drag.moved && Math.hypot(xy.x - drag.x0, xy.y - drag.y0) < 7) return;
+    drag.moved = true; G.carrying = true; cv.style.cursor = "grabbing";
+    /* the block rides just above the top, under the finger */
+    /* on a touch screen it rides a little above the fingertip, or the thumb hides it */
+    const lift = e.pointerType === "touch" ? 46 : 0;
+    const h = towerTop() + BH / 2 + 0.1, ray = screenRay(xy.x, xy.y - lift);
+    if (Math.abs(ray.d[1]) < 1e-4) return;
+    const t = (h - ray.o[1]) / ray.d[1];
+    if (t <= 0) return;
+    let px = ray.o[0] + ray.d[0] * t, pz = ray.o[2] + ray.d[2] * t;
+    const r = Math.hypot(px, pz);
+    if (r > 1.3) { px *= 1.3 / r; pz *= 1.3 / r; }
+    G.carryPos = [px, h, pz];
+    let best = null, bd = 0.32;
+    for (const sl of freeTopSlots()) { const d = Math.hypot(sl.x - px, sl.z - pz); if (d < bd) { bd = d; best = sl; } }
+    G.target = best;
     return;
   }
   if (drag.mode === "pinch" && pointers.size === 2) {
@@ -660,6 +720,15 @@ cv.addEventListener("pointermove", e => {
 function endPointer(e) {
   pointers.delete(e.pointerId);
   if (!drag) return;
+  if (drag.mode === "carry") {
+    const target = drag.moved ? G.target : drag.tapSlot;
+    G.carrying = false; G.carryPos = null; G.target = null; cv.style.cursor = "";
+    if (target) startPlace(target);
+    else if (drag.moved) say("set it over a glowing slot", 1200);
+    else say("drag it onto the top", 1200);
+    drag = null;
+    return;
+  }
   if (drag.mode === "pull") {
     const b = drag.block;
     if (Math.abs(drag.out) >= PULL_CLEAR) extract(b);
@@ -695,13 +764,16 @@ function project(p) {
   return [(x / w * 0.5 + 0.5) * W, (1 - (y / w * 0.5 + 0.5)) * H];
 }
 
-function nearestSlot(sx, sy) {
-  const slots = freeTopSlots();
-  let best = null, bd = 90;
-  for (const s of slots) {
-    const p = project([s.x, s.y, s.z]);
-    const d = Math.hypot(p[0] - sx, p[1] - sy);
-    if (d < bd) { bd = d; best = s; }
+/* Which glowing slot is under this ray, if any. A tap used to take whichever slot
+   center was within 90px, and the three slots are only 25-35px apart, so it often
+   took the wrong one, and a tap meant to orbit could place the block. The box is
+   padded in height and length (not across, where the slots touch) for fingers. */
+function slotUnderRay(ray) {
+  let best = null, bt = Infinity;
+  for (const sl of freeTopSlots()) {
+    const pseudo = { body: { position: new CANNON.Vec3(sl.x, restHeightAt(sl), sl.z), quaternion: new CANNON.Quaternion().setFromEuler(0, sl.yaw, 0) } };
+    const t = rayBlock(ray, pseudo, [0.05, 0.07, 0]);
+    if (t >= 0 && t < bt) { bt = t; best = sl; }
   }
   return best;
 }
@@ -716,7 +788,7 @@ let pullRest = null;
  * and fell to the table. Support is local, so the measurement has to be too. */
 function restHeightAt(slot) {
   const halfL = BL / 2, halfW = BW / 2;
-  const sRot = slot.yaw !== 0;
+  const sRot = Math.abs(Math.sin(slot.yaw)) > 0.7;
   const sx = sRot ? halfW : halfL;          // slot footprint half-extents
   const sz = sRot ? halfL : halfW;
   let top = 0;                               // the table
@@ -745,9 +817,25 @@ function parkHeld(b) {
   const top = towerTop() + BH / 2;
   const rx = Math.cos(cam.caz), rz = -Math.sin(cam.caz);      /* the camera's right */
   const bob = Math.sin(performance.now() / 420) * 0.012;
-  b.body.position.set(rx * 0.68, top + 0.22 + bob, rz * 0.68);
   const s = freeTopSlots()[0];
-  if (s) b.body.quaternion.setFromEuler(0, s.yaw, 0);
+  const yaw = s ? s.yaw : 0;
+  /* As far right as fits on screen. A fixed 0.68 put it half off the edge of a
+     portrait phone; the narrower the screen, the closer in and higher it floats. */
+  const { vp } = viewProj();
+  const lx = Math.cos(yaw) * BL / 2, lz = -Math.sin(yaw) * BL / 2;
+  let off = 0.68;
+  for (; off > 0.05; off -= 0.07) {
+    const y = top + 0.22 + (0.68 - off) * 0.5;
+    let fits = true;
+    for (const sg of [1, -1]) {
+      const px = rx * off + lx * sg, pz = rz * off + lz * sg;
+      const cx = vp[0]*px + vp[4]*y + vp[8]*pz + vp[12], cw = vp[3]*px + vp[7]*y + vp[11]*pz + vp[15];
+      if (cw <= 0 || Math.abs(cx / cw) > 0.86) { fits = false; break; }
+    }
+    if (fits) break;
+  }
+  b.body.position.set(rx * off, top + 0.22 + (0.68 - off) * 0.5 + bob, rz * off);
+  b.body.quaternion.setFromEuler(0, yaw, 0);
   b.body.velocity.setZero();
   b.body.angularVelocity.setZero();
 }
@@ -866,10 +954,29 @@ function extract(b) {
   b.body.velocity.setZero();
   parkHeld(b);
   G.mode = "placing";
-  say("now put it on top", 1600);
+  say("now drag it onto the top", 1600);
   Audio2.lift(b.f0, 0);
   updateHud();
 }
+
+function yawOf(q) { const a = q.vmult(new CANNON.Vec3(1, 0, 0)); return Math.atan2(-a.z, a.x); }
+function startPlace(slot) {
+  const b = held, p = b.body.position;
+  let dy = slot.yaw - yawOf(b.body.quaternion);
+  while (dy > Math.PI / 2) dy -= Math.PI; while (dy < -Math.PI / 2) dy += Math.PI;   /* a block is symmetric end to end */
+  G.anim = { slot, from: [p.x, p.y, p.z], fromYaw: slot.yaw - dy, t: 0, dur: reducedMotion() ? 1 : 320 };
+  G.hoverSlot = null;
+}
+function stepPlace(dt) {
+  const a = G.anim, b = held;
+  a.t = Math.min(1, a.t + dt * 1000 / a.dur);
+  const e = a.t < 0.5 ? 2 * a.t * a.t : 1 - Math.pow(-2 * a.t + 2, 2) / 2;
+  const restY = restHeightAt(a.slot) + 0.002;
+  b.body.position.set(lerp(a.from[0], a.slot.x, e), lerp(a.from[1], restY, e) + Math.sin(Math.PI * e) * 0.04, lerp(a.from[2], a.slot.z, e));
+  b.body.quaternion.setFromEuler(0, lerp(a.fromYaw, a.slot.yaw, e), 0);
+  if (a.t >= 1) { G.anim = null; placeHeld(a.slot); }
+}
+function reducedMotion() { return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
 
 function placeHeld(slot) {
   const b = held;
@@ -933,6 +1040,7 @@ function checkCollapse() {
 }
 function gameOver() {
   G.mode = "over";
+  G.anim = null; G.carrying = false; G.carryPos = null; G.target = null; G.hoverSlot = null;
   if (held) { const b = held; held = null; b.body.collisionResponse = true; b.body.type = CANNON.Body.DYNAMIC; b.body.mass = 0.25; b.body.updateMassProperties(); }
   if (pulling) { releasePull(pulling); }
   drag = null; hover = null;
@@ -1282,7 +1390,17 @@ function frame(ms) {
     if (G.mode === "play" || G.mode === "placing") checkCollapse();
   }
 
-  if (held) { parkHeld(held); }
+  if (held) {
+    if (G.anim) stepPlace(dt);
+    else if (G.carrying && G.carryPos) {
+      /* over a free slot it snaps into line with it, just above where it will land */
+      const t = G.target, c = G.carryPos;
+      if (t) held.body.position.set(t.x, restHeightAt(t) + 0.07, t.z);
+      else held.body.position.set(c[0], c[1], c[2]);
+      const s0 = t || freeTopSlots()[0];
+      if (s0) held.body.quaternion.setFromEuler(0, s0.yaw, 0);
+    } else parkHeld(held);
+  }
 
   G.shake = Math.max(0, G.shake - dt * 1.6);
   if (world && (G.mode === "play" || G.mode === "placing")) {
