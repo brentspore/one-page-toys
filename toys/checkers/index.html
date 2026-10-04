@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Checkers — One Page Toys</title>
+    <meta name="description" content="Play checkers against six regulars at a country store, from the storekeeper's girl to the county champion. Official rules with forced jumps, or house rules if you'd rather. Hints, and a replay of every game. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/checkers/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#120b06" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Checkers" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Checkers — One Page Toys" />
+    <meta property="og:description" content="Pull up a barrel at the back of the country store. Six regulars will play you, and Old Silas has been county champion for forty years." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/checkers/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/checkers.jpg?v=6948489b" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Checkers — One Page Toys" />
+    <meta name="twitter:description" content="Checkers on a cracker barrel against six country-store regulars. Official forced jumps, hints, and a replay of every game." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/checkers.jpg?v=6948489b" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Checkers",
+        "url": "https://onepagetoys.com/toys/checkers/",
+        "description": "A full game of checkers (American checkers, also called English draughts) against six computer opponents, played on a worn folk-art board on a cracker barrel at the back of a country store. Every official rule is here: black moves first, men move and capture diagonally forward, jumps are compulsory and a multi-jump must be finished, a man that reaches the far row is crowned king and its move ends there, and a game is drawn after forty moves each without a capture or a man moving, or when a position repeats three times. A house-rules switch makes jumps optional. The six opponents climb from Junie, the storekeeper's girl, through the mail carrier, the schoolteacher, a traveling salesman and the county doctor, to Old Silas, county champion forty years running. Each weighs the board differently, and the engine runs entirely in your browser. Play by tapping, dragging or with the keyboard; ask for a hint; and replay the finished game move by move. Free, with no account and no sign-up.",
+        "applicationCategory": "GameApplication",
+        "genre": "Strategy",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas" role="img" aria-label="A checkerboard on a cracker barrel at the back of a country store. Tap or drag a checker to move it, or use the arrow keys and Enter."></canvas>
+
+    <div class="opp" id="opp" hidden>
+      <span class="opp__seal" id="oppSeal"></span>
+      <span class="opp__body">
+        <span class="opp__top">
+          <span class="opp__name" id="oppName">Junie</span>
+          <span class="opp__role" id="oppRole">the storekeeper's girl</span>
+        </span>
+        <span class="opp__say" id="oppSay"></span>
+      </span>
+    </div>
+
+    <div class="moves" id="moves" hidden></div>
+
+    <div class="bar" id="bar" hidden>
+      <span class="turn" id="turn">Your move</span>
+      <button type="button" class="btn" id="btnHint" title="Hint (H)">Hint</button>
+      <button type="button" class="btn" id="btnResign">Resign</button>
+      <button type="button" class="btn btn--go" id="btnNew" title="New game (N)">New game</button>
+    </div>
+
+    <div class="bar bar--replay" id="replay" hidden>
+      <button type="button" class="btn" id="rpStart" title="Start (Home)" aria-label="Back to the start">&#9198;</button>
+      <button type="button" class="btn" id="rpBack" title="Back (←)" aria-label="Back one move">&#9664;</button>
+      <button type="button" class="btn btn--go" id="rpPlay">Play</button>
+      <button type="button" class="btn" id="rpFwd" title="Forward (→)" aria-label="Forward one move">&#9654;</button>
+      <button type="button" class="btn" id="rpEnd" title="End (End)" aria-label="To the end">&#9197;</button>
+      <span class="rp__label"><span id="rpLabel">Start</span><span class="rp__count" id="rpCount"></span></span>
+      <button type="button" class="btn" id="rpDone">Done</button>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound (M)">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">Pull up a barrel</p>
+        <h1 class="panel__title">Checkers</h1>
+        <p class="panel__text">
+          Six regulars at the back of the store will play you, and <b>none of them play alike</b>.
+          Junie grabs whatever's closest. Miss Odette never leaves her back row. Jasper will
+          hand you a free checker, and you should wonder why. <b>Old Silas</b> has been county
+          champion for forty years.
+        </p>
+        <div class="opts">
+          <div class="side-pick" role="group" aria-label="Your color">
+            <button type="button" class="chip chip--black" data-side="black"><i></i>Play black <small>moves first</small></button>
+            <button type="button" class="chip chip--red" data-side="red"><i></i>Play red</button>
+          </div>
+          <button type="button" class="switch" id="forcedBtn" role="switch" aria-checked="true">
+            <span class="switch__track"><span class="switch__dot"></span></span>
+            <span id="forcedLabel">Jumps are compulsory (official rules)</span>
+          </button>
+        </div>
+        <div class="cast" id="cast"></div>
+        <p class="panel__keys">tap a checker, then where it goes &middot; or drag it &middot; arrows + Enter &middot; H hint &middot; N new game &middot; M sound</p>
+      </div>
+    </div>
+
+    <div class="overlay" id="result" hidden>
+      <div class="panel panel--result">
+        <span id="resSeal"></span>
+        <p class="result__line" id="resLine">every checker taken</p>
+        <h2 class="panel__title" id="resTitle">You win</h2>
+        <p class="panel__text" id="resText"></p>
+        <div class="result__btns">
+          <button type="button" class="play-btn" id="btnAgain">Play again</button>
+          <button type="button" class="btn btn--big" id="btnReplay">Replay the game</button>
+          <button type="button" class="btn btn--big" id="btnCast">Pick a new opponent</button>
+        </div>
+        <p class="result__record" id="resRecord"></p>
+        <span data-opt-share></span>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 127</span>
+      <span class="frame__corner frame__corner--tr">Checkers</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hintLine">tap a checker, then tap where it goes</p>
+
+    <script src="../../assets/tickets.js?v=33" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="core.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=6" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=29" defer></script>
+  </body>
+</html>

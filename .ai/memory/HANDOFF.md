@@ -1,12 +1,65 @@
 # Handoff
 
-**Last updated: 2026-10-03 (admin: Claude-written "What to do next" banner `da9525f` + quiet-site crash fix `3197500` + structured-outputs fix `4eec97d`, live, first real read pending the owner's sign-in; Google setup done, path fix + GA `source` → `placement` rename shipped; trailing-slash redirect shipped site-wide. Before that: No. 126 Decant + the /admin page + shared play tracking shipped `da30edf`, owner's updated Decant art `e74d95f`, all live-verified. /admin waits on the owner's Google setup. Jenga drag fix on its branch `0d01d86`).**
+**Last updated: 2026-10-03 (No. 127 Checkers built and registered, LOCAL ONLY, waiting on the owner's play-test and "push". Before that: admin "What to do next" banner `da9525f`, quiet-site fix `3197500`, structured outputs `4eec97d`, all live.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**126 toys, live at onepagetoys.com.** Latest on `main`: `4eec97d`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**126 toys live at onepagetoys.com, No. 127 Checkers built locally.** Latest on `main`: `4eec97d`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+
+## No. 127 Checkers — built 2026-10-03, LOCAL ONLY (not committed; waiting on the owner's play-test and "push")
+
+**`toys/checkers/`** — American checkers (English draughts) on a worn folk-art board on a cracker barrel at the back of
+a country store, the BACKLOG "Deep #1" pick after the admin data showed deep games hold people (Chess 5:50, Meld 5:37).
+Owner picks: look **Country store**, captures **official + a toggle** (forced jumps by default, "Jumps are optional
+(house rules)" switch on the start panel, `checkers_forced`), extras **Hint** and **Replay at the end** (no undo, no
+two-player). Five files: `core.js` (rules, loaded by page AND worker), `engine.js` (Worker), `audio.js`, `script.js`,
+`styles.css`. Keys: `checkers_beaten` (ticket rule dir `up`, rule only), `checkers_defeated`, `checkers_wins|losses|
+draws`, `checkers_side` (black moves first; the player picks), `checkers_forced`, `checkers_sound`. Registered
+everywhere in the working tree: registry, sitemap (130 urls), NL phrase, card CSS + `:not()`, og-gen entry, ticket rule,
+cross-promo in all FOUR lists (siblings edited locally, NOT committed: five-second-game, the-trail-game, word-kraven).
+- **Rules verified by perft**: 7 / 49 / 302 / 1469 / 7361 / 36768 / 179740 / 845931 / 3963680 through depth 9, plus spot
+  checks (men never capture backward, crowning ends the move, a king's capture loop may land on its own start square).
+- **Six regulars** (Junie the storekeeper's girl, Hal the mail carrier, Miss Odette the schoolteacher, Jasper Quill the
+  traveling salesman, Doc Whitlow, Old Silas the county champion), each a depth/time/temperature/blunder setting plus
+  symmetric eval weights. **Ladder measured engine-vs-engine, adjacent pairs, material-adjudicated at a 200-ply cap**:
+  Hal > Junie 6/6, Odette > Hal 5/6, Jasper > Odette 6.5/8, Doc > Jasper 3.5/4, Silas > Doc 4/4. ⚠ Jasper first tied
+  Odette 3-3; fixed by Odette depth 5 (was 6) and Jasper depth 9 / temp 9. Old Silas converts 2K v 1K out of the double
+  corner and 3K v 2K; Doc can run out the 40-move clock on 2K v 1K, which is fine one rung down.
+- ⚠ **The capture search has no stand-pat when jumps are forced** (a pending capture is compulsory, so the position is not
+  quiet); with jumps optional it is a normal quiescence. Junie searches without it on purpose.
+- ⚠ **The engine needs the game history for repetition** (`past`: positions since the last irreversible move). A test
+  harness that omitted it watched a strong player blunder a won ending into a repetition loop.
+- ⚠⚠ **Selection bug worth remembering: read "was it already selected?" BEFORE selecting.** Pointer-down selected the
+  checker and then recorded `wasSel`, which was therefore always true, so the pointer-up deselected it: no tap move ever
+  registered. Keyboard play hid it.
+- ⚠ **Replay steps end when the captured checkers LAND, not when the hop ends.** A Forward click during the flight
+  started the next step and the old step's cleanup then wiped the board mid-hop (a null `mover` error). Steps now carry a
+  token and a busy flag; clicks during a step are queued.
+- **Crowning is physical**: the other side hands you one of YOUR captured checkers off their stack and it drops on top
+  (from above if they hold none), then the counter bell rings and "King me!". Captured stacks on the barrel head: yours
+  near right, theirs far left; counts are incremental live and snapshotted per ply for the replay.
+- **Look**: perspective camera (`TILT` 0.68) like Chess, everything static baked once (room with shelves, potbelly
+  stove, lamp, barrel with staves and hoops, painted board with "CHECKERS" lettered flat on the rim); per frame only
+  marks, checkers, stove flicker and dust. Checkers are baked sprites (fluted rim, two cut rings, lacquer, gilded crown).
+- **Audio, measured** (OFFLINE render, see below): place 0.23, crown 0.24, win 0.28, lose 0.27, draw 0.28, stack clink
+  0.13, deny knock 0.12, hint 0.10, slide 0.10, select 0.07 (soft on purpose); bed RMS 0.024. No NaN. Never heard.
+- ⚠⚠ **Headless real-time audio is DEAD on this Mac right now**: `ac.currentTime` stays at 0.005 even for a bare
+  `new AudioContext()`, so every analyser reads 0.000. It worked earlier the same day (an output-device change is the
+  likely cause). Measure instead by replacing `window.AudioContext` in an init script with an `OfflineAudioContext`
+  whose `currentTime` is a getter you set per slot, scheduling each voice in its own 2.6s slot, then `startRendering()`
+  and take peaks per slot (`scratchpad/ck/levels-off.cjs` pattern).
+- Verified headless: full games through real clicks and drags at 1280 and 390 wide (hint-driven bot: wins, multi-jumps,
+  4-8 crownings, drags, replay with 8 rapid Forward clicks landing exactly on move 8), WebKit at 375 (tap highlight off,
+  no overflow, a tapped move plays), search ("checkers", "draughts", "king me", "board game"), All Toys newest panel.
+- **Owner's key art** (2026-10-03, `featured/checkers.webp`, source `_sources/checkers.png`, `TITLE` 0) is in the featured
+  pool (39) and, per DECISIONS 2026-10-03, is the gallery card (`cards/checkers.webp`) and share image
+  (`og/checkers.jpg`, 287KB), built by `build-art-assets.cjs`. The owner replaced a first piece (a marble board in a
+  study, which did not match the toy) with one of the country store itself: hanging CHECKERS sign, stove, lantern,
+  the green-and-mustard board on the barrel. Never deployed before the swap, so the featured `?v` was not bumped.
+  `scripts/poses/checkers.js` (hint-driven real input vs Jasper) stays as the gameplay-still pose if the art is dropped.
+- Test handle `window.__checkers` (state + square centers) exists only under `navigator.webdriver`.
 
 ## No. 126 Decant — shipped 2026-10-03 (`da30edf`, art `e74d95f`), live
 
@@ -578,7 +631,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **48 entries, `?v=28` across 48 pages** (Decant added 2026-10-03, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **49 entries, `?v=29` across 49 pages** (Checkers added locally 2026-10-03; Decant before it, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -637,9 +690,9 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=129` (8 pages) / `styles.css?v=128` (9 hub/store pages); **`tickets.js?v=32` across all 135 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=28` (48 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (126 toy and tool pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=130` (8 pages) / `styles.css?v=129` (9 hub/store pages); **`tickets.js?v=33` across all 136 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=29` (49 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (126 toy and tool pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
-**Featured art** — the home panel ROTATES bespoke key art, one of **38** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
+**Featured art** — the home panel ROTATES bespoke key art, one of **39** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - **Live since `f5767d8` (2026-10-03).** ⚠ **Adding art is THREE steps** — save the source to `_sources/<slug>.png` and the `.webp` (see that folder's README), add the slug to `FEATURED_ART` in `main.js`, then add a `TITLE` position and run `node scripts/build-art-assets.cjs <slug> --sheet /tmp/s.png` (DECISIONS 2026-10-03): it builds the toy's card (`cards/<slug>.webp`) and share image (`og/<slug>.jpg`), rewrites its `.card__preview` rule and its page's `og:image`/`twitter:image`. Look at the sheet: the title must show in the narrowest card, the widest card and the share image. Bump `styles.css?v=` on the 9 hub pages.
   - ⚠ **`sips --cropOffset` is IGNORED** (sips always crops from the centre); the script crops with `cwebp -crop`, which is exact. A "top-anchored" crop that came out centred is this.
   - ⚠ **Kept on purpose:** `cards/pool.png` and `cards/nova-coil.png` (the Games category share image in `scripts/og-cat.html` is built from them), `og/shuriken-night.png` (the excluded `shuriken-night-visual-pass` sandbox points at it) and `og/tiny-across.jpg` (owner's hand crop; the script skips it). Every other superseded card/OG PNG of an art toy was deleted. Do not run `gen-card`/`gen-og` for an art toy: their PNGs would be unused.
@@ -668,6 +721,8 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
+- **Checkers (No. 127): owner play-test + "push"** (then commit the three sibling MoreGames.tsx edits, verify the DEPLOYED bundles, IndexNow). Feel, the ladder against a human, and the sound are all unjudged.
+- **Shared tickets pill overlaps the "← onepagetoys.com" back link in WebKit at 375x667** (Chess too, so it predates Checkers; Chromium docks it correctly). `dock()` in `assets/tickets.js` measures differently in Safari.
 - ✅ **Jettison, Meld and Trench Runner Cinematic all owner-approved on a phone 2026-10-03** ("all 3 are great"). Still open from Jettison: whether "block jam" goes in the hidden search keywords (currently out).
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).

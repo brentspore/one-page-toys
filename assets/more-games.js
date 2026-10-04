@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Checkers",
+      "tagline": "Beat the county champ",
+      "url": "https://onepagetoys.com/toys/checkers/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23160d07'/><rect x='3' y='3' width='13' height='13' fill='%23cdb07a'/><rect x='16' y='3' width='13' height='13' fill='%232b4433'/><rect x='3' y='16' width='13' height='13' fill='%232b4433'/><rect x='16' y='16' width='13' height='13' fill='%23cdb07a'/><rect x='2.5' y='2.5' width='27' height='27' fill='none' stroke='%236a1f15' stroke-width='1.4'/><ellipse cx='22.5' cy='11.4' rx='5.3' ry='4.6' fill='%235e0f09'/><ellipse cx='22.5' cy='9.8' rx='5.3' ry='4.6' fill='%23d0412f'/><ellipse cx='22.5' cy='9.8' rx='3.4' ry='2.9' fill='none' stroke='%237a160e' stroke-width='0.8'/><ellipse cx='21.2' cy='8.6' rx='1.6' ry='0.9' fill='%23ffd2c2' opacity='.45'/><ellipse cx='9.5' cy='25' rx='5.3' ry='4.4' fill='%23050404'/><ellipse cx='9.5' cy='23.6' rx='5.3' ry='4.4' fill='%232a211c'/><ellipse cx='9.5' cy='22.2' rx='5.3' ry='4.4' fill='%23050404'/><ellipse cx='9.5' cy='20.8' rx='5.3' ry='4.4' fill='%233b3029'/><path d='M6.5 22 V18.9 L8 20.3 L9.5 17.9 L11 20.3 L12.5 18.9 V22 Z' fill='%23e6b456'/></svg>",
+      "initial": "C",
+      "slug": "checkers"
+    },
+    {
       "name": "Decant",
       "tagline": "Sort the glowing potions",
       "url": "https://onepagetoys.com/toys/decant/",

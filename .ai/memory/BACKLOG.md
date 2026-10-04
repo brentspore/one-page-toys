@@ -34,13 +34,13 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ### Daily #2 — Cryptogram (own domain + practice feeder here)
 
-**Why it matters:** Numbers map consistently to letters and you decode the phrase; there is exactly one right answer, difficulty is comparable between players, and the share can report mistakes or time **without leaking a single letter**. `cryptogram` returns nothing in the catalogue — the only near-neighbour is Aurebesh Translator, which is a transliterator, not a puzzle. A classic with real standing search demand. Category `game`/word.
+**Why it matters:** Numbers map consistently to letters and you decode the phrase; there is exactly one right answer, difficulty is comparable between players, and the share can report mistakes or time **without leaking a single letter**. `cryptogram` returns nothing in the catalogue — the only near-neighbor is Aurebesh Translator, which is a transliterator, not a puzzle. A classic with real standing search demand. Category `game`/word.
 
 **When to revisit:** After Numbers Target, or instead of it if a word game is preferred over an arithmetic one.
 
 **Notes:** Spotted 2026-08-23 in the same review (cyphrgame.com is a live example, laid out as a pyramid where each row is a word). Second-ranked of that set.
 - ⚠ **ROUTE VIA `new-feeder-game`** per the same rule as Daily #1.
-- **Generable, so no daily authoring:** the only content needed is a phrase list; the substitution is randomised per day. That keeps it in the same "generate and screen" family as Word Kraven and Numbers Target.
+- **Generable, so no daily authoring:** the only content needed is a phrase list; the substitution is randomized per day. That keeps it in the same "generate and screen" family as Word Kraven and Numbers Target.
 - **Design the difficulty deliberately:** letter-frequency crib, a starting letter or two revealed, and a cap on wrong guesses (Cyphr allows 26). The interesting knob is how much of the alphabet is pre-filled — too little and it is a chore, too much and it solves itself.
 - **Feeder here** = unlimited practice edition, same checklist as Daily #1.
 
@@ -71,6 +71,182 @@ Items in this file follow the structure below so that any AI tool or human editi
 - **NYT Games** — the reference set, not a target. Of them, **Letter Boxed** and **Pips** are the two whose mechanics are least cloned elsewhere if an original take is ever wanted.
 - ⚠ **The filter that produced this split is worth keeping: a daily works for this network when the puzzle can be GENERATED AND SCREENED algorithmically.** Anything needing authored content each day is a different kind of commitment and should be judged as one.
 - ⚠ **Two of the eight could not be assessed: `playpocketpuzzles.com` and `wasthatbefore.com` are JS-rendered and only their titles were readable.** Their mechanics are unverified — look at them in a browser before acting on either.
+
+---
+
+### Deep sit-down round — why these, and the ranking (2026-10-03)
+
+**Why it matters:** The first real analytics (the admin page, 28 days to 2026-10-03) show the toys people stay with are the deep ones: **Chess 5:50 average per visitor, Meld 5:37, Barkeep 3:05**, against under a minute for most of the catalog. Chess holds people with a real opponent that has personality, Meld with a replayable run and music, Barkeep with a tool you browse. Claude's own read on the admin page said the same thing ("build more deep, sit-down games like Chess"). The entries tagged **Deep** below are the strongest candidates for that lane, in rank order.
+
+**When to revisit:** Whenever the next build is open. Check the admin page first: if the long-session pattern holds once the owner's own test visits wash out, this lane is the priority.
+
+**Notes:**
+- **Ranking logic:** board games against an AI first, because Chess proved the format and they reuse its whole architecture (one rules core loaded by both the page and a Worker engine, a personality ladder, keyboard play that doubles as the test harness, perft-style rule tests). Then the deep solitaires on the existing card and tile foundations, then two tools in Barkeep's mold, then one creative builder.
+- ⚠ **Small numbers:** Chess had 28 opens and Meld 27, and the owner's testing is in them. A direction, not proof.
+- **Daily check** (DECISIONS 2026-08-16): none of these qualifies. Results are wins, times or scores against an opponent or a random deal, which nobody shares. All are toys or tools here.
+- **One-sitting rule** (DECISIONS 2026-07-03): every one fits a single sitting (a game of 5-20 minutes, a browse); nothing needs saved progress beyond a `localStorage` best or ladder rung.
+- Already on the list and also in this lane: Sudoku (#6), Nonogram (#5), the Tower Defense MVP.
+
+---
+
+### Deep #1 — New toy: Checkers vs AI — BUILT as No. 127 Checkers (2026-10-03); see HANDOFF
+
+**Why it matters:** The cheapest win in the lane. Chess's whole stack carries straight over (rules core shared with a Worker engine, alpha-beta with a personality ladder, the 3D board camera, the keyboard harness), and checkers has enormous evergreen search demand ("play checkers online"). A game runs 10-15 minutes. Category `game`.
+
+**When to revisit:** Next build. The smallest of the board games.
+
+**Notes:**
+- **Rules:** American checkers / English draughts on 8x8. Men move diagonally forward; **captures are mandatory** and multi-jumps must be finished; a man reaching the far row is crowned and the move ends there. ⚠ Mandatory capture is the rule casual players forget AND the rule that makes the game: pulse the pieces that must take rather than silently refusing other moves. A "captures optional" house-rules toggle is a common ask.
+- **Engine:** alpha-beta with quiescence on captures. ⚠ Carry over the Chess lessons: a FULL window for every root move if personalities read scores, judge the ladder by adjudicated material, quiescence is the difficulty lever. Kings can shuffle forever: draw on 40 moves without a capture or man move, and on threefold repetition.
+- **Ladder:** 5-6 named opponents like Chess; `checkers_beaten`, ticket rule dir `up`.
+- **Look:** its own world, not Chess's palette (lacquered wood and bone, or river stones on slate). A king is a stacked piece with a visible crown ring.
+- **Audio:** modal wood or stone clacks per the house recipe; a multi-jump as a quickening chain of hits; a crowning chime.
+- Generic name, no trademark issue ("Checkers", "Draughts").
+
+---
+
+### Deep #2 — New toy: Backgammon vs AI
+
+**Why it matters:** Dice plus real strategy: luck keeps it friendly, decisions keep it deep. Huge audience, 10-20 minute games, and the physical set is gorgeous (inlaid board, stacked checkers, dice cups). The Dice Roller already has 3D dice. Category `game`.
+
+**When to revisit:** After Checkers, or first if dice appeal more.
+
+**Notes:**
+- **Rules:** 15 checkers each, the bar, bearing off, doubles move four, and **you must use both dice if you can, or the larger one if only one fits** (the rule everyone gets wrong). Gammons and backgammons score in a short match (3 or 5 points fits one sitting). Doubling cube optional and off by default; it confuses newcomers.
+- **AI:** no deep search needed. A 1-ply evaluation of every legal play for the roll, scored by a hand-tuned position function (pip count, exposed blots, made points, primes, anchors), plays decently; 2-ply expectimax over the 21 rolls for the stronger personalities, in a Worker. ⚠ The move generator (bear-off, "use both dice") must be exact; test it like perft.
+- **Input:** tap a checker then a lit destination, or drag; forced moves auto-play; undo within the turn.
+- **Audio:** dice rattling in a cup and tumbling on wood, checkers sliding and clacking, a stacked click when landing on your own point.
+- **Look:** inlaid wood and felt, or a modern stone set; offer both via AskUserQuestion. Ticket rule on matches won.
+
+---
+
+### Deep #3 — New toy: Go (9x9) vs AI
+
+**Why it matters:** The deepest game there is, on its smallest board, with the most beautiful set (slate and shell stones on a wooden board, and that iconic stone snap). A 9x9 game takes 10-15 minutes. A large, curious audience has never had an approachable way in. Category `game`.
+
+**When to revisit:** Once Checkers proves the board-game lane. ⚠ The riskiest board game here: AI strength and end-of-game scoring.
+
+**Notes:**
+- **AI:** Monte Carlo tree search with light playouts in a Worker (no neural net, no deps). On 9x9, a few thousand playouts a move gives a beginner-to-casual opponent, which is the audience. **Handicap stones are the difficulty ladder** (more natural to Go than named personalities).
+- ⚠ **Scoring is the hard part:** area (Chinese) scoring. After both pass, estimate dead stones from Monte Carlo ownership (a stone that loses in most playouts is dead), show the territory map, and let the player tap groups to toggle before confirming. Ko via positional superko (no repeating any earlier position).
+- **Teaching:** a short first-game overlay (capture by surrounding; two eyes live) is essential. Go is the one game here most people don't know.
+- **Audio is the selling point:** the stone snap is a sharp slate-on-wood click with a short woody body (modal), plus a soft hand lift and place; captures clatter gently into a lid.
+- Name: "Go" (generic); Weiqi and Baduk go in the NL keywords.
+
+---
+
+### Deep #4 — New toy: Mancala vs AI
+
+**Why it matters:** The most tactile board game there is: scoop a handful of glass beads and sow them pit by pit. Short games (5-10 minutes) with real depth, ancient and generic, and the sound can be the star. Category `game`.
+
+**When to revisit:** Any board-game round; a small build.
+
+**Notes:**
+- **Rules:** Kalah (6 pits, 4 stones each; an extra turn when your last stone lands in your store; capture from your own empty pit). Oware (abapa) as a second ruleset for depth.
+- **AI:** alpha-beta is easy and strong (tiny branching factor); personalities via depth and noise.
+- **Animation:** sow stone by stone with a hand-like arc; each bead settles individually in its pit, with a count toggle.
+- **Audio:** each bead dropping into a wooden cup (modal), its pitch shifting with how full the pit is, which is what real stones do; captures pour.
+- **Look:** carved hardwood with glass beads, or stone on stone.
+
+---
+
+### Deep #5 — New toy: Reversi vs AI
+
+**Why it matters:** A minute to learn, a lifetime to master; a game takes 5-10 minutes, and the big swing flips are a great visual and audio moment. Alpha-beta plays it very well, so the ladder can run from gentle to brutal. Category `game`.
+
+**When to revisit:** Any board-game round; the smallest engine after Mancala.
+
+**Notes:**
+- ⚠ **"Othello" is a trademark (MegaHouse); the game is "Reversi".** Keep "othello" off every surface, hidden keywords included (the Tetris and Suika precedent).
+- **Engine:** alpha-beta on mobility, corners, stability and parity; solve the endgame exactly over the last ~14 empty squares. Personalities as in Chess.
+- **Flips** ripple outward from the placed disc, staggered, each a coin-like 3D turn; a big capture should read as a wave.
+- **Audio:** a disc snap per flip, rising in pitch along the ripple.
+
+---
+
+### Deep #6 — New toy: Mahjong Solitaire (tile matching)
+
+**Why it matters:** One of the most-searched casual games anywhere, and a real sit-down: a layout is 10-20 minutes of calm scanning. Carved tiles are a gift to the visual bar. Category `game`.
+
+**When to revisit:** Next puzzle or cozy round.
+
+**Notes:**
+- **Rules:** 144 tiles in a layered layout; remove matching pairs of FREE tiles (nothing on top, and an open left or right side). Seasons and flowers match within their group.
+- ⚠ **Random deals are often unwinnable. Generate in REVERSE:** fill the layout from empty by placing each pair only where both tiles would be free at that moment, so the reverse order is a guaranteed solution (the Circuit and Threads trick). Hint, plus a shuffle that re-deals the remaining tiles solvably.
+- **Look:** thick ivory or jade tiles with carved, inked faces drawn ourselves (dots, bamboo, characters, winds, dragons), real stack depth and shadow, free tiles subtly lit.
+- ⚠ "Mahjong" is generic; **"Shanghai" (Activision) is not**: keep it off every surface.
+- **Audio:** the bone-and-resin tile click (modal), a soft chime per pair. Best time per layout, ticket rule dir `down`.
+
+---
+
+### Deep #7 — New toy: Hearts vs three AIs
+
+**Why it matters:** The classic sit-down card game: a game to 100 takes 15-20 minutes, and people play hand after hand. Big evergreen search demand ("hearts card game"). The card foundation (Solitaire, Blackjack, Video Poker) already does the rendering. Category `game`.
+
+**When to revisit:** After Pyramid, or any card round.
+
+**Notes:**
+- **Rules:** pass three cards (left, right, across, hold), the 2 of clubs leads, hearts can't lead until broken, the queen of spades is 13, and shooting the moon gives everyone else 26.
+- **AI:** rule-based play plus light card counting (tracking voids, guarding against the queen) makes fun opponents. Give the three seats personalities (cautious, aggressive, moon-shooter) with names and small portraits; that's where Chess's character comes from.
+- ⚠ **Phone layout:** four hands on a small screen. Show only yours; the others are card backs at the edges, and tricks sweep to the winner.
+- **Audio:** card flicks, the trick sweep, a sting when someone takes the queen.
+
+---
+
+### Deep #8 — New toy: FreeCell and Spider (the deep solitaires)
+
+**Why it matters:** FreeCell is pure skill (almost every deal is winnable); Spider is the long-session one. Both cost little on top of the card foundation and Solitaire's win cascade, and both have very large search demand. Category `game`.
+
+**When to revisit:** Any quick-win card round; pairs naturally with Pyramid.
+
+**Notes:**
+- **FreeCell:** the classic numbered deals come from a known, public generator (Microsoft's LCG; deal 11982 is the famous unwinnable one), so "Deal #N" links work and players can trade deals. Supermoves (moving a run sized by free cells and empty columns) must be computed exactly. A solver in a Worker powers hints and checks winnability.
+- **Spider:** 1, 2 and 4 suits; deal from stock; finished runs fly off.
+- Two pages or one with a mode switch: decide at build time (two pages are two search entries).
+- ⚠ Check the name "FreeCell" before shipping. It's used generically everywhere, but confirm no live mark is enforced.
+
+---
+
+### Deep tool #1 — New tool: Pantry (what can I cook tonight)
+
+**Why it matters:** Barkeep's sibling for food, and Barkeep is the only tool holding people (3:05 average). Tick what's in your kitchen; see what you can cook now, what's one ingredient away, and the single item that would unlock the most. The payoff: dinner solved from what you already have. Category `utility`.
+
+**When to revisit:** Next tool round.
+
+**Notes:**
+- Same architecture as Barkeep: a recipe file keyed to a fixed ingredient list, staples that never count as missing (salt, oil, pepper), "best next ingredient", deep links per recipe, a shopping list that shares as text.
+- ⚠ **The content is the build:** ~120-150 home recipes in OUR OWN wording (never paste method text from recipe sites), with servings and time; validate with Barkeep's node one-liner pattern.
+- ⚠ **No affiliate or grocery links** (DECISIONS 2026-06-11; the Barkeep precedent).
+- Filters that matter: under 30 minutes, vegetarian, one pot.
+
+---
+
+### Deep tool #2 — New tool: Night Sky Tonight
+
+**Why it matters:** Golden Hour tells you to go shoot; this tells you to go look up. Which planets are up tonight and where, the moon, the bright stars, any meteor shower peaking. It sits in the family with Moon Phase and Golden Hour, and it's the kind of page people explore at length. Category `utility`.
+
+**When to revisit:** Next tool round; reuse Moon Phase's chrome.
+
+**Notes:**
+- **Everything computed offline:** planet positions from low-precision orbital elements (Paul Schlyter's method or Meeus; well under a degree, plenty for "look southeast, 30 degrees up"), rise and set times, a ~300-star bright-star catalog, the meteor shower calendar. Location from the browser with a city fallback. No API keys, no network.
+- **Output:** a sky dome for the observer's horizon at a chosen time (scrub through the evening), led by one headline ("Jupiter rises in the east at 9:40 PM, the brightest thing in the sky").
+- ISS passes would need live orbital data: leave them out.
+
+---
+
+### Deep #9 — New toy: Little Harbor (tap-to-build town)
+
+**Why it matters:** A creative toy people lose half an hour in: tap the water to raise a building, tap again to stack, and the town arranges itself into rooftops, arches, stairs and gardens. Every result is screenshot-worthy, and the URL can hold the whole town for sharing. The one creative entry in this round. Category `visual`.
+
+**When to revisit:** When the owner wants a showpiece. The biggest build on this list.
+
+**Notes:**
+- Genre reference: Townscaper (Oskar Stålberg). ⚠ Our own look, name and language; don't copy its palette or trade dress (a snowy alpine village, a desert terrace town, or a floating island).
+- **Core:** a grid where each cell holds a height stack, and tile shapes are chosen from neighbor rules (marching-squares/cubes auto-tiling), so walls, corners, roofs and arches appear by themselves. An irregular grid is Townscaper's magic; a square or hex grid is the safe start.
+- **3D:** needs real depth: raw WebGL with a fixed orbiting camera, soft shadows and water (the 3D direction decision: raw WebGL, no Three.js).
+- **Share:** the grid in the URL hash, plus an image share through `OPT_SHARE_IMAGE`.
+- **Audio:** soft wooden placement taps pitched by height, gulls, wind and water, a little chime when an arch or garden forms.
+- ⚠ **Scope:** big. MVP: one palette, square grid, five tile families.
 
 ---
 
@@ -140,8 +316,8 @@ Items in this file follow the structure below so that any AI tool or human editi
 **When to revisit:** Next puzzle round. Small scope — the generator is the only real work and it is easy (see notes).
 
 **Notes:** A grid of tiles, each carrying a fragment of wire (end-stub, elbow, T, straight, cross). Tap a tile to rotate it 90°. Solve by rotating every tile until all wire fragments join into one closed network with no loose ends, at which point current flows from the source and the whole board lights.
-- ⚠ **Generate the SOLVED board first, then scramble the rotations.** Building a random tile soup and checking solvability is the hard way round and mostly produces unsolvable boards. Grow a random spanning tree over the grid, derive each cell's tile shape from which neighbours it connects to, then randomly rotate every tile. Always solvable, any size, no solver required.
-- **Design bar:** unlit wire is a dull etched channel; as segments join the source, current CRAWLS along them (animated, not an instant recolour) with a travelling glow head, so partial progress is visible and rewarding. Solved = a bloom across the whole board. Wrap toggle (edges connect around) as a harder mode.
+- ⚠ **Generate the SOLVED board first, then scramble the rotations.** Building a random tile soup and checking solvability is the hard way round and mostly produces unsolvable boards. Grow a random spanning tree over the grid, derive each cell's tile shape from which neighbors it connects to, then randomly rotate every tile. Always solvable, any size, no solver required.
+- **Design bar:** unlit wire is a dull etched channel; as segments join the source, current CRAWLS along them (animated, not an instant recolor) with a travelling glow head, so partial progress is visible and rewarding. Solved = a bloom across the whole board. Wrap toggle (edges connect around) as a harder mode.
 - **Audio:** a soft relay click per rotation with pitch tied to how much of the network is now live, a rising hum as coverage grows, and a satisfying power-on swell at completion.
 - Best time per size in `localStorage`; ticket rule (dir `down`). Real card + OG; full pipeline.
 ---
@@ -187,7 +363,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 **Notes:** A 6×6 tray of blocks that slide only along their own axis; free the target block through the gap in one wall. **⚠ Rush Hour is a ThinkFun trademark — the sliding-block genre is not.** Use our own name, art and framing (a foundry, a log jam, an ice floe — offer options via AskUserQuestion), never their car/traffic dress.
 - Levels: hand-author a set, or generate by breadth-first search from random configurations and keep boards whose minimum solution is long enough to be interesting. The BFS approach doubles as the "minimum moves" par score, which is what makes it replayable.
-- **Design bar:** heavy blocks with real weight — they resist, then slide with momentum and clunk against neighbours. Move counter against par.
+- **Design bar:** heavy blocks with real weight — they resist, then slide with momentum and clunk against neighbors. Move counter against par.
 - Best moves per level; ticket rule. Real card + OG; full pipeline.
 ---
 ### Puzzle #8 — New toy: Tangram
