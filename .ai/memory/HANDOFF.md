@@ -1,19 +1,86 @@
 # Handoff
 
-**Last updated: 2026-10-04 (No. 128 Timber shipped `96ef508`, the old Jenga branch finished, renamed and live-verified; cross-promo in all four DEPLOYED bundles; `jenga` branch deleted. No. 127 Checkers `9993076` before it.)**
+**Last updated: 2026-10-04 (the seven-tool "Useful tools round", No. 129-135, built and registered locally, unpushed; share.js v7 tool wording; Timber placement reworked locally, carry it onto the top, unpushed. No. 128 Timber shipped `96ef508`, the old Jenga branch finished, renamed and live-verified; cross-promo in all four DEPLOYED bundles; `jenga` branch deleted. No. 127 Checkers `9993076` before it.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**128 toys, live at onepagetoys.com.** Latest on `main`: `96ef508`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**128 toys live at onepagetoys.com, 135 in the working tree** (the seven new tools are unpushed). Latest on `main`: `96ef508`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+
+## Useful tools round, No. 129-135 — built 2026-10-04, local, NOT yet pushed
+
+Owner: *"I want more tools but they always seem to come out the same"*, then *"I like all 7 tools ideas, build them
+all"* (BACKLOG "Useful tools round"). The fix was a different INPUT and an output you USE, each with its own signature
+object. Built by seven parallel builder agents, each writing only its own `tools/<slug>/` (+ `scripts/poses/<slug>.js`
+and `assets/cards/<slug>.png`); shared registration done after, serially: registry (newest first, Tuner on top),
+sitemap 138 urls, NL phrases, card CSS + `:not()` chain, og-gen entries (new `imgW`/`imgH` motif helpers for non-square
+cards) + `og/<slug>.png`. Tools stay OUT of the cross-promo and carry no ticket rule (no scores). Every page: tool
+chrome copied from Moon Phase, `track.js`, test hook only under `navigator.webdriver`, zero console errors and no
+overflow on Chromium 390 + WebKit 375 in both themes (28-page smoke test). **None of the sound has been heard, and
+nothing touching a mic, a motion sensor, location or iPhone background audio has run on a real phone.**
+- **No. 135 Tuner** (`tools/tuner/`): mic tuner. Backlit cream needle meter, a three-band strobe that stands still in
+  tune, rosewood headstock pegs that play reference tones (exactly tuned Karplus-Strong, allpass solved at the note's
+  frequency; bowed tone for violin family), presets for guitar (5 tunings), bass 4/5, uke, violin, viola, cello,
+  chromatic pitch pipe, A4 415-466. `pitch.js` (pure detector) tested on 13,008 frames B0-E6: <1 cent clean, <3 noisy,
+  zero octave errors; tuned a full guitar end to end through Chromium's fake mic. ⚠ The tuner hears its own reference
+  tones (echo cancellation off), so it ignores input 1.3s after a peg tap. ⚠ A fake mic in Playwright needs
+  `permissions: ["microphone"]` on the context or getUserMedia hangs. ⚠ Remove only the MEAN from a short window,
+  never a fitted line (bent B0 by 11 cents). Keys `tuner_kind|tuning_guitar|tuning_bass|ref|pipe_oct`.
+- **No. 134 Sleep Sounds** (`tools/sleep-sounds/`): eight mixable synthesized layers (brown/pink/white noise, rain,
+  box fan, waves, fire, far thunder) from an AudioWorklet (`engine.js`), six presets, 8s fade-in, sleep timer that
+  fades over a quarter of its length, Dim mode, a night window that follows the mix (lightning flashes a beat before
+  each roll). No loop anywhere (max autocorrelation 0.07 out to 140s). Presets measure -30 to -34 dBFS RMS at the
+  quiet default. ⚠⚠ **iPhone background audio:** routing Web Audio through a MediaStream into `<audio>` does NOT help;
+  what works (iOS 17.5+) is `navigator.audioSession.type = "playback"` plus a looping near-silent `<audio>` started in
+  the tap, with every event scheduled on the audio thread (page timers stop when locked). Unverified on a real phone.
+  ⚠ Normalize a convolver IR to unit ENERGY; DynamicsCompressor adds ~3.5dB auto makeup; a brickwall compressor still
+  passed 1.09 peaks, so a WaveShaper soft clip follows it. Share = `#mix=` link. Keys `sleepsounds_*`.
+- **No. 133 Settle Up** (`tools/settle-up/`): group trip splitter. Receipt tape for the expenses, a felt card table
+  with chip tokens and coin-carrying arrows for the payments, an "ALL SQUARE" stamp when the last one is ticked off.
+  Equal or by-shares splits in integer minor units, 20 currencies, the TRUE minimum number of payments (bitmask DP
+  over zero-sum groups, greedy past ~18 people). **The whole trip lives in the URL hash** (`#t=1` + base64url of
+  deflate-raw JSON, `#t=0` fallback). ⚠ A settlement recomputed from scratch reshuffles the remaining payments when one
+  is ticked off; ticked payments are matched against the plan computed without them. ⚠ Leftover cents are rotated by a
+  hash of the expense's own content, not its position, or deleting one expense moves a cent in another. No share row
+  (its own Share/Copy link buttons). Keys `settleup_recent|sound`.
+- **No. 132 Recipe Scaler** (`tools/recipe-scaler/`): paste a recipe; it becomes a ruled index card with highlighted
+  amounts that roll like an odometer; scale by servings, a multiplier, or "I only have 3 eggs" (tap a line, a sticky
+  note asks). Kitchen rounding, US / metric with a 57-ingredient density table of our own numbers (AP flour 125g/cup),
+  oven temps, fractional-egg advice. `scaler.js` 260 node checks. "litre"/"gramme" exist ONLY as parser vocabulary.
+- **No. 131 Level & Ruler** (`tools/level-and-ruler/`): brass machinist's level on edge, bull's-eye flat, from the
+  gravity vector; locks within 0.2 deg with a detent click; two-position calibration; "raise the left end 3/16 in
+  over 24 in". Steel rule with caliper jaws, calibrated by a relative drag against a bank card (a finger on a plastic
+  card does not register on glass). ⚠⚠ **iPhone reports `accelerationIncludingGravity` with the OPPOSITE sign to the
+  spec/Android**; guessed by platform, then decided by deviceorientation agreement. ⚠ WebKit throws on
+  `new DeviceMotionEvent()`; tests use `document.createEvent("DeviceMotionEvent")` + `initDeviceMotionEvent`.
+  Keys `level-and-ruler_*`.
+- **No. 130 Sun Path** (`tools/sun-path/`): polar sun chart (today's arc with hour marks, both solstices, equinox),
+  drag the sun to scrub time, a window/balcony/garden wedge with an obstruction height, the answer in words ("Sun on
+  this window from 12:01 to 5:37 PM today... In December: ..."), monthly direct-sun bars, garden verdict, phone
+  compass with a "line it up with the sun" calibration. 103 cities with IANA zones. Solar math matched NOAA's tables
+  on 693 city-days within 0.8 min and USNO within 0.03 deg. ⚠ Near the Arctic Circle sunset must be the LAST downward
+  crossing of the day. ⚠ `Intl` truncates to the minute: round, and sum durations from the rounded ends.
+- **No. 129 Hearing Age** (`tools/hearing-age/`): pulsed pure tones climb from 8 kHz, a fine confirm pass, silent
+  catch trials, result as kHz plus a playful ear age from published age-limit data, a phosphor scope and kHz ladder,
+  challenge link `#beat=15200`, image share. Test path is a raw sine buffer, 60ms raised-cosine ramps, NO compressor
+  or reverb, fixed -20 dBFS (energy below 12 kHz around a 16 kHz pulse: -118 dB). ⚠ An OfflineAudioContext only hears
+  nodes still connected when rendering starts, so a level harness must stub `disconnect`. Key `hearingage_best`.
+  **Two owner calls, unasked:** the 1 kHz volume check plays 10 dB under the test tones on purpose (matching them
+  would crowd young ears near 15-16 kHz), and "mosquito tone" is used generically in copy, tags and keywords although
+  "Mosquito" is also an anti-loitering device's brand name.
+- **Shared change, `assets/share.js?v=7` (all 62 pages bumped):** on `/tools/` the pill says "Share this tool" /
+  "Share your result" (never "Share your run"), the default text drops "Come play", and the caption-strip name stops
+  at a colon as well as the dash (long tool titles ran into the domain). Sleep Sounds relabels its own to "Share this mix".
+- ⚠ **`gen-card.cjs` hides generic class names** (`.controls`, `.readout`, `.status`, `.bar`, `.hint`, `.intro`), so
+  a signature panel must not use them. `--size 1080` on a tool can land in its two-column layout; pass `--vw`.
 
 ## No. 128 Timber — shipped 2026-10-04 (`96ef508`), live (the old `jenga` branch, finished and renamed)
 
 **`toys/timber/`** — a tower of 36 wooden blocks with real physics (vendored cannon-es, DECISIONS 2026-08-22). Orbit
 (drag the table), zoom (pinch/scroll), drag a block along its own length to slide it out (either end, below the
-highest complete level), then tap a glowing slot to set it on top (a level fills to three before the next starts).
-Score = blocks moved; three blocks down = the tower fell. Owner (2026-10-04): **name "Timber"** ("TIMBER!" is the
+highest complete level), then carry it onto the top, or tap a glowing slot (a level fills to three before the next
+starts). Score = blocks moved; any block that falls ends it (see below). Owner (2026-10-04): **name "Timber"** ("TIMBER!" is the
 fall's callout) and **"jenga" kept off every surface, hidden search keywords included** (trademark, the Tetris/Suika
 rule). Keys: `timber_best` (ticket rule dir `up`, rule only), `timber_sound`. Registered everywhere in the working
 tree (registry, sitemap 131 urls, NL phrase, card CSS + `:not()`, og-gen, ticket rule, cross-promo in all four lists:
@@ -23,7 +90,8 @@ featured rotation; IndexNow accepted. The `jenga` branch (`0d01d86`) was deleted
 - **What "finishing" was** (the branch was built in the Steady Hand era and well under the bar): the stylesheet had
   been copied from Steady Hand (its HUD stacked into a tall pill over the tower; rewritten); the level counter read 13
   for 12 levels; a pull needed ~430px of finger travel (now 1:1 along the block's on-screen axis, either direction);
-  the held block parked IN FRONT of the tower and hid it (now it floats beside the top, turned like the slots); the
+  the held block parked IN FRONT of the tower and hid it (now it floats beside the top, turned like the slots, as far
+  right as fits on screen: a fixed offset put it half off a portrait phone); the
   callout sat on the slots (now low); the test handle was public (now `navigator.webdriver` only, `window.__timber`).
 - **Renderer rebuilt** (raw WebGL, still hand-written): hardwood with annual rings around a pith OUTSIDE the block, so
   each block has its own figure (arcs on sides, stripes on tops, rings on ends), grain faded by `fwidth` so it never
@@ -31,6 +99,20 @@ featured rotation; IndexNow accepted. The `jenga` branch (`0d01d86`) was deleted
   hemisphere ambient, a gentle highlight roll-off; a walnut table in the lamp's pool that fogs into the room (no
   horizon line); soft shadows = four planar passes from jittered lamp positions with a STENCIL so overlaps never
   double-darken; the camera fits the tower and follows its top as it grows.
+- ⚠⚠ **Placement reworked (owner, 2026-10-04: "the put it on top is just one click and sometimes it's a weird
+  placement")** — local, not yet pushed. Three causes, three fixes: (1) **the slots were computed for a PERFECT tower**
+  centered on the table, so once the real one had drifted or twisted a block went down centimeters off the real top;
+  `freeTopSlots()` now takes a part-built level's center and angle from its own blocks (`levelFrame`), and a new level
+  from the level below, turned 90. (2) **A tap took whichever slot center was within 90px**, and the slots are only
+  25-35px apart on screen, so it often took the wrong one and an orbit tap could place the block; now a tap places only
+  when the ray hits a slot's box (`slotUnderRay`, padded in length and height, not across). (3) **It teleported**; now
+  you CARRY it: press the floating block (or a slot) and drag, it rides a plane just above the top (46px above a
+  fingertip on touch), snaps into line over the nearest free slot within 0.32m with only that ghost lit, and on
+  release glides there and lowers in (320ms, `G.anim`, instant under reduced motion) before the physics takes it.
+  Verified headless with real input, desktop mouse + phone touch, motion on and off: carry, tap-on-slot, tap on the
+  block or table does NOT place, seven moves in a row across three levels, every block within 1.3cm of its slot and
+  exactly one width from its neighbors, no false game over, no console errors. ⚠ A harness that projects a slot right
+  after a pull aims wrong: the camera eases up for ~1s when a block comes out (placing mode frames the top higher).
 - ⚠⚠ **A tipping tower fell ASLEEP mid-fall** and hung leaning off one block: a topple starts slower than the sleep
   speed limit. During play any block tilted more than ~2 degrees is woken every frame (blocks on their sides are left
   alone). Sleep still keeps a standing tower dead still.
@@ -98,7 +180,7 @@ slash, All Toys newest panel, search ("draughts"), featured rotation; IndexNow a
   marks, checkers, stove flicker and dust. Checkers are baked sprites (fluted rim, two cut rings, lacquer, gilded crown).
 - **Audio, measured** (OFFLINE render, see below): place 0.23, crown 0.24, win 0.28, lose 0.27, draw 0.28, stack clink
   0.13, deny knock 0.12, hint 0.10, slide 0.10, select 0.07 (soft on purpose); bed RMS 0.024. No NaN. Never heard.
-- ⚠⚠ **Headless real-time audio is DEAD on this Mac right now**: `ac.currentTime` stays at 0.005 even for a bare
+- ⚠⚠ **Headless real-time audio WAS dead on this Mac on 2026-10-03** (working again 2026-10-04: the Tuner build ran a fake mic through a live AnalyserNode): `ac.currentTime` stays at 0.005 even for a bare
   `new AudioContext()`, so every analyser reads 0.000. It worked earlier the same day (an output-device change is the
   likely cause). Measure instead by replacing `window.AudioContext` in an init script with an `OfflineAudioContext`
   whose `currentTime` is a getter you set per slot, scheduling each voice in its own 2.6s slot, then `startRendering()`
@@ -671,7 +753,7 @@ Keys: `chess_beaten` (ticket rule, dir `up`), `chess_defeated`, `chess_wins|loss
 - ⚠ **`.tray` is used by 3 other toys** — chess's material tray is `.captured` so
   `gen-card.cjs`'s hide list can target it without changing their cards.
 
-## Image sharing (`assets/share.js?v=6`, 43 pages)
+## Image sharing (`assets/share.js?v=7`, 62 pages)
 
 Measured first: **73 of 117 pages had no share button, 13 toys with a real score sent the generic "come play X" line, none shared an image.** A share button that says "come play X" is an advertisement, and people do not post advertisements.
 - Opt in with **`OPT_SHARE_TEXT`** (message), **`OPT_SHARE_LINE`** (short caption), **`OPT_SHARE_IMAGE`** (a canvas). Mobile → native file share, desktop → clipboard, download last.
@@ -735,7 +817,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 - **Captures:** `gen-card.cjs` has flags for tools, element capture, posing (`--eval`) and `--motion`; poses in `scripts/poses/` drive the page through **real input only, never a debug hook**. ⚠ `.card__preview` shows only the vertical middle ~30% — check the rendered card, not the source image. ⚠ **`--at` counts from AFTER the `--eval` promise resolves, not page load** — for a mid-action shot leave the last gesture **un-awaited** (`scripts/poses/chord-harp.js`). Transient HUD captions are hidden by default; `--show` restores the ones that ARE the toy's identity.
 - ⚠ **American spelling everywhere** (owner, 2026-10-03: "please don't ever use british spellings"): color, center, gray, armor, traveling, neighbor. Swept that day: 0 British spellings left in pages, gallery blurbs or share templates (28 fixed; Claw Machine and Glow Pegs share images regenerated, `og/<slug>.png?v=2`). **The one deliberate exception:** "colour" stays in four hidden search-keyword strings in `main.js`, as a synonym beside "color", so someone typing the UK spelling still finds the toy. Code identifiers like `travelled` or `analyse()` were left alone.
 - **Test hooks are for automation only:** a toy's verification handle (`window.__pin`, `__dom`, `__steady`, `__jenga`…) is assigned only `if (navigator.webdriver)`, which Playwright (Chromium and WebKit) sets and a real visitor's browser does not (2026-10-03). Poses keep working; visitors never get the internals.
-- **Verification gotchas:** capture canvas at `deviceScaleFactor: 1` (Playwright tears at 2); headless forces reduced-motion and throttles rAF (drive frames via `evaluate(rAF)`); sim vs wall time diverge — probe internal state, not timed screenshots; force-clicking hidden chrome hits the canvas underneath; `getByteFrequencyData` saturates — use `getFloatFrequencyData` on a tone's own partial bins; grep-clean temp debug hooks before commit.
+- **Verification gotchas:** capture canvas at `deviceScaleFactor: 1` (Playwright tears at 2); ⚠ a plain Playwright context here does NOT force reduced motion (three builders found it 2026-10-04): pass `reducedMotion` explicitly either way; headless throttles rAF (drive frames via `evaluate(rAF)`); sim vs wall time diverge — probe internal state, not timed screenshots; force-clicking hidden chrome hits the canvas underneath; `getByteFrequencyData` saturates — use `getFloatFrequencyData` on a tone's own partial bins; grep-clean temp debug hooks before commit.
 - ⚠ **`[hidden]` HUDs:** an author `display:flex` on a fixed HUD outranks the UA's `[hidden]{display:none}` and paints over the intro panel — every hidden HUD needs `.hud[hidden]{display:none}`. Detect by flagging bare-`hidden` elements whose CSS sets a non-`none` `display`, then confirm in a browser (static matching over-reports). **Verify the reveal too.**
 - ⚠ **INCIDENT — a missing comma in `assets/main.js` took out the ENTIRE gallery, site-wide.** main.js threw on load and **nothing after a throw runs, so every hub page rendered ZERO cards** while still returning 200 and looking normal. **Whenever `main.js` is edited, parse-check it:** `node -e "new Function(require('fs').readFileSync('assets/main.js','utf8'))"`. Caught only by driving the LIVE hub after deploy.
 - **Gallery search ranks by relevance** (name ≫ slug ≫ category ≫ tag ≫ description ≫ NL blob ≫ substring), OR fallback, empty query scores 0 so browsing stays A–Z. ⚠ **Weights must stay far apart** — a name hit must beat any number of blob hits. ⚠ **Every field `normalizeHaystack()` includes must be scored in `scoreToken`, in the same edit**, or it silently degrades to A–Z.
@@ -743,7 +825,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=131` (8 pages) / `styles.css?v=130` (9 hub/store pages); **`tickets.js?v=34` across all 137 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=30` (50 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (126 toy and tool pages); `share.js?v=6` (52 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=132` (8 pages) / `styles.css?v=131` (9 hub/store pages); **`tickets.js?v=34` across all 144 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=30` (50 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (135 toy and tool pages); `share.js?v=7` (62 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **40** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - **Live since `f5767d8` (2026-10-03).** ⚠ **Adding art is THREE steps** — save the source to `_sources/<slug>.png` and the `.webp` (see that folder's README), add the slug to `FEATURED_ART` in `main.js`, then add a `TITLE` position and run `node scripts/build-art-assets.cjs <slug> --sheet /tmp/s.png` (DECISIONS 2026-10-03): it builds the toy's card (`cards/<slug>.webp`) and share image (`og/<slug>.jpg`), rewrites its `.card__preview` rule and its page's `og:image`/`twitter:image`. Look at the sheet: the title must show in the narrowest card, the widest card and the share image. Bump `styles.css?v=` on the 9 hub pages.
@@ -774,6 +856,8 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
+- **The seven new tools (No. 129-135) are built and registered but UNPUSHED.** After "push": live-verify each page, run IndexNow, then the owner on a real phone: Tuner's mic, Level's sensors and iPhone sign, Sun Path's compass, Sleep Sounds with the screen locked, Hearing Age on headphones, and every tool's sound. Plus the two Hearing Age calls above.
+
 - **Checkers (No. 127): owner play-test on a phone.** Feel, the ladder against a human, and the sound are all unjudged.
 - **Shared tickets pill overlaps the "← onepagetoys.com" back link in WebKit at 375x667** (Chess too, so it predates Checkers; Chromium docks it correctly). `dock()` in `assets/tickets.js` measures differently in Safari.
 - ✅ **Jettison, Meld and Trench Runner Cinematic all owner-approved on a phone 2026-10-03** ("all 3 are great"). Still open from Jettison: whether "block jam" goes in the hidden search keywords (currently out).
@@ -783,7 +867,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 - ✅ **Trench Runner's guns stay as they are** (owner, 2026-09-23: "don't ease the guns"). Do not offer to soften them again unless he raises it. Since `11f00d8` a bolt is a fixed straight line from the mount (fire, then move, and it misses) and girders block shots.
 - **Image share has never been tried on a real phone** — the native file-share path is the whole point and is unverified outside headless. Owner will test (2026-10-03).
-- **Timber (No. 128): owner play-test on a phone.** The falling-block rule came from his first play-test; the pull feel, the camera and the sound are otherwise unjudged.
+- **Timber (No. 128): owner play-test on a phone**, now including the reworked carry-to-place (local until the next push). The falling-block rule came from his first play-test; the pull feel, the camera and the sound are otherwise unjudged.
 - ✅ **Chess audio owner-approved 2026-09-23.** Still open: the ladder was verified engine-vs-engine (10-0 / 10-0 / 8-2 / 8-2 by rung), never against a human, so the ~elo labels are estimates.
 
 ### Closed — do not re-open or offer

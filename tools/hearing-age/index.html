@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Hearing Age Test: How High Can You Hear? — One Page Toys</title>
+    <meta name="description" content="A beep climbs from 8 kHz toward 20 kHz until it disappears, then we guess the age of your ears. Gentle, fixed volume, best with headphones, and just for fun. Send a friend your number and see who hears higher. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/hearing-age/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f2f6f4" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Hearing Age Test: How High Can You Hear? — One Page Toys" />
+    <meta property="og:description" content="A beep climbs toward 20 kHz until it's gone, then we guess the age of your ears. Send a friend your number and see who hears higher." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/hearing-age/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/hearing-age.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Hearing Age Test: How High Can You Hear? — One Page Toys" />
+    <meta name="twitter:description" content="How high can you hear? A gentle beep climbs until it's gone, then we guess the age of your ears." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/hearing-age.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Hearing Age Test",
+        "url": "https://onepagetoys.com/tools/hearing-age/",
+        "description": "A just-for-fun high-frequency hearing check. After a quiet 1 kHz volume check, pulsed pure tones climb from 8 kHz toward 20 kHz at one fixed, gentle level. You answer 'I hear it' or 'It's gone', a finer pass confirms where the tone disappears, and silent catch trials keep the answers honest. The result is the highest tone you heard and the typical age of ears that top out there, drawn on a glowing oscilloscope and frequency ladder, with an image to share and a challenge link for a friend. Not a medical hearing test.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 and Web Audio. Headphones recommended.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 129 · Hearing Age</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="ha" aria-labelledby="haTitle">
+        <header class="ha__head">
+          <p class="eyebrow">Hearing age · just for fun</p>
+          <h1 class="headline" id="haTitle">How high can you hear?</h1>
+        </header>
+
+        <div class="rig" id="rig">
+          <span class="rig__screw rig__screw--tl" aria-hidden="true"></span>
+          <span class="rig__screw rig__screw--tr" aria-hidden="true"></span>
+          <span class="rig__screw rig__screw--bl" aria-hidden="true"></span>
+          <span class="rig__screw rig__screw--br" aria-hidden="true"></span>
+          <canvas id="rigCanvas" class="rig__canvas" role="img"
+                  aria-label="An oscilloscope and a frequency ladder from 8 to 20 kilohertz, with the typical age for each step."></canvas>
+          <div class="rig__deck">
+            <div class="dial dial--tone">
+              <span class="dial__k"><span class="led" id="led" aria-hidden="true"></span>Tone</span>
+              <span class="dial__v" id="toneOut">Standby</span>
+            </div>
+            <div class="dial">
+              <span class="dial__k">Level</span>
+              <span class="dial__v" id="levelOut">−20 dBFS</span>
+            </div>
+            <div class="dial">
+              <span class="dial__k">Pass</span>
+              <span class="dial__v" id="passOut">Ready</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="console" id="console">
+          <!-- Before the test -->
+          <div class="pane pane--intro" id="paneIntro">
+            <p class="friend" id="friendNote" hidden>
+              <span class="friend__k">You've been challenged</span>
+              Your friend hears up to <b id="friendHz">15.2 kHz</b>. Can you top it?
+            </p>
+            <p class="lede">A beep climbs from 8 kHz toward 20 kHz. Tell it when it's gone, and we'll guess the age of your ears.</p>
+            <ul class="notes">
+              <li><b>Headphones help.</b> Wired ones if you have them. Plenty of speakers and earbuds fade out above 15 kHz on their own.</li>
+              <li><b>Never loud.</b> Every beep plays at one fixed, gentle level, and the high ones are never boosted.</li>
+              <li><b>A party trick, not a hearing test.</b> If you're worried about your hearing, an audiologist can check it properly.</li>
+            </ul>
+            <button type="button" class="btn btn--primary btn--big" id="startBtn">Start with a volume check</button>
+            <p class="best" id="bestNote" hidden></p>
+          </div>
+
+          <!-- 1 kHz volume check -->
+          <div class="pane" id="paneCheck" hidden>
+            <p class="pane__k">Step 1 of 2 · Volume check</p>
+            <p class="pane__big">Set your volume so this beep is soft but clear.</p>
+            <p class="pane__note">Somewhere quiet works best. No sound on your phone? Make sure it isn't on silent.</p>
+            <div class="row">
+              <button type="button" class="btn btn--primary btn--big" id="checkOk">Sounds right, start</button>
+              <button type="button" class="btn btn--ghost" id="checkBack">Back</button>
+            </div>
+          </div>
+
+          <!-- The climb -->
+          <div class="pane" id="paneTest" hidden>
+            <p class="pane__k" id="testK">Step 2 of 2 · The climb</p>
+            <p class="pane__big" id="testPrompt">Can you hear the beeps?</p>
+            <p class="pane__msg" id="testMsg" aria-live="polite"></p>
+            <div class="answers">
+              <button type="button" class="ans ans--yes" id="yesBtn">
+                <span class="ans__t">I hear it</span>
+                <kbd class="ans__kbd" aria-hidden="true">H</kbd>
+              </button>
+              <button type="button" class="ans ans--no" id="noBtn">
+                <span class="ans__t">It's gone</span>
+                <kbd class="ans__kbd" aria-hidden="true">G</kbd>
+              </button>
+            </div>
+            <button type="button" class="linkbtn" id="stopBtn">Stop the test</button>
+          </div>
+
+          <!-- The result -->
+          <div class="pane pane--result" id="paneResult" hidden>
+            <p class="pane__k">Your result</p>
+            <h2 class="result__hz" id="resHead" tabindex="-1">You can hear up to <b id="resHz">15.2 kHz</b></h2>
+            <p class="result__age" id="resAge">Ears of a 38-year-old</p>
+            <p class="result__vs" id="resVs" hidden></p>
+            <p class="result__line" id="resMosq"></p>
+            <p class="result__note" id="resNote"></p>
+            <div class="row">
+              <button type="button" class="btn btn--primary" id="challengeBtn">Challenge a friend</button>
+              <button type="button" class="btn" id="againBtn">Test again</button>
+            </div>
+          </div>
+          <p class="sr-only" id="announce" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <div class="share-row" data-opt-share></div>
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="../../assets/tickets.js?v=34" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="logic.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

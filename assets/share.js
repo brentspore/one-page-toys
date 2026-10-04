@@ -44,9 +44,15 @@
     return false;
   }
 
+  // The name burnt into the caption strip. Tool titles carry a subtitle after a
+  // colon ("Recipe Scaler: Halve, Double or Convert Any Recipe"), which ran into
+  // the domain on the strip, so the name stops at the colon too.
   function toyName() {
-    return (document.title || "One Page Toys").split("—")[0].trim();
+    return (document.title || "One Page Toys").split("—")[0].split(":")[0].trim();
   }
+
+  // Tools are not games: no "run" to share, and "this toy" reads oddly on them.
+  var IS_TOOL = /\/tools\//.test(location.pathname);
 
   function slug() {
     var p = location.pathname.replace(/\/(index\.html)?$/, "").split("/");
@@ -149,7 +155,7 @@
     btn.className = "opt-share" + (host ? " opt-share--inline" : "") + (isLightPanel(panel) ? " opt-share--light" : "");
     btn.innerHTML =
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>' +
-      "<span>Share this toy</span>";
+      "<span>" + (IS_TOOL ? "Share this tool" : "Share this toy") + "</span>";
     panel.appendChild(btn);
     var label = btn.querySelector("span");
 
@@ -158,7 +164,10 @@
     // persistent toolbar (Dominoes) never toggles anything when its run ends —
     // so the globals themselves are the trigger: assigning any of them
     // refreshes the label, and no toy has to know this button exists.
-    function idle() { return window.OPT_SHARE_IMAGE ? "Share your run" : "Share this toy"; }
+    function idle() {
+      if (window.OPT_SHARE_IMAGE) return IS_TOOL ? "Share your result" : "Share your run";
+      return IS_TOOL ? "Share this tool" : "Share this toy";
+    }
     function refresh() { if (!resetT) label.textContent = idle(); }
     ["OPT_SHARE_IMAGE", "OPT_SHARE_LINE", "OPT_SHARE_TEXT"].forEach(function (k) {
       var held = window[k];                       // keep anything set before we loaded
@@ -175,7 +184,9 @@
       var canonical = document.querySelector('link[rel="canonical"]');
       var url = (canonical && canonical.href) || location.href;
       var name = toyName();
-      var text = window.OPT_SHARE_TEXT || ("Come play " + name + ", a tiny free browser toy.");
+      var text = window.OPT_SHARE_TEXT || (IS_TOOL
+        ? name + ", a free tool that runs in your browser."
+        : "Come play " + name + ", a tiny free browser toy.");
       return { title: name + " — One Page Toys", text: text, url: url };
     }
 
@@ -188,7 +199,7 @@
 
     function ga(method) {
       try {
-        if (window.gtag) window.gtag("event", "share", { method: method, content_type: "toy", item_id: location.pathname });
+        if (window.gtag) window.gtag("event", "share", { method: method, content_type: IS_TOOL ? "tool" : "toy", item_id: location.pathname });
       } catch (e) {}
     }
 

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Guitar Tuner and Chromatic Tuner — One Page Toys</title>
+    <meta name="description" content="A free online tuner that listens through your microphone. Guitar, bass, ukulele, violin, viola and cello tunings, a chromatic mode, a needle and a strobe, and a reference tone for every string. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/tuner/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f5f1ea" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Guitar Tuner and Chromatic Tuner — One Page Toys" />
+    <meta property="og:description" content="Tune by needle, by strobe or by ear. Guitar, bass, ukulele, violin, viola and cello, plus any note in chromatic mode. Your sound never leaves your device." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/tuner/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/tuner.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Guitar Tuner and Chromatic Tuner — One Page Toys" />
+    <meta name="twitter:description" content="A backlit needle, a strobe that stands still when you're in tune, and reference tones for every string. Free and private." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/tuner.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Tuner",
+        "url": "https://onepagetoys.com/tools/tuner/",
+        "description": "A free online instrument tuner that listens through the microphone, with guitar (standard, drop D, DADGAD, open G, half step down), bass (4 and 5 string), ukulele, violin, viola and cello tunings, a chromatic mode, an adjustable A4 reference from 415 to 466 Hz, a needle meter with a strobe, and plucked or bowed reference tones. Audio is analyzed on the device and never sent anywhere.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript, HTML5 and a microphone for listening. Reference tones work without one.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 135 · Tuner</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="tn" aria-labelledby="tnTitle">
+        <p class="eyebrow" id="tnEyebrow">Needle, strobe and reference tones</p>
+        <h1 class="headline" id="tnTitle">Guitar tuner</h1>
+
+        <div class="tn-kinds" id="kinds" role="radiogroup" aria-label="Instrument"></div>
+
+        <div class="tn-unit" id="unit">
+          <div class="tn-unit__top">
+            <button type="button" class="tn-live" id="liveBtn" hidden aria-label="Stop listening" title="Tap to stop listening">
+              <span class="tn-live__dot" aria-hidden="true"></span>
+              <span class="tn-live__txt">Listening</span>
+              <span class="tn-vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            </button>
+            <span class="tn-plate" id="plate" aria-hidden="true">A4 · 440 Hz</span>
+          </div>
+
+          <div class="tn-face">
+            <canvas id="dial" class="tn-dial" role="img" aria-label="Tuning needle, at rest"></canvas>
+          </div>
+          <div class="tn-strobe-wrap">
+            <canvas id="strobe" class="tn-strobe" aria-hidden="true"></canvas>
+          </div>
+
+          <div class="tn-lower">
+          <div class="tn-read">
+            <span class="tn-lamp tn-lamp--flat" id="lampFlat" aria-hidden="true"><i></i><b>♭</b></span>
+            <div class="tn-note" id="noteBox">
+              <span class="tn-note__jewel" id="lampIn" aria-hidden="true"></span>
+              <span class="tn-note__name" id="noteName">–</span><span class="tn-note__acc" id="noteAcc"></span><span class="tn-note__oct" id="noteOct"></span>
+            </div>
+            <span class="tn-lamp tn-lamp--sharp" id="lampSharp" aria-hidden="true"><i></i><b>♯</b></span>
+          </div>
+          <div class="tn-nums" aria-hidden="true">
+            <span class="tn-num" id="numCents">± 0 ¢</span>
+            <span class="tn-num tn-num--mid" id="numString"></span>
+            <span class="tn-num" id="numHz">– Hz</span>
+          </div>
+          <p class="tn-say" id="say">Tap Start, then pluck a string.</p>
+
+          <div class="tn-start" id="startPanel">
+            <button type="button" class="tn-go" id="startBtn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>
+              <span id="startLabel">Start tuning</span>
+            </button>
+            <p class="tn-start__note" id="startNote">Listens through your microphone. The sound stays on this device: nothing is recorded or sent.</p>
+          </div>
+
+          <div class="tn-done" id="donePanel" hidden>
+            <p class="tn-done__k">In tune</p>
+            <p class="tn-done__v" id="doneTitle">All six strings</p>
+            <p class="tn-done__sub" id="doneSub">Go play something.</p>
+            <button type="button" class="tn-again" id="againBtn">Check them again</button>
+          </div>
+          </div>
+        </div>
+
+        <div class="tn-neck" id="neck">
+          <div class="tn-tunings" id="tunings" role="radiogroup" aria-label="Tuning"></div>
+          <div class="tn-pegs" id="pegs" role="group" aria-label="Strings: tap one to hear its note"></div>
+          <div class="tn-pipe" id="pipe" hidden>
+            <div class="tn-pipe__keys" id="pipeKeys" role="group" aria-label="Reference notes"></div>
+            <div class="tn-oct" role="group" aria-label="Octave">
+              <button type="button" class="tn-step" id="octDown" aria-label="Octave down">−</button>
+              <span class="tn-oct__v" id="octVal">Octave 4</span>
+              <button type="button" class="tn-step" id="octUp" aria-label="Octave up">+</button>
+            </div>
+          </div>
+          <p class="tn-neck__hint" id="neckHint">Tap a peg to hear its note.</p>
+        </div>
+
+        <div class="tn-ref" role="group" aria-labelledby="refLab">
+          <span class="tn-ref__k" id="refLab">Reference pitch</span>
+          <div class="tn-ref__ctl">
+            <button type="button" class="tn-step" id="refDown" aria-label="Lower the reference by 1 hertz">−</button>
+            <output class="tn-ref__v" id="refVal" aria-live="polite">A4 = 440 Hz</output>
+            <button type="button" class="tn-step" id="refUp" aria-label="Raise the reference by 1 hertz">+</button>
+          </div>
+          <div class="tn-ref__quick">
+            <button type="button" class="tn-chip tn-chip--sm" data-ref="440">440</button>
+            <button type="button" class="tn-chip tn-chip--sm" data-ref="432">432</button>
+          </div>
+        </div>
+
+        <p class="sr-only" id="announce" aria-live="polite"></p>
+
+        <details class="tn-tips">
+          <summary>How to tune by ear and by needle</summary>
+          <ul>
+            <li>Pluck one string at a time and let it ring. The reading is steadiest a moment after the pluck, once the attack settles.</li>
+            <li>Tune up to the note. If you go sharp, drop below it and come back up: the string holds its pitch better that way.</li>
+            <li>Watch the strobe. The faster the bars slide, the further off you are; when they stand still, you're there.</li>
+            <li>Tuning one string pulls a little on the others, so go round a second time. A string that drifts loses its green mark.</li>
+            <li>No microphone? Tap a peg, listen, and turn your string until the two notes stop wobbling against each other.</li>
+          </ul>
+        </details>
+      </section>
+
+      <div class="share-row" data-opt-share hidden id="shareRow"></div>
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="../../assets/tickets.js?v=34" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="pitch.js?v=1" defer></script>
+    <script src="voice.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

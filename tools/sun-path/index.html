@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Sun Path: When Will the Sun Hit My Window? — One Page Toys</title>
+    <meta name="description" content="See where the sun crosses your sky on any day of the year and exactly when it will shine on a window, a balcony or a garden bed. Drag the sun, aim your window, or point your phone. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/sun-path/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fbf7f0" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Sun Path: When Will the Sun Hit My Window? — One Page Toys" />
+    <meta property="og:description" content="Aim a window, a balcony or a garden bed at the sky and see the hours of direct sun it gets today, in late June and in December." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/sun-path/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/sun-path.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sun Path: When Will the Sun Hit My Window?" />
+    <meta name="twitter:description" content="The sun's path over your sky on any day, and the hours of direct sun your window or garden bed gets." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/sun-path.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Sun Path",
+        "url": "https://onepagetoys.com/tools/sun-path/",
+        "description": "A sun path chart for any place and any day of the year. Aim a window, balcony or garden bed at the sky, set what blocks the low sun, and read the hours of direct sun it gets today, at the June and December solstices and month by month, with a full sun, part sun or shade verdict for gardens. Works with a phone compass.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 130 · Sun Path</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="sp" aria-label="Sun path">
+        <div class="sp__head">
+          <p class="eyebrow" id="eyebrow">Your window</p>
+          <h1 class="headline"><span class="headline__num" id="hlNum">Working out the sun</span><span class="headline__rest" id="hlRest"></span></h1>
+          <p class="sentence" id="sentence" aria-live="polite"></p>
+        </div>
+
+        <div class="sp__a">
+          <details class="place" id="place">
+            <summary class="place__sum">
+              <svg class="place__pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg>
+              <span class="place__name" id="placeName">New York</span>
+              <span class="place__tz" id="placeTz"></span>
+              <span class="place__change">Change</span>
+            </summary>
+            <div class="place__body">
+              <button type="button" class="btn btn--primary btn--block" id="locBtn">Use my location</button>
+              <p class="fine">Your browser will ask first. The location stays on this device and is only used to work out the sun.</p>
+              <label class="field">
+                <span class="field__k">Or pick a city</span>
+                <select id="citySel" class="field__in"></select>
+              </label>
+              <fieldset class="coords">
+                <legend class="field__k">Or type coordinates</legend>
+                <div class="coords__row">
+                  <label class="field field--sm"><span class="field__k">Latitude</span><input id="latIn" class="field__in" inputmode="decimal" autocomplete="off" placeholder="40.71" /></label>
+                  <label class="field field--sm"><span class="field__k">Longitude</span><input id="lonIn" class="field__in" inputmode="decimal" autocomplete="off" placeholder="-74.01" /></label>
+                </div>
+                <label class="field"><span class="field__k">Clock to show times in</span><select id="tzSel" class="field__in"></select></label>
+                <button type="button" class="btn btn--block" id="coordBtn">Use these coordinates</button>
+              </fieldset>
+              <p class="fine" id="placeNote" aria-live="polite"></p>
+            </div>
+          </details>
+
+          <div class="panel" id="panel">
+            <canvas id="dome" class="dome" tabindex="0" role="img"
+                    aria-label="Sun path chart seen from above, north at the top"
+                    aria-describedby="domeHelp"></canvas>
+            <div class="panel__bar">
+              <span class="status" id="status"></span>
+              <span class="heading-pill" id="headingPill" hidden></span>
+              <button type="button" class="aim-pill" id="aimPill" hidden>Aim my window here</button>
+            </div>
+            <ul class="legend" aria-hidden="true">
+              <li><i class="lg lg--day"></i>This day</li>
+              <li><i class="lg lg--sun"></i>Sun on it</li>
+              <li><i class="lg lg--jun"></i>Jun 21</li>
+              <li><i class="lg lg--eq"></i>Equinox</li>
+              <li><i class="lg lg--dec"></i>Dec 21</li>
+            </ul>
+            <div class="strip-wrap">
+              <span class="strip__lab" id="stripLab">The view out</span>
+              <canvas id="strip" class="strip" role="img" aria-label="The horizon seen from the window, with the sun's paths across it"></canvas>
+            </div>
+            <p class="hint" id="domeHelp">Drag the sun to change the time. Drag the glowing wedge to aim it, or its edges to widen it. Tap the sky to point it there. Arrow keys work too.</p>
+            <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" aria-label="Sound on" title="Sound">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path class="sb-spk" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="sb-on" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="sb-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+            </button>
+          </div>
+
+          <div class="when">
+            <div class="when__line">
+              <span class="when__k">Time</span>
+              <output class="when__v" id="timeOut" for="timeRange"></output>
+              <span class="when__sun" id="sunOut"></span>
+              <button type="button" class="chip chip--now" id="nowBtn">Now</button>
+            </div>
+            <input type="range" id="timeRange" class="range range--day" min="0" max="1439" step="1" value="720" aria-label="Time of day" />
+            <div class="when__line when__line--date">
+              <span class="when__k">Date</span>
+              <output class="when__v" id="dateOut" for="dateRange"></output>
+            </div>
+            <input type="range" id="dateRange" class="range range--year" min="0" max="364" step="1" value="0" aria-label="Day of the year" />
+            <div class="months-axis" aria-hidden="true"><span>Jan</span><span>Apr</span><span>Jul</span><span>Oct</span><span>Dec</span></div>
+            <div class="chips" role="group" aria-label="Jump to a date">
+              <button type="button" class="chip" data-jump="today">Today</button>
+              <button type="button" class="chip" data-jump="5-21">Jun 21</button>
+              <button type="button" class="chip" data-jump="8-22">Sep 22</button>
+              <button type="button" class="chip" data-jump="11-21">Dec 21</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sp__b">
+          <section class="card aim" aria-labelledby="aimTitle">
+            <h2 class="sec-title" id="aimTitle">What does it face?</h2>
+            <div class="seg" role="radiogroup" aria-label="What you are checking">
+              <button type="button" role="radio" class="seg__b" data-mode="window" aria-checked="true">Window</button>
+              <button type="button" role="radio" class="seg__b" data-mode="balcony" aria-checked="false">Balcony</button>
+              <button type="button" role="radio" class="seg__b" data-mode="garden" aria-checked="false">Garden bed</button>
+            </div>
+            <label class="slide" id="faceRow">
+              <span class="slide__k">Faces</span>
+              <output class="slide__v" id="faceOut"></output>
+              <input type="range" id="faceRange" class="range" min="0" max="359" step="1" value="225" />
+            </label>
+            <label class="slide" id="widthRow">
+              <span class="slide__k">Sees</span>
+              <output class="slide__v" id="widthOut"></output>
+              <input type="range" id="widthRange" class="range" min="20" max="180" step="1" value="120" />
+            </label>
+            <label class="slide">
+              <span class="slide__k">Blocked below</span>
+              <output class="slide__v" id="obstOut"></output>
+              <input type="range" id="obstRange" class="range" min="0" max="60" step="1" value="10" />
+            </label>
+            <p class="fine" id="obstTip">A fist held out at arm's length covers about 10°. Count fists from the horizon up to the roofline or treeline across from you.</p>
+
+            <div class="compass" id="compass" hidden>
+              <button type="button" class="btn btn--primary btn--block" id="compassBtn">Point your phone</button>
+              <div class="compass__live" id="compassLive" hidden>
+                <p class="compass__read" id="compassRead" aria-live="polite">Waiting for the compass…</p>
+                <div class="compass__btns">
+                  <button type="button" class="btn" id="aimHereBtn">Set my window to where I'm pointing</button>
+                  <button type="button" class="btn" id="calBtn">Line it up with the sun</button>
+                  <button type="button" class="btn btn--ghost" id="compassOff">Stop</button>
+                </div>
+              </div>
+              <p class="fine" id="compassNote">Hold the phone flat with its top edge toward the window, or stand in the window and point the back of the phone out. Phone compasses are often 10 to 20° off, more near metal and speakers, and they find magnetic north, not true north. When the sun is out, point at it and tap "Line it up with the sun" to fix both. Motion readings stay on this device.</p>
+            </div>
+          </section>
+
+          <section class="card year" aria-labelledby="yearTitle">
+            <div class="year__head">
+              <h2 class="sec-title" id="yearTitle">Direct sun through the year</h2>
+              <span class="verdict" id="verdict" hidden></span>
+            </div>
+            <p class="verdict__why" id="verdictWhy" hidden></p>
+            <div class="bars" id="bars" role="group" aria-label="Hours of direct sun on the 21st of each month"></div>
+            <p class="fine" id="yearNote">On the 21st of each month. Tap a month to see it on the sky.</p>
+          </section>
+
+          <section class="stats" aria-label="The sun on this day">
+            <div class="stat"><span class="stat__k">Sunrise</span><span class="stat__v" id="stRise"></span><span class="stat__s" id="stRiseAz"></span></div>
+            <div class="stat"><span class="stat__k">Solar noon</span><span class="stat__v" id="stNoon"></span><span class="stat__s" id="stNoonAlt"></span></div>
+            <div class="stat"><span class="stat__k">Sunset</span><span class="stat__v" id="stSet"></span><span class="stat__s" id="stSetAz"></span></div>
+            <div class="stat"><span class="stat__k">Daylight</span><span class="stat__v" id="stLen"></span><span class="stat__s" id="stLenD"></span></div>
+          </section>
+        </div>
+      </section>
+
+      <div class="share-row" data-opt-share></div>
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="../../assets/tickets.js?v=34" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="sun.js?v=1" defer></script>
+    <script src="cities.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Bubble Level and Ruler for Your Phone — One Page Toys</title>
+    <meta name="description" content="Turn your phone into a bubble level for hanging pictures and shelves. Lay it flat or stand it on an edge, read it to a tenth of a degree, calibrate it the carpenter's way, and measure small things with an on-screen ruler you set with a bank card. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/level-and-ruler/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f5f2ec" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Bubble Level and Ruler for Your Phone — One Page Toys" />
+    <meta property="og:description" content="A brass bubble level and a steel ruler, made out of your phone. Level a shelf or a picture frame to a tenth of a degree, then measure a screw." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/level-and-ruler/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/level-and-ruler.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bubble Level and Ruler for Your Phone — One Page Toys" />
+    <meta name="twitter:description" content="Your phone as a brass bubble level and a steel ruler. Level a shelf to a tenth of a degree, then measure a screw." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/level-and-ruler.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Level & Ruler",
+        "url": "https://onepagetoys.com/tools/level-and-ruler/",
+        "description": "A bubble level and on-screen ruler for your phone. The level reads the phone's motion sensor in two modes, a bull's-eye when it lies flat and a tube vial when it stands on an edge, to a tenth of a degree, with a two-position calibration that cancels the sensor's own error and a helper that says how far to raise the low end of a shelf or frame. The ruler shows inches to 1/16 and centimeters to the millimeter, calibrates against a bank card or a US quarter, and has a two-jaw caliper.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5. The level needs a phone or tablet with a motion sensor.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 131 · Level &amp; Ruler</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="lr" aria-labelledby="title">
+        <div class="lr__head">
+          <p class="eyebrow">Your phone is the tool</p>
+          <h1 class="headline" id="title">Level &amp; Ruler</h1>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Instrument">
+          <button type="button" class="tabs__btn" role="tab" id="tabLevel" aria-selected="true" aria-controls="viewLevel">Level</button>
+          <button type="button" class="tabs__btn" role="tab" id="tabRuler" aria-selected="false" aria-controls="viewRuler" tabindex="-1">Ruler</button>
+          <span class="tabs__slide" aria-hidden="true"></span>
+        </div>
+
+        <!-- ============================== LEVEL ============================== -->
+        <div class="view" id="viewLevel" role="tabpanel" aria-labelledby="tabLevel">
+          <div class="bench" id="bench">
+            <canvas id="levelCanvas" class="bench__canvas" role="img" aria-label="A brass bubble level"></canvas>
+
+            <div class="gate" id="gate" hidden>
+              <p class="gate__text" id="gateText">Your phone asks before it shares its tilt with a page. The readings stay on your phone.</p>
+              <button type="button" class="btn btn--primary" id="gateBtn">Turn on the level</button>
+            </div>
+
+
+            <div class="calib" id="calib" role="dialog" aria-modal="false" aria-labelledby="calibText" hidden>
+              <div class="calib__ring" id="calibRing" aria-hidden="true"><span></span></div>
+              <p class="calib__text" id="calibText"></p>
+              <div class="calib__actions">
+                <button type="button" class="btn btn--primary" id="calibGo">Read it</button>
+                <button type="button" class="btn" id="calibCancel">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="bench-note" id="benchNote" hidden></p>
+
+          <div class="console">
+            <div class="console__row">
+              <div class="seg" role="radiogroup" aria-label="How the phone is held">
+                <button type="button" class="seg__btn" role="radio" aria-checked="true" data-mode="auto">Auto</button>
+                <button type="button" class="seg__btn" role="radio" aria-checked="false" data-mode="surface">Flat</button>
+                <button type="button" class="seg__btn" role="radio" aria-checked="false" data-mode="edge">On edge</button>
+              </div>
+              <button type="button" class="iconbtn sound-toggle" id="soundBtn" aria-pressed="true" aria-label="Sound on" title="Sound on">
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="ico ico--on"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="ico ico--off"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+              </button>
+            </div>
+
+            <p class="sr-only" id="levelLive" aria-live="polite"></p>
+
+            <div class="span" id="spanRow">
+              <span class="span__k">Leveling something</span>
+              <button type="button" class="chip" id="spanBtn" aria-label="Width of what you are leveling: 24 inches. Tap to change.">24 in</button>
+              <span class="span__k">wide</span>
+            </div>
+
+            <div class="console__row console__row--actions" id="levelActions">
+              <button type="button" class="btn" id="zeroBtn">Zero here</button>
+              <button type="button" class="btn btn--primary" id="calBtn">Calibrate</button>
+              <button type="button" class="btn btn--quiet" id="resetBtn" hidden>Reset</button>
+            </div>
+            <p class="cal-state" id="calState"></p>
+          </div>
+        </div>
+
+        <!-- ============================== RULER ============================== -->
+        <div class="view" id="viewRuler" role="tabpanel" aria-labelledby="tabRuler" hidden>
+          <div class="measure" id="measure">
+            <div class="measure__read">
+              <output class="measure__big" id="measureBig">1 in</output>
+              <span class="measure__small" id="measureSmall">25.4 mm</span>
+            </div>
+            <div class="measure__tools">
+              <button type="button" class="btn btn--small" id="rulerCalBtn">Calibrate</button>
+              <div class="seg seg--small" role="radiogroup" aria-label="Units">
+                <button type="button" class="seg__btn" role="radio" aria-checked="true" data-unit="in">in</button>
+                <button type="button" class="seg__btn" role="radio" aria-checked="false" data-unit="mm">mm</button>
+              </div>
+            </div>
+            <p class="scale-state" id="scaleState"></p>
+            <p class="sr-only" id="rulerLive" aria-live="polite"></p>
+          </div>
+
+          <div class="cardcal" id="cardCal" hidden>
+            <p class="cardcal__text" id="cardText">Hold a bank card flat on the screen, tucked into the corner at zero. Drag until the outline's far end meets the card's.</p>
+            <div class="cardcal__row">
+              <button type="button" class="iconbtn" id="calLess" aria-label="Smaller">−</button>
+              <button type="button" class="iconbtn" id="calMore" aria-label="Larger">+</button>
+              <button type="button" class="btn btn--small btn--quiet" id="calSwap">Use a quarter</button>
+              <span class="cardcal__grow"></span>
+              <button type="button" class="btn btn--small" id="calCancel">Cancel</button>
+              <button type="button" class="btn btn--small btn--primary" id="calSave">It matches</button>
+            </div>
+          </div>
+
+          <div class="rule" id="rule">
+            <canvas id="rulerCanvas" class="rule__canvas" role="img" aria-label="A steel ruler with inch and centimeter scales and two caliper jaws"></canvas>
+            <div class="jaw" id="jawA" role="slider" tabindex="0" aria-label="First caliper jaw" aria-valuemin="0" aria-valuenow="0"></div>
+            <div class="jaw" id="jawB" role="slider" tabindex="0" aria-label="Second caliper jaw" aria-valuemin="0" aria-valuenow="0"></div>
+          </div>
+        </div>
+
+        <div class="notes">
+          <p><strong>Hanging a picture?</strong> Rest the phone's long edge on top of the frame. You'll hear a soft click when it's level, which helps when the frame is above your eyes.</p>
+          <p><strong>No phone is perfectly true.</strong> Calibrate does the carpenter's check: read it, turn it end for end on the same spot, read it again. The difference cancels your phone's own error and tells you how far off the surface is.</p>
+          <p><strong>The ruler</strong> is true once you set it with any bank card or a quarter. It's saved for this screen.</p>
+          <p class="notes__private">Motion readings and measurements stay on your device. Nothing is sent anywhere.</p>
+        </div>
+      </section>
+
+      <div class="share-row" id="shareRow" data-opt-share hidden></div>
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <script src="../../assets/tickets.js?v=34" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="math.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

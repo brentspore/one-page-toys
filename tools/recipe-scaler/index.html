@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Recipe Scaler: Halve, Double or Convert Any Recipe — One Page Toys</title>
+    <meta name="description" content="Paste any recipe and pick the servings. Every amount is rewritten the way a cook would write it: 48 teaspoons becomes 1 cup, half an egg comes with a fix, and cups of flour switch to grams. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/recipe-scaler/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f6f1e8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Recipe Scaler: Halve, Double or Convert Any Recipe — One Page Toys" />
+    <meta property="og:description" content="Paste a recipe, pick the servings, and every amount rolls to its new value, written the way a cook would write it. Cups to grams too." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/recipe-scaler/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/recipe-scaler.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Recipe Scaler: Halve, Double or Convert Any Recipe — One Page Toys" />
+    <meta name="twitter:description" content="Paste a recipe and pick the servings. Every amount is rewritten the way a cook would write it." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/recipe-scaler.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Recipe Scaler",
+        "url": "https://onepagetoys.com/tools/recipe-scaler/",
+        "description": "A recipe scaler that reads a pasted recipe, scales it to any number of servings, a quick multiplier or the amount of one ingredient you actually have, and rewrites every amount in real kitchen measures, with US and metric conversion by ingredient weight and oven temperatures converted in the method.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 132 · Recipe Scaler</span>
+        <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" aria-label="Sound on" title="Sound on">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="snd-on" d="M4 9v6h4l5 4V5L8 9H4zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/><path class="snd-off" d="M4 9v6h4l5 4V5L8 9H4zM17 9l5 6M22 9l-5 6"/></svg>
+        </button>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="hero" aria-labelledby="headline">
+        <p class="eyebrow">Recipe Scaler</p>
+        <h1 class="headline" id="headline">Cook it for any crowd.</h1>
+        <p class="lede">Paste a recipe and pick how many it should feed. Every amount is rewritten the way a cook would write it, right down to half an egg.</p>
+      </section>
+
+      <section class="paste" id="paste" aria-label="Your recipe">
+        <div class="paste__bar">
+          <div class="paste__now">
+            <span class="paste__k" id="pasteK">Sample recipe</span>
+            <span class="paste__name" id="pasteName">Brown Butter Chocolate Chip Cookies</span>
+          </div>
+          <div class="paste__acts">
+            <button type="button" class="pill pill--solid" id="newBtn">Paste your own</button>
+            <button type="button" class="pill" id="editBtn" aria-expanded="false" aria-controls="pasteBox">Edit</button>
+            <button type="button" class="pill" id="sampleBtn">Another sample</button>
+          </div>
+        </div>
+        <div class="paste__box" id="pasteBox" hidden>
+          <label class="paste__label" for="src">Paste the whole recipe: the title, the "Serves 4" line, the ingredients and the steps.</label>
+          <textarea id="src" spellcheck="false" autocomplete="off" rows="10" placeholder="Grandma's Banana Bread&#10;Makes 1 loaf&#10;&#10;3 ripe bananas&#10;1/3 cup melted butter&#10;3/4 cup sugar&#10;1 egg, beaten&#10;1 1/2 cups all-purpose flour&#10;&#10;Heat the oven to 350°F..."></textarea>
+          <p class="paste__fine" id="pasteFine">It stays in this browser. Nothing you paste is sent anywhere.</p>
+        </div>
+      </section>
+
+      <section class="dash" id="dash" aria-label="Scale the recipe">
+        <div class="dash__top">
+          <div class="stepper" role="group" aria-label="Servings">
+            <button type="button" class="stepper__b" id="minusBtn" aria-label="Fewer">−</button>
+            <label class="stepper__mid">
+              <input type="text" inputmode="decimal" id="servings" value="24" aria-describedby="nounLbl" autocomplete="off" />
+              <span class="stepper__noun" id="nounLbl">cookies</span>
+            </label>
+            <button type="button" class="stepper__b" id="plusBtn" aria-label="More">+</button>
+          </div>
+          <label class="orig">
+            <span>Recipe as written makes</span>
+            <input type="text" inputmode="decimal" id="origIn" value="24" autocomplete="off" aria-label="How many the recipe makes as written" />
+          </label>
+        </div>
+        <div class="dash__row">
+          <div class="chips" role="group" aria-label="Quick multiplier" id="chips">
+            <button type="button" data-f="0.5" aria-pressed="false">½×</button>
+            <button type="button" data-f="1" aria-pressed="true">1×</button>
+            <button type="button" data-f="1.5" aria-pressed="false">1½×</button>
+            <button type="button" data-f="2" aria-pressed="false">2×</button>
+            <button type="button" data-f="3" aria-pressed="false">3×</button>
+          </div>
+          <div class="seg" role="group" aria-label="Units" id="units">
+            <button type="button" data-u="asis" aria-pressed="true">As written</button>
+            <button type="button" data-u="us" aria-pressed="false">US</button>
+            <button type="button" data-u="metric" aria-pressed="false">Metric</button>
+          </div>
+        </div>
+        <p class="dash__tip" id="tip"><svg class="dash__tipicon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5.5a1.75 1.75 0 0 1 3.5 0V10l4.1.7a2 2 0 0 1 1.6 2.3l-.8 4.7a3 3 0 0 1-3 2.3h-3.6a3 3 0 0 1-2.4-1.2l-3-4a1.6 1.6 0 0 1 2.4-2.1L9 14z"/></svg><span><b>Only have 2 eggs?</b> Tap that line on the card and say what you've got. The whole recipe scales to match.</span></p>
+      </section>
+
+      <section class="desk" id="desk" aria-label="Your recipe card">
+        <article class="card" id="card">
+          <header class="card__head">
+            <p class="card__label">Recipe for</p>
+            <h2 class="card__title" id="cardTitle">Your recipe</h2>
+            <p class="card__meta"><span class="card__yield" id="cardYield"></span><span class="card__units" id="cardUnits"></span></p>
+            <div class="stamp" id="stamp" aria-hidden="true">
+              <span class="stamp__top" id="stampTop">Scaled</span>
+              <span class="stamp__big" id="stampBig">×2</span>
+              <span class="stamp__bot" id="stampBot"></span>
+            </div>
+          </header>
+          <ol class="card__lines" id="lines"></ol>
+        </article>
+        <div class="have" id="have" role="dialog" aria-modal="false" aria-labelledby="haveQ" hidden>
+          <p class="have__q" id="haveQ">How much do you have?</p>
+          <p class="have__of" id="haveOf"></p>
+          <div class="have__row">
+            <button type="button" class="have__step" id="haveMinus" aria-label="Less">−</button>
+            <input type="text" inputmode="decimal" class="have__amt" id="haveAmt" autocomplete="off" aria-label="Amount you have" />
+            <button type="button" class="have__step" id="havePlus" aria-label="More">+</button>
+            <select class="have__unit" id="haveUnit" aria-label="Unit"></select>
+            <span class="have__noun" id="haveNoun"></span>
+          </div>
+          <p class="have__err" id="haveErr" role="alert"></p>
+          <div class="have__acts">
+            <button type="button" class="pill pill--solid" id="haveGo">Scale to this</button>
+            <button type="button" class="pill" id="haveX">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button type="button" class="pill pill--solid" id="copyBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <span id="copyLbl">Copy recipe</span>
+        </button>
+        <button type="button" class="pill" id="printBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></svg>
+          Print
+        </button>
+        <div class="share-row" data-opt-share></div>
+      </div>
+      <p class="fine">Weights come from our own table of about 60 everyday ingredients, worked out by comparing standard baking references. Anything not in it converts by volume and says so. Your recipe never leaves this browser.</p>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <div class="mini" id="mini" hidden>
+      <button type="button" class="mini__b" id="miniMinus" aria-label="Fewer">−</button>
+      <span class="mini__v" id="miniV" aria-live="off">24 cookies</span>
+      <button type="button" class="mini__b" id="miniPlus" aria-label="More">+</button>
+    </div>
+
+    <div class="sr-only" aria-live="polite" id="live"></div>
+
+    <script src="../../assets/tickets.js?v=34" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="scaler.js?v=1" defer></script>
+    <script src="samples.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

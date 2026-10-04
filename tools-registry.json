@@ -1,5 +1,178 @@
 [
   {
+    "slug": "tuner",
+    "name": "Tuner",
+    "shortDescription": "Tune guitar, bass, ukulele, violin, viola or cello through your mic with a backlit needle, a strobe that stands still when you're in tune, and a reference tone for every string.",
+    "category": "utility",
+    "tags": [
+      "tuner",
+      "guitar-tuner",
+      "chromatic-tuner",
+      "music",
+      "microphone",
+      "strobe",
+      "ukulele",
+      "bass",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/tuner/",
+    "related": [
+      "chord-harp",
+      "kalimba",
+      "hearing-age",
+      "sleep-sounds"
+    ]
+  },
+  {
+    "slug": "sleep-sounds",
+    "name": "Sleep Sounds",
+    "shortDescription": "Mix brown noise, rain, a box fan, ocean waves, a crackling fire and far thunder into your own sleep sound, with a timer that fades out slowly. Every sound is made live, so nothing loops.",
+    "category": "utility",
+    "tags": [
+      "sleep-sounds",
+      "white-noise",
+      "brown-noise",
+      "sleep",
+      "relaxing",
+      "ambient",
+      "rain",
+      "timer",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/sleep-sounds/",
+    "related": [
+      "rain-stick",
+      "campfire",
+      "ripple-pond",
+      "breathing-pacer"
+    ]
+  },
+  {
+    "slug": "settle-up",
+    "name": "Settle Up",
+    "shortDescription": "Add who came on the trip and what everyone paid, and get the fewest payments that square the whole group. The whole trip lives in one link you share, so nobody signs up.",
+    "category": "utility",
+    "tags": [
+      "settle-up",
+      "split-expenses",
+      "group-trip",
+      "bill-splitter",
+      "money",
+      "calculator",
+      "shareable-link",
+      "travel",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/settle-up/",
+    "related": [
+      "tip-splitter",
+      "barkeep",
+      "recipe-scaler",
+      "time-is-money"
+    ]
+  },
+  {
+    "slug": "recipe-scaler",
+    "name": "Recipe Scaler",
+    "shortDescription": "Paste any recipe and scale it to the servings you need, or to the eggs you actually have. Every amount is rewritten in real kitchen measures, and cups can turn into grams.",
+    "category": "utility",
+    "tags": [
+      "recipe-scaler",
+      "cooking",
+      "baking",
+      "calculator",
+      "converter",
+      "kitchen",
+      "paste",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/recipe-scaler/",
+    "related": [
+      "barkeep",
+      "settle-up",
+      "tip-splitter",
+      "latte-factor"
+    ]
+  },
+  {
+    "slug": "level-and-ruler",
+    "name": "Level & Ruler",
+    "shortDescription": "Turn your phone into a brass bubble level for shelves and picture frames, with an angle readout and how much to raise the low end, plus an on-screen ruler you calibrate with a bank card.",
+    "category": "utility",
+    "tags": [
+      "level-and-ruler",
+      "bubble-level",
+      "ruler",
+      "measuring",
+      "diy",
+      "picture-hanging",
+      "phone-sensor",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/level-and-ruler/",
+    "related": [
+      "sun-path",
+      "tuner",
+      "moon-phase",
+      "golden-hour"
+    ]
+  },
+  {
+    "slug": "sun-path",
+    "name": "Sun Path",
+    "shortDescription": "See the sun's path across your sky on any day, and exactly when it will shine on your window, balcony or garden bed, today or in December.",
+    "category": "utility",
+    "tags": [
+      "sun-path",
+      "sun",
+      "sunlight",
+      "garden",
+      "window",
+      "compass",
+      "astronomy",
+      "planner",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/sun-path/",
+    "related": [
+      "golden-hour",
+      "moon-phase",
+      "world-clock",
+      "level-and-ruler"
+    ]
+  },
+  {
+    "slug": "hearing-age",
+    "name": "Hearing Age",
+    "shortDescription": "A gentle beep climbs toward 20 kHz until you can't hear it, then a glowing scope guesses the age of your ears. Send the result to a friend and see who hears higher.",
+    "category": "utility",
+    "tags": [
+      "hearing-age",
+      "hearing-test",
+      "mosquito-tone",
+      "high-frequency",
+      "audio",
+      "challenge",
+      "headphones",
+      "science",
+      "utility"
+    ],
+    "status": "live",
+    "path": "tools/hearing-age/",
+    "related": [
+      "tuner",
+      "sleep-sounds",
+      "typing-speed",
+      "life-in-numbers"
+    ]
+  },
+  {
     "slug": "timber",
     "name": "Timber",
     "shortDescription": "A tower of wooden blocks with real physics. Orbit it, slide a block out from below the top, and set it back on top. Every block you move makes the tower taller and shakier, until the whole thing comes down.",

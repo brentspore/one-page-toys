@@ -74,6 +74,120 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
+### Useful tools round — why these, and the ranking (2026-10-04)
+
+**Why it matters:** Owner: *"I want more tools but they always seem to come out the same."* The tool family has one shape: fill in a form, read a number (Countdown, Tip Splitter, Sleep Cycle, Latte Factor, Time Is Money). Barkeep is the only tool holding people (3:05 average), and it is the one you browse and use. **The fix is not new chrome, it is a different INPUT (the microphone, the motion sensors, text you paste, a link the group shares) and an output you USE (a tuned string, a night of sleep, a settled debt), not a number to read.** Each entry below breaks the pattern a different way.
+
+**When to revisit:** Whenever the next tool is open. Owner asked for these to be backlogged on 2026-10-04.
+
+**Notes:**
+- Ranking: Tuner and Sleep Sounds first (the most-used, recurring every day, and they lean on the site's audio strength), Trip Settle-Up the strongest non-audio pick, then the rest.
+- Tools stay out of the cross-promo (the tool family convention) and keep the shared tool chrome, but each should get its own signature visual the way Barkeep has its back bar.
+- No affiliate links, no sales surfaces (DECISIONS 2026-06-11), no developer tools (they belong on BuildUtilities), no backend or API keys.
+- Daily check (DECISIONS 2026-08-16): none of these is a daily. Hearing Age has a shareable result but no daily puzzle.
+
+---
+
+### Useful tool #1 — New tool: Instrument Tuner — BUILT as No. 135 Tuner (2026-10-04); see HANDOFF
+
+**Why it matters:** Every musician tunes every time they play, "online guitar tuner" is a huge evergreen search, and listening through the microphone is an interaction no tool here has. A big analog needle, cents off, and the target note. Category `utility`.
+
+**When to revisit:** Next tool round; the first pick.
+
+**Notes:**
+- Presets: guitar (standard, drop D, DADGAD, open G), ukulele, bass, violin/viola/cello, plus chromatic mode. Reference A adjustable (440 default; 432 for those who ask).
+- ⚠ **Pitch detection is the build**: autocorrelation or YIN on the microphone's time-domain signal, with octave-error guards (a guitar's low E is strong at its second harmonic) and smoothing so the needle settles rather than jitters. Test against synthesized tones and recorded strings at known pitches before trusting it.
+- A reference-tone button (play the target string) and a "strum detected" auto-advance to the next string.
+- Mic permission prompt with a clear explanation; nothing leaves the device. iOS Safari needs a gesture before `getUserMedia`.
+- Look: a real instrument tuner object (brass needle, backlit dial) per the house visual bar.
+
+---
+
+### Useful tool #2 — New tool: Sleep Sounds (noise machine) — BUILT as No. 134 Sleep Sounds (2026-10-04); see HANDOFF
+
+**Why it matters:** "Brown noise" is one of the biggest audio searches there is, it is a nightly habit, and synthesized ambient sound is exactly what this site builds well (Rain Stick, Campfire, Zen Ripple Pond). Category `utility` (or `wellness`).
+
+**When to revisit:** Next tool round, alongside the Tuner.
+
+**Notes:**
+- Sources, mixable with per-layer volume: brown, pink and white noise; rain (light to heavy), a box fan, ocean waves, a crackling fire, a distant thunderstorm. All synthesized, never samples, and seamless: long buffers or continuous generators, no audible loop point.
+- Sleep timer with a long fade (15 / 30 / 60 / 90 min, or until morning), and a gentle fade-in.
+- ⚠ **Phones**: use the Screen Wake Lock API so audio keeps running with the page open; say plainly that locking the phone may stop it on iPhone. Test that it survives the screen dimming.
+- Remember the last mix (`localStorage`); presets ("Rainy cabin", "Airplane cabin", "Ocean house").
+- Measure levels like any audio toy, and keep the master quiet by default: this plays at night.
+
+---
+
+### Useful tool #3 — New tool: Trip Settle-Up — BUILT as No. 133 Settle Up (2026-10-04); see HANDOFF
+
+**Why it matters:** After every group trip, someone does this math on a napkin. Everyone adds what they paid and for whom; it works out the fewest payments that square everyone up. It is the opposite of a one-person form: the whole tab lives in the LINK, so the group shares one URL and nobody signs up. Category `utility`.
+
+**When to revisit:** Next tool round; the strongest non-audio pick.
+
+**Notes:**
+- Expenses: who paid, how much, split equally or by shares among chosen people. Currency per trip.
+- Settlement: the minimal-transfers result (greedy on net balances is near-optimal and explainable; show "3 payments settle 6 people").
+- ⚠ **State in the URL hash** (compressed, e.g. a compact encoding plus deflate via CompressionStream), so the link IS the trip. Warn when the link gets long; offer copy and share. No server, no accounts.
+- Emotional payoff: the "all square" moment, and a clean summary to paste into the group chat.
+- Sibling to Tip Splitter (one bill); this is the whole trip.
+
+---
+
+### Useful tool #4 — New tool: Recipe Scaler — BUILT as No. 132 Recipe Scaler (2026-10-04); see HANDOFF
+
+**Why it matters:** Paste any recipe, choose the servings, and every amount is rewritten sensibly: 48 teaspoons becomes 1 cup, 1.5 eggs is flagged, a cup of flour can switch to grams. You transform your own text instead of filling in boxes. Category `utility`.
+
+**When to revisit:** A tool round after the top three.
+
+**Notes:**
+- Parse quantities (fractions, unicode fractions, ranges, "a pinch"), units (US and metric) and ingredient names line by line; leave lines it does not understand untouched.
+- ⚠ **The content is an ingredient density table** (flour, sugars, butter, rice, oats, honey, ~60 common items) for volume-to-weight; our own numbers from standard references, never pasted tables.
+- Smart rounding to kitchen measures (1/3 cup, not 0.33), unit upgrades and downgrades, and oven temperature conversion.
+- Output as clean text to copy or print; no recipe storage beyond `localStorage`.
+
+---
+
+### Useful tool #5 — New tool: Level and Ruler — BUILT as No. 131 Level & Ruler (2026-10-04); see HANDOFF
+
+**Why it matters:** Your phone becomes the tool: a bubble level for hanging pictures and shelves, and an on-screen ruler for small things. Both are evergreen searches, and using the phone's sensors is an input no tool here has. Category `utility`.
+
+**When to revisit:** A tool round after the top three.
+
+**Notes:**
+- Level: DeviceOrientation (flat and edge modes), a real liquid vial with a bubble that lags and settles, degrees readout, a calibrate-zero button, a click when level.
+- ⚠ iOS asks permission for motion sensors (`DeviceOrientationEvent.requestPermission()` on a gesture); desktops have no sensor, so they get the ruler only.
+- Ruler: calibrate once against a credit card (85.6 mm) or a US quarter, then measure in inches and centimeters; remember the calibration per device.
+- Look: brass-and-glass instruments.
+
+---
+
+### Useful tool #6 — New tool: Sun Path — BUILT as No. 130 Sun Path (2026-10-04); see HANDOFF
+
+**Why it matters:** Point your phone at a window or a garden bed and see when the sun will cross it, today or in December. Gardeners, apartment hunters and photographers all want this, and it is the natural next step from Golden Hour (which gives times, not directions). Category `utility`.
+
+**When to revisit:** After the Level (shares the sensor permission flow).
+
+**Notes:**
+- Sun position from date, time and location (the solar math Golden Hour already has), drawn as today's arc plus the summer and winter solstice arcs over the camera-free compass view; scrub the time of day.
+- Compass from DeviceOrientation (`webkitCompassHeading` on iOS); ⚠ phone compasses drift and vary, so show an accuracy note and allow a manual heading.
+- No camera required (an optional camera overlay is a stretch goal, and needs its own permission).
+- Output in words too: "Sun on this window from 2:10 to 6:40 PM today; in December, not at all."
+
+---
+
+### Useful tool #7 — New tool: Hearing Age — BUILT as No. 129 Hearing Age (2026-10-04); see HANDOFF
+
+**Why it matters:** A tone sweeps up through high pitches to find the highest you can hear, then says something like "your ears are about 34." People compare with friends, so it spreads. Category `utility` (or a toy).
+
+**When to revisit:** Any round; small build.
+
+**Notes:**
+- A stepped high-frequency sweep (8 kHz to 20 kHz), press when it disappears, repeated to confirm; map the result to a playful age band (typical age-related high-frequency loss figures).
+- ⚠ **Safety and honesty**: start quiet and never loud, ask for headphones, and say clearly it is for fun, not a hearing test; results depend on the headphones and speakers.
+- Share line: "I can hear up to 15.2 kHz. Ears of a 38-year-old." Image share via `OPT_SHARE_IMAGE`.
+
+---
+
 ### Deep sit-down round — why these, and the ranking (2026-10-03)
 
 **Why it matters:** The first real analytics (the admin page, 28 days to 2026-10-03) show the toys people stay with are the deep ones: **Chess 5:50 average per visitor, Meld 5:37, Barkeep 3:05**, against under a minute for most of the catalog. Chess holds people with a real opponent that has personality, Meld with a replayable run and music, Barkeep with a tool you browse. Claude's own read on the admin page said the same thing ("build more deep, sit-down games like Chess"). The entries tagged **Deep** below are the strongest candidates for that lane, in rank order.

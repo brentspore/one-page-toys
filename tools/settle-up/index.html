@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Settle Up: Split Trip Expenses With Friends — One Page Toys</title>
+    <meta name="description" content="Split a group trip without the napkin math. Add who came and what everyone paid, and Settle Up works out the fewest payments that square the whole group. The trip lives in one shareable link. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/settle-up/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f3efe6" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Settle Up: Split Trip Expenses With Friends" />
+    <meta property="og:description" content="Add who came and what everyone paid. Get the fewest payments that square the group, in one link everyone can open. No sign-up." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/settle-up/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/settle-up.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Settle Up: Split Trip Expenses With Friends" />
+    <meta name="twitter:description" content="The fewest payments that square a whole group trip, in one link everyone can open. No sign-up." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/settle-up.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Settle Up",
+        "url": "https://onepagetoys.com/tools/settle-up/",
+        "description": "A group trip expense splitter. Add the people and every expense, split equally or by shares, and get the fewest payments that settle everyone, drawn as a table of payments. The whole trip is stored in a shareable link, with no account and no server.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 133 · Settle Up</span>
+        <button type="button" class="iconbtn" id="soundBtn" aria-pressed="true" aria-label="Sound on" title="Sound on">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="snd-on" d="M4 9v6h4l5 4V5L8 9H4zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/><path class="snd-off" d="M4 9v6h4l5 4V5L8 9H4zM17 9l5 6M22 9l-5 6"/></svg>
+        </button>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="hero" aria-labelledby="headline">
+        <p class="eyebrow">Settle Up · for group trips</p>
+        <h1 class="headline" id="headline">Who owes who after the trip?</h1>
+        <p class="lede">Add who came and what everyone paid. Settle Up finds the fewest payments that square the whole group. The trip lives in the link, so everyone sees the same numbers and nobody signs up for anything.</p>
+        <div class="hero__actions">
+          <button type="button" class="btn btn--primary" id="sampleBtn">Try a sample trip</button>
+          <button type="button" class="btn btn--ghost" id="newBtn" hidden>Start a new trip</button>
+        </div>
+        <div class="recent" id="recent" hidden>
+          <p class="recent__k">Trips on this device</p>
+          <ul class="recent__list" id="recentList"></ul>
+        </div>
+        <p class="loadnote" id="loadNote" role="alert" hidden></p>
+      </section>
+
+      <div class="layout">
+        <div class="col col--in">
+          <!-- 1. People -->
+          <section class="card" aria-labelledby="peopleTitle">
+            <div class="card__head">
+              <h2 class="card__title" id="peopleTitle"><span class="step">1</span> Who came?</h2>
+              <label class="cur">
+                <span class="cur__k">Currency</span>
+                <span class="cur__v" id="curVal" aria-hidden="true">USD</span>
+                <select id="curSel" aria-label="Currency for this trip"></select>
+              </label>
+            </div>
+            <div class="people" id="people" role="list" aria-label="People on this trip"></div>
+            <form class="addperson" id="addPerson" autocomplete="off">
+              <input type="text" id="personName" maxlength="32" placeholder="Add a name, or a few: Sam, Jo, Priya" aria-label="Add a person" enterkeyhint="done" />
+              <button type="submit" class="btn btn--ink btn--sm">Add</button>
+            </form>
+            <p class="card__tip" id="peopleTip">Tip: a couple who pays as one can be one chip that counts as two. Tap a chip to set it.</p>
+            <!-- edit a person -->
+            <div class="pedit" id="pEdit" hidden>
+              <label class="field">
+                <span class="field__k">Name</span>
+                <input type="text" id="pEditName" maxlength="32" />
+              </label>
+              <div class="field">
+                <span class="field__k" id="pEditWK">Counts as</span>
+                <div class="stepper" role="group" aria-labelledby="pEditWK">
+                  <button type="button" class="stepper__b" id="pEditMinus" aria-label="One fewer">−</button>
+                  <output id="pEditW" aria-live="polite">1</output>
+                  <button type="button" class="stepper__b" id="pEditPlus" aria-label="One more">+</button>
+                </div>
+                <span class="field__hint" id="pEditWHint">1 person</span>
+              </div>
+              <div class="pedit__actions">
+                <button type="button" class="btn btn--ink btn--sm" id="pEditDone">Done</button>
+                <button type="button" class="linkbtn" id="pEditRemove">Remove</button>
+              </div>
+              <p class="pedit__note" id="pEditNote" hidden></p>
+            </div>
+          </section>
+
+          <!-- 2. Add an expense -->
+          <section class="card" aria-labelledby="formTitle">
+            <div class="card__head">
+              <h2 class="card__title" id="formTitle"><span class="step">2</span> What got paid?</h2>
+            </div>
+            <form class="exp" id="expForm" autocomplete="off" novalidate>
+              <div class="exp__row">
+                <label class="field field--grow">
+                  <span class="field__k">What</span>
+                  <input type="text" id="expWhat" maxlength="60" placeholder="Dinner at the pier" enterkeyhint="next" />
+                </label>
+                <label class="field field--amt">
+                  <span class="field__k">Amount</span>
+                  <span class="amt">
+                    <span class="amt__sym" id="amtSym" aria-hidden="true">$</span>
+                    <input type="text" id="expAmt" inputmode="decimal" placeholder="0.00" aria-describedby="expErr" enterkeyhint="done" />
+                  </span>
+                </label>
+              </div>
+              <p class="exp__empty" id="expEmpty">Add who came first, up in step 1. Then each expense is two taps: who paid, and who it was for.</p>
+              <div class="field exp__who">
+                <span class="field__k" id="paidByK">Paid by</span>
+                <div class="pick" id="paidBy" role="radiogroup" aria-labelledby="paidByK"></div>
+              </div>
+              <div class="field exp__who">
+                <div class="split__head">
+                  <span class="field__k" id="splitK">Split between</span>
+                  <div class="seg" role="group" aria-label="How to split">
+                    <button type="button" id="modeEq" aria-pressed="true">Equally</button>
+                    <button type="button" id="modeSh" aria-pressed="false">By shares</button>
+                  </div>
+                </div>
+                <div class="pick pick--multi" id="splitPick" role="group" aria-labelledby="splitK"></div>
+                <div class="shares" id="sharesList" role="group" aria-labelledby="splitK" hidden></div>
+                <div class="split__quick">
+                  <button type="button" class="linkbtn" id="splitAll">Everyone</button>
+                  <span aria-hidden="true">·</span>
+                  <button type="button" class="linkbtn" id="splitNone">Nobody</button>
+                </div>
+                <p class="preview" id="preview" aria-live="polite"></p>
+              </div>
+              <p class="err" id="expErr" role="alert"></p>
+              <div class="exp__actions">
+                <button type="submit" class="btn btn--primary" id="expSubmit">Print it on the tape</button>
+                <button type="button" class="btn btn--ghost" id="expCancel" hidden>Cancel</button>
+                <button type="button" class="linkbtn linkbtn--danger" id="expDelete" hidden>Delete</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- the receipt tape -->
+          <section class="tapewrap" aria-label="The trip receipt">
+            <div class="printer" aria-hidden="true"><span class="printer__slot"></span><span class="printer__led" id="printLed"></span></div>
+            <div class="tape" id="tape">
+              <div class="tape__paper">
+                <label class="visually-hidden" for="tripName">Trip name</label>
+                <input class="tape__title" id="tripName" maxlength="40" placeholder="NAME THIS TRIP" spellcheck="false" />
+                <p class="tape__meta" id="tapeMeta">0 PEOPLE</p>
+                <ol class="tape__lines" id="lines" aria-label="Expenses. Tap one to edit it."></ol>
+                <p class="tape__empty" id="tapeEmpty">No expenses yet.<br />The tape prints as you add them.</p>
+                <div class="tape__sum" id="tapeSum">
+                  <div class="tape__row tape__row--total"><span>TOTAL</span><span id="tapeTotal">$0.00</span></div>
+                  <div class="tape__row"><span id="tapeItemsK">ITEMS</span><span id="tapeItems">0</span></div>
+                  <div class="tape__row"><span>PER PERSON, ABOUT</span><span id="tapeAvg">$0.00</span></div>
+                </div>
+                <svg class="tape__code" id="barcode" viewBox="0 0 200 34" preserveAspectRatio="none" aria-hidden="true"></svg>
+                <p class="tape__thanks">THANKS FOR TRAVELING TOGETHER</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="col col--out">
+          <!-- 3. The settle up -->
+          <section class="settle" aria-labelledby="verdict">
+            <p class="settle__k"><span class="step step--dark">3</span> The settle up</p>
+            <h2 class="verdict" id="verdict" aria-live="polite">Add who came to get started.</h2>
+            <p class="verdict__sub" id="verdictSub"></p>
+
+            <div class="table" id="tableWrap">
+              <svg id="tableSvg" class="table__svg" role="img" aria-label="The trip table"></svg>
+              <div class="stamp" id="stamp" aria-hidden="true">
+                <div class="stamp__ink">
+                  <span class="stamp__big">ALL SQUARE</span>
+                  <span class="stamp__small" id="stampDate">SETTLED</span>
+                </div>
+              </div>
+            </div>
+
+            <ol class="pays" id="pays" aria-label="Payments"></ol>
+            <div class="folded" id="folded" hidden>
+              <p class="folded__k">Already paid, before the trip changed</p>
+              <ul class="folded__list" id="foldedList"></ul>
+            </div>
+
+            <div class="bals" id="bals" hidden>
+              <p class="bals__k">Who's up, who's down</p>
+              <ul class="bals__list" id="balsList"></ul>
+            </div>
+          </section>
+
+          <section class="card linkcard" id="linkCard" aria-labelledby="linkTitle" hidden>
+            <h2 class="card__title" id="linkTitle">Send it to the group</h2>
+            <p class="card__tip">The whole trip is in this link. Anyone who opens it sees the same tape and the same payments. If you change something, the link changes too, so send the new one.</p>
+            <div class="linkbar">
+              <button type="button" class="btn btn--primary" id="shareLink">Share trip link</button>
+              <button type="button" class="btn btn--ghost" id="copyLink">Copy link</button>
+            </div>
+            <p class="linknote" id="linkNote" hidden></p>
+            <div class="summary">
+              <p class="summary__k">Paste this in the group chat</p>
+              <pre class="summary__text" id="summary" tabindex="0" aria-label="Plain text summary"></pre>
+              <button type="button" class="btn btn--ink btn--sm" id="copySummary">Copy summary</button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span id="toastMsg"></span>
+      <button type="button" class="toast__undo" id="toastUndo" hidden>Undo</button>
+    </div>
+
+    <script src="../../assets/tickets.js?v=34" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="core.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>

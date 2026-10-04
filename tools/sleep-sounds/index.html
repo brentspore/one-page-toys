@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Sleep Sounds: Brown Noise, Rain and Fan — One Page Toys</title>
+    <meta name="description" content="A free noise machine for sleep: brown, pink and white noise, rain from a drizzle to a downpour, a box fan, ocean waves, a crackling fire and far thunder. Mix them, set a sleep timer that fades out slowly, and nothing ever loops. Free, private, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/tools/sleep-sounds/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#eceef3" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Sleep Sounds: Brown Noise, Rain and Fan — One Page Toys" />
+    <meta property="og:description" content="Mix brown noise, rain, a box fan, waves, a fire and far thunder into your own sleep sound, with a timer that fades out slowly. Made live in your browser, so it never loops." />
+    <meta property="og:url" content="https://onepagetoys.com/tools/sleep-sounds/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/sleep-sounds.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sleep Sounds: Brown Noise, Rain and Fan — One Page Toys" />
+    <meta name="twitter:description" content="A noise machine for sleep: brown noise, rain, a fan, waves, a fire and far thunder, with a slow-fading sleep timer." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/sleep-sounds.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Sleep Sounds",
+        "url": "https://onepagetoys.com/tools/sleep-sounds/",
+        "description": "A free sleep noise machine that synthesizes brown, pink and white noise, rain from light to heavy, a box fan, ocean waves, a crackling fire and distant thunder live in the browser, with mixable layers, presets, an 8-second fade-in and a sleep timer that fades out slowly.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var de = document.documentElement;
+          de.setAttribute("data-theme", dark ? "dark" : "light");
+          de.setAttribute("data-theme-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="One Page Toys">
+      <a class="brand" href="../../">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>One Page Toys</span>
+      </a>
+      <div class="topbar__right">
+        <span class="topbar__tag">No. 134 · Sleep Sounds</span>
+        <button type="button" class="iconbtn theme-toggle" data-theme-toggle aria-label="Theme: System (click to change)" title="Theme: System">
+          <span class="theme-toggle__auto" aria-hidden="true">◐</span>
+          <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+          <span class="theme-toggle__moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <div class="ss">
+        <div class="ss__view">
+          <header class="ss__head">
+            <p class="eyebrow">Sleep sounds</p>
+            <h1 class="headline" id="mixName">Rainy cabin</h1>
+            <p class="ss__sub" id="mixWords">Rain, crackling fire and far thunder</p>
+          </header>
+
+          <figure class="night" id="night">
+            <canvas id="scene" class="night__scene" role="img" aria-label="A window at night"></canvas>
+            <div class="night__cap" aria-hidden="true">
+              <span class="night__clock" id="clock">11:00 PM</span>
+              <span class="night__state" id="nightState">Press play</span>
+            </div>
+          </figure>
+
+          <p class="ss__intro">Every sound here is made live in your browser, so nothing loops and nothing is sent anywhere.</p>
+        </div>
+
+        <div class="ss__panel">
+          <div class="console">
+            <button type="button" class="roundbtn" id="dimBtn" aria-label="Dim the screen">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+              <span class="roundbtn__lab">Dim</span>
+            </button>
+            <button type="button" class="playbtn" id="playBtn" aria-label="Play" aria-pressed="false">
+              <svg class="playbtn__ring" viewBox="0 0 100 100" aria-hidden="true">
+                <circle class="playbtn__track" cx="50" cy="50" r="46" />
+                <circle class="playbtn__prog" id="playRing" cx="50" cy="50" r="46" />
+              </svg>
+              <svg class="playbtn__icon playbtn__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+              <svg class="playbtn__icon playbtn__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg>
+            </button>
+            <label class="timerpick">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4.2l2.6 1.6M9.5 2.8h5"/></svg>
+              <span class="sr-only">Sleep timer</span>
+              <select id="timerSel" aria-label="Sleep timer"></select>
+            </label>
+          </div>
+          <p class="console__line" id="timerLine" aria-live="polite">Timer off. Plays until you stop it.</p>
+          <label class="morning" id="morningRow" hidden>
+            <span>Fade out by</span>
+            <input type="time" id="morningIn" value="07:00" />
+          </label>
+
+          <div class="vol">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/></svg>
+            <input type="range" id="volume" min="0" max="100" step="1" value="40" aria-label="Volume" />
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" /></svg>
+          </div>
+
+          <section class="block" aria-labelledby="presetsH">
+            <h2 class="block__h" id="presetsH">Presets</h2>
+            <div class="presets" id="presets" role="group" aria-label="Presets"></div>
+          </section>
+
+          <section class="block" aria-labelledby="mixerH">
+            <h2 class="block__h" id="mixerH">Your mix</h2>
+            <div class="mixer" id="mixer"></div>
+            <div class="mixer__foot">
+              <button type="button" class="textbtn" id="clearBtn">Turn everything off</button>
+              <button type="button" class="textbtn" id="linkBtn">Copy a link to this mix</button>
+            </div>
+          </section>
+
+          <label class="switch">
+            <input type="checkbox" id="awake" checked />
+            <span class="switch__track" aria-hidden="true"></span>
+            <span class="switch__text">Keep the screen on while it plays</span>
+          </label>
+          <p class="note" id="lockNote">Keep this tab open. iPhones on a recent iOS and most Android phones keep playing after the screen locks. If yours goes quiet, leave the screen on and tap Dim.</p>
+        </div>
+      </div>
+
+      <details class="about">
+        <summary>Brown, pink or white noise: what's the difference?</summary>
+        <p><b>White noise</b> has the same energy at every pitch, so it sounds bright and hissy, like a TV between channels. It covers sudden sounds well but some people find it sharp.</p>
+        <p><b>Pink noise</b> loses a little energy with each step up in pitch. It sounds even to the ear, like steady rain or wind in leaves, and it's the kind most sleep research has played to people.</p>
+        <p><b>Brown noise</b> drops off faster still, leaving a deep rumble like a waterfall or a jet cabin. Lots of people find it the easiest to fall asleep to, and it pairs well with rain.</p>
+        <p>The other layers are built the same way, from noise shaped to match the real thing: thousands of drops for rain, the blades and motor of a fan, swells that build and wash back, wood that crackles and pops, and thunder that rolls in a few seconds after the flash.</p>
+      </details>
+
+      <div class="share-row" data-opt-share></div>
+      <a class="backlink" href="../../">← onepagetoys.com</a>
+    </main>
+
+    <div class="dimmer" id="dimmer" hidden>
+      <button type="button" class="dimmer__wake" id="dimWake" aria-label="Brighten the screen">
+        <span class="dimmer__clock" id="dimClock">11:00 PM</span>
+        <span class="dimmer__line" id="dimLine">Tap to brighten</span>
+      </button>
+    </div>
+    <p class="sr-only" id="live" aria-live="polite"></p>
+
+    <script src="../../assets/tickets.js?v=34" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="logic.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/theme.js?v=8" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+  </body>
+</html>
