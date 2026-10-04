@@ -1,14 +1,14 @@
 # Handoff
 
-**Last updated: 2026-10-03 (No. 127 Checkers built and registered, LOCAL ONLY, waiting on the owner's play-test and "push". Before that: admin "What to do next" banner `da9525f`, quiet-site fix `3197500`, structured outputs `4eec97d`, all live.)**
+**Last updated: 2026-10-03 (No. 127 Checkers shipped `9993076` with the owner's key art, live-verified; cross-promo in all four DEPLOYED bundles. Earlier today: admin "What to do next" banner `da9525f`, quiet-site fix `3197500`, structured outputs `4eec97d`.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**126 toys live at onepagetoys.com, No. 127 Checkers built locally.** Latest on `main`: `4eec97d`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**127 toys, live at onepagetoys.com.** Latest on `main`: `9993076`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
-## No. 127 Checkers — built 2026-10-03, LOCAL ONLY (not committed; waiting on the owner's play-test and "push")
+## No. 127 Checkers — shipped 2026-10-03 (`9993076`), live
 
 **`toys/checkers/`** — American checkers (English draughts) on a worn folk-art board on a cracker barrel at the back of
 a country store, the BACKLOG "Deep #1" pick after the admin data showed deep games hold people (Chess 5:50, Meld 5:37).
@@ -18,7 +18,9 @@ two-player). Five files: `core.js` (rules, loaded by page AND worker), `engine.j
 `styles.css`. Keys: `checkers_beaten` (ticket rule dir `up`, rule only), `checkers_defeated`, `checkers_wins|losses|
 draws`, `checkers_side` (black moves first; the player picks), `checkers_forced`, `checkers_sound`. Registered
 everywhere in the working tree: registry, sitemap (130 urls), NL phrase, card CSS + `:not()`, og-gen entry, ticket rule,
-cross-promo in all FOUR lists (siblings edited locally, NOT committed: five-second-game, the-trail-game, word-kraven).
+cross-promo in all FOUR lists (five-second-game `d22be55`, the-trail-game `36c7493`, word-kraven `45d43c5`; all four
+DEPLOYED bundles carry it). **Live-verified**: phone game plays and the engine replies, `/toys/checkers` redirects to the
+slash, All Toys newest panel, search ("draughts"), featured rotation; IndexNow accepted.
 - **Rules verified by perft**: 7 / 49 / 302 / 1469 / 7361 / 36768 / 179740 / 845931 / 3963680 through depth 9, plus spot
   checks (men never capture backward, crowning ends the move, a king's capture loop may land on its own start square).
 - **Six regulars** (Junie the storekeeper's girl, Hal the mail carrier, Miss Odette the schoolteacher, Jasper Quill the
@@ -631,7 +633,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **49 entries, `?v=29` across 49 pages** (Checkers added locally 2026-10-03; Decant before it, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **49 entries, `?v=29` across 49 pages** (Checkers added 2026-10-03, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -721,7 +723,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Checkers (No. 127): owner play-test + "push"** (then commit the three sibling MoreGames.tsx edits, verify the DEPLOYED bundles, IndexNow). Feel, the ladder against a human, and the sound are all unjudged.
+- **Checkers (No. 127): owner play-test on a phone.** Feel, the ladder against a human, and the sound are all unjudged.
 - **Shared tickets pill overlaps the "← onepagetoys.com" back link in WebKit at 375x667** (Chess too, so it predates Checkers; Chromium docks it correctly). `dock()` in `assets/tickets.js` measures differently in Safari.
 - ✅ **Jettison, Meld and Trench Runner Cinematic all owner-approved on a phone 2026-10-03** ("all 3 are great"). Still open from Jettison: whether "block jam" goes in the hidden search keywords (currently out).
 
