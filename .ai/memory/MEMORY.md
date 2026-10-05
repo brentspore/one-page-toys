@@ -5,6 +5,7 @@
 - [Project reference](reference.md) — commands, repo pointers, external systems, and operational notes
 - [Project decisions](DECISIONS.md) — project-specific decisions that should not be relitigated
 - [Project backlog](BACKLOG.md) — deferred ideas and follow-ups for this project
+- [Toys log](toys-log.md) — per-toy ship records and toy-specific traps (reference, open on demand; not auto-imported)
 - [Design principles](design-principles.md) — CSS scoping rules, architecture vs. style, tool page structure, interaction safety
 - [New tool strategy](new-tool-strategy.md) — SEO-first approach and implementation checklist for adding tools/toys
 
