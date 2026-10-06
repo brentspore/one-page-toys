@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Backgammon",
+      "tagline": "A match to 5 by the sea",
+      "url": "https://onepagetoys.com/toys/backgammon/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230f2a36'/><rect x='3' y='3' width='26' height='26' rx='3' fill='%23d2a66c' stroke='%236c4024' stroke-width='2'/><path d='M5.6 27.2 H14.4 L10 11 Z' fill='%234a2a16'/><path d='M15.6 4.8 H24.4 L20 21 Z' fill='%23f6ecd6' stroke='%236c4024' stroke-width='.6'/><circle cx='10' cy='23.2' r='4' fill='%232c1a11' stroke='%23120a06' stroke-width='.6'/><circle cx='10' cy='23.2' r='1.3' fill='%23f3ece4'/><g transform='translate(22.4 22.6) rotate(-14)'><rect x='-4.6' y='-4.6' width='9.2' height='9.2' rx='2' fill='%23fbf6ea' stroke='%233a2414' stroke-width='.8'/><circle cx='-2.1' cy='-2.1' r='1.05' fill='%232b1b12'/><circle cx='0' cy='0' r='1.05' fill='%232b1b12'/><circle cx='2.1' cy='2.1' r='1.05' fill='%232b1b12'/></g></svg>",
+      "initial": "B",
+      "slug": "backgammon"
+    },
+    {
       "name": "Timber",
       "tagline": "Pull one out. Don't topple it",
       "url": "https://onepagetoys.com/toys/timber/",

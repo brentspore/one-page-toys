@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Backgammon — One Page Toys</title>
+    <meta name="description" content="Play backgammon against six regulars at a café table by the sea, from the owner's granddaughter to the woman who runs the place. A match to 5, with an optional doubling cube, hints and a pip count. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/backgammon/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f2a36" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Backgammon" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Backgammon — One Page Toys" />
+    <meta property="og:description" content="An inlaid board on a café table by the sea. Six regulars will play you a match to 5, and Madame Noor has never lost at her own table." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/backgammon/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/backgammon.jpg?v=5015dec4" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Backgammon — One Page Toys" />
+    <meta name="twitter:description" content="Backgammon on an inlaid board by the sea against six café regulars. A match to 5, an optional doubling cube, hints and a pip count." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/backgammon.jpg?v=5015dec4" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Backgammon",
+        "url": "https://onepagetoys.com/toys/backgammon/",
+        "description": "A full game of backgammon against six computer opponents, played on an inlaid wooden board on a café table by the sea. Every official rule is here: both dice must be played when they can be, and the larger one when only one can; doubles move four times; a checker on the bar must come in first; a higher number bears off from the highest point; a gammon counts double and a backgammon triple. You play a match to 5 points. Switch on the doubling cube and the regulars will double and take by the odds, with the Crawford rule in force. The six opponents climb from Mina, the owner's granddaughter, through a net mender, a baker, a ferry captain and a retired schoolmaster, to Madame Noor, who runs the café. Each reads the board differently, and the engine runs entirely in your browser. Tap or drag your checkers or play with the keyboard, ask for a hint, and keep an eye on the pip count. Free, with no account and no sign-up.",
+        "applicationCategory": "GameApplication",
+        "genre": "Strategy",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas" role="img" aria-label="A backgammon board on a café table by the sea. Tap a checker, then a lit point to move it, or drag it. Arrow keys and Enter work too."></canvas>
+
+    <div class="opp" id="opp" hidden>
+      <span class="opp__seal" id="oppSeal"></span>
+      <span class="opp__body">
+        <span class="opp__top">
+          <span class="opp__name" id="oppName">Mina</span>
+          <span class="opp__role" id="oppRole">the owner's granddaughter</span>
+        </span>
+        <span class="opp__say" id="oppSay"></span>
+      </span>
+      <span class="opp__pips"><b id="oppPips">167</b><small>pips</small></span>
+    </div>
+
+    <div class="score" id="score" hidden>
+      <span class="score__row"><span class="score__me" id="scoreMe">0</span><span class="score__dash">&ndash;</span><span class="score__them" id="scoreThem">0</span></span>
+      <span class="score__to" id="scoreTo">to 5</span>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <span class="me">
+        <span class="me__turn" id="turn">Your roll</span>
+        <span class="me__pips"><b id="myPips">167</b> pips</span>
+      </span>
+      <button type="button" class="btn" id="btnHint" title="Hint (H)">Hint</button>
+      <button type="button" class="btn btn--cube" id="btnDouble" title="Double (D)" hidden>Double</button>
+      <button type="button" class="btn btn--go" id="btnRoll" title="Roll (R)">Roll</button>
+      <button type="button" class="btn btn--more" id="btnMore" aria-label="More" aria-expanded="false" title="More">&#8943;</button>
+    </div>
+    <div class="menu" id="menu" hidden>
+      <button type="button" class="btn" id="btnConcede">Concede the match</button>
+      <button type="button" class="btn" id="btnNew">New match</button>
+    </div>
+
+    <div class="ask" id="ask" role="alertdialog" aria-labelledby="askTitle" aria-describedby="askText" hidden>
+      <p class="ask__title" id="askTitle">Noor doubles</p>
+      <p class="ask__text" id="askText"></p>
+      <div class="ask__btns" id="askBtns"></div>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+    <p class="note" id="note" aria-live="polite"></p>
+
+    <button type="button" class="sound-btn" id="soundBtn" aria-pressed="true" title="Toggle sound (M)">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">A table by the sea</p>
+        <h1 class="panel__title">Backgammon</h1>
+        <p class="panel__text">
+          The board comes out every afternoon at the café on the harbor wall, and <b>six regulars</b>
+          will play you a match to 5. Mina plays whatever she sees first. Teo runs for home.
+          Captain Marek hits everything that moves. <b>Madame Noor</b> runs the place, and she
+          has never lost at her own table.
+        </p>
+        <div class="opts">
+          <button type="button" class="switch" id="cubeBtn" role="switch" aria-checked="false">
+            <span class="switch__track"><span class="switch__dot"></span></span>
+            <span>Play with the doubling cube</span>
+          </button>
+          <p class="opts__note" id="cubeNote">First to 5 points. A gammon counts 2, a backgammon 3.</p>
+        </div>
+        <button type="button" class="play-btn" id="ovBtn">Sit down with Mina</button>
+        <p class="panel__or">or pick any regular</p>
+        <div class="cast" id="cast"></div>
+        <p class="panel__keys">tap a checker, then a lit point &middot; or drag it &middot; R roll &middot; H hint &middot; D double &middot; arrows + Enter &middot; M sound</p>
+      </div>
+    </div>
+
+    <div class="overlay" id="result" hidden>
+      <div class="panel panel--result">
+        <span id="resSeal"></span>
+        <p class="result__line" id="resLine">match to 5</p>
+        <h2 class="panel__title" id="resTitle">You win</h2>
+        <p class="panel__text" id="resText"></p>
+        <div class="result__btns">
+          <button type="button" class="play-btn" id="btnAgain">Rematch</button>
+          <button type="button" class="btn btn--big" id="btnCast">Pick another regular</button>
+        </div>
+        <p class="result__record" id="resRecord"></p>
+        <span data-opt-share></span>
+        <div data-more-games></div>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 136</span>
+      <span class="frame__corner frame__corner--tr">Backgammon</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hintLine">tap a checker, then tap a lit point</p>
+
+    <script src="../../assets/tickets.js?v=35" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="core.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=10" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=31" defer></script>
+  </body>
+</html>

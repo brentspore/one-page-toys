@@ -2,6 +2,39 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
+## No. 136 Backgammon — built 2026-10-06, local, NOT yet pushed
+
+**`toys/backgammon/`** — backgammon against six café regulars at a table by the sea (BACKLOG "Deep #2"). Owner picks
+(2026-10-06): world **Seaside café**, **a match to 5** (gammon 2, backgammon 3), **doubling cube OFF with a start-panel
+switch** (Crawford enforced when on), extras **Hint and Pip count** only (no undo, no replay, by choice). Built by one
+builder agent from the Checkers template; registration done after. Files: `core.js` (rules, page + Worker), `engine.js`
+(Worker: 1-ply / 2-ply expectimax personalities + cube), `audio.js`, `script.js`. Regulars, easiest first: Mina (the
+owner's granddaughter), Teo (mends nets), Auntie Despina (almond cakes), Captain Marek (the ferry), Mr. Aris (retired
+schoolmaster), Madame Noor (runs the café). Keys: `backgammon_beaten` (ticket rule dir `up`, rule only),
+`backgammon_defeated|wins|losses|cube|foe|sound`. **Owner's key art** (`_sources/backgammon.png`, `TITLE` 0) is in the
+featured pool and is the card (`cards/backgammon.webp`) and share image (`og/backgammon.jpg`); the builder pulled the
+scene's palette toward it. `scripts/poses/backgammon.js` stays as the gameplay-still pose. Registered: registry,
+sitemap 139, NL phrase ("tavla", "tavli", "nardy", "shesh besh"...), card CSS + `:not()`, og-gen entry (unused while
+the art is the share image), ticket rule, cross-promo in all FOUR lists (tagline "A match to 5 by the sea", a board +
+die favicon). Tickets pill clears the back link in WebKit at 375x667.
+- **Move generator verified like perft** against an independent brute force: 3,000 random positions x 21 rolls,
+  3,370,755 plays, 0 mismatches; opening 3-2 = 17 distinct plays (the published count). Larger-die and part-playable
+  doubles rules checked.
+- **Ladder measured with duplicate dice** (same rolls both seats): every rung beats the one below, 52-61% of games;
+  Marek over Despina is the narrowest (~5 standard errors). ⚠ More 2-ply candidates did NOT separate rungs (top 3 vs
+  top 8 was a coin flip); spacing comes from temperature and cruder evaluations. ⚠ A random-move bot loses even to
+  Mina 0-6: judge the ladder with the hint-following bot. Engine vs engine only, never against a human.
+- **Dice fair:** 6M rolls, face chi-square 3.94 (critical 11.07), doubles 0.1665.
+- ⚠⚠ **No input while a play is in progress.** A tap in the pause before an auto-played forced remainder moved a
+  checker, then the stale queued play landed too and corrupted the board (1132 pips). Input is locked for the whole
+  chain and any step the board no longer allows is refused (and logged as a console error so tests catch it).
+- ⚠ Full-resolution canvas pattern fills for the water caustics cost 90ms a frame at 2x; a third of the resolution,
+  every other frame, brought it to 17ms.
+- ⚠ Highlights must be loud at this camera: a gold gradient with a glowing edge, a ghost checker where it lands, a gold
+  ring on the lifted checker (0.26-alpha fills vanished on the ebony points).
+- **Audio, measured offline** (7 renders each): checker place 0.30, clack 0.27, hit 0.25, full dice throw 0.33, cube
+  0.26, match win 0.27, select 0.10 (soft on purpose); sea bed RMS 0.019. No NaN. **Never heard.**
+
 ## Useful tools round, No. 129-135 — shipped 2026-10-04 (`461b78a`), live
 
 Owner: *"I want more tools but they always seem to come out the same"*, then *"I like all 7 tools ideas, build them

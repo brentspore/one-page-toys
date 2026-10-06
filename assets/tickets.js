@@ -70,6 +70,7 @@
     { test: "accretion_best", dir: "up", label: "Accretion score" },
     { test: "claw_best", dir: "up", label: "Claw Machine haul" },
     { test: "chess_beaten", dir: "up", label: "Chess opponents beaten" },
+    { test: "backgammon_beaten", dir: "up", label: "Backgammon regulars beaten" },
     { test: "checkers_beaten", dir: "up", label: "Checkers regulars beaten" },
     { test: "timber_best", dir: "up", label: "Timber blocks moved" },
     // one rule for all three cube sizes; a solve time is better when lower
@@ -747,6 +748,14 @@
     dock();
     window.addEventListener("resize", dock);
     window.addEventListener("orientationchange", dock);
+    // Safari runs this before the page's own stylesheet has placed the corner
+    // link (measured: it read ~90px right of where it ends up), so that first
+    // measurement found nothing in the way and the pill sat on the link. Measure
+    // again once the page, its fonts and its layout have settled.
+    window.addEventListener("load", dock);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(dock);
+    setTimeout(dock, 700);
+    setTimeout(dock, 2500);
   }
 
   // 78 toy pages park their "onepagetoys.com" back-link in the bottom-left

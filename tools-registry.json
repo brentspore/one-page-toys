@@ -1,5 +1,29 @@
 [
   {
+    "slug": "backgammon",
+    "name": "Backgammon",
+    "shortDescription": "Play a match to 5 on an inlaid board at a café by the sea against six regulars, from the owner's granddaughter to the woman who runs the place, with hints, a pip count and an optional doubling cube.",
+    "category": "game",
+    "tags": [
+      "backgammon",
+      "board-game",
+      "dice",
+      "strategy",
+      "ai-opponent",
+      "classic",
+      "turn-based",
+      "difficulty-levels"
+    ],
+    "status": "live",
+    "path": "toys/backgammon/",
+    "related": [
+      "checkers",
+      "chess",
+      "dice-roller",
+      "solitaire"
+    ]
+  },
+  {
     "slug": "tuner",
     "name": "Tuner",
     "shortDescription": "Tune guitar, bass, ukulele, violin, viola or cello through your mic with a backlit needle, a strobe that stands still when you're in tune, and a reference tone for every string.",

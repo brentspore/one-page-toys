@@ -1,6 +1,6 @@
 # Handoff
 
-**Last updated: 2026-10-05 (restructure: per-toy ship records moved verbatim to `toys-log.md`; no code change. Before that: seven-tool round No. 129-135 `461b78a`, Timber carry-to-place `dd5bfb9`.)**
+**Last updated: 2026-10-06 (No. 136 Backgammon built and registered locally, NOT yet pushed; Safari tickets-pill fix `tickets.js?v=35`, local. Before that: restructure 2026-10-05, seven-tool round `461b78a`.)**
 
 ## What this site is / key files
 
@@ -12,6 +12,7 @@ A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities i
 
 Full per-toy records, including each toy's own traps, are in [toys-log.md](toys-log.md) (open the heading for the toy you are touching). Add a new toy there, and one line here.
 
+- No. 136 Backgammon — built 2026-10-06, local, NOT yet pushed
 - Useful tools round, No. 129-135 — shipped 2026-10-04 (`461b78a`), live
 - No. 128 Timber — shipped 2026-10-04 (`96ef508`), live (the old `jenga` branch, finished and renamed)
 - No. 127 Checkers — shipped 2026-10-03 (`9993076`), live
@@ -135,7 +136,7 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=132` (8 pages) / `styles.css?v=131` (9 hub/store pages); **`tickets.js?v=34` across all 144 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=30` (50 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (135 toy and tool pages); `share.js?v=7` (62 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=133` (8 pages) / `styles.css?v=132` (9 hub/store pages); **`tickets.js?v=35` across all 145 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=31` (51 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (135 toy and tool pages); `share.js?v=7` (62 pages); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
 **Featured art** — the home panel ROTATES bespoke key art, one of **40** toys per load (Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - **Live since `f5767d8` (2026-10-03).** ⚠ **Adding art is THREE steps** — save the source to `_sources/<slug>.png` and the `.webp` (see that folder's README), add the slug to `FEATURED_ART` in `main.js`, then add a `TITLE` position and run `node scripts/build-art-assets.cjs <slug> --sheet /tmp/s.png` (DECISIONS 2026-10-03): it builds the toy's card (`cards/<slug>.webp`) and share image (`og/<slug>.jpg`), rewrites its `.card__preview` rule and its page's `og:image`/`twitter:image`. Look at the sheet: the title must show in the narrowest card, the widest card and the share image. Bump `styles.css?v=` on the 9 hub pages.
@@ -166,10 +167,12 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
+- **No. 136 Backgammon + the Safari tickets-pill fix are built locally, UNPUSHED.** On "push": also commit and push the three sibling cross-promo lists (five-second-game, the-trail-game, word-kraven), verify their DEPLOYED bundles, live-verify, IndexNow. Then the owner's phone play-test (feel, the ladder against a human, sound).
+
 - **The seven new tools (No. 129-135) are live; owed: the owner on a real phone: Tuner's mic, Level's sensors and iPhone sign, Sun Path's compass, Sleep Sounds with the screen locked, Hearing Age on headphones, and every tool's sound. Plus the two Hearing Age calls above.
 
 - **Checkers (No. 127): owner play-test on a phone.** Feel, the ladder against a human, and the sound are all unjudged.
-- **Shared tickets pill overlaps the "← onepagetoys.com" back link in WebKit at 375x667** (Chess too, so it predates Checkers; Chromium docks it correctly). `dock()` in `assets/tickets.js` measures differently in Safari.
+- ✅ **Tickets pill vs the back link in Safari: FIXED 2026-10-06 (local, `tickets.js?v=35`).** It was every toy, not just Chess: Safari runs the deferred script before the page's stylesheet has placed the corner link (measured ~90px right of its final spot), so `dock()` saw nothing in its column and never lifted. `dock()` now runs again on `load`, `document.fonts.ready` and at 0.7s / 2.5s; verified in WebKit and Chromium on Chess, Checkers, Meld and Timber (lift 37-39px, no overlap).
 - ✅ **Jettison, Meld and Trench Runner Cinematic all owner-approved on a phone 2026-10-03** ("all 3 are great"). Still open from Jettison: whether "block jam" goes in the hidden search keywords (currently out).
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).

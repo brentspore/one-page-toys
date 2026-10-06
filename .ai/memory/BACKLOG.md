@@ -219,7 +219,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Deep #2 — New toy: Backgammon vs AI
+### Deep #2 — New toy: Backgammon vs AI — BUILT as No. 136 Backgammon (2026-10-06); see toys-log
 
 **Why it matters:** Dice plus real strategy: luck keeps it friendly, decisions keep it deep. Huge audience, 10-20 minute games, and the physical set is gorgeous (inlaid board, stacked checkers, dice cups). The Dice Roller already has 3D dice. Category `game`.
 
