@@ -2,7 +2,7 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
-## No. 136 Backgammon — built 2026-10-06, local, NOT yet pushed
+## No. 136 Backgammon — shipped 2026-10-06 (`6cc514e`), live
 
 **`toys/backgammon/`** — backgammon against six café regulars at a table by the sea (BACKLOG "Deep #2"). Owner picks
 (2026-10-06): world **Seaside café**, **a match to 5** (gammon 2, backgammon 3), **doubling cube OFF with a start-panel
@@ -16,7 +16,10 @@ featured pool and is the card (`cards/backgammon.webp`) and share image (`og/bac
 scene's palette toward it. `scripts/poses/backgammon.js` stays as the gameplay-still pose. Registered: registry,
 sitemap 139, NL phrase ("tavla", "tavli", "nardy", "shesh besh"...), card CSS + `:not()`, og-gen entry (unused while
 the art is the share image), ticket rule, cross-promo in all FOUR lists (tagline "A match to 5 by the sea", a board +
-die favicon). Tickets pill clears the back link in WebKit at 375x667.
+die favicon). Tickets pill clears the back link in WebKit at 375x667. **Live-verified**: page plays
+in Chromium and WebKit with no errors, newest panel and featured rotation show the art, search finds it ("tavla",
+"doubling cube"), all four DEPLOYED cross-promo bundles carry it (siblings five-second-game `c34feeb`, the-trail-game
+`e9a2bff`, word-kraven `c340fcf`), IndexNow accepted.
 - **Move generator verified like perft** against an independent brute force: 3,000 random positions x 21 rolls,
   3,370,755 plays, 0 mismatches; opening 3-2 = 17 distinct plays (the published count). Larger-die and part-playable
   doubles rules checked.

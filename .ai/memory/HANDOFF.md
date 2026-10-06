@@ -1,18 +1,18 @@
 # Handoff
 
-**Last updated: 2026-10-06 (No. 136 Backgammon built and registered locally, NOT yet pushed; Safari tickets-pill fix `tickets.js?v=35`, local. Before that: restructure 2026-10-05, seven-tool round `461b78a`.)**
+**Last updated: 2026-10-06 (No. 136 Backgammon shipped `6cc514e` and live-verified, with the Safari tickets-pill fix `tickets.js?v=35`; cross-promo in all four deployed bundles. Before that: restructure 2026-10-05, seven-tool round `461b78a`.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**135 toys, live at onepagetoys.com.** Latest on `main`: `461b78a`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**136 toys, live at onepagetoys.com.** Latest on `main`: `6cc514e`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Shipped toys (index)
 
 Full per-toy records, including each toy's own traps, are in [toys-log.md](toys-log.md) (open the heading for the toy you are touching). Add a new toy there, and one line here.
 
-- No. 136 Backgammon — built 2026-10-06, local, NOT yet pushed
+- No. 136 Backgammon — shipped 2026-10-06 (`6cc514e`), live
 - Useful tools round, No. 129-135 — shipped 2026-10-04 (`461b78a`), live
 - No. 128 Timber — shipped 2026-10-04 (`96ef508`), live (the old `jenga` branch, finished and renamed)
 - No. 127 Checkers — shipped 2026-10-03 (`9993076`), live
@@ -77,7 +77,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **50 entries, `?v=30` across 50 pages** (Timber added 2026-10-04, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **51 entries, `?v=31` across 51 pages** (Timber added 2026-10-04, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -167,12 +167,12 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **No. 136 Backgammon + the Safari tickets-pill fix are built locally, UNPUSHED.** On "push": also commit and push the three sibling cross-promo lists (five-second-game, the-trail-game, word-kraven), verify their DEPLOYED bundles, live-verify, IndexNow. Then the owner's phone play-test (feel, the ladder against a human, sound).
+- **No. 136 Backgammon (live since `6cc514e`): owner phone play-test** (feel, the ladder against a human, the sound; nothing has been heard).
 
 - **The seven new tools (No. 129-135) are live; owed: the owner on a real phone: Tuner's mic, Level's sensors and iPhone sign, Sun Path's compass, Sleep Sounds with the screen locked, Hearing Age on headphones, and every tool's sound. Plus the two Hearing Age calls above.
 
 - **Checkers (No. 127): owner play-test on a phone.** Feel, the ladder against a human, and the sound are all unjudged.
-- ✅ **Tickets pill vs the back link in Safari: FIXED 2026-10-06 (local, `tickets.js?v=35`).** It was every toy, not just Chess: Safari runs the deferred script before the page's stylesheet has placed the corner link (measured ~90px right of its final spot), so `dock()` saw nothing in its column and never lifted. `dock()` now runs again on `load`, `document.fonts.ready` and at 0.7s / 2.5s; verified in WebKit and Chromium on Chess, Checkers, Meld and Timber (lift 37-39px, no overlap).
+- ✅ **Tickets pill vs the back link in Safari: FIXED 2026-10-06 (`6cc514e`, `tickets.js?v=35`, re-verified live in WebKit).** It was every toy, not just Chess: Safari runs the deferred script before the page's stylesheet has placed the corner link (measured ~90px right of its final spot), so `dock()` saw nothing in its column and never lifted. `dock()` now runs again on `load`, `document.fonts.ready` and at 0.7s / 2.5s; verified in WebKit and Chromium on Chess, Checkers, Meld and Timber (lift 37-39px, no overlap).
 - ✅ **Jettison, Meld and Trench Runner Cinematic all owner-approved on a phone 2026-10-03** ("all 3 are great"). Still open from Jettison: whether "block jam" goes in the hidden search keywords (currently out).
 
 - ✅ **Maw approved by the owner 2026-09-24: "Maw feels and sounds great"** (rotary knob, audio, difficulty as shipped).
