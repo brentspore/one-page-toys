@@ -607,7 +607,7 @@ the rebuilt explosions (`a848972`). Levels: kill ~0.30 incl. the 0.14 engine bed
 
 ## No. 120 Untangle, shipped 2026-09-21 (`fef4354`), live
 
-**Key art added 2026-10-12** (owner-supplied): joins the home spotlight, and its card and share image now come from the art (`cards/untangle.webp`, `og/untangle.jpg`, title position 30%). The old played-still `cards/untangle.png` and template `og/untangle.png` were deleted.
+**Key art added 2026-10-12** (`8dc4835`, owner-supplied): joins the home spotlight, and its card and share image now come from the art (`cards/untangle.webp`, `og/untangle.jpg`, title position 30%). The old played-still `cards/untangle.png` and template `og/untangle.png` were deleted.
 
 **`toys/untangle/`** — drag a knot of stars until no two filaments cross. Crossed filaments burn
 red and cool to white; below 44 crossings each one also shows a pip, so late on they become targets

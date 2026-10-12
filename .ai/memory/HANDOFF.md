@@ -1,17 +1,18 @@
 # Handoff
 
-**Last updated: 2026-10-12 (Untangle got the owner's key art; the tip jar now asks once after the third finished game and points at Ko-fi, `tip-jar.js?v=11`; both uncommitted until "push"). 2026-10-06: No. 136 Backgammon shipped `6cc514e` and live-verified, with the Safari tickets-pill fix `tickets.js?v=35`; cross-promo in all four deployed bundles. Before that: restructure 2026-10-05, seven-tool round `461b78a`.)**
+**Last updated: 2026-10-12 (`8dc4835`, live-verified: Untangle's key art, and the tip jar now asks once after the third finished game and points at Ko-fi, `tip-jar.js?v=11`). 2026-10-06: No. 136 Backgammon shipped `6cc514e` and live-verified, with the Safari tickets-pill fix `tickets.js?v=35`; cross-promo in all four deployed bundles. Before that: restructure 2026-10-05, seven-tool round `461b78a`.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**136 toys, live at onepagetoys.com.** Latest on `main`: `6cc514e`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**136 toys, live at onepagetoys.com.** Latest on `main`: `8dc4835`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Shipped toys (index)
 
 Full per-toy records, including each toy's own traps, are in [toys-log.md](toys-log.md) (open the heading for the toy you are touching). Add a new toy there, and one line here.
 
+- Tip jar ask + Ko-fi, Untangle key art — shipped 2026-10-12 (`8dc4835`), live (DECISIONS 2026-10-12)
 - No. 136 Backgammon — shipped 2026-10-06 (`6cc514e`), live
 - Useful tools round, No. 129-135 — shipped 2026-10-04 (`461b78a`), live
 - No. 128 Timber — shipped 2026-10-04 (`96ef508`), live (the old `jenga` branch, finished and renamed)
@@ -168,7 +169,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Tip jar ask (2026-10-12, uncommitted until push): owner to see it on a phone** (finish three games anywhere; clear `opt_tipjar_v1` in localStorage to see it again). Register `source` as an event-scoped custom dimension in GA4 so `tip_jar_click` splits by ask vs badge. Follow-ups are in BACKLOG "Tip jar: easier ways to pay".
+- **Tip jar ask (live since `8dc4835`, verified on production by playing three Stack Tower games headless): owner to see it on a phone** (finish three games anywhere; clear `opt_tipjar_v1` in localStorage to see it again). ⚠ That live test sent one `tip_ask_shown` and one `tip_jar_click` (source ask) to GA on 2026-10-12: discount them. Register `source` as an event-scoped custom dimension in GA4 so `tip_jar_click` splits by ask vs badge. Follow-ups are in BACKLOG "Tip jar: easier ways to pay".
 
 - **No. 136 Backgammon (live since `6cc514e`): owner phone play-test** (feel, the ladder against a human, the sound; nothing has been heard).
 
