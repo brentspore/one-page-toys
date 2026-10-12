@@ -1,17 +1,18 @@
 # Handoff
 
-**Last updated: 2026-10-12 (`8dc4835`, live-verified: Untangle's key art, and the tip jar now asks once after the third finished game and points at Ko-fi, `tip-jar.js?v=11`). 2026-10-06: No. 136 Backgammon shipped `6cc514e` and live-verified, with the Safari tickets-pill fix `tickets.js?v=35`; cross-promo in all four deployed bundles. Before that: restructure 2026-10-05, seven-tool round `461b78a`.)**
+**Last updated: 2026-10-12 (`cd7f61b`: the admin page gained a Tip jar card. Before it, `8dc4835`, live-verified: Untangle's key art, and the tip jar asks once after the third finished game and points at Ko-fi, `tip-jar.js?v=11`). 2026-10-06: No. 136 Backgammon shipped `6cc514e` and live-verified, with the Safari tickets-pill fix `tickets.js?v=35`; cross-promo in all four deployed bundles. Before that: restructure 2026-10-05, seven-tool round `461b78a`.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**136 toys, live at onepagetoys.com.** Latest on `main`: `8dc4835`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**136 toys, live at onepagetoys.com.** Latest on `main`: `cd7f61b`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Shipped toys (index)
 
 Full per-toy records, including each toy's own traps, are in [toys-log.md](toys-log.md) (open the heading for the toy you are touching). Add a new toy there, and one line here.
 
+- Admin Tip jar card — shipped 2026-10-12 (`cd7f61b`), live
 - Tip jar ask + Ko-fi, Untangle key art — shipped 2026-10-12 (`8dc4835`), live (DECISIONS 2026-10-12)
 - No. 136 Backgammon — shipped 2026-10-06 (`6cc514e`), live
 - Useful tools round, No. 129-135 — shipped 2026-10-04 (`461b78a`), live
@@ -169,7 +170,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Admin Tip jar card (2026-10-12, uncommitted until push):** `/admin/` gains a Tip jar card (asks shown, clicks from the ask and per ask, badge clicks, where people click). `scripts/test-admin.cjs` now runs 37 checks, all passing. ⚠ The real GA queries can only be proven by the owner signing in after deploy (the session can't be faked live). If the card says "split unavailable", the `customEvent:source` query failed and the rest still shows.
+- **Admin Tip jar card (live since `cd7f61b`, 2026-10-12): owner to sign in and check it shows real numbers.** `/admin/` gains a Tip jar card (asks shown, clicks from the ask and per ask, badge clicks, where people click). `scripts/test-admin.cjs` now runs 37 checks, all passing. ⚠ The real GA queries can only be proven by the owner signing in after deploy (the session can't be faked live). If the card says "split unavailable", the `customEvent:source` query failed and the rest still shows.
 - ✅ **Tip jar ask (live since `8dc4835`): owner-approved on a phone 2026-10-12, and `source` registered in GA4 as the event-scoped custom dimension "Tip source" the same day** (reports fill in from then, 24-48h lag). Measure = `tip_jar_click` with source `ask` divided by `tip_ask_shown`. ⚠ The production test on 2026-10-12 sent one `tip_ask_shown` and one `tip_jar_click` (source ask) to GA: discount them. Follow-ups are in BACKLOG "Tip jar: easier ways to pay".
 
 - **No. 136 Backgammon (live since `6cc514e`): owner phone play-test** (feel, the ladder against a human, the sound; nothing has been heard).
