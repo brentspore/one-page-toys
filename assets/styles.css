@@ -1127,7 +1127,7 @@ code, kbd{ font-family: var(--font-mono); font-size: 0.9em; }
 .card__preview[data-slug="meld"]{ background: #05070d url("cards/meld.webp?v=08930822") center 25% / cover no-repeat; }
 .card__preview[data-slug="maw"]{ background: #05070d url("cards/maw.webp?v=864e9c01") center 0% / cover no-repeat; }
 .card__preview[data-slug="trench-runner"]{ background: #05070d url("cards/trench-runner.webp?v=7347b291") center 0% / cover no-repeat; }
-.card__preview[data-slug="untangle"]{ background: #04060f url("cards/untangle.png") center / cover no-repeat; }
+.card__preview[data-slug="untangle"]{ background: #05070d url("cards/untangle.webp?v=1fff116d") center 30% / cover no-repeat; }
 .card__preview[data-slug="tiny-across"]{ background: #05070d url("cards/tiny-across.webp?v=454672c4") center 25% / cover no-repeat; }
 .card__preview[data-slug="chess"]{ background: #05070d url("cards/chess.webp?v=43629f06") center 0% / cover no-repeat; }
 .card__preview[data-slug="skyscrapers"]{ background: #05070d url("cards/skyscrapers.webp?v=710ca0ae") center 0% / cover no-repeat; }

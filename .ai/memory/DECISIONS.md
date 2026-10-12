@@ -447,3 +447,20 @@ rendering, audio, or anything a user can see, and do not add a second dependency
 
 **Revisit if:** another toy needs real 3D rigid bodies (then reuse this vendored copy rather than adding another), or
 the from-scratch solver is ever finished properly.
+
+---
+
+### 2026-10-12 — The tip jar asks once, after the third finished game (owner-approved)
+
+**Context:** Owner: *"should we draw more attention to the tip jar after a user plays a few games?"* The badge had wiggled on a timer (9s after load, then about every 30s, five times), which nudged first-time visitors mid-game, and on phones it was a wordless logo because its "Tip Jar" label only showed on hover.
+
+**Decision:** No timed wiggles. `assets/tip-jar.js` counts finished games site-wide (`opt_tipjar_v1` in localStorage) and, at the end of the THIRD, puts one line under the panel's play-again button ("Having fun? Every toy here is free and made by one person. Leave a tip"). At the same moment the badge wiggles once, and opens to show its label if that won't cover the panel. It then rests 21 days, and never asks again after any tip-jar click. Tips go to Ko-fi (https://ko-fi.com/mightyarmy, PayPal + Stripe), set in `TIP_URL`.
+- ⚠ **"A game finished" = the start / play-again button (`button#ovBtn, button.play-btn, [data-opt-start]`, the same set game-screen.js uses) coming back on screen after at least 1s hidden with real input in between.** Score keys can't be the signal: toys write `*_best` only on a NEW best, so tickets.js sees bests, not games. A panel that reappears because the tab was hidden doesn't count.
+- The line takes its color from the panel's LONGEST paragraph, made solid with a 0.62 opacity floor. Panels color each element, not the panel, so `inherit` went black on dark panels, and the first paragraph is often an accent-colored kicker.
+- Toys without such a button (fidgets, coin flip, most tools) never ask; they keep the plain badge.
+- GA: `tip_ask_shown` {page, games}; `tip_jar_click` {page, source: "ask" | "badge"}.
+
+**Rationale:** Ask once, after the visitor has clearly enjoyed something, at a natural pause, inside UI that is already a pause. Anything more frequent costs trust on a site whose value is no friction.
+
+**Revisit if:** the numbers show the ask converts and the owner wants it more often, or a new toy pattern ends games without the panel coming back.
+

@@ -74,6 +74,21 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
+### Tip jar: easier ways to pay, and a reason to tip
+
+**Why it matters:** Tips are the one monetization the site allows (no ads, no affiliate links, no sales surfaces, per DECISIONS). On a phone, the old PayPal donate page meant logging in or typing a card, which is where most tips die. Making a tip one tap, and giving tippers something small back, should matter more than any change to the badge itself.
+
+**When to revisit:** About a month after the after-the-third-game ask ships (shipped locally 2026-10-12), once GA has enough `tip_ask_shown` and `tip_jar_click` events to compare. Sooner if the owner wants recurring support.
+
+**Notes:** Status 2026-10-12: the owner set up **Ko-fi at https://ko-fi.com/mightyarmy** with PayPal AND Stripe connected (so cards, Apple Pay and Google Pay work). `assets/tip-jar.js` (`TIP_URL`) and the footer "Tip Jar" link on the 8 hub pages point there. Setting `TIP_URL` to "" falls back to the PayPal donate page.
+- **Measure first.** `tip_ask_shown` {page, games} fires when the end-of-game line appears; `tip_jar_click` now carries `source` ("ask" or "badge"). `source` is not a registered GA custom dimension yet: register it (event-scoped) or it won't show in reports. Ko-fi's own dashboard has the actual tips. Clicks divided by asks shown is the number to move.
+- **Supporter perks through the ticket economy** (strongest idea): a tip unlocks a cosmetic, like a golden ticket bonus or a "Supporter" mark on the bank pill or a Prize Counter item. Honor system, like the ticket ledger (no accounts, so there is nothing to verify against). Ko-fi can redirect to a thank-you URL after payment; a `/thanks/` page could set the localStorage flag. Check that Ko-fi supports a custom post-payment redirect before building.
+- **Ko-fi monthly memberships:** they're built in and cost nothing to switch on. Low effort; worth it only if a few people tip more than once.
+- **A Stripe Payment Link as a direct alternative:** customer chooses the amount, Apple Pay and Google Pay, no Ko-fi page in between. Only worth it if the numbers show people dropping off on the Ko-fi page itself.
+- **Keep the ask rare.** It shows once after three finished games, then not for 21 days, and never again after any tip-jar click (`opt_tipjar_v1` in localStorage). More nagging would cost trust on a site whose whole value is no friction.
+- Out of scope by standing decision: ads, affiliate links, sponsor slots ("presented by" is an ad).
+---
+
 ### Useful tools round — why these, and the ranking (2026-10-04)
 
 **Why it matters:** Owner: *"I want more tools but they always seem to come out the same."* The tool family has one shape: fill in a form, read a number (Countdown, Tip Splitter, Sleep Cycle, Latte Factor, Time Is Money). Barkeep is the only tool holding people (3:05 average), and it is the one you browse and use. **The fix is not new chrome, it is a different INPUT (the microphone, the motion sensors, text you paste, a link the group shares) and an output you USE (a tuned string, a night of sleep, a settled debt), not a number to read.** Each entry below breaks the pattern a different way.
