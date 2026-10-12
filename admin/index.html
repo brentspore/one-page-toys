@@ -18,7 +18,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
-    <link rel="stylesheet" href="/admin/admin.css?v=4" />
+    <link rel="stylesheet" href="/admin/admin.css?v=5" />
   </head>
   <body>
     <header class="top">
@@ -97,10 +97,24 @@
         <div class="bars" id="sitePages"></div>
       </section>
 
+      <section class="card" aria-labelledby="tipjarH">
+        <div class="card__head">
+          <h2 class="card__title" id="tipjarH">Tip jar</h2>
+          <span class="card__note" id="tipjarNote"></span>
+        </div>
+        <div class="tipjar">
+          <div class="tipjar__stats" id="tipjarStats"></div>
+          <div class="tipjar__where">
+            <h3 class="tipjar__sub">Where people click to tip</h3>
+            <div class="bars" id="tipjarPages"></div>
+          </div>
+        </div>
+      </section>
+
       <p class="foot">Numbers come from Google Analytics. Most reports lag by up to a day (the "Right now" count is live), and visitors who block analytics are not counted.</p>
     </main>
 
     <div class="tip" id="tip" role="tooltip" hidden></div>
-    <script src="/admin/admin.js?v=4" defer></script>
+    <script src="/admin/admin.js?v=5" defer></script>
   </body>
 </html>

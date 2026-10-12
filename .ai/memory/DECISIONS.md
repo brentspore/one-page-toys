@@ -458,7 +458,7 @@ the from-scratch solver is ever finished properly.
 - ⚠ **"A game finished" = the start / play-again button (`button#ovBtn, button.play-btn, [data-opt-start]`, the same set game-screen.js uses) coming back on screen after at least 1s hidden with real input in between.** Score keys can't be the signal: toys write `*_best` only on a NEW best, so tickets.js sees bests, not games. A panel that reappears because the tab was hidden doesn't count.
 - The line takes its color from the panel's LONGEST paragraph, made solid with a 0.62 opacity floor. Panels color each element, not the panel, so `inherit` went black on dark panels, and the first paragraph is often an accent-colored kicker.
 - Toys without such a button (fidgets, coin flip, most tools) never ask; they keep the plain badge.
-- GA: `tip_ask_shown` {page, games}; `tip_jar_click` {page, source: "ask" | "badge"}.
+- GA: `tip_ask_shown` {page, games}; `tip_jar_click` {page, source: "ask" | "badge"}. `source` is the GA4 custom dimension "Tip source" (registered 2026-10-12, Data API name `customEvent:source`). The `/admin/` page's **Tip jar** card reads all of it: asks shown, clicks from the ask (and per ask), badge clicks, and the toys where tip clicks happen. Clicks with no source predate the ask and count as badge. Both tip reports fail soft, like the live count, so they can only empty that card, never break the dashboard. Tips stay OUT of the Claude "What to do next" input on purpose: its brief rules out monetization advice.
 
 **Rationale:** Ask once, after the visitor has clearly enjoyed something, at a natural pause, inside UI that is already a pause. Anything more frequent costs trust on a site whose value is no friction.
 

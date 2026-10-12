@@ -18,7 +18,7 @@ function idToken(claims, key = google.privateKey, kid = "k1") {
 }
 const now = Math.floor(Date.now() / 1000);
 const good = { iss: "https://accounts.google.com", aud: process.env.GOOGLE_CLIENT_ID, exp: now + 600, email: "owner@example.com", email_verified: true };
-let gaCalls = [], tokenAssertion = null, claudeCalls = [], claudeFail = false, rtEmpty = false;
+let gaCalls = [], tokenAssertion = null, claudeCalls = [], claudeFail = false, rtEmpty = false, tipSplitFail = false, tipBaseFail = false;
 global.fetch = async (url, opts) => {
   if (url.includes("api.anthropic.com")) {
     claudeCalls.push({ headers: opts.headers, body: JSON.parse(opts.body) });
@@ -34,6 +34,25 @@ global.fetch = async (url, opts) => {
   if (url.endsWith(":runRealtimeReport") && rtEmpty) return { ok: true, json: async () => ({ dimensionHeaders: [{ name: "unifiedScreenName" }], metricHeaders: [{ name: "activeUsers" }], totals: [{}], rowCount: 0 }) };
   if (url.endsWith(":runRealtimeReport")) return { ok: true, json: async () => ({ dimensionHeaders: [{ name: "unifiedScreenName" }], metricHeaders: [{ name: "activeUsers" }], rows: [{ dimensionValues: [{ value: "Meld — One Page Toys" }], metricValues: [{ value: "3" }] }], totals: [{ metricValues: [{ value: "5" }] }] }) };
   const body = JSON.parse(opts.body);
+  const isTip = (r) => r.dimensionFilter && JSON.stringify(r.dimensionFilter).includes("tip_ask_shown");
+  const report = (dims, mets, list) => ({ dimensionHeaders: dims.map((n) => ({ name: n })), metricHeaders: mets.map((n) => ({ name: n })),
+    rows: list.map((vals) => ({ dimensionValues: dims.map((d) => ({ value: vals[d] })), metricValues: mets.map(() => ({ value: "10" })) })) });
+  // the tip jar's source split: one click from the ask, one with no source (pre-registration = badge), one last period
+  if (url.endsWith(":runReport")) {
+    if (tipSplitFail) return { ok: false, status: 400, json: async () => ({ error: { message: "Field customEvent:source is not a valid dimension." } }) };
+    return { ok: true, json: async () => report(["eventName", "customEvent:source", "dateRange"], ["eventCount"], [
+      { eventName: "tip_jar_click", "customEvent:source": "ask", dateRange: "cur" },
+      { eventName: "tip_jar_click", "customEvent:source": "(not set)", dateRange: "cur" },
+      { eventName: "tip_jar_click", "customEvent:source": "(not set)", dateRange: "prev" },
+      { eventName: "tip_ask_shown", "customEvent:source": "(not set)", dateRange: "cur" }]) };
+  }
+  if (body.requests && body.requests.every(isTip)) {
+    if (tipBaseFail) return { ok: false, status: 500, json: async () => ({ error: { message: "backend error" } }) };
+    return { ok: true, json: async () => ({ reports: [
+      report(["eventName", "dateRange"], ["eventCount"], [{ eventName: "tip_ask_shown", dateRange: "cur" }, { eventName: "tip_jar_click", dateRange: "cur" }, { eventName: "tip_ask_shown", dateRange: "prev" }]),
+      report(["pagePath", "eventName"], ["eventCount"], [{ pagePath: "/toys/meld/", eventName: "tip_ask_shown" }, { pagePath: "/toys/meld/index.html", eventName: "tip_jar_click" }, { pagePath: "/toys/meld/", eventName: "toy_play" }])
+    ] }) };
+  }
   return { ok: true, json: async () => ({ reports: body.requests.map((r) => {
     const dims = (r.dimensions || []).map((d) => d.name); if (r.dateRanges.length > 1) dims.push("dateRange");
     const mets = r.metrics.map((m) => m.name);
@@ -86,15 +105,24 @@ const t = (name, ok) => { ok ? pass++ : fail++; console.log((ok ? "PASS " : "FAI
   t("paths normalized and merged (opens, prev, plays, shares)", m && m.opens === 10 && m.prevOpens === 10 && m.plays === 10 && m.shares === 10);
   t("totals split by range", r.body.totals.visitors === 10 && r.body.totals.prevVisitors === 10);
   t("realtime parsed", r.body.now && r.body.now.active === 5 && r.body.now.top[0].value === 3);
+  const tp = r.body.tips;
+  t("tip jar: asks and clicks split by range", tp && tp.asks === 10 && tp.prevAsks === 10 && tp.clicks === 10 && tp.prevClicks === 0);
+  t("tip jar: per-toy counts merged by path, other events ignored", tp && tp.pages["/toys/meld/"] && tp.pages["/toys/meld/"].asks === 10 && tp.pages["/toys/meld/"].clicks === 10 && Object.keys(tp.pages).length === 1);
+  t("tip jar: source split, no source counts as the badge", tp && tp.fromAsk === 10 && tp.fromBadge === 10 && tp.prevFromAsk === 0 && tp.prevFromBadge === 10);
   t("GA called with bearer token", gaCalls.every((c) => c.auth === "Bearer tok") && gaCalls.some((c) => c.url.includes("properties/123456:batchRunReports")));
   const [h, p, s] = tokenAssertion.split(".");
   t("service-account JWT signed with its key", crypto.verify("RSA-SHA256", Buffer.from(h + "." + p), sa.publicKey, Buffer.from(s, "base64url")));
   const claims = JSON.parse(Buffer.from(p, "base64url"));
   t("JWT asks for read-only analytics", claims.scope === "https://www.googleapis.com/auth/analytics.readonly" && claims.iss === "reader@proj.iam.gserviceaccount.com");
-  rtEmpty = true;
+  tipSplitFail = true;
+  r = await call("stats", { cookie, query: { days: "7" } });
+  t("tip source split failing keeps the other tip numbers", r.status === 200 && r.body.tips && r.body.tips.asks === 10 && r.body.tips.fromAsk === null);
+  tipSplitFail = false;
+  rtEmpty = true; tipBaseFail = true;
   r = await call("stats", { cookie, query: { days: "90" } });
   t("nobody on the site: stats still load, right now = 0", r.status === 200 && r.body.now && r.body.now.active === 0 && r.body.now.top.length === 0);
-  rtEmpty = false;
+  t("tip reports failing leave the dashboard up, tips empty", r.status === 200 && r.body.tips === null && r.body.totals.visitors === 10);
+  rtEmpty = false; tipBaseFail = false;
   r = await call("advice", { query: { days: "28" } }); t("advice needs a sign-in", r.status === 401);
   r = await call("advice", { cookie, query: { days: "28" } }); t("advice is off without a key", r.status === 200 && r.body.configured === false && !claudeCalls.length);
   process.env.ANTHROPIC_API_KEY = "sk-test";

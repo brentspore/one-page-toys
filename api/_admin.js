@@ -186,6 +186,40 @@ function liveNow(rt) {
   } catch (e) { return null; }
 }
 
+// The tip jar (assets/tip-jar.js): `tip_ask_shown` fires when the end-of-game
+// line appears, `tip_jar_click` on a click, its `source` saying which ("ask" or
+// "badge"; registered in GA as the custom dimension "Tip source" on 2026-10-12).
+// Clicks from before then carry no source and were all on the badge, the only
+// tracked tip link there was. Like the live count this is a side panel: the
+// source split and the rest each fail on their own, never the dashboard.
+const TIP_EVENTS = ["tip_ask_shown", "tip_jar_click"];
+function tipsOf(base, split) {
+  if (!base) return null;
+  try {
+    const [byName, byPage] = base.reports;
+    const t = { asks: 0, prevAsks: 0, clicks: 0, prevClicks: 0, fromAsk: null, prevFromAsk: null, fromBadge: null, prevFromBadge: null, pages: {} };
+    rows(byName).forEach((r) => {
+      const prev = r.dateRange === "prev";
+      if (r.eventName === "tip_ask_shown") t[prev ? "prevAsks" : "asks"] += r.eventCount;
+      else if (r.eventName === "tip_jar_click") t[prev ? "prevClicks" : "clicks"] += r.eventCount;
+    });
+    rows(byPage).forEach((r) => {
+      if (TIP_EVENTS.indexOf(r.eventName) === -1) return;
+      const p = normPath(r.pagePath), o = t.pages[p] = t.pages[p] || { asks: 0, clicks: 0 };
+      o[r.eventName === "tip_ask_shown" ? "asks" : "clicks"] += r.eventCount;
+    });
+    if (split) {
+      t.fromAsk = t.prevFromAsk = t.fromBadge = t.prevFromBadge = 0;
+      rows(split).forEach((r) => {
+        if (r.eventName !== "tip_jar_click") return;
+        const ask = r["customEvent:source"] === "ask", prev = r.dateRange === "prev";
+        t[prev ? (ask ? "prevFromAsk" : "prevFromBadge") : (ask ? "fromAsk" : "fromBadge")] += r.eventCount;
+      });
+    }
+    return t;
+  } catch (e) { return null; }
+}
+
 const cache = new Map();
 
 async function stats(days) {
@@ -193,7 +227,8 @@ async function stats(days) {
   if (hit && Date.now() - hit.t < 5 * 60e3) return hit.data;
   const cur = { startDate: days + "daysAgo", endDate: "today", name: "cur" };
   const prev = { startDate: (2 * days) + "daysAgo", endDate: (days + 1) + "daysAgo", name: "prev" };
-  const [a, b, rt] = await Promise.all([
+  const tipFilter = { filter: { fieldName: "eventName", inListFilter: { values: TIP_EVENTS } } };
+  const [a, b, rt, tipBase, tipSplit] = await Promise.all([
     ga("batchRunReports", { requests: [
       { dateRanges: [cur, prev], dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }, { name: "activeUsers" }, { name: "userEngagementDuration" }], limit: 2000 },
       { dateRanges: [cur], dimensions: [{ name: "pagePath" }, { name: "eventName" }], metrics: [{ name: "eventCount" }], limit: 5000,
@@ -207,6 +242,12 @@ async function stats(days) {
       { dateRanges: [cur], dimensions: [{ name: "country" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: 8 }
     ] }),
     ga("runRealtimeReport", { dimensions: [{ name: "unifiedScreenName" }], metrics: [{ name: "activeUsers" }], limit: 6, metricAggregations: ["TOTAL"] })
+      .catch(() => null),
+    ga("batchRunReports", { requests: [
+      { dateRanges: [cur, prev], dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }], dimensionFilter: tipFilter },
+      { dateRanges: [cur], dimensions: [{ name: "pagePath" }, { name: "eventName" }], metrics: [{ name: "eventCount" }], dimensionFilter: tipFilter, limit: 500 }
+    ] }).catch(() => null),
+    ga("runReport", { dateRanges: [cur, prev], dimensions: [{ name: "eventName" }, { name: "customEvent:source" }], metrics: [{ name: "eventCount" }], dimensionFilter: tipFilter })
       .catch(() => null)
   ]);
   const [pages, events, daily, totals, sources] = a.reports;
@@ -233,7 +274,8 @@ async function stats(days) {
     sources: rows(sources).map((r) => ({ name: r.sessionSource, value: r.sessions })),
     devices: rows(devices).map((r) => ({ name: r.deviceCategory, value: r.activeUsers })),
     countries: rows(countries).map((r) => ({ name: r.country, value: r.activeUsers })),
-    now: liveNow(rt)
+    now: liveNow(rt),
+    tips: tipsOf(tipBase, tipSplit)
   };
   cache.set(days, { t: Date.now(), data });
   return data;
@@ -407,6 +449,12 @@ function demoStats(days, registry) {
     daily.push({ date: dt.toISOString().slice(0, 10).replace(/-/g, ""), visitors: v, views: Math.round(v * 2.6) });
   }
   const visitors = daily.reduce((s, r) => s + r.visitors, 0) * 0.7;
+  const asks = Math.round(visitors * 0.05), fromAsk = Math.round(asks * 0.03), fromBadge = Math.round(visitors * 0.002);
+  const tipPages = {};
+  (registry || []).filter((t) => t.category === "game").slice(0, 12).forEach((t, k) => {
+    const share = Math.pow(0.72, k);
+    tipPages["/" + t.path] = { asks: Math.round(asks * share * 0.3), clicks: Math.round((fromAsk + fromBadge) * share * 0.35) };
+  });
   return {
     days, generated: new Date().toISOString(), demo: true,
     totals: { visitors: Math.round(visitors), prevVisitors: Math.round(visitors * 0.86), views: daily.reduce((s, r) => s + r.views, 0), prevViews: Math.round(daily.reduce((s, r) => s + r.views, 0) * 0.9) },
@@ -414,7 +462,8 @@ function demoStats(days, registry) {
     sources: [["google", 0.41], ["(direct)", 0.27], ["bing", 0.08], ["5secondgame.com", 0.07], ["t.co", 0.05], ["thetrailgame.com", 0.04], ["duckduckgo", 0.03], ["reddit.com", 0.02]].map(([n, f]) => ({ name: n, value: Math.round(visitors * f) })),
     devices: [["mobile", 0.63], ["desktop", 0.33], ["tablet", 0.04]].map(([n, f]) => ({ name: n, value: Math.round(visitors * f) })),
     countries: [["United States", 0.52], ["United Kingdom", 0.09], ["Canada", 0.07], ["India", 0.05], ["Germany", 0.04], ["Australia", 0.04], ["Brazil", 0.03], ["Philippines", 0.02]].map(([n, f]) => ({ name: n, value: Math.round(visitors * f) })),
-    now: { active: 7, top: [["Jettison — One Page Toys", 2], ["Meld — One Page Toys", 2], ["One Page Toys", 1], ["Chess — One Page Toys", 1], ["Word Kraven — One Page Toys", 1]].map(([n, v]) => ({ name: n, value: v })) }
+    now: { active: 7, top: [["Jettison — One Page Toys", 2], ["Meld — One Page Toys", 2], ["One Page Toys", 1], ["Chess — One Page Toys", 1], ["Word Kraven — One Page Toys", 1]].map(([n, v]) => ({ name: n, value: v })) },
+    tips: { asks, prevAsks: 0, clicks: fromAsk + fromBadge, prevClicks: Math.round(fromBadge * 0.8), fromAsk, prevFromAsk: 0, fromBadge, prevFromBadge: Math.round(fromBadge * 0.8), pages: tipPages }
   };
 }
 

@@ -8,6 +8,8 @@
   // the day the shared toy_play tracker (assets/track.js) went live: plays
   // before it simply were not recorded
   var TRACK_SINCE = "2026-10-03";
+  // the day the tip jar's end-of-game ask went live (assets/tip-jar.js)
+  var ASK_SINCE = "2026-10-12";
 
   var $ = function (id) { return document.getElementById(id); };
   var state = { days: 28, data: null, registry: null, sort: { key: "opens", dir: -1 }, q: "", all: false };
@@ -227,6 +229,7 @@
     renderBars("devices", state.data.devices, function (n) { return n.charAt(0).toUpperCase() + n.slice(1); });
     renderBars("countries", state.data.countries);
     renderSitePages();
+    renderTipJar();
   }
 
   function kpi(label, value, sub) {
@@ -460,6 +463,44 @@
       return { name: SITE[p] || (m ? "All toys: " + (CATS[m[1]] || m[1]) : p), value: pages[p].opens };
     }).sort(function (a, b) { return b.value - a.value; }).slice(0, 10);
     renderBars("sitePages", list);
+  }
+
+  /* ------------------------------------------------------------ tip jar */
+
+  function share(part, whole) {
+    if (!whole) return "–";
+    var p = part / whole * 100;
+    return (p > 0 && p < 10 ? p.toFixed(1) : Math.round(p)) + "%";
+  }
+
+  function renderTipJar() {
+    var t = state.data.tips, box = $("tipjarStats"), note = $("tipjarNote");
+    box.textContent = "";
+    if (!t) {
+      box.appendChild(el("p", "empty", "The tip numbers didn't load this time. Refresh to try again."));
+      $("tipjarPages").textContent = ""; note.textContent = "";
+      return;
+    }
+    var split = t.fromAsk !== null && t.fromAsk !== undefined;
+    box.appendChild(kpi("Asks shown", fmt(t.asks), [delta(t.asks, t.prevAsks), " vs before"]));
+    box.appendChild(kpi("Clicks from the ask", split ? fmt(t.fromAsk) : "–",
+      split ? (t.asks ? share(t.fromAsk, t.asks) + " of asks" : "after a finished game") : "split unavailable"));
+    box.appendChild(kpi("Clicks on the badge", split ? fmt(t.fromBadge) : "–",
+      split ? [delta(t.fromBadge, t.prevFromBadge), " vs before"] : "split unavailable"));
+    box.appendChild(kpi("All tip clicks", fmt(t.clicks), [delta(t.clicks, t.prevClicks), " vs before"]));
+
+    var names = {};
+    state.registry.forEach(function (r) { if (r && r.path) names["/" + String(r.path).replace(/^\//, "")] = r.name; });
+    var pages = t.pages || {};
+    var list = Object.keys(pages).filter(function (p) { return pages[p].clicks > 0; }).map(function (p) {
+      return { name: names[p] || SITE[p] || p, value: pages[p].clicks };
+    }).sort(function (a, b) { return b.value - a.value; }).slice(0, 8);
+    renderBars("tipjarPages", list);
+
+    var start = new Date(Date.now() - state.days * 864e5).toISOString().slice(0, 10);
+    var since = new Date(ASK_SINCE + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    note.textContent = "Clicks, not tips: what people give is in your Ko-fi dashboard." +
+      (start < ASK_SINCE ? " The end-of-game ask started " + since + "." : "");
   }
 
   var resizeT;

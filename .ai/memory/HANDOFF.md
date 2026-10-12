@@ -169,7 +169,8 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **Tip jar ask (live since `8dc4835`, verified on production by playing three Stack Tower games headless): owner to see it on a phone** (finish three games anywhere; clear `opt_tipjar_v1` in localStorage to see it again). ⚠ That live test sent one `tip_ask_shown` and one `tip_jar_click` (source ask) to GA on 2026-10-12: discount them. Register `source` as an event-scoped custom dimension in GA4 so `tip_jar_click` splits by ask vs badge. Follow-ups are in BACKLOG "Tip jar: easier ways to pay".
+- **Admin Tip jar card (2026-10-12, uncommitted until push):** `/admin/` gains a Tip jar card (asks shown, clicks from the ask and per ask, badge clicks, where people click). `scripts/test-admin.cjs` now runs 37 checks, all passing. ⚠ The real GA queries can only be proven by the owner signing in after deploy (the session can't be faked live). If the card says "split unavailable", the `customEvent:source` query failed and the rest still shows.
+- ✅ **Tip jar ask (live since `8dc4835`): owner-approved on a phone 2026-10-12, and `source` registered in GA4 as the event-scoped custom dimension "Tip source" the same day** (reports fill in from then, 24-48h lag). Measure = `tip_jar_click` with source `ask` divided by `tip_ask_shown`. ⚠ The production test on 2026-10-12 sent one `tip_ask_shown` and one `tip_jar_click` (source ask) to GA: discount them. Follow-ups are in BACKLOG "Tip jar: easier ways to pay".
 
 - **No. 136 Backgammon (live since `6cc514e`): owner phone play-test** (feel, the ladder against a human, the sound; nothing has been heard).
 
