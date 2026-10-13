@@ -2,7 +2,7 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
-## No. 137 Mancala — built 2026-10-12, uncommitted until "push"
+## No. 137 Mancala — shipped 2026-10-12 (`fe26fc0`), live
 
 **`toys/mancala/`** — mancala with 48 glass beads on a carved walnut board in the back room of a bookshop after closing,
 rain on the window, a banker's lamp, the tabby asleep on the atlases (BACKLOG "Deep #4"). Owner picks (2026-10-12):
@@ -45,6 +45,7 @@ walnut-board-with-jewel-beads favicon).
   to the result panel at 1280 and 390 with zero errors; the tip-jar ask lands under `.result__btns` in the panel's body
   color; ticket rule pays on a win; share line "Beat Pip at Kalah, 25 to 23".
 - Test hook `window.__mancala` (state, pit centers, `setup` for rare positions) only under `navigator.webdriver`.
+- **Live-verified** 2026-10-12: page and assets 200 (source PNG 404, kept out by `.vercelignore`); five moves each against the live engine in Chromium 1280 and 390 and WebKit 375 with zero errors, no overflow, tap highlight off; home count 137, All Toys newest panel, "kalah"/"oware"/"mancala" rank it first; cross-promo in all four DEPLOYED bundles (five-second-game `2b150c1`, the-trail-game `e655b72` routes chunk, word-kraven `af9db4f`); IndexNow 140 accepted.
 
 ## No. 136 Backgammon — shipped 2026-10-06 (`6cc514e`), live
 
