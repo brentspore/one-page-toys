@@ -264,7 +264,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Deep #4 — New toy: Mancala vs AI
+### Deep #4 — New toy: Mancala vs AI — BUILT as No. 137 Mancala (2026-10-12); see toys-log
 
 **Why it matters:** The most tactile board game there is: scoop a handful of glass beads and sow them pit by pit. Short games (5-10 minutes) with real depth, ancient and generic, and the sound can be the star. Category `game`.
 

@@ -2,6 +2,50 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
+## No. 137 Mancala — built 2026-10-12, uncommitted until "push"
+
+**`toys/mancala/`** — mancala with 48 glass beads on a carved walnut board in the back room of a bookshop after closing,
+rain on the window, a banker's lamp, the tabby asleep on the atlases (BACKLOG "Deep #4"). Owner picks (2026-10-12):
+world **Glass beads, lamplight**; rules **Kalah by default + Oware (abapa) as a start-panel switch**; extras **Hint,
+Replay at the end, Two players on one device**; seed counts (on, toggle, `C` key) and tap/Space to hurry a sowing (3x,
+then instant) come with all of it. No undo. Built by one builder agent from the Backgammon/Checkers template;
+registration done by the parent. Files: `core.js` (rules, page + Worker), `engine.js` (Worker, with an on-page
+fallback), `audio.js`, `script.js` (2339 lines), `styles.css`, `index.html`. Regulars, easiest first, tuned SEPARATELY
+per ruleset: Pip (the owner's grandson), Rosa (night-bus driver), Felix (a poet who never buys anything), Juniper
+(sets the crossword), Dr. Hollis (astronomer), Mrs. Adjei (owns the shop; learned Oware as a girl in Kumasi). Keys:
+`mancala_beaten` (distinct regular+ruleset pairs beaten, 0-12; ticket rule dir `up`, rule only), `mancala_defeated`,
+`mancala_rules|foe|first|counts|sound`, `mancala_wins|losses|draws`; pass-and-play never touches the ladder.
+**Owner's key art** (`_sources/mancala.png`, `TITLE` 0; added while the builder worked) is in the featured pool (43) and
+is the card (`cards/mancala.webp`) and share image (`og/mancala.jpg`); the builder's gameplay PNG card was deleted as
+unused and `scripts/poses/mancala.js` stays as the gameplay-still pose. Registered: registry, sitemap 140, NL phrase
+(kalah, oware, awale, ayo, bao, congkak, sungka...), card CSS + `:not()`, og-gen entry (motif = the art, unused while
+the art is the share image), ticket rule, cross-promo in all FOUR lists (tagline "Sow glass beads by lamplight", a
+walnut-board-with-jewel-beads favicon).
+- **Rules verified like perft**: an independent second implementation (explicit ring lists) vs `core.js` over 24,000
+  random playouts (half from the opening, half from random positions), 1.59M plies, 6.3M children, every legal move
+  compared: 0 mismatches, 48 seeds conserved every ply; 16/16 hand cases (Kalah chain into game end, capture vs empty
+  opposite, 13-seed lap; Oware 12+ origin skip, chained capture stopping at own row, grand slam, feeding, no-feed end,
+  25, repetition, 120-ply quiet end).
+- **Ladder engine-vs-engine, equal games with each side starting** (Kalah / Oware): Rosa>Pip 49/60, 50/60; Felix>Rosa
+  54.5/60, 54/60; Juniper>Felix 50/60, 57/60; Hollis>Juniper 29.5/40, 37.5/40; Adjei>Hollis 20/20, 20/20. Depths
+  1/1/2/3-4/6/40 plus temperature and blunder rate; Adjei is time-bound at 1.5s. ⚠ The top is steep. ⚠ Hint = Adjei's
+  engine at 0.6s, and a hint-following bot BEAT her in both rulesets, so "never lost at her own table" can be broken
+  with hints. Hint is allowed for both players in pass-and-play.
+- ⚠ **Kalah extra turn = the SAME side moves again**: the negamax must not negate across it.
+- ⚠ Fixed in build: under reduced motion a bead could start its drop before its lift finished; the stale lift then
+  landed on a null and froze the game. A bead's new flight now always replaces its old one.
+- **Portrait phones stand the board on end**: your pits down the left column into your store at the bottom; tap
+  cells 78px at 390x844, 60px at 375x667 (store art 56x49 there, the low end of the brief).
+- **Audio, offline, 8 renders each**: bead into empty cup 0.15, half-full 0.19, full 0.20, store 0.21, hardest 0.25;
+  scoop 0.14-0.16; win 0.29, lose 0.23, draw 0.26; soft voices 0.09-0.12; 3x sowing 0.31 (max 0.38), a 22-bead pour
+  0.33 (max 0.41), nothing clips; rain bed RMS 0.019. **Never heard.**
+- Frame time ~0.2ms own work; 390x844 at 4x CPU throttle 0.7ms, 60fps. Only dip: 1280x800 at 2x DPR with 4x throttle
+  ~30fps from compositing.
+- Parent's own checks: drawn beads match the rules board at 55/55 idle turns over Kalah and Oware games; full games
+  to the result panel at 1280 and 390 with zero errors; the tip-jar ask lands under `.result__btns` in the panel's body
+  color; ticket rule pays on a win; share line "Beat Pip at Kalah, 25 to 23".
+- Test hook `window.__mancala` (state, pit centers, `setup` for rare positions) only under `navigator.webdriver`.
+
 ## No. 136 Backgammon — shipped 2026-10-06 (`6cc514e`), live
 
 **`toys/backgammon/`** — backgammon against six café regulars at a table by the sea (BACKLOG "Deep #2"). Owner picks

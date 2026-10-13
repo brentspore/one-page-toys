@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Mancala — One Page Toys</title>
+    <meta name="description" content="Play mancala with glass beads on a carved walnut board, in Kalah or Oware rules, against six regulars in the back room of a bookshop, from the owner's grandson to Mrs. Adjei, who has never lost at her own table. Hints, a replay, and two players on one device. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/mancala/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#120c09" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Mancala" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Mancala — One Page Toys" />
+    <meta property="og:description" content="Glass beads on a walnut board, rain on the window. Six regulars stay after closing for a game of Kalah or Oware, and Mrs. Adjei has never lost at her own table." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/mancala/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/mancala.jpg?v=01360d9a" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mancala — One Page Toys" />
+    <meta name="twitter:description" content="Mancala with glass beads on a carved walnut board. Kalah or Oware rules, six regulars, hints, a replay, and two players on one device." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/mancala.jpg?v=01360d9a" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Mancala",
+        "url": "https://onepagetoys.com/toys/mancala/",
+        "description": "Mancala, the sowing game, played with forty-eight glass beads on a carved walnut board in the back room of a bookshop after closing. Choose Kalah, the six-pit game with stores, extra turns and captures across the board, or Oware under abapa rules, where you capture by making the other side's pits two or three, must feed an opponent who has run out, and win at twenty-five. The six opponents climb from Pip, the owner's grandson, through a night-bus driver, a poet, the newspaper's crossword setter and an astronomer, to Mrs. Adjei, who owns the shop, learned Oware as a girl in Kumasi and has never lost at her own table. Each plays each ruleset in its own way, and the engine runs entirely in your browser. Hover or press a pit to see where its seeds will land, ask for a hint, speed up a long sowing with a tap, replay the finished game move by move, or pass the device and play a friend. Free, with no account and no sign-up.",
+        "applicationCategory": "GameApplication",
+        "genre": "Strategy",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas" role="img" aria-label="A carved walnut mancala board with glass beads, on a low table in the back room of a bookshop at night. Tap one of your pits to sow its seeds, or press 1 to 6. Arrow keys and Enter work too."></canvas>
+
+    <div class="opp" id="opp" hidden>
+      <span class="opp__seal" id="oppSeal"></span>
+      <span class="opp__body">
+        <span class="opp__top">
+          <span class="opp__name" id="oppName">Pip</span>
+          <span class="opp__role" id="oppRole">the owner's grandson</span>
+        </span>
+        <span class="opp__say" id="oppSay"></span>
+      </span>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <span class="turn" id="turn"><i class="turn__dot" id="turnDot"></i><span id="turnText">Your turn</span></span>
+      <button type="button" class="btn" id="btnHint" title="Hint (H)">Hint</button>
+      <button type="button" class="btn" id="btnNew" title="New game (N)">New game</button>
+    </div>
+
+    <div class="bar bar--replay" id="replay" hidden>
+      <button type="button" class="btn" id="rpStart" title="Start (Home)" aria-label="Back to the start">&#9198;</button>
+      <button type="button" class="btn" id="rpBack" title="Back (←)" aria-label="Back one move">&#9664;</button>
+      <button type="button" class="btn btn--go" id="rpPlay">Play</button>
+      <button type="button" class="btn" id="rpFwd" title="Forward (→)" aria-label="Forward one move">&#9654;</button>
+      <button type="button" class="btn" id="rpEnd" title="End (End)" aria-label="To the end">&#9197;</button>
+      <span class="rp__label"><span id="rpLabel">Start</span><span class="rp__count" id="rpCount"></span></span>
+      <button type="button" class="btn" id="rpDone">Done</button>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+    <p class="note" id="note" aria-live="polite"></p>
+
+    <button type="button" class="corner-btn counts-btn" id="countsBtn" aria-pressed="true" title="Seed counts (C)" aria-label="Show seed counts">12</button>
+    <button type="button" class="corner-btn sound-btn" id="soundBtn" aria-pressed="true" title="Sound (M)" aria-label="Sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">The back room, after closing</p>
+        <h1 class="panel__title">Mancala</h1>
+        <p class="panel__text">
+          The shop is shut and the rain has set in, and <b>six regulars</b> stay late for a game on
+          the walnut board. Pip counts every seed out loud. Felix will sow the long way round just to
+          watch it go. <b>Mrs. Adjei</b> owns the shop, and she has never lost at her own table.
+        </p>
+        <div class="opts">
+          <div class="seg" role="radiogroup" aria-label="Rules">
+            <button type="button" class="seg__btn" role="radio" data-rules="kalah">Kalah</button>
+            <button type="button" class="seg__btn" role="radio" data-rules="oware">Oware</button>
+          </div>
+          <p class="opts__note" id="rulesNote"></p>
+          <div class="seg seg--small" role="radiogroup" aria-label="Who starts">
+            <button type="button" class="seg__btn" role="radio" data-first="0" id="firstMe">You start</button>
+            <button type="button" class="seg__btn" role="radio" data-first="1" id="firstThem">They start</button>
+          </div>
+          <div class="switches">
+            <button type="button" class="switch" id="countsSwitch" role="switch" aria-checked="true">
+              <span class="switch__track"><span class="switch__dot"></span></span>
+              <span>Seed counts</span>
+            </button>
+            <button type="button" class="switch" id="duoSwitch" role="switch" aria-checked="false">
+              <span class="switch__track"><span class="switch__dot"></span></span>
+              <span>Two players, one device</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="play-btn" id="ovBtn">Sit down with Pip</button>
+        <p class="panel__or" id="castLabel">or pick any regular</p>
+        <div class="cast" id="cast"></div>
+        <p class="panel__keys">tap a pit to sow it &middot; hover or hold to see where it lands &middot; 1&ndash;6 &middot; arrows + Enter &middot; H hint &middot; tap again to hurry a sowing &middot; C counts &middot; M sound</p>
+      </div>
+    </div>
+
+    <div class="overlay" id="result" hidden>
+      <div class="panel panel--result">
+        <span id="resSeal"></span>
+        <p class="result__line" id="resLine">Kalah</p>
+        <h2 class="panel__title" id="resTitle">You win</h2>
+        <p class="result__score" id="resScore"></p>
+        <p class="panel__text" id="resText"></p>
+        <p class="result__why" id="resWhy"></p>
+        <div class="result__btns">
+          <button type="button" class="play-btn" id="btnAgain">Play again</button>
+          <button type="button" class="btn btn--big" id="btnReplay">Replay the game</button>
+          <button type="button" class="btn btn--big" id="btnCast">Pick another regular</button>
+        </div>
+        <p class="result__record" id="resRecord"></p>
+        <span data-opt-share></span>
+        <div data-more-games></div>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 137</span>
+      <span class="frame__corner frame__corner--tr">Mancala</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hintLine">tap one of your pits to sow it</p>
+
+    <script src="../../assets/tickets.js?v=36" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="core.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=11" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=32" defer></script>
+  </body>
+</html>

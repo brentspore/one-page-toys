@@ -6,7 +6,7 @@
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**136 toys, live at onepagetoys.com.** Latest on `main`: `cd7f61b`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**137 toys (No. 137 Mancala built 2026-10-12, uncommitted until "push"), live at onepagetoys.com.** Latest on `main`: `cd7f61b`. **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Shipped toys (index)
 
@@ -14,6 +14,7 @@ Full per-toy records, including each toy's own traps, are in [toys-log.md](toys-
 
 - Admin Tip jar card — shipped 2026-10-12 (`cd7f61b`), live
 - Tip jar ask + Ko-fi, Untangle key art — shipped 2026-10-12 (`8dc4835`), live (DECISIONS 2026-10-12)
+- No. 137 Mancala — built 2026-10-12, uncommitted until "push" (toys-log)
 - No. 136 Backgammon — shipped 2026-10-06 (`6cc514e`), live
 - Useful tools round, No. 129-135 — shipped 2026-10-04 (`461b78a`), live
 - No. 128 Timber — shipped 2026-10-04 (`96ef508`), live (the old `jenga` branch, finished and renamed)
@@ -79,7 +80,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **51 entries, `?v=31` across 51 pages** (Timber added 2026-10-04, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **52 entries, `?v=32` across 52 pages** (Mancala added 2026-10-12 in all four lists; siblings uncommitted until push; before it Timber, verified in all four DEPLOYED bundles). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -139,9 +140,9 @@ Owner called three of four toys "too computery"; the one that passed was the onl
 
 ## Shared-asset versions (bump uniformly)
 
-`main.js?v=134` (8 pages) / `styles.css?v=133` (9 hub/store pages); **`tickets.js?v=35` across all 145 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=31` (51 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (135 toy and tool pages); `share.js?v=7` (62 pages); `tip-jar.js?v=11` (144 pages; the excluded sandbox stays on v=10); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
+`main.js?v=135` (8 pages) / `styles.css?v=134` (9 hub/store pages); **`tickets.js?v=36` across all 146 — keep it uniform** (the excluded `shuriken-night-visual-pass` sandbox stays on v=12 by design); `more-games.js?v=32` (52 pages); `game-screen.js?v=1` (111 toy pages); `track.js?v=1` (135 toy and tool pages); `share.js?v=7` (62 pages); `tip-jar.js?v=11` (144 pages; the excluded sandbox stays on v=10); `prizes.js?v=1`; store `store.js?v=6` / `store.css?v=7`.
 
-**Featured art** — the home panel ROTATES bespoke key art, one of **42** toys per load (Untangle added 2026-10-12, owner's key art, title position 30%; Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
+**Featured art** — the home panel ROTATES bespoke key art, one of **43** toys per load (Mancala added 2026-10-12, owner's key art, `TITLE` 0; Untangle added 2026-10-12, owner's key art, title position 30%; Maw added 2026-09-24, owner's own key art; Trench Runner 2026-09-23, Tiny Across 2026-09-12; ⚠ its art shows daily No. 1 SOLVED, accepted by the owner for launch day), not always the newest. `assets/featured/<slug>.webp`, 1200x675, `cwebp -q 82`; sources in `assets/featured/_sources/`, kept out of the deploy by `.vercelignore`. The random-9 grid excludes `featuredTool` (not `newestTool`); the pool is art-only on purpose. The h2 is `.sr-only` when art is present, by owner's call (each image carries the game's logo) — I argued to keep it and was overruled; eyebrow is "Featured toy".
 - **Live since `f5767d8` (2026-10-03).** ⚠ **Adding art is THREE steps** — save the source to `_sources/<slug>.png` and the `.webp` (see that folder's README), add the slug to `FEATURED_ART` in `main.js`, then add a `TITLE` position and run `node scripts/build-art-assets.cjs <slug> --sheet /tmp/s.png` (DECISIONS 2026-10-03): it builds the toy's card (`cards/<slug>.webp`) and share image (`og/<slug>.jpg`), rewrites its `.card__preview` rule and its page's `og:image`/`twitter:image`. Look at the sheet: the title must show in the narrowest card, the widest card and the share image. Bump `styles.css?v=` on the 9 hub pages.
   - ⚠ **`sips --cropOffset` is IGNORED** (sips always crops from the centre); the script crops with `cwebp -crop`, which is exact. A "top-anchored" crop that came out centred is this.
   - ⚠ **Kept on purpose:** `cards/pool.png` and `cards/nova-coil.png` (the Games category share image in `scripts/og-cat.html` is built from them), `og/shuriken-night.png` (the excluded `shuriken-night-visual-pass` sandbox points at it) and `og/tiny-across.jpg` (owner's hand crop; the script skips it). Every other superseded card/OG PNG of an art toy was deleted. Do not run `gen-card`/`gen-og` for an art toy: their PNGs would be unused.
@@ -169,6 +170,8 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 3. Playwright only if needed: `npm install && npx playwright install chromium` (`node_modules` is gitignored on purpose).
 
 ## Open next steps
+
+- **No. 137 Mancala (built 2026-10-12): owner play-test on a phone** (feel, the ladder against a human, both rulesets, pass-and-play, the sound: nothing has been heard). Judgment calls in toys-log (hint can beat Mrs. Adjei; steep top rung).
 
 - **Admin Tip jar card (live since `cd7f61b`, 2026-10-12): owner to sign in and check it shows real numbers.** `/admin/` gains a Tip jar card (asks shown, clicks from the ask and per ask, badge clicks, where people click). `scripts/test-admin.cjs` now runs 37 checks, all passing. ⚠ The real GA queries can only be proven by the owner signing in after deploy (the session can't be faked live). If the card says "split unavailable", the `customEvent:source` query failed and the rest still shows.
 - ✅ **Tip jar ask (live since `8dc4835`): owner-approved on a phone 2026-10-12, and `source` registered in GA4 as the event-scoped custom dimension "Tip source" the same day** (reports fill in from then, 24-48h lag). Measure = `tip_jar_click` with source `ask` divided by `tip_ask_shown`. ⚠ The production test on 2026-10-12 sent one `tip_ask_shown` and one `tip_jar_click` (source ask) to GA: discount them. Follow-ups are in BACKLOG "Tip jar: easier ways to pay".

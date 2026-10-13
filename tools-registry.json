@@ -1,5 +1,32 @@
 [
   {
+    "slug": "mancala",
+    "name": "Mancala",
+    "shortDescription": "Sow glass beads around a carved walnut board in a lamplit bookshop on a rainy night against six regulars, from the owner's grandson to the owner herself. Kalah or Oware rules, with hints, a replay and two-player mode.",
+    "category": "game",
+    "tags": [
+      "mancala",
+      "kalah",
+      "oware",
+      "board-game",
+      "strategy",
+      "ai-opponent",
+      "classic",
+      "turn-based",
+      "difficulty-levels",
+      "two-player",
+      "relaxing"
+    ],
+    "status": "live",
+    "path": "toys/mancala/",
+    "related": [
+      "backgammon",
+      "checkers",
+      "chess",
+      "marble-drop"
+    ]
+  },
+  {
     "slug": "backgammon",
     "name": "Backgammon",
     "shortDescription": "Play a match to 5 on an inlaid board at a café by the sea against six regulars, from the owner's granddaughter to the woman who runs the place, with hints, a pip count and an optional doubling cube.",

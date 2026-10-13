@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Mancala",
+      "tagline": "Sow glass beads by lamplight",
+      "url": "https://onepagetoys.com/toys/mancala/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='w' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%2393592f'/><stop offset='1' stop-color='%234a2913'/></linearGradient></defs><rect width='32' height='32' fill='%230d0906'/><rect x='1.5' y='8' width='29' height='16' rx='8' fill='url(%23w)'/><path d='M5.5 9.2h21' stroke='%23c58a4c' stroke-width='.9' stroke-linecap='round' opacity='.75'/><g fill='%23241207'><ellipse cx='5.8' cy='16' rx='2.5' ry='5.6'/><ellipse cx='26.2' cy='16' rx='2.5' ry='5.6'/><circle cx='11' cy='12.5' r='2.15'/><circle cx='16' cy='12.5' r='2.15'/><circle cx='21' cy='12.5' r='2.15'/><circle cx='11' cy='19.5' r='2.15'/><circle cx='16' cy='19.5' r='2.15'/><circle cx='21' cy='19.5' r='2.15'/></g><circle cx='10.6' cy='12.8' r='1.2' fill='%2336c486'/><circle cx='16.3' cy='12.3' r='1.2' fill='%23f2a93b'/><circle cx='21.2' cy='19.8' r='1.2' fill='%234a86f0'/><circle cx='15.6' cy='19.9' r='1.2' fill='%23e2445c'/><circle cx='26.1' cy='14' r='1.2' fill='%23a56ee6'/><circle cx='26.5' cy='17.4' r='1.2' fill='%2336c486'/><circle cx='5.6' cy='16.7' r='1.2' fill='%23f2a93b'/><g fill='%23fff' opacity='.85'><circle cx='10.2' cy='12.4' r='.4'/><circle cx='15.9' cy='11.9' r='.4'/><circle cx='20.8' cy='19.4' r='.4'/><circle cx='15.2' cy='19.5' r='.4'/><circle cx='25.7' cy='13.6' r='.4'/><circle cx='26.1' cy='17' r='.4'/><circle cx='5.2' cy='16.3' r='.4'/></g></svg>",
+      "initial": "M",
+      "slug": "mancala"
+    },
+    {
       "name": "Backgammon",
       "tagline": "A match to 5 by the sea",
       "url": "https://onepagetoys.com/toys/backgammon/",
