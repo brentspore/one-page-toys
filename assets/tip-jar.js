@@ -16,21 +16,19 @@
  * State: localStorage `opt_tipjar_v1` = { games, asked, clicked }.
  *
  * Optional overrides via a global before this script loads:
- *   window.OPT_TIPJAR = { url: "https://ko-fi.com/…", business: "you@example.com", label: "Tip Jar",
- *                         tooltip: "Buy us a coffee ☕", item: "One Page Toys" };
+ *   window.OPT_TIPJAR = { url: "https://ko-fi.com/…", label: "Tip Jar", tooltip: "Buy us a coffee ☕" };
  */
 (function () {
   "use strict";
 
   var CFG = window.OPT_TIPJAR || {};
-  // Where a tip goes: the Ko-fi page (owner, 2026-10-12). It takes PayPal and
-  // Stripe, so cards, Apple Pay and Google Pay too. Setting it to "" falls back
-  // to the old PayPal donate page built from BUSINESS below.
-  var TIP_URL = CFG.url || "https://ko-fi.com/mightyarmy";
-  var BUSINESS = CFG.business || "brent@mightyarmy.com";
+  // Where a tip goes: the Ko-fi page (owner, 2026-10-12; its username is synergyprod
+  // since 2026-10-16). It takes PayPal and Stripe, so cards, Apple Pay and Google Pay
+  // too. It is the only destination: the old PayPal donate fallback carried a personal
+  // address, and nothing public names a person (owner, 2026-10-14).
+  var TIP_URL = CFG.url || "https://ko-fi.com/synergyprod";
   var LABEL = CFG.label || "Tip Jar";
   var TOOLTIP = CFG.tooltip || "Support One Page Toys";
-  var ITEM = CFG.item || "One Page Toys";
 
   // The ask, see the header
   var START = ["button#ovBtn", "button.play-btn", "[data-opt-start]"]; // preference order
@@ -43,14 +41,7 @@
   var ASK_LINK = "Leave a tip";
 
   function donateUrl() {
-    if (TIP_URL) return TIP_URL;
-    return (
-      "https://www.paypal.com/donate?business=" +
-      encodeURIComponent(BUSINESS) +
-      "&item_name=" +
-      encodeURIComponent(ITEM + " — tip jar") +
-      "&currency_code=USD"
-    );
+    return TIP_URL;
   }
 
   function injectStyles() {
