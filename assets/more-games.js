@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Go",
+      "tagline": "Slate stones in a rainy teahouse",
+      "url": "https://onepagetoys.com/toys/go/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><radialGradient id='b' cx='.36' cy='.32' r='.75'><stop offset='0' stop-color='%235a5c60'/><stop offset='.45' stop-color='%231d1e21'/><stop offset='1' stop-color='%23050506'/></radialGradient><radialGradient id='w' cx='.38' cy='.32' r='.8'><stop offset='0' stop-color='%23ffffff'/><stop offset='.6' stop-color='%23ece6da'/><stop offset='1' stop-color='%23b9b0a0'/></radialGradient></defs><rect width='32' height='32' fill='%23140d08'/><rect x='2' y='2' width='28' height='28' rx='2.5' fill='%23d9a65f'/><g stroke='%233a2412' stroke-width='.8' opacity='.85'><path d='M6 6V26M12.67 6V26M19.33 6V26M26 6V26M6 6H26M6 12.67H26M6 19.33H26M6 26H26'/></g><circle cx='12.67' cy='19.33' r='.9' fill='%233a2412'/><circle cx='12.9' cy='13.3' r='3.6' fill='%23000' opacity='.35'/><circle cx='12.67' cy='12.67' r='3.5' fill='url(%23b)'/><circle cx='19.6' cy='13.3' r='3.5' fill='%23000' opacity='.3'/><circle cx='19.33' cy='12.67' r='3.4' fill='url(%23w)'/><circle cx='19.6' cy='20' r='3.6' fill='%23000' opacity='.35'/><circle cx='19.33' cy='19.33' r='3.5' fill='url(%23b)'/></svg>",
+      "initial": "G",
+      "slug": "go"
+    },
+    {
       "name": "Mancala",
       "tagline": "Sow glass beads by lamplight",
       "url": "https://onepagetoys.com/toys/mancala/",

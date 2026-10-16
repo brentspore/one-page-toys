@@ -1,5 +1,36 @@
 [
   {
+    "slug": "go",
+    "name": "Go",
+    "shortDescription": "9x9 Go with slate and shell stones on a thick kaya board, against six regulars at a rainy mountain teahouse. Take handicap stones, turn on the territory view, and learn the rules in a minute.",
+    "category": "game",
+    "tags": [
+      "go",
+      "weiqi",
+      "baduk",
+      "board-game",
+      "strategy",
+      "ai-opponent",
+      "classic",
+      "turn-based",
+      "difficulty-levels",
+      "relaxing",
+      "meditative",
+      "learn",
+      "capture",
+      "territory",
+      "tap"
+    ],
+    "status": "live",
+    "path": "toys/go/",
+    "related": [
+      "mancala",
+      "chess",
+      "checkers",
+      "backgammon"
+    ]
+  },
+  {
     "slug": "mancala",
     "name": "Mancala",
     "shortDescription": "Sow glass beads around a carved walnut board in a lamplit bookshop on a rainy night against six regulars, from the owner's grandson to the owner herself. Kalah or Oware rules, with hints, a replay and two-player mode.",

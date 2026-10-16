@@ -73,6 +73,7 @@
     { test: "backgammon_beaten", dir: "up", label: "Backgammon regulars beaten" },
     { test: "checkers_beaten", dir: "up", label: "Checkers regulars beaten" },
     { test: "mancala_beaten", dir: "up", label: "Mancala regulars beaten" },
+    { test: "go_beaten", dir: "up", label: "Go regulars beaten" },
     { test: "timber_best", dir: "up", label: "Timber blocks moved" },
     // one rule for all three cube sizes; a solve time is better when lower
     { test: /^cube_best_[234]$/, dir: "down", label: "Twisty Cube solve" },

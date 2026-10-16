@@ -66,6 +66,7 @@ const CATEGORY_LABELS = {
  * ("check my colors", "pretty print json", "meeting cost") without stuffing the visible chips.
  */
 const TYPE_NL_PHRASES = {
+  "go": "go game the game of go weiqi wei qi baduk igo goban go board go stones play go online free go go against the computer go vs computer go ai learn go how to play go go for beginners go lesson 9x9 go nine by nine small board go teaching game slate and shell stones slate and clamshell kaya board go bowls goke black and white stones surround capture territory area scoring chinese rules komi handicap stones life and death two eyes ko superko seki atari liberties pass count dead stones tsumego go problem ancient board game oldest board game strategy game abstract strategy chinese board game japanese board game korean board game teahouse rain relaxing meditative zen calm thoughtful",
   "timber": "timber block tower wooden block tower stacking blocks stack the blocks wooden blocks pull a block block pulling game stack and pull toppling tower wobbly tower topple collapse dont let it fall do not knock it over steady hand nerves careful hands physics game real physics 3d tower orbit the tower table game party game family game classic wooden block game lumber timber shout free browser game no signup no download",
   "mancala": "mancala kalah kalaha oware awari awale ayo ayoayo bao congkak sungka pallanguzhi omweso toguz kumalak count and capture sowing game stones and pits pit and stone game seeds beads glass beads marbles gems pebbles mancala board wooden board carved board store extra turn capture play mancala online free mancala mancala against the computer mancala vs computer mancala ai two player mancala pass and play family game kids board game african board game ancient board game classic board game strategy game abstract strategy six opponents difficulty levels hint replay bookshop rainy night lamplight cozy relaxing free browser game no signup no download",
   "backgammon": "backgammon back gammon tavla tavli nardy narde shesh besh table game play backgammon online free backgammon backgammon against the computer backgammon vs computer backgammon ai board game classic board game dice game strategy game pip count pips doubling cube double take pass gammon backgammon match match to 5 crawford rule bear off bearing off hit blot bar prime anchor hint seaside cafe greek island taverna inlaid wooden board mother of pearl tea six opponents difficulty levels free browser game no signup no download",
@@ -542,7 +543,7 @@ let featuredTool = null;
 // spotlight rotates through these — one per page load — instead of always
 // showing the newest toy. Add a slug here only once its art exists.
 const FEATURED_ART = [
-  "mancala", "backgammon", "timber", "checkers", "decant", "jettison", "meld", "maw", "trench-runner", "untangle",
+  "go", "mancala", "backgammon", "timber", "checkers", "decant", "jettison", "meld", "maw", "trench-runner", "untangle",
   "accretion", "air-hockey", "alpenglow", "bowling", "brick-smasher",
   "chess", "darts", "deep-descent", "deep-hollow", "dot-loop", "five-second-game",
   "mini-golf", "nova-coil", "paper-plane", "perfect-circle",

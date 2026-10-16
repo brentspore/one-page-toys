@@ -249,7 +249,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Deep #3 — New toy: Go (9x9) vs AI
+### Deep #3 — New toy: Go (9x9) vs AI — BUILT as No. 138 Go (2026-10-16); see toys-log
 
 **Why it matters:** The deepest game there is, on its smallest board, with the most beautiful set (slate and shell stones on a wooden board, and that iconic stone snap). A 9x9 game takes 10-15 minutes. A large, curious audience has never had an approachable way in. Category `game`.
 

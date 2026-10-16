@@ -47,7 +47,9 @@
   function injectStyles() {
     if (document.getElementById("opt-tipjar-style")) return;
     var css =
-      // A round Mighty Army badge docked at right-center; expands to a pill on hover/focus.
+      // A round coffee-cup badge docked at right-center; expands to a pill on hover/focus.
+      // (The cup replaced the Mighty Army shield 2026-10-14: the shield read as a bookmark, and
+      // the badge is wordless on phones. Drawn in currentColor so it inverts on the red pill.)
       ".opt-tipjar{position:fixed;right:max(16px, env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:2147483000;" +
       "display:inline-flex;align-items:center;height:46px;overflow:hidden;--tj-bg:#fff;" +
       "background:#fff;color:#211f1d;border:1.5px solid #211f1d;border-radius:999px;" +
@@ -97,10 +99,11 @@
     a.innerHTML =
       '<span class="opt-tipjar__label">' + LABEL + "</span>" +
       '<span class="opt-tipjar__jar" aria-hidden="true">' +
-        '<svg class="opt-tipjar__logo" viewBox="0 0 38.5 64.5" xmlns="http://www.w3.org/2000/svg">' +
-          '<polygon fill="currentColor" points="38.5,53.7 19.3,45 0,53.7 0,0 38.5,0"/>' +
-          '<polygon fill="currentColor" points="19.3,50.3 0,59.1 0,64.5 19.3,55.7 38.5,64.5 38.5,59.1"/>' +
-          '<polygon style="fill:var(--tj-bg,#fff)" points="19.3,19.3 21.5,26.1 28.7,26.1 22.9,30.3 25.1,37.2 19.3,32.9 13.5,37.2 15.7,30.3 9.9,26.1 17,26.1"/>' +
+        '<svg class="opt-tipjar__logo" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">' +
+          '<path fill="currentColor" d="M3.5 10.5h14.2v5.1c0 3.5-2.8 6.3-6.3 6.3H9.8c-3.5 0-6.3-2.8-6.3-6.3z"/>' +
+          '<path fill="none" stroke="currentColor" stroke-width="2.1" d="M17.7 12.2h1.6a2.6 2.6 0 0 1 0 5.2h-1.6"/>' +
+          '<rect x="2.6" y="23.2" width="16" height="1.9" rx=".95" fill="currentColor"/>' +
+          '<path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M8 7.6c0-1.6 1.6-1.6 1.6-3.2M12.3 7.6c0-1.6 1.6-1.6 1.6-3.2"/>' +
         "</svg>" +
       "</span>";
     a.addEventListener("click", function () { tipped("badge"); });

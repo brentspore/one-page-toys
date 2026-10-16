@@ -2,6 +2,55 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
+## No. 138 Go — built 2026-10-16, NOT YET PUSHED
+
+**`toys/go/`** — 9x9 Go against six regulars in a mountain teahouse at dusk, in the rain (BACKLOG "Deep #3"). Owner
+picks (2026-10-16): world **Mountain teahouse, rain**; ladder **six regulars + a handicap setting** (Even with komi 7.5,
+or 2/3/4 stones on the 3-3 points with komi 0.5); **9x9 only**; extras **Territory view only** (no hint, no undo, no
+pass-and-play). A first-game lesson (4 cards, auto-opens once) and a tap-to-mark-dead-stones count come regardless.
+Built by one builder agent from the Mancala template; registration done by the parent. Files: `core.js` (rules, page +
+Worker), `engine.js` (Worker, MCTS, on-page fallback), `audio.js`, `script.js`, `styles.css`, `index.html`.
+Regulars, easiest first (ranks shown as "about 25/20/16/12/8/5 kyu", labeled rough guesses): Hana (the innkeeper's
+granddaughter), Mr. Ota, Emiko, Saito, Lin, Kenji. Keys: `go_beaten` (distinct regulars beaten at any handicap, 0-6;
+ticket rule dir `up`, rule only), `go_record` (JSON: fewest stones each regular was beaten with; the cast shows "Beaten
+even" / "Beaten with N stones"), `go_wins|losses|foe|handicap|first|sound|lesson_seen|territory`. GA `go_game_start`,
+`go_game_end`. **Owner's key art** (`_sources/go.png`, `TITLE` 0, added by another session while the builder worked) is
+in the featured pool (44) and is the card (`cards/go.webp`) and share image (`og/go.jpg`); `scripts/poses/go.js` stays as
+the gameplay-still pose. Registered: registry, sitemap 141, NL phrase (weiqi, baduk, igo, goban...), card CSS +
+`:not()`, og-gen entry (unused while the art is the share image), ticket rule, cross-promo in all FOUR lists (tagline
+"Slate stones in a rainy teahouse", a corner of goban with black-white-black stones; the first draft, two blacks over a
+white, read as a face).
+- **Rules verified like perft**: an independent naive implementation (2D arrays, flood fill, a Set of board strings)
+  over 3,000 random games, 866,797 plies, 24.7M legal moves, 693,841 captures, all final area counts: 0 mismatches
+  (4,583 ko and 116 superko refusals exercised). The engine's fast board vs `core.js`: 400 games, 0 mismatches. 31/31
+  hand cases (snapback, ko, triple ko refused as superko, suicide vs capture-with-last-liberty, edges, seki counting,
+  handicap komi, two passes end).
+- **Engine**: UCT + RAVE over light playouts (never fill own eye, capture/escape atari, no 2+ stone self-atari) plus the
+  classic 3x3 patterns around the last move; ⚠ without the patterns the top three rungs were near coin flips. Positional
+  superko at the root only; the engine checks simple ko inside playouts. 27k playouts/s empty board, 43k midgame
+  (6.7k / 10.7k at 4x throttle). Think time midgame Hana 37ms → Kenji 933ms (2.41s capped at 4x), plus a 450-1200ms
+  human pause. Hana and Ota never resign; the rest resign only after move 25 when the win rate is under 5% three moves
+  running. Never passes before move 12.
+- **Ladder, engine vs engine, 40 games a pair, colors split**: Hana beats random 20/20; Ota>Hana 40/40; Emiko>Ota 35/40;
+  Saito>Emiko 30/40; Lin>Saito 34/40; Kenji>Lin 30/40 (25/32 when capped as on a slow phone). Never against a human.
+- **Count**: a big ownership pass marks dead groups; the player taps a group to toggle, and if the marking then differs
+  from the engine's the button turns into **"Play it out"** and the game resumes (the real rule for a disputed count,
+  and it keeps the ladder honest). ⚠ Seki is handled by ownership; only one seki shape was tested.
+- Touch: the first tap aims (ghost), a second tap on the same point plays; a "tap again" note shows the first 3 aims a
+  visit. Spacing 38.0/36.5px at 390x844, 36.5/35.0 at 375x667, 42.5/32.5 at 1280x800.
+- Captured stones go to the CAPTURER's lid (as players do). Win moment: the lantern swells, a maple leaf lands on the
+  board, a soft bell.
+- ⚠ **The territory wash (parent fix)**: the builder painted it at ~5px per point and upscaled, which showed as blocky
+  squares. Now one gaussian blob per point (sigma 0.5 cell), summed with `lighter` into a mask per color so a solid area
+  is even, then tinted with `source-in`; full resolution, repainted only when ownership changes. WebKit has no canvas
+  blur filter, which is why it is not a blur.
+- **Audio, offline, 8 renders each**: slate stone 0.24-0.27, shell 0.23-0.24, lid drop 0.22-0.25, bowl rustle 0.11,
+  pass 0.13, win 0.22, lose 0.20; a 20-stone capture burst 0.30 (max 0.36); rain bed RMS 0.021. No clipping, no NaN.
+  **Never heard.**
+- Frame cost 0.08-0.13ms own work. Verified headless: full games to the result panel at 1280x800, 390x844 (incl. the
+  dispute and Play it out) and WebKit 375x667 (2/3-stone handicap, resignation), zero console errors, no overflow, tap
+  highlight off. Test hook `window.__go` only under `navigator.webdriver`.
+
 ## No. 137 Mancala — shipped 2026-10-12 (`fe26fc0`), live
 
 **`toys/mancala/`** — mancala with 48 glass beads on a carved walnut board in the back room of a bookshop after closing,

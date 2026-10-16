@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Go — One Page Toys</title>
+    <meta name="description" content="Play Go on a 9x9 board with slate and shell stones, against six regulars at a mountain teahouse on a rainy evening, from the innkeeper's granddaughter to the old owner. Take a handicap, turn on the territory view, and learn the rules in a minute. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/go/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#120d0a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Go" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Go — One Page Toys" />
+    <meta property="og:description" content="Slate and shell on a thick kaya board, rain on the roof. Six regulars at a mountain teahouse will play you a game of 9x9 Go, with as many stones as you need." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/go/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/go.jpg?v=b7832a44" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Go — One Page Toys" />
+    <meta name="twitter:description" content="9x9 Go with slate and shell stones on a kaya board. Six opponents, handicap stones, a territory view and a one-minute lesson." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/go.jpg?v=b7832a44" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Go",
+        "url": "https://onepagetoys.com/toys/go/",
+        "description": "Go, the board game also called weiqi and baduk, played on a 9x9 board with slate and clamshell stones on a thick kaya goban, in a mountain teahouse at dusk with rain on the roof. Take turns placing stones, capture groups with no liberties, and surround more of the board than your opponent. Six opponents climb from Hana, the innkeeper's granddaughter, through the postman, a potter, a retired schoolteacher and a visiting professor, to Kenji, who owns the teahouse and studied the game as a young man. Play even with 7.5 komi, or take two, three or four handicap stones. A territory view shades who owns each point right now, the end of the game has a proper counting screen where you can mark dead stones, and a short lesson covers the rules for a first game. The opponents run entirely in your browser. Free, with no account and no sign-up.",
+        "applicationCategory": "GameApplication",
+        "genre": "Strategy",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas" role="img" aria-label="A thick kaya Go board with a 9 by 9 grid, on tatami in a mountain teahouse at dusk, with rain falling on the garden outside. Tap a point to aim, then tap it again to place a stone. Arrow keys and Enter work too."></canvas>
+
+    <div class="opp" id="opp" hidden>
+      <span class="opp__seal" id="oppSeal"></span>
+      <span class="opp__body">
+        <span class="opp__top">
+          <span class="opp__name" id="oppName">Hana</span>
+          <span class="opp__role" id="oppRole">the innkeeper's granddaughter</span>
+        </span>
+        <span class="opp__say" id="oppSay"></span>
+      </span>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <span class="turn" id="turn"><i class="turn__stone" id="turnStone"></i><span class="turn__text"><span id="turnText">Your turn</span><span class="turn__sub" id="turnSub">Move 1</span></span></span>
+      <button type="button" class="btn" id="btnPass" title="Pass (P)">Pass</button>
+      <button type="button" class="btn btn--toggle" id="btnTerr" title="Territory (T)" aria-pressed="false">Territory</button>
+      <button type="button" class="btn" id="btnResign" title="Resign">Resign</button>
+    </div>
+
+    <div class="count" id="count" hidden>
+      <p class="count__help" id="countHelp">Tap a group to mark it dead or alive.</p>
+      <div class="count__rows">
+        <p class="count__row"><i class="count__stone count__stone--b"></i><span class="count__who" id="cBName">Black</span><span class="count__sum" id="cB"></span></p>
+        <p class="count__row"><i class="count__stone count__stone--w"></i><span class="count__who" id="cWName">White</span><span class="count__sum" id="cW"></span></p>
+      </div>
+      <div class="count__foot">
+        <p class="count__verdict" id="countVerdict"></p>
+        <button type="button" class="btn btn--go btn--wide" id="countGo">Count</button>
+      </div>
+      <p class="count__why" id="countWhy"></p>
+    </div>
+
+    <div class="callout" id="callout" hidden></div>
+    <p class="note" id="note" aria-live="polite"></p>
+
+    <button type="button" class="corner-btn help-btn" id="helpBtn" title="How to play" aria-label="How to play">?</button>
+    <button type="button" class="corner-btn sound-btn" id="soundBtn" aria-pressed="true" title="Sound (M)" aria-label="Sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">A mountain teahouse, at dusk</p>
+        <h1 class="panel__title">Go</h1>
+        <p class="panel__text">
+          Rain on the roof, a lantern lit, and the old kaya board set out on the tatami.
+          <b>Six regulars</b> will give you a game. Hana only learned last summer. <b>Kenji</b>
+          owns the teahouse, and he studied the game seriously when he was young.
+        </p>
+        <div class="opts">
+          <div class="seg" role="radiogroup" aria-label="Handicap">
+            <button type="button" class="seg__btn" role="radio" data-handi="0">Even</button>
+            <button type="button" class="seg__btn" role="radio" data-handi="2">2 stones</button>
+            <button type="button" class="seg__btn" role="radio" data-handi="3">3 stones</button>
+            <button type="button" class="seg__btn" role="radio" data-handi="4">4 stones</button>
+          </div>
+          <div class="seg seg--small" role="radiogroup" aria-label="Your color" id="colorSeg">
+            <button type="button" class="seg__btn" role="radio" data-first="black">Black</button>
+            <button type="button" class="seg__btn" role="radio" data-first="white">White</button>
+            <button type="button" class="seg__btn" role="radio" data-first="alt">Take turns</button>
+          </div>
+          <p class="opts__note" id="handiNote"></p>
+        </div>
+        <button type="button" class="play-btn" id="ovBtn">Sit down with Hana</button>
+        <p class="panel__or" id="castLabel">or pick any regular</p>
+        <div class="cast" id="cast"></div>
+        <p class="panel__fine">Ranks are rough guesses.</p>
+        <p class="panel__keys"><button type="button" class="linkbtn" id="howBtn">How to play</button> &middot; tap a point, then tap it again to place &middot; arrows + Enter &middot; P pass &middot; T territory &middot; M sound</p>
+      </div>
+    </div>
+
+    <div class="overlay overlay--lesson" id="lesson" hidden>
+      <div class="panel panel--lesson" role="dialog" aria-labelledby="lessonTitle">
+        <p class="panel__eyebrow">How to play <span id="lessonStep"></span></p>
+        <div class="lesson__stage"><canvas id="lessonCv" width="240" height="240" aria-hidden="true"></canvas></div>
+        <h2 class="lesson__title" id="lessonTitle"></h2>
+        <p class="lesson__text" id="lessonText"></p>
+        <p class="lesson__aside" id="lessonAside"></p>
+        <div class="lesson__nav">
+          <button type="button" class="btn" id="lessonBack">Back</button>
+          <span class="lesson__dots" id="lessonDots"></span>
+          <button type="button" class="btn btn--go" id="lessonNext">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="result" hidden>
+      <div class="panel panel--result">
+        <span id="resSeal"></span>
+        <p class="result__line" id="resLine">Even game</p>
+        <h2 class="panel__title" id="resTitle">You win</h2>
+        <p class="result__score" id="resScore"></p>
+        <p class="panel__text" id="resText"></p>
+        <div class="result__btns">
+          <button type="button" class="play-btn" id="btnAgain">Play again</button>
+          <button type="button" class="btn btn--big" id="btnCast">Pick another regular</button>
+        </div>
+        <p class="result__record" id="resRecord"></p>
+        <span data-opt-share></span>
+        <div data-more-games></div>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 138</span>
+      <span class="frame__corner frame__corner--tr">Go</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hintLine">tap a point to aim, then tap it again to place</p>
+
+    <script src="../../assets/tickets.js?v=37" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="core.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=13" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=33" defer></script>
+  </body>
+</html>
