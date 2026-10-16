@@ -2,7 +2,7 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
-## No. 138 Go — built 2026-10-16, NOT YET PUSHED
+## No. 138 Go — shipped 2026-10-16 (`d5c6b58`), live
 
 **`toys/go/`** — 9x9 Go against six regulars in a mountain teahouse at dusk, in the rain (BACKLOG "Deep #3"). Owner
 picks (2026-10-16): world **Mountain teahouse, rain**; ladder **six regulars + a handicap setting** (Even with komi 7.5,
@@ -50,6 +50,10 @@ white, read as a face).
 - Frame cost 0.08-0.13ms own work. Verified headless: full games to the result panel at 1280x800, 390x844 (incl. the
   dispute and Play it out) and WebKit 375x667 (2/3-stone handicap, resignation), zero console errors, no overflow, tap
   highlight off. Test hook `window.__go` only under `navigator.webdriver`.
+- **Live-verified** 2026-10-16: five moves each against the live engine in Chromium 1280 and 390 and WebKit 375, zero
+  errors; home count 138, All Toys newest panel, "go"/"weiqi"/"baduk"/"goban" rank it first; og/card/featured 200,
+  source PNG 404; cross-promo in all four DEPLOYED bundles (five-second-game `19d770b`, the-trail-game `1ba1721` routes
+  chunk, word-kraven `8c50ac6`); IndexNow 141 accepted.
 
 ## No. 137 Mancala — shipped 2026-10-12 (`fe26fc0`), live
 
