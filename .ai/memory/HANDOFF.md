@@ -177,7 +177,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 - **No. 138 Go (live since `d5c6b58`, 2026-10-16): owner phone play-test** (feel, the two-tap placement, the ladder against a human, the count and "Play it out" flow, and the sound: nothing has been heard).
 
-- **Tip jar badge is a coffee cup (owner's pick 2026-10-14, shipped 2026-10-16 with Go, `tip-jar.js?v=13`).** Reasoning in DECISIONS under the 2026-10-12 tip jar entry. ⚠ **The same change is still UNPUSHED in the BuildUtilities working tree** (BU deploys from GitHub Actions on push to `main`).
+- **Tip jar badge is a coffee cup (owner's pick 2026-10-14, shipped 2026-10-16 with Go, `tip-jar.js?v=13`).** Reasoning in DECISIONS under the 2026-10-12 tip jar entry. The same cup and nudge shipped on BuildUtilities 2026-10-16 (`16e104b`).
 
 - **No. 137 Mancala (live since `fe26fc0`): owner play-test on a phone** (feel, the ladder against a human, both rulesets, pass-and-play, the sound: nothing has been heard). Judgment calls in toys-log (hint can beat Mrs. Adjei; steep top rung).
 
