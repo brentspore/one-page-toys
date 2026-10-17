@@ -2,7 +2,7 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
-## No. 139 Reversi — built 2026-10-16, NOT YET PUSHED
+## No. 139 Reversi — shipped 2026-10-16 (`9ec4643`), live
 
 **`toys/reversi/`** — Reversi against six regulars at a gaslit London gentlemen's club in the 1880s, where the game was
 invented (BACKLOG "Deep #5"). Owner picks (2026-10-16): world **Victorian club, gaslight**; top rung **strong but
@@ -37,6 +37,10 @@ four crossed start discs on baize plus one disc mid-flip so it never reads as a 
 - ⚠ **Parent fix: the case's cast shadow was a hard-edged dark slab** (a filled polygon with shadowBlur draws the hard
   fill too). Now the polygon is drawn off-canvas and only its blurred shadow is offset back (shadow offsets are in
   device pixels; they ignore the transform).
+- **Live-verified** 2026-10-16: five moves each against the live engine in Chromium 1280 and 390 and WebKit 375, zero
+  errors, no overflow; home count 139, newest panel, "reversi"/"flip discs" rank it first, 0 "othello" on the live page;
+  og/card/featured 200, source PNG 404; cross-promo in all four DEPLOYED bundles (five-second-game `ce0adcb`,
+  the-trail-game `a89d790` routes chunk, word-kraven `79eb59a`); IndexNow 142 accepted.
 
 ## No. 138 Go — shipped 2026-10-16 (`d5c6b58`), live
 

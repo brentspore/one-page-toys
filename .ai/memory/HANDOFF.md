@@ -1,18 +1,18 @@
 # Handoff
 
-**Last updated: 2026-10-16 (No. 138 Go shipped with owner key art, cross-promo in all four lists; the coffee-cup tip-jar badge shipped as `tip-jar.js?v=13`; this push also carries the cloud session's Ko-fi change, which Vercel had blocked on its author address.) Before that: 2026-10-16 (cloud session: the tip jar points at ko-fi.com/synergyprod, the owner's renamed Ko-fi page, in `assets/tip-jar.js` and the eight hub footers; the PayPal donate fallback with its personal address is gone; `tip-jar.js?v=12` across 144 pages. Pushed by the cloud session; a commit authored as hello@synergyprod.com is BLOCKED on Vercel until that address is verified on the GitHub account, so the live site shows it only after the owner verifies the address or, after pulling on the Mac, pushes an empty commit. The change was parse-checked and grepped, not driven in a browser.) Before that: 2026-10-12 (No. 137 Mancala shipped `fe26fc0` and live-verified: Chromium + WebKit play, hub/search/newest panel, cross-promo in all four DEPLOYED bundles, IndexNow 140 accepted. Earlier the same day: admin Tip jar card `cd7f61b`; tip jar ask + Ko-fi and Untangle art `8dc4835`.)**
+**Last updated: 2026-10-16 (No. 139 Reversi shipped `9ec4643` and live-verified, after No. 138 Go `d5c6b58` the same day; both with owner key art and cross-promo in all four deployed bundles.) Before that: 2026-10-16 (cloud session: the tip jar points at ko-fi.com/synergyprod, the owner's renamed Ko-fi page, in `assets/tip-jar.js` and the eight hub footers; the PayPal donate fallback with its personal address is gone; `tip-jar.js?v=12` across 144 pages. Pushed by the cloud session; a commit authored as hello@synergyprod.com is BLOCKED on Vercel until that address is verified on the GitHub account, so the live site shows it only after the owner verifies the address or, after pulling on the Mac, pushes an empty commit. The change was parse-checked and grepped, not driven in a browser.) Before that: 2026-10-12 (No. 137 Mancala shipped `fe26fc0` and live-verified: Chromium + WebKit play, hub/search/newest panel, cross-promo in all four DEPLOYED bundles, IndexNow 140 accepted. Earlier the same day: admin Tip jar card `cd7f61b`; tip jar ask + Ko-fi and Untangle art `8dc4835`.)**
 
 ## What this site is / key files
 
 A branded launcher hub + standalone full-bleed toys (`toys/<slug>/`, utilities in `tools/<slug>/`), each opening in a new tab. Geist design system, 3-way theme. Direction: FUN/playful — dev tools belong on BuildUtilities (separate repo; that one IS Lovable-connected: push syncs, then Publish in Lovable). Key files: `tools-registry.json` (authoritative toy list, newest first, drives the gallery), `assets/main.js` (gallery + NL search + GA4; home = random 9), `assets/styles.css`, `assets/{theme,tip-jar,share,fullscreen,tickets,prizes,more-games}.js`, `sitemap.xml`, `assets/cards/` + `assets/og/`, `scripts/{og-gen.html,gen-card.cjs,gen-og.cjs}`. Memory: `BACKLOG.md` (~24 open ideas), `DECISIONS.md` (standards), `reference.md` (infra), `archive/`.
 
-**138 toys, live at onepagetoys.com.** Latest on `main`: `d5c6b58` (Go, the coffee-cup badge, and the Ko-fi change that Vercel had held back, all live). **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
+**139 toys, live at onepagetoys.com.** Latest on `main`: `9ec4643` (Reversi). **Hosting is Vercel:** push `main` → deploy in 1–2 min (`pages-build-deployment` is a legacy leftover; single 404s during edge rollout are normal, retry). ⚠ Redirect is **`www` → apex, a 307** (per the 08-04 audit; an older note claimed the reverse — trust the audit), so **live-verify against `https://onepagetoys.com/`**.
 
 ## Shipped toys (index)
 
 Full per-toy records, including each toy's own traps, are in [toys-log.md](toys-log.md) (open the heading for the toy you are touching). Add a new toy there, and one line here.
 
-- No. 139 Reversi — built 2026-10-16, NOT YET PUSHED (toys-log)
+- No. 139 Reversi — shipped 2026-10-16 (`9ec4643`), live (toys-log)
 - No. 138 Go — shipped 2026-10-16 (`d5c6b58`), live (toys-log)
 - Admin Tip jar card — shipped 2026-10-12 (`cd7f61b`), live
 - Tip jar ask + Ko-fi, Untangle key art — shipped 2026-10-12 (`8dc4835`), live (DECISIONS 2026-10-12)
@@ -82,7 +82,7 @@ Measured first: **73 of 117 pages had no share button, 13 toys with a real score
 
 ## ⚠ STANDING RULE (owner, 2026-08-23): cross-promo is part of shipping a game
 
-*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **54 entries, `?v=34` across 54 pages** (Reversi added 2026-10-16 in all four source lists, siblings NOT yet pushed; Go added 2026-10-16, verified in all four DEPLOYED bundles: five-second-game `19d770b`, the-trail-game `1ba1721` routes chunk, word-kraven `8c50ac6`; Mancala added 2026-10-12, verified in all four DEPLOYED bundles: five-second-game `2b150c1`, the-trail-game `e655b72` in its `routes-*.js` chunk, word-kraven `af9db4f`). Still genuinely out: Accretion and the three tools.
+*"When I push a new game, the cross promo piece needs to be a part of it."* **A REQUIRED ship step, not a deferred curation pass** — the old "curated, not the whole catalogue" framing let the list fall ten toys behind (`DECISIONS.md`). Now **54 entries, `?v=34` across 54 pages** (Reversi added 2026-10-16, verified in all four DEPLOYED bundles: five-second-game `ce0adcb`, the-trail-game `a89d790`, word-kraven `79eb59a`; Go added 2026-10-16, verified in all four DEPLOYED bundles: five-second-game `19d770b`, the-trail-game `1ba1721` routes chunk, word-kraven `8c50ac6`; Mancala added 2026-10-12, verified in all four DEPLOYED bundles: five-second-game `2b150c1`, the-trail-game `e655b72` in its `routes-*.js` chunk, word-kraven `af9db4f`). Still genuinely out: Accretion and the three tools.
 - ⚠ **FOUR surfaces move together, not three** — `assets/more-games.js` plus the `MoreGames.tsx` in five-second-game, the-trail-game and word-kraven.
 - ⚠ **Verify the DEPLOYED bundle: the-trail-game CODE-SPLITS**, so its list is in `assets/routes-*.js` and grepping the main bundle is a false negative — fetch the built chunk hash from production.
 - ⚠ **External entries carry `"slug": null`** (Eyeball It, Global War, Symmetry Genius); the siblings carry no `slug` at all, which is how each site drops itself from its own list.
@@ -173,7 +173,7 @@ This doc lives in the repo (`.ai/memory/`), so it syncs between devices via `git
 
 ## Open next steps
 
-- **No. 139 Reversi: built 2026-10-16, waiting on `push`** (toy + registration + cross-promo in the three sibling repos, all uncommitted). On push: commit the siblings, verify their DEPLOYED bundles, IndexNow, live-verify. Then the owner's phone play-test (feel, flip preview, the ladder against a human, the sound: nothing heard).
+- **No. 139 Reversi (live since `9ec4643`, 2026-10-16): owner phone play-test** (feel, the two-tap flip preview, whether Mr. Desai is strong enough, the sound: nothing has been heard). Raising Desai is one line: his depth and endgame-solve depth in `engine.js`.
 
 - **No. 138 Go (live since `d5c6b58`, 2026-10-16): owner phone play-test** (feel, the two-tap placement, the ladder against a human, the count and "Play it out" flow, and the sound: nothing has been heard).
 
