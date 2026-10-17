@@ -1,5 +1,31 @@
 [
   {
+    "slug": "reversi",
+    "name": "Reversi",
+    "shortDescription": "Flip ebony and ivory discs on green baize in a gaslit Victorian London club, where the game was born, against six regulars, easiest first. Aim at a square to see which discs would turn before you play.",
+    "category": "game",
+    "tags": [
+      "reversi",
+      "board-game",
+      "strategy",
+      "ai-opponent",
+      "classic",
+      "turn-based",
+      "difficulty-levels",
+      "flip",
+      "tap",
+      "victorian"
+    ],
+    "status": "live",
+    "path": "toys/reversi/",
+    "related": [
+      "go",
+      "checkers",
+      "chess",
+      "mancala"
+    ]
+  },
+  {
     "slug": "go",
     "name": "Go",
     "shortDescription": "9x9 Go with slate and shell stones on a thick kaya board, against six regulars at a rainy mountain teahouse. Take handicap stones, turn on the territory view, and learn the rules in a minute.",

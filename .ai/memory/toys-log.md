@@ -2,6 +2,42 @@
 
 Per-toy ship records moved verbatim out of HANDOFF.md on 2026-10-05 (owner-approved restructure). **Reference, not a handoff:** open the section for the toy you are touching; its toy-specific traps live here. Cross-toy rules stay in HANDOFF.md. Newest first. Not imported by CLAUDE.md.
 
+## No. 139 Reversi — built 2026-10-16, NOT YET PUSHED
+
+**`toys/reversi/`** — Reversi against six regulars at a gaslit London gentlemen's club in the 1880s, where the game was
+invented (BACKLOG "Deep #5"). Owner picks (2026-10-16): world **Victorian club, gaslight**; top rung **strong but
+beatable**; extras **Flip preview only** (no hint, undo or pass-and-play). Legal-move dots (toggle, on by default) and
+live in-scene brass score plaques come regardless; a 3-card lesson opens only from "How to play". Built by one builder
+agent from the Go template; registration by the parent. Files: `core.js` (rules), `engine.js` (Worker: bitboards,
+negascout + TT, exact endgame), `audio.js`, `script.js`, `styles.css`, `index.html`. Regulars, easiest first: Alfie (the
+page boy), Mr. Dobbs (hall porter), Mrs. Marlowe (a novelist on ladies' night), Captain Hale (retired from the sea),
+Dr. Pembroke (mathematics don), Mr. Desai (barrister, club champion). Keys: `reversi_beaten` (distinct regulars, 0-6;
+ticket rule dir `up`, rule only), `reversi_defeated` (JSON list), `reversi_wins|losses|draws|foe|first|dots|sound`.
+GA `reversi_game_start`, `reversi_game_end`. **Owner's key art** (`_sources/reversi.png`, added by another session
+mid-build) is in the featured pool (45) and is the card (`cards/reversi.webp`) and share image (`og/reversi.jpg`);
+`scripts/poses/reversi.js` stays as the gameplay pose. Registered: registry, sitemap 142, NL phrase, card CSS +
+`:not()`, og-gen entry (unused), ticket rule, cross-promo in all FOUR lists (tagline "Flip discs in a gaslit club", the
+four crossed start discs on baize plus one disc mid-flip so it never reads as a face).
+- ⚠ **TRADEMARK: "Othello" (MegaHouse) appears on NO surface**, hidden keywords included; grep returns 0 in the toy,
+  the pose, the registry and `main.js`.
+- **Rules verified**: move-tree counts from the start match the published table at depths 1-11 (4, 12, 56 ...
+  24,571,284, 212,258,800) counting a forced pass as one move and a finished game as an end point (counting finished
+  games only at full depth gives 24,571,056 at depth 10, which is how the convention was confirmed). Naive version vs
+  `core.js` vs bitboards over 4,000 random games, 2.06M positions: 0 mismatches. 21/21 hand cases.
+- **Ladder, engine vs engine, 80 games a pair, colors swapped on the same random opening**: Alfie beats random 75.6%;
+  a greedy max-flips bot beats Alfie 36.9%; Dobbs>Alfie 80%; Marlowe>Dobbs 95.6% (the steepest step, already eased);
+  Hale>Marlowe 91.9%; Pembroke>Hale 85.6%; Desai>Pembroke 73.1%. Mr. Desai (6 ahead, exact over the last 14 squares)
+  scored 5/48 against a deep reference engine, so he is far from perfect: the "beatable champion" the owner picked.
+  Never against a human.
+- ~0.5M positions/s in Node; at 4x throttle Desai averages 63ms (453ms worst), plus a 600-1150ms human pause.
+- **Audio, offline, 8 renders each**: disc placed 0.13-0.18 (max 0.26), one flip 0.10, a 19-flip wave 0.18 (max 0.21),
+  pass 0.18, chimes 0.25-0.27, room RMS 0.008. ⚠ A voice started at t=0 of an offline render is swallowed by the
+  compressor's start-up: measure after a 0.2s lead-in. **Never heard.**
+- Squares: 41.9x38.5px at 390x844, 40.3x37.0 in WebKit 375x667, 55.8x41.7 at 1280x800.
+- ⚠ **Parent fix: the case's cast shadow was a hard-edged dark slab** (a filled polygon with shadowBlur draws the hard
+  fill too). Now the polygon is drawn off-canvas and only its blurred shadow is offset back (shadow offsets are in
+  device pixels; they ignore the transform).
+
 ## No. 138 Go — shipped 2026-10-16 (`d5c6b58`), live
 
 **`toys/go/`** — 9x9 Go against six regulars in a mountain teahouse at dusk, in the rain (BACKLOG "Deep #3"). Owner

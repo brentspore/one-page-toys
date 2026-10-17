@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <link rel="icon" href="../../assets/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="../../assets/favicon-16.png?v=2" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png?v=2" sizes="180x180" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBVJ93GL8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VBVJ93GL8L');
+    </script>
+    <title>Reversi — One Page Toys</title>
+    <meta name="description" content="Play Reversi with ebony and ivory discs on green baize, against six regulars at a London club in the 1880s, from the page boy to the club champion. See which discs a move will flip before you play. Free, no sign-up." />
+    <link rel="canonical" href="https://onepagetoys.com/toys/reversi/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0b120e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Reversi" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One Page Toys" />
+    <meta property="og:title" content="Reversi — One Page Toys" />
+    <meta property="og:description" content="Ebony and ivory discs on green baize, by gaslight, with a coal fire in the grate. Six club regulars will play you a game of Reversi, from the page boy to the champion." />
+    <meta property="og:url" content="https://onepagetoys.com/toys/reversi/" />
+    <meta property="og:image" content="https://onepagetoys.com/assets/og/reversi.jpg?v=30427dfb" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Reversi — One Page Toys" />
+    <meta name="twitter:description" content="Reversi on green baize by gaslight. Six opponents, a flip preview, and every captured disc turning over in a ripple." />
+    <meta name="twitter:image" content="https://onepagetoys.com/assets/og/reversi.jpg?v=30427dfb" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Reversi",
+        "url": "https://onepagetoys.com/toys/reversi/",
+        "description": "Reversi, the disc-flipping board game first played in London in the 1880s, on an 8x8 board of green baize in a brass-bound mahogany case, with thick discs that are ebony on one face and ivory on the other. The card room of a London club on a foggy night: gas lamps, a coal fire, a clock on the mantel. Put a disc down so it brackets a line of the other color, and every bracketed disc turns over. If you have no move you pass, and the game ends when neither side can move. Most discs wins. Six opponents climb from Alfie the page boy, through the hall porter, a novelist here on ladies' night, a retired sea captain and a mathematics don, to Mr. Desai, the club champion. Hover over a square, or tap it once, to see which discs would flip before you play. Legal moves are marked with dots you can turn off. The opponents run entirely in your browser. Free, with no account and no sign-up.",
+        "applicationCategory": "GameApplication",
+        "genre": "Strategy",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "One Page Toys", "url": "https://onepagetoys.com/" }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("opt-theme");
+          if (m !== "light" && m !== "dark" && m !== "system") m = "system";
+          var dark = m === "dark" || (m === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <canvas id="canvas" role="img" aria-label="A Reversi board of green baize in a brass-bound mahogany case, on a card table in a London club by gaslight, with fog at the window and a fire in the grate. Tap a square to see which discs would flip, then tap it again to play. Arrow keys and Enter work too."></canvas>
+
+    <div class="opp" id="opp" hidden>
+      <span class="opp__seal" id="oppSeal"></span>
+      <span class="opp__body">
+        <span class="opp__top">
+          <span class="opp__name" id="oppName">Alfie</span>
+          <span class="opp__role" id="oppRole">the page boy</span>
+        </span>
+        <span class="opp__say" id="oppSay"></span>
+      </span>
+    </div>
+
+    <div class="bar" id="bar" hidden>
+      <span class="turn" id="turn"><i class="turn__disc" id="turnDisc"></i><span class="turn__text"><span id="turnText">Your turn</span><span class="turn__sub" id="turnSub">Move 1</span></span></span>
+      <button type="button" class="btn btn--toggle" id="btnDots" title="Show legal moves (D)" aria-pressed="true">Dots</button>
+      <button type="button" class="btn" id="btnResign" title="Resign">Resign</button>
+    </div>
+    <p class="sr-only" id="countLive" aria-live="polite"></p>
+
+    <div class="callout" id="callout" hidden></div>
+    <p class="note" id="note" aria-live="polite"></p>
+
+    <button type="button" class="corner-btn help-btn" id="helpBtn" title="How to play" aria-label="How to play">?</button>
+    <button type="button" class="corner-btn sound-btn" id="soundBtn" aria-pressed="true" title="Sound (M)" aria-label="Sound">&#9834;</button>
+
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <p class="panel__eyebrow">A London club, 1888</p>
+        <h1 class="panel__title">Reversi</h1>
+        <p class="panel__text">
+          Fog at the windows, a fire in the grate, and the board set out on the card table.
+          <b>Six regulars</b> will give you a game. Alfie plays between errands.
+          <b>Mr. Desai</b> has been club champion for seven winters, but he has lost before.
+        </p>
+        <div class="opts">
+          <div class="seg seg--small" role="radiogroup" aria-label="Your color" id="colorSeg">
+            <button type="button" class="seg__btn" role="radio" data-first="black">Black</button>
+            <button type="button" class="seg__btn" role="radio" data-first="white">White</button>
+            <button type="button" class="seg__btn" role="radio" data-first="alt">Take turns</button>
+          </div>
+          <p class="opts__note" id="colorNote"></p>
+        </div>
+        <button type="button" class="play-btn" id="ovBtn">Sit down with Alfie</button>
+        <p class="panel__or" id="castLabel">or pick any regular</p>
+        <div class="cast" id="cast"></div>
+        <p class="panel__keys"><button type="button" class="linkbtn" id="howBtn">How to play</button> &middot; tap a square to see what flips, tap again to play &middot; arrows + Enter &middot; D dots &middot; M sound</p>
+      </div>
+    </div>
+
+    <div class="overlay overlay--lesson" id="lesson" hidden>
+      <div class="panel panel--lesson" role="dialog" aria-labelledby="lessonTitle">
+        <p class="panel__eyebrow">How to play <span id="lessonStep"></span></p>
+        <div class="lesson__stage"><canvas id="lessonCv" width="240" height="240" aria-hidden="true"></canvas></div>
+        <h2 class="lesson__title" id="lessonTitle"></h2>
+        <p class="lesson__text" id="lessonText"></p>
+        <p class="lesson__aside" id="lessonAside"></p>
+        <div class="lesson__nav">
+          <button type="button" class="btn" id="lessonBack">Back</button>
+          <span class="lesson__dots" id="lessonDots"></span>
+          <button type="button" class="btn btn--go" id="lessonNext">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="result" hidden>
+      <div class="panel panel--result">
+        <span id="resSeal"></span>
+        <p class="result__line" id="resLine">Against Alfie</p>
+        <h2 class="panel__title" id="resTitle">You win</h2>
+        <p class="result__score" id="resScore"></p>
+        <p class="panel__text" id="resText"></p>
+        <div class="result__btns">
+          <button type="button" class="play-btn" id="btnAgain">Play again</button>
+          <button type="button" class="btn btn--big" id="btnCast">Pick another regular</button>
+        </div>
+        <p class="result__record" id="resRecord"></p>
+        <span data-opt-share></span>
+        <div data-more-games></div>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true">
+      <span class="frame__corner frame__corner--tl">No. 139</span>
+      <span class="frame__corner frame__corner--tr">Reversi</span>
+      <span class="frame__corner frame__corner--bl"><a href="../../">&#8592; onepagetoys.com</a></span>
+    </div>
+
+    <p class="hint" id="hintLine">tap a square to see what flips, then tap it again to play</p>
+
+    <script src="../../assets/tickets.js?v=38" defer></script>
+    <script src="../../assets/track.js?v=1" defer></script>
+    <script src="core.js?v=1" defer></script>
+    <script src="audio.js?v=1" defer></script>
+    <script src="script.js?v=1" defer></script>
+    <script src="../../assets/prizes.js?v=1" defer></script>
+    <script src="../../assets/tip-jar.js?v=13" defer></script>
+    <script src="../../assets/share.js?v=7" defer></script>
+    <script src="../../assets/fullscreen.js?v=3" defer></script>
+    <script src="../../assets/game-screen.js?v=1" defer></script>
+    <script src="../../assets/more-games.js?v=34" defer></script>
+  </body>
+</html>

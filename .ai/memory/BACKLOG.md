@@ -279,7 +279,7 @@ Items in this file follow the structure below so that any AI tool or human editi
 
 ---
 
-### Deep #5 — New toy: Reversi vs AI
+### Deep #5 — New toy: Reversi vs AI — BUILT as No. 139 Reversi (2026-10-16); see toys-log
 
 **Why it matters:** A minute to learn, a lifetime to master; a game takes 5-10 minutes, and the big swing flips are a great visual and audio moment. Alpha-beta plays it very well, so the ladder can run from gentle to brutal. Category `game`.
 

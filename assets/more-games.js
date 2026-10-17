@@ -10,6 +10,14 @@
 
   var GAMES = [
     {
+      "name": "Reversi",
+      "tagline": "Flip discs in a gaslit club",
+      "url": "https://onepagetoys.com/toys/reversi/",
+      "favicon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><radialGradient id='b' cx='.38' cy='.32' r='.75'><stop offset='0' stop-color='%2355504a'/><stop offset='.5' stop-color='%231b1714'/><stop offset='1' stop-color='%23060504'/></radialGradient><radialGradient id='w' cx='.38' cy='.32' r='.8'><stop offset='0' stop-color='%23fffdf6'/><stop offset='.6' stop-color='%23efe4cc'/><stop offset='1' stop-color='%23bfae8a'/></radialGradient></defs><rect width='32' height='32' fill='%230c0a08'/><rect x='1.5' y='1.5' width='29' height='29' rx='3' fill='%23b8893c'/><rect x='3' y='3' width='26' height='26' rx='1.5' fill='%231f5a33'/><g stroke='%230f3a1f' stroke-width='.8'><path d='M9.5 3V29M16 3V29M22.5 3V29M3 9.5H29M3 16H29M3 22.5H29'/></g><circle cx='12.75' cy='13.3' r='2.9' fill='%23000' opacity='.35'/><circle cx='12.75' cy='12.75' r='2.85' fill='url(%23w)'/><circle cx='19.25' cy='13.3' r='2.9' fill='%23000' opacity='.35'/><circle cx='19.25' cy='12.75' r='2.85' fill='url(%23b)'/><circle cx='12.75' cy='19.8' r='2.9' fill='%23000' opacity='.35'/><circle cx='12.75' cy='19.25' r='2.85' fill='url(%23b)'/><circle cx='19.25' cy='19.8' r='2.9' fill='%23000' opacity='.35'/><circle cx='19.25' cy='19.25' r='2.85' fill='url(%23w)'/><g transform='translate(25.75 19.25) rotate(-18)'><ellipse cx='.5' cy='.6' rx='1.3' ry='2.7' fill='%23000' opacity='.35'/><ellipse cx='0' cy='0' rx='1.25' ry='2.6' fill='%2314110e'/><ellipse cx='-.45' cy='0' rx='.8' ry='2.55' fill='%23f3ead6'/></g></svg>",
+      "initial": "R",
+      "slug": "reversi"
+    },
+    {
       "name": "Go",
       "tagline": "Slate stones in a rainy teahouse",
       "url": "https://onepagetoys.com/toys/go/",
